@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:t="test" targetNamespace="test">
+
+  <include schemaLocation="b.xsd"/>
+
+  <complexType name="base">
+    <sequence>
+      <element name="a" type="int" minOccurs="0"/>
+      <element name="b" type="boolean"/>
+      <element name="c" type="t:derived" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+</schema>

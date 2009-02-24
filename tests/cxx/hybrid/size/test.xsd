@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:t="test" targetNamespace="test">
+
+  <!-- fixed -->
+
+  <complexType name="fixed-base">
+    <sequence>
+      <element name="a" type="int"/>
+      <element name="b" type="t:fixed-all" minOccurs="0"/>
+    </sequence>
+    <attribute name="x" type="double" use="required"/>
+  </complexType>
+
+  <complexType name="fixed-derived">
+    <complexContent>
+      <extension base="t:fixed-base">
+        <sequence>
+          <element name="c" type="float"/>
+        </sequence>
+        <attribute name="y" type="boolean"/>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="fixed-all">
+    <all>
+      <element name="a" type="int"/>
+      <element name="b" type="time" minOccurs="0"/>
+    </all>
+    <attribute name="x" type="double"/>
+  </complexType>
+
+  <!-- variable -->
+
+  <complexType name="var-el-string">
+    <all>
+      <element name="b" type="string"/>
+    </all>
+    <attribute name="x" type="double"/>
+  </complexType>
+
+  <complexType name="var-at-string">
+    <all>
+      <element name="b" type="int"/>
+    </all>
+    <attribute name="x" type="string"/>
+  </complexType>
+
+  <complexType name="var-seq1">
+    <sequence>
+      <element name="b" type="int" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-seq2">
+    <sequence maxOccurs="2">
+      <element name="a" type="int"/>
+      <element name="b" type="int"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-choice">
+    <choice>
+      <element name="a" type="int"/>
+      <element name="b" type="boolean"/>
+    </choice>
+  </complexType>
+
+  <complexType name="var-var-mem">
+    <sequence>
+      <element name="a" type="int"/>
+      <element name="b" type="t:var-seq1"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-var-base">
+    <complexContent>
+      <extension base="t:var-var-mem">
+        <sequence>
+          <element name="c" type="float"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="var-fwd1">
+    <sequence>
+      <element name="a" type="int"/>
+      <element name="b" type="t:var-fwd2"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-fwd2">
+    <sequence>
+      <element name="a" type="int"/>
+      <element name="b" type="string"/>
+    </sequence>
+  </complexType>
+
+
+  <complexType name="var-mem-rec1">
+    <sequence>
+      <element name="a" type="t:var-mem-rec2"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-mem-rec2">
+    <sequence>
+      <element name="a" type="t:var-mem-rec1" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+
+  <complexType name="var-base-rec1">
+    <sequence>
+      <element name="a" type="t:var-base-rec3"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="var-base-rec2">
+    <complexContent>
+      <extension base="t:var-base-rec1">
+        <sequence>
+          <element name="c" type="float"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="var-base-rec3">
+    <sequence>
+      <element name="a" type="t:var-base-rec2" minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+</schema>

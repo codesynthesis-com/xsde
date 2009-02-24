@@ -1,0 +1,558 @@
+# file      : xsde/makefile
+# author    : Boris Kolpackov <boris@codesynthesis.com>
+# copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
+
+cxx_tun := cxx/string.cxx cxx/ro-string.cxx
+
+ifeq ($(xsde_stl),n)
+cxx_tun += cxx/strdupx.cxx
+endif
+
+ifeq ($(xsde_exceptions),n)
+cxx_tun += cxx/sys-error.cxx
+endif
+
+ifneq ($(xsde_parser_validation)$(xsde_serializer_validation),nn)
+cxx_tun += cxx/schema-error.cxx
+endif
+
+ifeq ($(xsde_polymorphic),y)
+cxx_tun += cxx/hashmap.cxx
+endif
+
+# Common data types.
+#
+cxx_tun += cxx/buffer.cxx cxx/sequence-base.cxx
+
+ifeq ($(xsde_stl),y)
+cxx_tun += cxx/string-sequence-stl.cxx
+else
+cxx_tun += cxx/qname.cxx cxx/string-sequence.cxx
+endif
+
+
+## XML
+##
+ifneq ($(xsde_parser_validation)$(xsde_serializer_validation),nn)
+cxx_tun += cxx/xml/char-table.cxx cxx/xml/ncname.cxx
+endif
+
+
+## C++/Hybrid
+##
+cxx_tun += cxx/hybrid/sequence.cxx
+
+
+## C++/Parser
+##
+cxx_tun += cxx/parser/elements.cxx cxx/parser/state.cxx
+
+ifeq ($(xsde_polymorphic),y)
+cxx_tun += cxx/parser/map.cxx cxx/parser/substitution-map.cxx
+endif
+
+ifeq ($(xsde_exceptions),y)
+cxx_tun += cxx/parser/exceptions.cxx
+else
+cxx_tun += cxx/parser/error.cxx
+endif
+
+cxx_tun += cxx/parser/expat/document.cxx cxx/parser/expat/xml-error.cxx
+
+
+# Parser implementations.
+#
+ifeq ($(xsde_parser_validation),y)
+
+cxx_tun +=                                      \
+cxx/parser/validating/parser.cxx                \
+cxx/parser/validating/time-zone.cxx             \
+cxx/parser/validating/xml-schema-pskel.cxx
+
+ifeq ($(xsde_polymorphic),y)
+cxx_tun += cxx/parser/validating/inheritance-map.cxx
+endif
+
+cxx_tun +=                                      \
+cxx/parser/validating/boolean.cxx               \
+cxx/parser/validating/number.cxx                \
+cxx/parser/validating/byte.cxx                  \
+cxx/parser/validating/unsigned-byte.cxx         \
+cxx/parser/validating/short.cxx                 \
+cxx/parser/validating/unsigned-short.cxx        \
+cxx/parser/validating/int.cxx                   \
+cxx/parser/validating/unsigned-int.cxx          \
+cxx/parser/validating/integer.cxx               \
+cxx/parser/validating/negative-integer.cxx      \
+cxx/parser/validating/non-positive-integer.cxx  \
+cxx/parser/validating/positive-integer.cxx      \
+cxx/parser/validating/non-negative-integer.cxx  \
+cxx/parser/validating/float.cxx                 \
+cxx/parser/validating/double.cxx                \
+cxx/parser/validating/decimal.cxx
+
+ifeq ($(xsde_longlong),y)
+cxx_tun +=                                      \
+cxx/parser/validating/long-long.cxx             \
+cxx/parser/validating/unsigned-long-long.cxx
+else
+cxx_tun +=                                      \
+cxx/parser/validating/long.cxx                  \
+cxx/parser/validating/unsigned-long.cxx
+endif
+
+ifeq ($(xsde_stl),y)
+
+cxx_tun +=                                      \
+cxx/parser/validating/string-stl.cxx            \
+cxx/parser/validating/normalized-string-stl.cxx \
+cxx/parser/validating/token-stl.cxx             \
+cxx/parser/validating/name-stl.cxx              \
+cxx/parser/validating/nmtoken-stl.cxx           \
+cxx/parser/validating/nmtokens-stl.cxx          \
+cxx/parser/validating/ncname-stl.cxx            \
+cxx/parser/validating/id-stl.cxx                \
+cxx/parser/validating/idref-stl.cxx             \
+cxx/parser/validating/idrefs-stl.cxx            \
+cxx/parser/validating/language-stl.cxx          \
+cxx/parser/validating/uri-stl.cxx               \
+cxx/parser/validating/qname-stl.cxx
+
+else
+
+cxx_tun +=                                   \
+cxx/parser/validating/string.cxx             \
+cxx/parser/validating/normalized-string.cxx  \
+cxx/parser/validating/token.cxx              \
+cxx/parser/validating/name.cxx               \
+cxx/parser/validating/nmtoken.cxx            \
+cxx/parser/validating/nmtokens.cxx           \
+cxx/parser/validating/ncname.cxx             \
+cxx/parser/validating/id.cxx                 \
+cxx/parser/validating/idref.cxx              \
+cxx/parser/validating/idrefs.cxx             \
+cxx/parser/validating/language.cxx           \
+cxx/parser/validating/uri.cxx                \
+cxx/parser/validating/qname.cxx
+
+endif # stl
+
+cxx_tun +=                                   \
+cxx/parser/validating/base64-binary.cxx      \
+cxx/parser/validating/hex-binary.cxx         \
+cxx/parser/validating/gday.cxx               \
+cxx/parser/validating/gmonth.cxx             \
+cxx/parser/validating/gyear.cxx              \
+cxx/parser/validating/gmonth-day.cxx         \
+cxx/parser/validating/gyear-month.cxx        \
+cxx/parser/validating/date.cxx               \
+cxx/parser/validating/time.cxx               \
+cxx/parser/validating/date-time.cxx          \
+cxx/parser/validating/duration.cxx
+
+else # validation
+
+cxx_tun +=                                          \
+cxx/parser/non-validating/parser.cxx                \
+cxx/parser/non-validating/time-zone.cxx             \
+cxx/parser/non-validating/xml-schema-pskel.cxx
+
+cxx_tun +=                                          \
+cxx/parser/non-validating/boolean.cxx               \
+cxx/parser/non-validating/number.cxx                \
+cxx/parser/non-validating/byte.cxx                  \
+cxx/parser/non-validating/unsigned-byte.cxx         \
+cxx/parser/non-validating/short.cxx                 \
+cxx/parser/non-validating/unsigned-short.cxx        \
+cxx/parser/non-validating/int.cxx                   \
+cxx/parser/non-validating/unsigned-int.cxx          \
+cxx/parser/non-validating/integer.cxx               \
+cxx/parser/non-validating/negative-integer.cxx      \
+cxx/parser/non-validating/non-positive-integer.cxx  \
+cxx/parser/non-validating/positive-integer.cxx      \
+cxx/parser/non-validating/non-negative-integer.cxx  \
+cxx/parser/non-validating/float.cxx                 \
+cxx/parser/non-validating/double.cxx                \
+cxx/parser/non-validating/decimal.cxx
+
+ifeq ($(xsde_longlong),y)
+cxx_tun +=                                          \
+cxx/parser/non-validating/long-long.cxx             \
+cxx/parser/non-validating/unsigned-long-long.cxx
+else
+cxx_tun +=                                          \
+cxx/parser/non-validating/long.cxx                  \
+cxx/parser/non-validating/unsigned-long.cxx
+endif
+
+ifeq ($(xsde_stl),y)
+
+cxx_tun +=                                          \
+cxx/parser/non-validating/string-stl.cxx            \
+cxx/parser/non-validating/normalized-string-stl.cxx \
+cxx/parser/non-validating/token-stl.cxx             \
+cxx/parser/non-validating/name-stl.cxx              \
+cxx/parser/non-validating/nmtoken-stl.cxx           \
+cxx/parser/non-validating/nmtokens-stl.cxx          \
+cxx/parser/non-validating/ncname-stl.cxx            \
+cxx/parser/non-validating/id-stl.cxx                \
+cxx/parser/non-validating/idref-stl.cxx             \
+cxx/parser/non-validating/idrefs-stl.cxx            \
+cxx/parser/non-validating/language-stl.cxx          \
+cxx/parser/non-validating/uri-stl.cxx               \
+cxx/parser/non-validating/qname-stl.cxx
+
+else
+
+cxx_tun +=                                       \
+cxx/parser/non-validating/string.cxx             \
+cxx/parser/non-validating/normalized-string.cxx  \
+cxx/parser/non-validating/token.cxx              \
+cxx/parser/non-validating/name.cxx               \
+cxx/parser/non-validating/nmtoken.cxx            \
+cxx/parser/non-validating/nmtokens.cxx           \
+cxx/parser/non-validating/ncname.cxx             \
+cxx/parser/non-validating/id.cxx                 \
+cxx/parser/non-validating/idref.cxx              \
+cxx/parser/non-validating/idrefs.cxx             \
+cxx/parser/non-validating/language.cxx           \
+cxx/parser/non-validating/uri.cxx                \
+cxx/parser/non-validating/qname.cxx
+
+endif # stl
+
+cxx_tun +=                                       \
+cxx/parser/non-validating/base64-binary.cxx      \
+cxx/parser/non-validating/hex-binary.cxx         \
+cxx/parser/non-validating/gday.cxx               \
+cxx/parser/non-validating/gmonth.cxx             \
+cxx/parser/non-validating/gyear.cxx              \
+cxx/parser/non-validating/gmonth-day.cxx         \
+cxx/parser/non-validating/gyear-month.cxx        \
+cxx/parser/non-validating/date.cxx               \
+cxx/parser/non-validating/time.cxx               \
+cxx/parser/non-validating/date-time.cxx          \
+cxx/parser/non-validating/duration.cxx
+
+endif # validation
+
+
+## C++/Serializer
+##
+cxx_tun += cxx/serializer/elements.cxx cxx/serializer/context.cxx
+
+ifeq ($(xsde_polymorphic),y)
+cxx_tun += cxx/serializer/map.cxx cxx/serializer/substitution-map.cxx
+endif
+
+ifeq ($(xsde_exceptions),y)
+cxx_tun += cxx/serializer/exceptions.cxx
+else
+cxx_tun += cxx/serializer/error.cxx
+endif
+
+cxx_tun += cxx/serializer/genx/document.cxx cxx/serializer/genx/xml-error.cxx
+
+# Serializer implementations.
+#
+ifeq ($(xsde_serializer_validation),y)
+
+cxx_tun +=                                          \
+cxx/serializer/validating/serializer.cxx            \
+cxx/serializer/validating/time-zone.cxx             \
+cxx/serializer/validating/xml-schema-sskel.cxx
+
+ifeq ($(xsde_polymorphic),y)
+cxx_tun += cxx/serializer/validating/inheritance-map.cxx
+endif
+
+cxx_tun +=                                          \
+cxx/serializer/validating/boolean.cxx               \
+cxx/serializer/validating/byte.cxx                  \
+cxx/serializer/validating/unsigned-byte.cxx         \
+cxx/serializer/validating/short.cxx                 \
+cxx/serializer/validating/unsigned-short.cxx        \
+cxx/serializer/validating/int.cxx                   \
+cxx/serializer/validating/unsigned-int.cxx          \
+cxx/serializer/validating/integer.cxx               \
+cxx/serializer/validating/negative-integer.cxx      \
+cxx/serializer/validating/non-positive-integer.cxx  \
+cxx/serializer/validating/positive-integer.cxx      \
+cxx/serializer/validating/non-negative-integer.cxx  \
+cxx/serializer/validating/float.cxx                 \
+cxx/serializer/validating/double.cxx                \
+cxx/serializer/validating/decimal.cxx
+
+ifeq ($(xsde_longlong),y)
+cxx_tun +=                                          \
+cxx/serializer/validating/long-long.cxx             \
+cxx/serializer/validating/unsigned-long-long.cxx
+else
+cxx_tun +=                                          \
+cxx/serializer/validating/long.cxx                  \
+cxx/serializer/validating/unsigned-long.cxx
+endif
+
+ifeq ($(xsde_stl),y)
+
+cxx_tun +=                                          \
+cxx/serializer/validating/string-stl.cxx            \
+cxx/serializer/validating/normalized-string-stl.cxx \
+cxx/serializer/validating/token-stl.cxx             \
+cxx/serializer/validating/name-stl.cxx              \
+cxx/serializer/validating/nmtoken-stl.cxx           \
+cxx/serializer/validating/ncname-stl.cxx            \
+cxx/serializer/validating/id-stl.cxx                \
+cxx/serializer/validating/idref-stl.cxx             \
+cxx/serializer/validating/language-stl.cxx          \
+cxx/serializer/validating/uri-stl.cxx               \
+cxx/serializer/validating/idrefs-stl.cxx            \
+cxx/serializer/validating/nmtokens-stl.cxx          \
+cxx/serializer/validating/qname-stl.cxx
+
+else
+
+cxx_tun +=                                       \
+cxx/serializer/validating/string.cxx             \
+cxx/serializer/validating/normalized-string.cxx  \
+cxx/serializer/validating/token.cxx              \
+cxx/serializer/validating/name.cxx               \
+cxx/serializer/validating/nmtoken.cxx            \
+cxx/serializer/validating/ncname.cxx             \
+cxx/serializer/validating/id.cxx                 \
+cxx/serializer/validating/idref.cxx              \
+cxx/serializer/validating/language.cxx           \
+cxx/serializer/validating/uri.cxx                \
+cxx/serializer/validating/idrefs.cxx             \
+cxx/serializer/validating/nmtokens.cxx           \
+cxx/serializer/validating/qname.cxx
+
+endif # stl
+
+cxx_tun +=                                       \
+cxx/serializer/validating/base64-binary.cxx      \
+cxx/serializer/validating/hex-binary.cxx         \
+cxx/serializer/validating/gday.cxx               \
+cxx/serializer/validating/gmonth.cxx             \
+cxx/serializer/validating/gyear.cxx              \
+cxx/serializer/validating/gmonth-day.cxx         \
+cxx/serializer/validating/gyear-month.cxx        \
+cxx/serializer/validating/date.cxx               \
+cxx/serializer/validating/time.cxx               \
+cxx/serializer/validating/date-time.cxx          \
+cxx/serializer/validating/duration.cxx
+
+else # validation
+
+cxx_tun +=                                              \
+cxx/serializer/non-validating/serializer.cxx            \
+cxx/serializer/non-validating/time-zone.cxx             \
+cxx/serializer/non-validating/xml-schema-sskel.cxx
+
+cxx_tun +=                                              \
+cxx/serializer/non-validating/boolean.cxx               \
+cxx/serializer/non-validating/byte.cxx                  \
+cxx/serializer/non-validating/unsigned-byte.cxx         \
+cxx/serializer/non-validating/short.cxx                 \
+cxx/serializer/non-validating/unsigned-short.cxx        \
+cxx/serializer/non-validating/int.cxx                   \
+cxx/serializer/non-validating/unsigned-int.cxx          \
+cxx/serializer/non-validating/integer.cxx               \
+cxx/serializer/non-validating/negative-integer.cxx      \
+cxx/serializer/non-validating/non-positive-integer.cxx  \
+cxx/serializer/non-validating/positive-integer.cxx      \
+cxx/serializer/non-validating/non-negative-integer.cxx  \
+cxx/serializer/non-validating/float.cxx                 \
+cxx/serializer/non-validating/double.cxx                \
+cxx/serializer/non-validating/decimal.cxx
+
+ifeq ($(xsde_longlong),y)
+cxx_tun +=                                              \
+cxx/serializer/non-validating/long-long.cxx             \
+cxx/serializer/non-validating/unsigned-long-long.cxx
+else
+cxx_tun +=                                              \
+cxx/serializer/non-validating/long.cxx                  \
+cxx/serializer/non-validating/unsigned-long.cxx
+endif
+
+ifeq ($(xsde_stl),y)
+
+cxx_tun +=                                              \
+cxx/serializer/non-validating/string-stl.cxx            \
+cxx/serializer/non-validating/normalized-string-stl.cxx \
+cxx/serializer/non-validating/token-stl.cxx             \
+cxx/serializer/non-validating/name-stl.cxx              \
+cxx/serializer/non-validating/nmtoken-stl.cxx           \
+cxx/serializer/non-validating/ncname-stl.cxx            \
+cxx/serializer/non-validating/id-stl.cxx                \
+cxx/serializer/non-validating/idref-stl.cxx             \
+cxx/serializer/non-validating/language-stl.cxx          \
+cxx/serializer/non-validating/uri-stl.cxx               \
+cxx/serializer/non-validating/idrefs-stl.cxx            \
+cxx/serializer/non-validating/nmtokens-stl.cxx          \
+cxx/serializer/non-validating/qname-stl.cxx
+
+else
+
+cxx_tun +=                                           \
+cxx/serializer/non-validating/string.cxx             \
+cxx/serializer/non-validating/normalized-string.cxx  \
+cxx/serializer/non-validating/token.cxx              \
+cxx/serializer/non-validating/name.cxx               \
+cxx/serializer/non-validating/nmtoken.cxx            \
+cxx/serializer/non-validating/ncname.cxx             \
+cxx/serializer/non-validating/id.cxx                 \
+cxx/serializer/non-validating/idref.cxx              \
+cxx/serializer/non-validating/language.cxx           \
+cxx/serializer/non-validating/uri.cxx                \
+cxx/serializer/non-validating/idrefs.cxx             \
+cxx/serializer/non-validating/nmtokens.cxx           \
+cxx/serializer/non-validating/qname.cxx
+
+endif # stl
+
+cxx_tun +=                                           \
+cxx/serializer/non-validating/base64-binary.cxx      \
+cxx/serializer/non-validating/hex-binary.cxx         \
+cxx/serializer/non-validating/gday.cxx               \
+cxx/serializer/non-validating/gmonth.cxx             \
+cxx/serializer/non-validating/gyear.cxx              \
+cxx/serializer/non-validating/gmonth-day.cxx         \
+cxx/serializer/non-validating/gyear-month.cxx        \
+cxx/serializer/non-validating/date.cxx               \
+cxx/serializer/non-validating/time.cxx               \
+cxx/serializer/non-validating/date-time.cxx          \
+cxx/serializer/non-validating/duration.cxx
+
+endif # validation
+
+
+cxx_o   := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
+cxx_d   := $(cxx_o:.o=.o.d)
+
+xsde.l             := $(out_base)/xsde.l
+xsde.l.cpp-options := $(out_base)/xsde.l.cpp-options
+
+clean     := $(out_base)/.clean
+
+
+# Build.
+#
+$(xsde.l): $(cxx_o) -lexpat -lgenx
+
+$(cxx_o) $(cxx_d): $(xsde.l.cpp-options) $(out_base)/config.h
+
+$(xsde.l.cpp-options): prefix := xsde/ $(out_root)/libxsde/
+$(xsde.l.cpp-options): value := -I$(out_root)/libxsde -I$(src_root)/libxsde
+
+$(call include-dep,$(cxx_d))
+
+# config.h
+#
+$(out_base)/config.h: $(dcf_root)/configuration-dynamic.make
+	@echo '// file      : xsde/config.h'                             >$@
+	@echo '// author    : automatically generated'                  >>$@
+	@echo ''                                                        >>$@
+	@echo '#ifndef XSDE_CONFIG_H'                                   >>$@
+	@echo '#define XSDE_CONFIG_H'                                   >>$@
+	@echo ''                                                        >>$@
+	@echo '#define XSDE_PLATFORM_POSIX'                             >>$@
+	@echo '#define XSDE_ARCH_WIDTH $(xsde_arch_width)'              >>$@
+ifeq ($(xsde_byteorder),l)
+	@echo '#define XSDE_BYTEORDER 1234'                             >>$@
+else
+	@echo '#define XSDE_BYTEORDER 4321'                             >>$@
+endif
+ifeq ($(xsde_stl),y)
+	@echo '#define XSDE_STL'                                        >>$@
+else
+	@echo '#undef XSDE_STL'                                         >>$@
+endif
+ifeq ($(xsde_iostream),y)
+	@echo '#define XSDE_IOSTREAM'                                   >>$@
+else
+	@echo '#undef XSDE_IOSTREAM'                                    >>$@
+endif
+ifeq ($(xsde_exceptions),y)
+	@echo '#define XSDE_EXCEPTIONS'                                 >>$@
+else
+	@echo '#undef XSDE_EXCEPTIONS'                                  >>$@
+endif
+ifeq ($(xsde_longlong),y)
+	@echo '#define XSDE_LONGLONG'                                   >>$@
+else
+	@echo '#undef XSDE_LONGLONG'                                    >>$@
+endif
+ifeq ($(xsde_snprintf),y)
+	@echo '#define XSDE_SNPRINTF'                                   >>$@
+else
+	@echo '#undef XSDE_SNPRINTF'                                    >>$@
+endif
+ifeq ($(xsde_parser_validation),y)
+	@echo '#define XSDE_PARSER_VALIDATION'                          >>$@
+else
+	@echo '#undef XSDE_PARSER_VALIDATION'                           >>$@
+endif
+ifeq ($(xsde_serializer_validation),y)
+	@echo '#define XSDE_SERIALIZER_VALIDATION'                      >>$@
+else
+	@echo '#undef XSDE_SERIALIZER_VALIDATION'                       >>$@
+endif
+ifeq ($(xsde_reuse_style),mixin)
+	@echo '#define XSDE_REUSE_STYLE_MIXIN'                          >>$@
+else
+	@echo '#undef XSDE_REUSE_STYLE_MIXIN'                           >>$@
+endif
+ifeq ($(xsde_reuse_style),tiein)
+	@echo '#define XSDE_REUSE_STYLE_TIEIN'                          >>$@
+else
+	@echo '#undef XSDE_REUSE_STYLE_TIEIN'                           >>$@
+endif
+ifeq ($(xsde_reuse_style),none)
+	@echo '#define XSDE_REUSE_STYLE_NONE'                           >>$@
+else
+	@echo '#undef XSDE_REUSE_STYLE_NONE'                            >>$@
+endif
+ifeq ($(xsde_polymorphic),y)
+	@echo '#define XSDE_POLYMORPHIC'                                >>$@
+	@echo '#define XSDE_PARSER_SMAP_BUCKETS $(xsde_parser_smap_buckets)UL' >>$@
+ifeq ($(xsde_parser_validation),y)
+	@echo '#define XSDE_PARSER_IMAP_BUCKETS $(xsde_parser_imap_buckets)UL' >>$@
+endif
+	@echo '#define XSDE_SERIALIZER_SMAP_BUCKETS $(xsde_serializer_smap_buckets)UL' >>$@
+	@echo '#define XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS $(xsde_serializer_smap_bucket_buckets)UL' >>$@
+ifeq ($(xsde_serializer_validation),y)
+	@echo '#define XSDE_SERIALIZER_IMAP_BUCKETS $(xsde_serializer_imap_buckets)UL' >>$@
+endif
+else
+	@echo '#undef XSDE_POLYMORPHIC'                                 >>$@
+endif
+	@echo ''                                                        >>$@
+	@echo '#endif // XSDE_CONFIG_H'                                 >>$@
+
+
+# Convenience alias for default target.
+#
+.PHONY: $(out_base)/
+$(out_base)/: $(xsde.l)
+
+
+# Clean.
+#
+.PHONY: $(clean)
+
+$(clean): $(xsde.l).o.clean            \
+  $(xsde.l.cpp-options).clean          \
+  $(addsuffix .cxx.clean,$(cxx_o))     \
+  $(addsuffix .cxx.clean,$(cxx_d))
+	$(call message,rm $$1,rm -f $$1,$(out_base)/config.h)
+
+# How to.
+#
+$(call include,$(bld_root)/cxx/o-l.make)
+$(call include,$(bld_root)/cxx/cxx-o.make)
+$(call include,$(bld_root)/cxx/cxx-d.make)

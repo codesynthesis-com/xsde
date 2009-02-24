@@ -1,0 +1,160 @@
+#! /usr/bin/env bash
+
+# file      : build/configure
+# author    : Boris Kolpackov <boris@codesynthesis.com>
+# copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+# $1  out file
+#
+# bld_root     - build root
+# project_name - project name
+#
+
+source $bld_root/dialog.bash
+
+
+$echo
+$echo
+$echo "configuring '$project_name'"
+$echo
+$echo
+
+$echo
+$echo "Please specify your platform architecture width in bits:"
+$echo
+
+arch_width=`read_value 32`
+
+$echo
+$echo "Is your platform little-endian?"
+$echo
+
+little=`read_y_n y`
+
+if [ "$little" == "y" ]; then
+  byteorder=l
+else
+  byteorder=b
+fi
+
+$echo
+$echo "Would you like the generated code and runtime to use STL?"
+$echo
+
+stl=`read_y_n y`
+
+$echo
+$echo "Would you like the generated code and runtime to use IO streams?"
+$echo
+
+iostream=`read_y_n y`
+
+$echo
+$echo "Would you like the generated code and runtime to use C++ exceptions?"
+$echo
+
+exceptions=`read_y_n y`
+
+$echo
+$echo "Is the long long int type available on your platform?"
+$echo
+
+longlong=`read_y_n y`
+
+$echo
+$echo "Is the snprintf/_snprintf function available on your platform?"
+$echo
+
+snprintf=`read_y_n y`
+
+$echo
+$echo "Would you like the parser runtime to validate against XML Schema?"
+$echo
+
+parser_validation=`read_y_n y`
+
+$echo
+$echo "Would you like the serializer runtime to validate against XML Schema?"
+$echo
+
+serializer_validation=`read_y_n y`
+
+$echo
+$echo "Please select the base parser/serializer reuse style you would"
+$echo "like to use:"
+$echo
+$echo "(1) mixin (virtual inheritance-based reuse)"
+$echo "(2) tiein (delegation-based reuse)"
+$echo "(3) none  (no reuse support)"
+$echo
+
+reuse_style=`read_option "mixin tiein none" "tiein"`
+
+$echo
+$echo "Would you like the runtime library to support XML Schema polymorphism"
+$echo "(xsi:type and substitution groups)?"
+$echo
+
+polymorphic=`read_y_n n`
+
+parser_smap_buckets=0
+parser_imap_buckets=0
+serializer_smap_buckets=0
+serializer_smap_bucket_buckets=0
+serializer_imap_buckets=0
+
+if [ "$polymorphic" = "y" ]; then
+$echo
+$echo "Enter the substitution and inheritance hashmaps bucket counts."
+$echo "Prime numbers are recommended: 53 97 193 389 769 1543 3079 6151"
+$echo "12289 24593 49157 98317 196613 393241."
+$echo
+
+$echo
+$echo "Parser substitution hashmap buckets:"
+$echo
+parser_smap_buckets=`read_value 53`
+
+if [ "$parser_validation" = "y" ]; then
+$echo
+$echo "Parser inheritance hashmap buckets:"
+$echo
+parser_imap_buckets=`read_value 97`
+fi
+
+$echo
+$echo "Serializer substitution hashmap buckets:"
+$echo
+serializer_smap_buckets=`read_value 53`
+
+$echo
+$echo "Serializer inner substitution hashmap buckets:"
+$echo
+serializer_smap_bucket_buckets=`read_value 53`
+
+if [ "$serializer_validation" = "y" ]; then
+$echo
+$echo "Serializer inheritance hashmap buckets:"
+$echo
+serializer_imap_buckets=`read_value 97`
+fi
+
+fi
+
+echo "xsde_arch_width                     := $arch_width"                     >$1
+echo "xsde_byteorder                      := $byteorder"                      >>$1
+echo "xsde_stl                            := $stl"                            >>$1
+echo "xsde_iostream                       := $iostream"                       >>$1
+echo "xsde_exceptions                     := $exceptions"                     >>$1
+echo "xsde_longlong                       := $longlong"                       >>$1
+echo "xsde_snprintf                       := $snprintf"                       >>$1
+echo "xsde_parser_validation              := $parser_validation"              >>$1
+echo "xsde_serializer_validation          := $serializer_validation"          >>$1
+echo "xsde_reuse_style                    := $reuse_style"                    >>$1
+echo "xsde_polymorphic                    := $polymorphic"                    >>$1
+echo "xsde_parser_smap_buckets            := $parser_smap_buckets"            >>$1
+echo "xsde_parser_imap_buckets            := $parser_imap_buckets"            >>$1
+echo "xsde_serializer_smap_buckets        := $serializer_smap_buckets"        >>$1
+echo "xsde_serializer_smap_bucket_buckets := $serializer_smap_bucket_buckets" >>$1
+echo "xsde_serializer_imap_buckets        := $serializer_imap_buckets"        >>$1

@@ -1,0 +1,227 @@
+Version 3.0.0
+
+  * The new Embedded C++/Hybrid mapping provides a light-weight, tree-
+    like object model with precise reproduction of the XML vocabulary
+    structure and element order. C++/Hybrid supports fully in-memory
+    as well as hybrid, partially event-driven, partially in-memory
+    XML processing. For more information on the new mapping see the
+    Embedded C++/Hybrid Mapping Getting Started Guide and examples in
+    the examples/cxx/hybrid/ directory.
+
+  * New option, --disable-warning, disables printing of a warning with
+    the specified id. Specifying 'all' for the warning id disables all
+    warnings.
+
+  * The interfaces of the non-STL versions of the xml_schema::qname and
+    xml_schema::string_sequence classes have changed. Now by default
+    their modifier functions assume ownership of the passed strings.
+    The *_copy() versions of the modifier functions that make copies
+    of the passed strings are now provided. See the documentation for
+    details.
+
+  * The implementation of the STL version of the xml_schema::string_sequence
+    class has changed. Now a custom implementation of the sequence
+    container is used instead of std::vector. See the documentation for
+    details.
+
+  * When STL is enabled the xml_schema::string_sequence objects
+    corresponding to the NMTOKENS and IDREFS types are now returned and
+    passed by pointer rather than by value.
+
+Version 2.1.0
+
+  * New delegation-based parser/serializer implementation reuse style in
+    addition to virtual inheritance-based. The new style results in a much
+    smaller object code size. The new reuse style is used by default and is
+    incompatible with the old style. Applications that require backwards
+    compatibility should use the --reuse-style-mixin option. The reuse
+    support code now can be completely omitted with the --reuse-style-none
+    option. A number of examples were converted to support both the new
+    and old reuse styles while others were converted to support the new
+    style only. For more information on the new reuse style see Section
+    5.6 in the Embedded C++/Parser Getting Started Guide and Section 6.6
+    in the Embedded C++/Serializer Getting Started Guide.
+
+  * New option, --file-per-type, triggers generation of a separate set
+    of C++ files for each type defined in XML Schema. This compilation
+    mode is primarily useful when some of your schemas cannot be compiled
+    separately or have cyclic dependencies which involve inheritance.
+    Other new options that are useful in this compilation mode are
+    --type-file-regex, --type-file-regex-trace, and --file-list. See the
+    compiler command line manual (man pages) for more information.
+
+  * New option, --options-file, allows additional command line options
+    to be provided in files, with one option per line.
+
+  * New option, --reserved-name, allows inserting additional names with
+    optional replacements to the list of names that should not be used
+    as identifiers. See the compiler command line manual (man pages)
+    for details.
+
+  * New options, --location-map, --location-regex, and
+    --location-regex-trace, allow re-mapping of schema locations
+    specified in the include and import elements without modifying the
+    schema files. See the compiler command line manual (man pages) for
+    more information.
+
+  * New option, --guard-prefix, allows specifying a prefix that will be
+    added to generated header inclusion guards.
+
+  * New option, --file-list, triggers creation of a file with a list of
+    generated C++ files. This option is primarily useful in the file-per-
+    type compilation mode (--file-per-type) to create a list of generated
+    C++ files, for example, as a makefile fragment. Other new options
+    that are useful with --file-list are --file-list-prologue,
+    --file-list-epilogue, and --file-list-delim. See the compiler command
+    line manual (man pages) for more information.
+
+  * In type map files the optional argument type now defaults to the
+    return type if the return type ends with * or & (that is, it is
+    a pointer or a reference) and 'const return type&' otherwise.
+
+  * Type map files can now include comments. A comment starts with #
+    and ends with a new line or end of file. To specify a name that
+    contains # enclose it in "".
+
+ C++/Parser
+
+  * New option, --generate-polymorphic, triggers generation of polymorphism-
+    aware code. This option should be used on XML vocabularies which use
+    xsi:type and/or substitution groups. For more information see Section
+    5.7, "Support for Polymorphism" in the Embedded C++/Parser Mapping
+    Getting Started Guide we well as the polymorphism and polyroot
+    examples in the examples/cxx/parser/ directory.
+
+  * New options, --generate-xml-schema and --extern-xml-schema, trigger
+    generation of the mapping for the XML Schema namespace to a separate
+    header file and inclusion of that header into other generated header
+    files instead of generating the necessary declarations inline,
+    respectively. See the the compiler command line manual (man pages)
+    for details.
+
+  * Support for parser reuse after an error. For more information refer
+    to Section 7.4, "Reusing Parsers after an Error" in the Embedded 
+    C++/Parser Mapping Getting Started Guide. To suppress generation
+    of the reset code use the --suppress-reset option.
+
+  * New, context-based internal parsing architecture which provides
+    better performance, especially for deeply-nested documents. This
+    change should not affect user code except for wildcard parsing.
+    See the wildcard example for the required changes.
+
+  * The generated sample test driver file name was changed from
+    <schema>-driver.cxx to <schema>-pdriver.cxx.
+
+ C++/Serializer
+
+  * The mapping now supports automatic generation of sample serializer
+    implementations and a test driver. The --generate-empty-impl option
+    triggers generation of a sample implementation with empty function
+    bodies which can then be filled with application code. The
+    --generate-test-driver option trigger generation of a test driver.
+    For more information on this feature see the compiler command line
+    manual (man pages). Other relevant new options include:
+    --impl-file-suffix, --force-overwrite, --root-element-first,
+    --root-element-last, and --root-element.
+
+  * New option, --generate-polymorphic, triggers generation of polymorphism-
+    aware code. This option should be used on XML vocabularies which use
+    xsi:type and/or substitution groups. For more information see Section
+    6.7, "Support for Polymorphism" in the Embedded C++/Serializer Mapping
+    Getting Started Guide we well as the polymorphism and polyroot
+    examples in the examples/cxx/serializer/ directory.
+
+  * New options, --generate-xml-schema and --extern-xml-schema, trigger
+    generation of the mapping for the XML Schema namespace to a separate
+    header file and inclusion of that header into other generated header
+    files instead of generating the necessary declarations inline,
+    respectively. See the the compiler command line manual (man pages)
+    for details.
+
+  * Support for serializer reuse after an error. For more information
+    refer to Section 8.4, "Reusing Serializers after an Error" in the
+    Embedded C++/Serializer Mapping Getting Started Guide. To suppress
+    generation of the reset code use the --suppress-reset option.
+
+Version 2.0.0
+
+  * The new Embedded C++/Serializer mapping supports event-driven,
+    stream oriented XML serialization with XML Schema validation
+    and C++ data binding. The new Embedded C++/Serializer Mapping
+    Getting Started Guide as well as the set of examples provide
+    an introduction to the mapping.
+
+ C++/Parser
+
+  * The argument order in the generated parsers() functions has
+    changed from elements then attributes to attributes then
+    elements.
+
+  * A number of types in the xml_schema namespaces have been
+    renamed in order to make the C++/Parser and C++/Serializer
+    mappings usable in the same translation unit. The old and
+    new names are listed below:
+
+    document         document_pimpl
+    exception        parser_exception
+    xml              parser_xml
+    schema           parser_schema
+    error            parser_error
+    xml_error        parser_xml_error
+    schema_error     parser_schema_error
+    simple_content   parser_simple_content
+    complex_content  parser_complex_content
+    list_base        parser_list_base
+
+  * The error accessor function has been renamed from error()
+    to _error(). The application error modifier function has
+    been renamed from error(int) to _app_error(int).
+
+  * For each subsequent element with the same name in the same
+    complex type, the mapping now produces a separate set of
+    callbacks and accessors. Note that in this case the
+    generated code will be able to perform correct dispatching
+    only with XML Schema validation enabled. When validation is
+    disabled all events will be delivered to the callback
+    corresponding to the first element with this name.
+
+Version 1.1.0
+
+  * The runtime library now provides parser implementations for all
+    built-in XML Schema types. See Chapter 6, "Built-In XML Schema
+    Type Parsers" in the Embedded C++/Parser Mapping Getting Started
+    Guide for more information.
+
+  * The mapping now supports automatic generation of sample parser
+    implementations and a test driver. The --generate-noop-impl option
+    triggers generation of a sample implementation with empty function
+    bodies. The --generate-print-impl option triggers generation of a
+    sample implementation that prints the data stored in XML to STDOUT.
+    The --generate-test-driver option trigger generation of a test driver.
+    For more information on this feature see the compiler command line
+    manual (man pages) and the generated example in the examples/cxx/parser/
+    directory. Other relevant new options include: --force-overwrite,
+    --root-element-first, --root-element-last, and --root-element.
+
+  * New example, examples/cxx/parser/wildcard, shows how to parse the
+    XML data matched by XML Schema wildcards (any and anyAttribute).
+
+  * The xml_schema::document parser has been extended with overridable
+    virtual functions start_root_element and end_root_element to support
+    parsing of XML vocabularies with multiple document roots. See the
+    multiroot example in the examples/cxx/parser/ directory for more
+    information.
+
+  * Declaration for built-in parser implementations and the document
+    parser are now automatically included into generated header files.
+    As a result, you do not need to explicitly include the
+    xml-schema-impl.hxx or document.hxx header files.
+
+  * The default parser skeleton type and file suffixes have changed
+    from _skel to _pskel and from -skel to -pskel, respectively. The
+    --type-suffix and --file-suffix options were renamed to
+    --skel-type-suffix and --skel-file-suffix, respectively.
+
+Version 1.0.0
+
+  * First public release.

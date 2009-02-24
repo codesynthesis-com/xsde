@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:t="test" targetNamespace="test">
+
+  <include schemaLocation="a.xsd"/>
+  <include schemaLocation="b.xsd"/>
+
+  <element name="root" type="t:derived"/>
+  
+</schema>

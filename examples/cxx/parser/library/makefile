@@ -1,0 +1,72 @@
+# file      : examples/cxx/parser/library/makefile
+# author    : Boris Kolpackov <boris@codesynthesis.com>
+# copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
+
+xsd := library.xsd
+cxx := driver.cxx
+
+ifeq ($(xsde_reuse_style),mixin)
+cxx += library-pimpl-mixin.cxx
+else
+cxx += library-pimpl-tiein.cxx
+endif
+
+obj := $(addprefix $(out_base)/,$(cxx:.cxx=.o) $(xsd:.xsd=-pskel.o))
+dep := $(obj:.o=.o.d)
+
+xsde.l             := $(out_root)/libxsde/xsde/xsde.l
+xsde.l.cpp-options := $(out_root)/libxsde/xsde/xsde.l.cpp-options
+
+driver := $(out_base)/driver
+clean  := $(out_base)/.clean
+
+
+# Build.
+#
+$(driver): $(obj) $(xsde.l)
+
+$(obj) $(dep): cpp_options := -I$(out_base) -I$(src_base)
+$(obj) $(dep): $(xsde.l.cpp-options)
+
+skel := $(out_base)/$(xsd:.xsd=-pskel.hxx) \
+        $(out_base)/$(xsd:.xsd=-pskel.ixx) \
+        $(out_base)/$(xsd:.xsd=-pskel.cxx)
+
+$(skel): xsde := $(out_root)/xsde/xsde
+$(skel): xsde_options += --generate-inline --type-map $(src_base)/library.map
+
+$(skel): $(out_root)/xsde/xsde $(src_base)/library.map
+
+$(call include-dep,$(dep))
+
+# Convenience alias for default target.
+#
+.PHONY: $(out_base)/
+$(out_base)/: $(driver)
+
+
+# Clean.
+#
+.PHONY: $(clean)
+
+$(clean): $(driver).o.clean                                \
+  $(addsuffix .cxx.clean,$(obj))                           \
+  $(addsuffix .cxx.clean,$(dep))                           \
+  $(addprefix $(out_base)/,$(xsd:.xsd=-pskel.cxx.xsd.clean))
+
+
+# How to.
+#
+$(call include,$(bld_root)/cxx/o-e.make)
+$(call include,$(bld_root)/cxx/cxx-o.make)
+$(call include,$(bld_root)/cxx/cxx-d.make)
+$(call include,$(scf_root)/xsde/parser/xsd-cxx.make)
+
+
+# Dependencies.
+#
+$(call import,$(src_root)/xsde/makefile)
+$(call import,$(src_root)/libxsde/xsde/makefile)
