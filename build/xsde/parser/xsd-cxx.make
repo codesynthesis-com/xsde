@@ -20,9 +20,10 @@ $(out_base)/%$(xsd_pskel_suffix).ixx
 ifneq ($(xsd_pimpl_suffix),)
 xsd_parser_pattern +=                \
 $(out_base)/%$(xsd_pimpl_suffix).cxx \
-$(out_base)/%$(xsd_pimpl_suffix).hxx \
-$(out_base)/%-pdriver.cxx
+$(out_base)/%$(xsd_pimpl_suffix).hxx
 endif
+
+xsd_parser_pattern += $(out_base)/%-pdriver.cxx
 
 $(xsd_parser_pattern): xsde := xsde
 $(xsd_parser_pattern): xsde_command := cxx-parser
@@ -82,7 +83,6 @@ endif
 
 
 .PHONY: $(out_base)/%$(xsd_pskel_suffix).cxx.xsd.clean
-
 $(out_base)/%$(xsd_pskel_suffix).cxx.xsd.clean:
 	$(call message,rm $(@:.cxx.xsd.clean=.cxx),rm -f $(@:.cxx.xsd.clean=.cxx))
 	$(call message,rm $(@:.cxx.xsd.clean=.hxx),rm -f $(@:.cxx.xsd.clean=.hxx))
@@ -90,12 +90,14 @@ $(out_base)/%$(xsd_pskel_suffix).cxx.xsd.clean:
 
 ifneq ($(xsd_pimpl_suffix),)
 .PHONY: $(out_base)/%$(xsd_pimpl_suffix).cxx.xsd.clean
-
 $(out_base)/%$(xsd_pimpl_suffix).cxx.xsd.clean:
 	$(call message,rm $$1,rm -f $$1,$(@:.cxx.xsd.clean=.cxx))
 	$(call message,rm $$1,rm -f $$1,$(@:.cxx.xsd.clean=.hxx))
-	$(call message,rm $$1,rm -f $$1,$(out_base)/$*-pdriver.cxx)
 endif
+
+.PHONY: $(out_base)/%-pdriver.cxx.xsd.clean
+$(out_base)/%-pdriver.cxx.xsd.clean:
+	$(call message,rm $$1,rm -f $$1,$(out_base)/$*-pdriver.cxx)
 
 # Reset the config variables so they won't take effect in other places.
 #

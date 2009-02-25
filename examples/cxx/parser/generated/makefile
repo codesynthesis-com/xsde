@@ -50,7 +50,8 @@ $(clean): $(driver).o.clean                                  \
   $(addsuffix .cxx.clean,$(obj))                             \
   $(addsuffix .cxx.clean,$(dep))                             \
   $(addprefix $(out_base)/,$(xsd:.xsd=-pskel.cxx.xsd.clean)) \
-  $(addprefix $(out_base)/,$(xsd:.xsd=-pimpl.cxx.xsd.clean))
+  $(addprefix $(out_base)/,$(xsd:.xsd=-pimpl.cxx.xsd.clean)) \
+  $(addprefix $(out_base)/,$(xsd:.xsd=-pdriver.cxx.xsd.clean))
 
 
 # Generated .gitignore.

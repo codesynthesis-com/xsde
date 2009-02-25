@@ -20,9 +20,10 @@ $(out_base)/%$(xsd_sskel_suffix).ixx
 ifneq ($(xsd_simpl_suffix),)
 xsd_serializer_pattern +=            \
 $(out_base)/%$(xsd_simpl_suffix).cxx \
-$(out_base)/%$(xsd_simpl_suffix).hxx \
-$(out_base)/%-sdriver.cxx
+$(out_base)/%$(xsd_simpl_suffix).hxx
 endif
+
+xsd_serializer_pattern += $(out_base)/%-sdriver.cxx
 
 $(xsd_serializer_pattern): xsde := xsde
 $(xsd_serializer_pattern): xsde_command := cxx-serializer
@@ -82,7 +83,6 @@ endif
 
 
 .PHONY: $(out_base)/%$(xsd_sskel_suffix).cxx.xsd.clean
-
 $(out_base)/%$(xsd_sskel_suffix).cxx.xsd.clean:
 	$(call message,rm $(@:.cxx.xsd.clean=.cxx),rm -f $(@:.cxx.xsd.clean=.cxx))
 	$(call message,rm $(@:.cxx.xsd.clean=.hxx),rm -f $(@:.cxx.xsd.clean=.hxx))
@@ -90,12 +90,14 @@ $(out_base)/%$(xsd_sskel_suffix).cxx.xsd.clean:
 
 ifneq ($(xsd_simpl_suffix),)
 .PHONY: $(out_base)/%$(xsd_simpl_suffix).cxx.xsd.clean
-
 $(out_base)/%$(xsd_simpl_suffix).cxx.xsd.clean:
 	$(call message,rm $$1,rm -f $$1,$(@:.cxx.xsd.clean=.cxx))
 	$(call message,rm $$1,rm -f $$1,$(@:.cxx.xsd.clean=.hxx))
-	$(call message,rm $$1,rm -f $$1,$(out_base)/$*-sdriver.cxx)
 endif
+
+.PHONY: $(out_base)/%-sdriver.cxx.xsd.clean
+$(out_base)/%-sdriver.cxx.xsd.clean:
+	$(call message,rm $$1,rm -f $$1,$(out_base)/$*-sdriver.cxx)
 
 # Reset the config variables so they won't take effect in other places.
 #

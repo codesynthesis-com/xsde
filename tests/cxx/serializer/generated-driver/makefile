@@ -56,7 +56,8 @@ $(test): $(driver) $(src_base)/output
 $(clean): $(driver).o.clean                                  \
   $(addsuffix .cxx.clean,$(obj))                             \
   $(addsuffix .cxx.clean,$(dep))                             \
-  $(addprefix $(out_base)/,$(xsd:.xsd=-sskel.cxx.xsd.clean))
+  $(addprefix $(out_base)/,$(xsd:.xsd=-sskel.cxx.xsd.clean)) \
+  $(addprefix $(out_base)/,$(xsd:.xsd=-sdriver.cxx.xsd.clean))
 
 
 # Generated .gitignore.
@@ -78,7 +79,6 @@ $(call include,$(bld_root)/cxx/o-e.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)
 
-xsd_simpl_suffix := -simpl
 $(call include,$(scf_root)/xsde/serializer/xsd-cxx.make)
 
 
