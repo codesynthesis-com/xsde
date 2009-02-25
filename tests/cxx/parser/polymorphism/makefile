@@ -25,9 +25,8 @@ $(driver): $(obj) $(xsde.l)
 
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-skel := $(out_base)/$(xsd:.xsd=-pskel.hxx) \
-        $(out_base)/$(xsd:.xsd=-pskel.ixx) \
-        $(out_base)/$(xsd:.xsd=-pskel.cxx)
+skelf := $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.ixx) $(xsd:.xsd=-pskel.cxx)
+skel  := $(addprefix $(out_base)/,$(skelf))
 
 $(skel): xsde := $(out_root)/xsde/xsde
 $(skel): xsde_options += --generate-polymorphic
@@ -57,6 +56,19 @@ $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \
   $(addprefix $(out_base)/,$(xsd:.xsd=-pskel.cxx.xsd.clean))
+
+
+# Generated .gitignore.
+#
+ifeq ($(out_base),$(src_base))
+$(skel): | $(out_base)/.gitignore
+$(driver): | $(out_base)/.gitignore
+
+$(out_base)/.gitignore: files := driver $(skelf)
+$(clean): $(out_base)/.gitignore.clean
+
+$(call include,$(bld_root)/git/gitignore.make)
+endif
 
 
 # How to.

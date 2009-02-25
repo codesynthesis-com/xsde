@@ -551,6 +551,19 @@ $(clean): $(xsde.l).o.clean            \
   $(addsuffix .cxx.clean,$(cxx_d))
 	$(call message,rm $$1,rm -f $$1,$(out_base)/config.h)
 
+
+# Generated .gitignore.
+#
+ifeq ($(out_base),$(src_base))
+$(out_base)/config.h: | $(out_base)/.gitignore
+
+$(out_base)/.gitignore: files := config.h
+$(clean): $(out_base)/.gitignore.clean
+
+$(call include,$(bld_root)/git/gitignore.make)
+endif
+
+
 # How to.
 #
 $(call include,$(bld_root)/cxx/o-l.make)

@@ -28,12 +28,11 @@ $(driver): $(obj) $(xsde.l)
 
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-gen := $(out_base)/$(xsd:.xsd=.hxx)       \
-       $(out_base)/$(xsd:.xsd=.cxx)       \
-       $(out_base)/$(xsd:.xsd=-pskel.hxx) \
-       $(out_base)/$(xsd:.xsd=-pskel.cxx) \
-       $(out_base)/$(xsd:.xsd=-pimpl.hxx) \
-       $(out_base)/$(xsd:.xsd=-pimpl.cxx)
+genf := $(xsd:.xsd=.hxx) $(xsd:.xsd=.cxx) \
+        $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.cxx) \
+        $(xsd:.xsd=-pimpl.hxx) $(xsd:.xsd=-pimpl.cxx)
+
+gen := $(addprefix $(out_base)/,$(genf))
 
 $(gen): $(out_root)/xsde/xsde
 $(gen): xsde := $(out_root)/xsde/xsde
@@ -56,6 +55,19 @@ $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \
   $(addprefix $(out_base)/,$(xsd:.xsd=.cxx.xsd.clean))
+
+
+# Generated .gitignore.
+#
+ifeq ($(out_base),$(src_base))
+$(gen): | $(out_base)/.gitignore
+$(driver): | $(out_base)/.gitignore
+
+$(out_base)/.gitignore: files := driver $(genf)
+$(clean): $(out_base)/.gitignore.clean
+
+$(call include,$(bld_root)/git/gitignore.make)
+endif
 
 
 # How to.

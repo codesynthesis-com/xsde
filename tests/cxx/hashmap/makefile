@@ -44,9 +44,21 @@ $(test): $(driver) $(src_base)/output
 #
 .PHONY: $(clean)
 
-$(clean): $(driver).o.clean                                \
-  $(addsuffix .cxx.clean,$(obj))                           \
+$(clean): $(driver).o.clean      \
+  $(addsuffix .cxx.clean,$(obj)) \
   $(addsuffix .cxx.clean,$(dep))
+
+
+# Generated .gitignore.
+#
+ifeq ($(out_base),$(src_base))
+$(driver): | $(out_base)/.gitignore
+
+$(out_base)/.gitignore: files := driver
+$(clean): $(out_base)/.gitignore.clean
+
+$(call include,$(bld_root)/git/gitignore.make)
+endif
 
 
 # How to.

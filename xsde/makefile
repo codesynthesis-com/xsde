@@ -154,6 +154,18 @@ $(clean):                            \
   $(addsuffix .cxx.clean,$(cxx_od))
 
 
+# Generated .gitignore.
+#
+ifeq ($(out_base),$(src_base))
+$(xsde): | $(out_base)/.gitignore
+
+$(out_base)/.gitignore: files := xsde
+$(clean): $(out_base)/.gitignore.clean
+
+$(call include,$(bld_root)/git/gitignore.make)
+endif
+
+
 # how to
 #
 $(call include,$(bld_root)/cxx/o-e.make)
