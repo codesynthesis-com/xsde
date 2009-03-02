@@ -20,8 +20,10 @@ dep := $(obj:.o=.o.d)
 xsde.l             := $(out_root)/libxsde/xsde/xsde.l
 xsde.l.cpp-options := $(out_root)/libxsde/xsde/xsde.l.cpp-options
 
-driver := $(out_base)/driver
-clean  := $(out_base)/.clean
+driver   := $(out_base)/driver
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
 
 
 # Build.
@@ -44,6 +46,31 @@ $(call include-dep,$(dep))
 #
 .PHONY: $(out_base)/
 $(out_base)/: $(driver)
+
+
+# Dist.
+#
+dist-common := $(out_base)/.dist-common
+
+.PHONY: $(dist) $(dist-win) $(dist-common)
+
+$(dist) $(dist-win) $(dist-common): path := $(subst $(src_root)/,,$(src_base))
+
+$(dist-common):
+	$(call install-data,$(src_base)/driver.cxx,$(dist_prefix)/$(path)/driver.cxx)
+	$(call install-data,$(src_base)/supermen-pimpl-mixin.hxx,$(dist_prefix)/$(path)/supermen-pimpl-mixin.hxx)
+	$(call install-data,$(src_base)/supermen-pimpl-mixin.cxx,$(dist_prefix)/$(path)/supermen-pimpl-mixin.cxx)
+	$(call install-data,$(src_base)/supermen-pimpl-tiein.hxx,$(dist_prefix)/$(path)/supermen-pimpl-tiein.hxx)
+	$(call install-data,$(src_base)/supermen-pimpl-tiein.cxx,$(dist_prefix)/$(path)/supermen-pimpl-tiein.cxx)
+	$(call install-data,$(src_base)/supermen.xsd,$(dist_prefix)/$(path)/supermen.xsd)
+	$(call install-data,$(src_base)/supermen.xml,$(dist_prefix)/$(path)/supermen.xml)
+
+$(dist): $(dist-common)
+	$(call install-data,$(src_base)/README,$(dist_prefix)/$(path)/README)
+
+$(dist-win): $(dist-common)
+	$(call install-data,$(src_base)/README,$(dist_prefix)/$(path)/README.txt)
+	$(call message,,unix2dos $(dist_prefix)/$(path)/README.txt)
 
 
 # Clean.
@@ -74,6 +101,7 @@ endif
 $(call include,$(bld_root)/cxx/o-e.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)
+$(call include,$(bld_root)/install.make)
 $(call include,$(scf_root)/xsde/parser/xsd-cxx.make)
 
 

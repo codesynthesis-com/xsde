@@ -437,7 +437,9 @@ cxx_d   := $(cxx_o:.o=.o.d)
 xsde.l             := $(out_base)/xsde.l
 xsde.l.cpp-options := $(out_base)/xsde.l.cpp-options
 
-clean     := $(out_base)/.clean
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
 
 
 # Build.
@@ -541,6 +543,16 @@ endif
 $(out_base)/: $(xsde.l)
 
 
+# Dist.
+#
+.PHONY: $(dist) $(dist-win)
+
+$(dist):
+	$(call install-dir,$(src_base)/c,$(dist_prefix)/libxsde/xsde/c,\( -name '*.h' -o -name '*.c' -o -name COPYING \))
+	$(call install-dir,$(src_base)/cxx,$(dist_prefix)/libxsde/xsde/cxx,-name '*.?xx')
+
+$(dist-win): $(dist)
+
 # Clean.
 #
 .PHONY: $(clean)
@@ -569,3 +581,4 @@ endif
 $(call include,$(bld_root)/cxx/o-l.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)
+$(call include,$(bld_root)/install.make)

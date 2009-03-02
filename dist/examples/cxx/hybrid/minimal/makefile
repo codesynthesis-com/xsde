@@ -1,0 +1,57 @@
+root := ../../../..
+
+include $(root)/build/cxx/rules.make
+
+# Build.
+#
+EXTRA_CPPFLAGS := -I$(root)/libxsde
+
+EXTRA_XSDFLAGS := --no-stl --no-exceptions
+
+ifeq ($(XSDE_IOSTREAM),n)
+EXTRA_XSDFLAGS += --no-iostream
+endif
+
+ifeq ($(XSDE_LONGLONG),n)
+EXTRA_XSDFLAGS += --no-long-long
+endif
+
+ifeq ($(XSDE_PARSER_VALIDATION),n)
+EXTRA_XSDFLAGS += --suppress-validation
+endif
+
+ifeq ($(XSDE_REUSE_STYLE),mixin)
+EXTRA_XSDFLAGS += --reuse-style-mixin
+endif
+
+driver: driver.o people.o people-pskel.o people-pimpl.o \
+people-sskel.o people-simpl.o $(root)/libxsde/xsde/libxsde.a
+
+driver.o: driver.cxx people.hxx people-pimpl.hxx people-simpl.hxx
+people.o: people.cxx people.hxx
+people-pskel.o: people-pskel.cxx
+people-pimpl.o: people-pimpl.cxx
+people-simpl.o: people-simpl.cxx
+people-simpl.o: people-simpl.cxx
+
+.PRECIOUS: %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
+%-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx
+
+%.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
+%-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
+	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+--generate-parser --generate-serializer --generate-aggregate $<
+
+# Test.
+#
+.PHONY: test
+test: driver people.xml
+	./driver people.xml
+
+# Clean.
+#
+.PHONY: clean
+clean:
+	rm -f people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
+people-sskel.?xx people.?xx people-pimpl.o people-pskel.o \
+people-simpl.o people-sskel.o people.o driver.o driver

@@ -19,36 +19,59 @@ ifdef %interactive%
 
 .PHONY: test $(out_base)/.test \
         install $(out_base)/.install \
-        clean $(out_base)/.clean
+        dist $(out_base)/.dist \
+	dist-win $(out_base)/.dist-win \
+        clean $(out_base)/.clean \
+        cleandoc $(out_base)/.cleandoc
 
 test: $(out_base)/.test
 install: $(out_base)/.install
+dist: $(out_base)/.dist
+dist-win: $(out_base)/.dist-win
 clean: $(out_base)/.clean
+cleandoc: $(out_base)/.cleandoc
 
-ifeq ($(.DEFAULT_GOAL),test)
-.DEFAULT_GOAL :=
-endif
-
-ifeq ($(.DEFAULT_GOAL),install)
-.DEFAULT_GOAL :=
-endif
-
-ifeq ($(.DEFAULT_GOAL),clean)
+ifneq ($(filter $(.DEFAULT_GOAL),test install dist dist-win clean cleandoc),)
 .DEFAULT_GOAL :=
 endif
 
 endif
 
 
-# Don't include dependency info if we are cleaning.
+# Make sure the distribution prefix is set if the goal is dist or dist-win.
 #
-define include-dep
-endef
+ifneq ($(filter $(MAKECMDGOALS),dist dist-win),)
+ifeq ($(dist_prefix),)
+$(error dist_prefix is not set)
+endif
+endif
 
-ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(MAKECMDGOALS),disfigure)
+
+# Don't include dependency info for certain targets.
+#
 define include-dep
 $(call -include,$1)
 endef
+
+ifneq ($(filter $(MAKECMDGOALS),clean cleandoc disfigure),)
+include-dep =
 endif
+
+
+# For dist, don't include dependecies in libxsde, examples, and tests.
+#
+ifneq ($(filter $(MAKECMDGOALS),dist dist-win),)
+
+ifneq ($(subst $(src_root)/libxsde/,,$(src_base)),$(src_base))
+include-dep =
+endif
+
+ifneq ($(subst $(src_root)/tests/,,$(src_base)),$(src_base))
+include-dep =
+endif
+
+ifneq ($(subst $(src_root)/examples/,,$(src_base)),$(src_base))
+include-dep =
+endif
+
 endif

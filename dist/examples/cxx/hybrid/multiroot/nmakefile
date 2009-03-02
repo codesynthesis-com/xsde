@@ -1,0 +1,49 @@
+root = ..\..\..\..
+
+!include $(root)\build\cxx\rules.nmake
+
+# Build.
+#
+EXTRA_CPPFLAGS = /I$(root)\libxsde
+
+!if "$(XSDE_STL)" == "n"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-stl
+!endif
+
+!if "$(XSDE_LONGLONG)" == "n"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-long-long
+!endif
+
+!if "$(XSDE_PARSER_VALIDATION)" == "n"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation
+!endif
+
+!if "$(XSDE_REUSE_STYLE)" == "mixin"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin
+!endif
+
+driver.exe: driver.obj protocol.obj protocol-pskel.obj protocol-pimpl.obj \
+$(root)\libxsde\xsde\xsde.lib
+
+driver.obj: driver.cxx protocol.hxx protocol-pimpl.hxx
+protocol.obj: protocol.cxx
+protocol-pskel.obj: protocol-pskel.cxx
+protocol-pimpl.obj: protocol-pimpl.cxx
+
+protocol.cxx protocol.hxx protocol-pskel.cxx protocol-pskel.hxx \
+protocol-pimpl.cxx protocol-pimpl.hxx: protocol.xsd
+	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+--generate-parser --generate-aggregate --root-element-all protocol.xsd
+
+# Test.
+#
+test: driver.exe balance.xml withdraw.xml deposit.xml
+	.\driver balance.xml
+	.\driver withdraw.xml
+	.\driver deposit.xml
+
+# Clean.
+#
+clean:
+	-del protocol-pimpl.?xx protocol-pskel.?xx protocol.?xx \
+protocol-pimpl.obj protocol-pskel.obj protocol.obj driver.obj driver.exe

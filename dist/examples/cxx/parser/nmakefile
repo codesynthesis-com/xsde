@@ -1,0 +1,48 @@
+root = ..\..\..
+
+!include $(root)\build\config.nmake
+
+dirs =
+
+!if "$(XSDE_REUSE_STYLE)" != "none"
+dirs = $(dirs) generated
+!endif
+
+!if "$(XSDE_STL)" == "y"
+!if "$(XSDE_IOSTREAM)" == "y"
+!if "$(XSDE_EXCEPTIONS)" == "y"
+
+dirs = $(dirs) hello
+
+!if "$(XSDE_REUSE_STYLE)" != "none"
+dirs = $(dirs) library multiroot
+
+!if "$(XSDE_POLYMORPHIC)" == "y"
+dirs = $(dirs) polymorphism polyroot
+!endif
+
+!endif
+
+!if "$(XSDE_REUSE_STYLE)" == "tiein"
+dirs = $(dirs) mixed wildcard
+!endif
+
+!endif
+!endif
+!endif
+
+!if "$(XSDE_STL)" == "n"
+!if "$(XSDE_EXCEPTIONS)" == "n"
+!if "$(XSDE_REUSE_STYLE)" != "none"
+dirs = $(dirs) minimal
+!endif
+!endif
+!endif
+
+all:
+	@for %i in ( $(dirs) ) do \
+@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
+
+test clean:
+	@for %i in ( $(dirs) ) do \
+@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"

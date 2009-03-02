@@ -30,6 +30,19 @@ Building XSD/e
   $ make -f ../xsde-x.y.z/makefile
 
 
+Creating Binary Distributions
+
+  A binary distribution contains a pre-built XSD/e compiler binary for
+  a particular host development platform as well as the source code and
+  simple build systems for the libxsde runtime library and examples.
+
+  The dist and dist-win make targets are used to create binary distributions,
+  for example:
+
+  $ make dist_prefix=/tmp/xsde-3.1.0-i686-linux-gnu dist
+  $ make dist_prefix=/tmp/xsde-3.1.0-i686-windows dist-win
+
+
 Installing XSD/e
 
   Not supported in this version.

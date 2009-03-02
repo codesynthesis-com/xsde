@@ -85,12 +85,14 @@ cxx_tun += processing/inheritance/processor.cxx
 
 #
 #
-cxx_obj := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
-cxx_od  := $(cxx_obj:.o=.o.d)
+cxx_obj  := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
+cxx_od   := $(cxx_obj:.o=.o.d)
 
-xsde    := $(out_base)/xsde
-clean   := $(out_base)/.clean
-install := $(out_base)/.install
+xsde     := $(out_base)/xsde
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
+install  := $(out_base)/.install
 
 # Import.
 #
@@ -137,14 +139,24 @@ $(call include-dep,$(cxx_od))
 .PHONY: $(out_base)/
 $(out_base)/: $(xsde)
 
-# install
+# Dist.
+#
+.PHONY: $(dist) $(dist-win)
+
+$(dist): $(xsde)
+	$(call install-exec,$<,$(dist_prefix)/bin/xsde)
+
+$(dist-win): $(xsde)
+	$(call install-exec,$<,$(dist_prefix)/bin/xsde.exe)
+
+# Install.
 #
 .PHONY: $(install)
 
 $(install): $(xsde)
 	$(call install-exec,$<,$(install_bin_dir)/xsde)
 
-# clean
+# Clean.
 #
 .PHONY: $(clean)
 

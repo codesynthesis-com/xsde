@@ -5,16 +5,20 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 
-examples := hybrid parser serializer
+mappings := hybrid parser serializer
 
-default   := $(out_base)/
-test      := $(out_base)/.test
-clean     := $(out_base)/.clean
+default  := $(out_base)/
+test     := $(out_base)/.test
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
 
-.PHONY: $(default) $(test) $(clean)
+.PHONY: $(default) $(test) $(dist) $(dist-win) $(clean)
 
-$(default): $(addprefix $(out_base)/,$(addsuffix /,$(examples)))
-$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(examples)))
-$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(examples)))
+$(default): $(addprefix $(out_base)/,$(addsuffix /,$(mappings)))
+$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(mappings)))
+$(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(mappings)))
+$(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(mappings)))
+$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(mappings)))
 
-$(foreach e,$(examples),$(call import,$(src_base)/$e/makefile))
+$(foreach m,$(mappings),$(call import,$(src_base)/$m/makefile))
