@@ -303,6 +303,16 @@
       </td>
     </tr>
 
+    <tr>
+      <th>7</th><td><a href="#7">Binary Representation</a>
+        <table class="toc">
+          <tr><th>7.1</th><td><a href="#7.1">CDR (Common Data Representation)</a></td></tr>
+	  <tr><th>7.2</th><td><a href="#7.2">XDR (eXternal Data Representation)</a></td></tr>
+	  <tr><th>7.3</th><td><a href="#7.3">Custom Representations</a></td></tr>
+        </table>
+      </td>
+    </tr>
+
   </table>
   </div>
 
@@ -397,6 +407,17 @@
      with the ability to minimize the use of RAM and process documents
      that would otherwise not fit into memory.
   </p>
+
+  <p>Besides reading from and writing to XML, the C++/Hybrid mapping
+     also supports saving the object model to and loading it from a
+     number of predefined as well as custom binary formats. Binary
+     representations contain only the data without any meta information
+     or markup. Consequently, saving to and loading from a binary
+     format can be an order of magnitude faster as well as result
+     in a much smaller footprint compared to parsing and serializing
+     the same data in XML. Furthermore, the resulting representation
+     is normally several times smaller than the equivalent XML
+     representation.</p>
 
   <p>The Embedded C++/Hybrid mapping was specifically designed and
      optimized for mobile and embedded systems where hardware
@@ -5090,6 +5111,274 @@ age:    25
   </pre>
 
 
+  <!-- Binary Representations -->
+
+  <h1><a name="7">7 Binary Representation</a></h1>
+
+  <p>Besides reading from and writing to XML, the C++/Hybrid mapping
+     also allows you to save the object model to and load it from a
+     number of predefined as well as custom data representation
+     formats. The predefined binary formats are CDR (Common Data
+     Representation) and XDR (eXternal Data Representation). A
+     custom format can easily be supported by providing
+     insertion and extraction operators for basic types.</p>
+
+  <p>Binary representations contain only the data without any meta
+     information or markup. Consequently, saving to and loading
+     from a binary representation can be an order of magnitude
+     faster as well as result in a much smaller footprint compared
+     to parsing and serializing the same data in XML. Furthermore,
+     the resulting representation is normally several times smaller
+     than the equivalent XML representation. These properties make a
+     binary representation ideal for internal data exchange and storage.
+     A typical application that uses this facility stores the data and
+     communicates within the system using a binary format and reads/writes
+     the data in XML when communicating with the outside world.</p>
+
+  <p>In order to request the generation of insertion and extraction
+     operators for a specific predefined or custom data representation
+     stream, you will need to use the <code>--generate-insertion</code>
+     and <code>--generate-extraction</code> compiler options. See the
+     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     Compiler Command Line Manual</a> for more information.</p>
+
+  <p>The XSD/e runtime provides implementations of the base insertion
+     and extraction operators for the ACE (Adaptive Communication
+     Environment) CDR streams and the XDR API. The XDR API is available
+     out of the box on most POSIX systems as part of Sun RPC. On other
+     platforms you may need to install a third-party library which
+     provides the XDR API.
+
+     The XSD/e compiler recognizes two special argument values to the
+     <code>--generate-insertion</code> and <code>--generate-extraction</code>
+     options: <code>CDR</code> and <code>XDR</code>. When one of these
+     arguments is specified, the corresponding implementation from the
+     XSD/e runtime is automatically used. The following two sections
+     describe each of these two formats in more detail. It is also
+     possible to add support for saving the object model to and loading
+     it from custom data representation formats as discussed in the
+     last section of this chapter.</p>
+
+  <p>The saving of the object model types to a representation stream
+     is implemented with stream insertion operators
+     (<code>operator&lt;&lt;</code>). Similarly, loading of the object
+     model from a representation stream is implemented with stream
+     extraction operators (<code>operator>></code>). The insertion
+     and extraction operators for the built-in XML Schema types as
+     well as the sequence templates are provided by the stream
+     implementation (that is, by the XSD/e runtime in case of CDR and
+     XDR and by you for custom formats). The XSD/e compiler automatically
+     generates insertion and extraction operators for the generated object
+     model types.</p>
+
+  <p>When C++ exceptions are enabled (<a href="#3.3">Section 3.3, "C++
+     Exceptions"</a>), the signatures of the insertion and extraction
+     operators are as follows:</p>
+
+  <pre class="c++">
+void
+operator&lt;&lt; (ostream&amp;, const type&amp;);
+
+void
+operator>> (istream&amp;, type&amp;);
+  </pre>
+
+  <p>The insertion and extraction errors are indicated by throwing
+     stream-specific exceptions. When C++ exceptions are disabled,
+     the signatures of the insertion and extraction operators are
+     as follows:</p>
+
+  <pre class="c++">
+bool
+operator&lt;&lt; (ostream&amp;, const type&amp;);
+
+bool
+operator>> (istream&amp;, type&amp;);
+  </pre>
+
+  <p>In this case the insertion and extraction operators return
+     <code>true</code> if the operation was successful and
+     <code>false</code> otherwise. The stream object may
+     provide additional error information.</p>
+
+
+  <h2><a name="7.1">7.1 CDR (Common Data Representation)</a></h2>
+
+  <p>When you request the generation of CDR stream insertion and extraction
+     operators, the <code>ocdrstream</code> and <code>icdrstream</code>
+     types are defined in the <code>xml_schema</code> namespace. Additionally,
+     if C++ exceptions are enabled, the  <code>cdr_exception</code> exception
+     is also defined in <code>xml_schema</code>. The <code>icdrstream</code>
+     and <code>ocdrstream</code> types are simple wrappers for the
+     ACE_InputCDR and ACE_OutputCDR streams. The following code fragment
+     shows how we can use these types when C++ exceptions are enabled:</p>
+
+  <pre class="c++">
+try
+{
+  const type&amp; x = ... // Object model.
+
+  // Save to a CDR stream.
+  //
+  ACE_OutputCDR ace_ocdr;
+  xml_schema::ocdrstream ocdr (ace_ocdr);
+
+  ocdr &lt;&lt; x;
+
+  // Load from a CDR stream.
+  //
+  ACE_InputCDR ace_icdr (buf, size);
+  xml_schema::icdrstream icdr (ace_icdr);
+
+  type copy;
+  icdr >> copy;
+}
+catch (const xml_schema::cdr_exception&amp;)
+{
+  cerr &lt;&lt; "CDR operation failed" &lt;&lt; endl;
+}
+  </pre>
+
+  <p>The same code fragment but when C++ exceptions are disabled:</p>
+
+  <pre class="c++">
+const type&amp; x = ... // Object model.
+
+// Save to a CDR stream.
+//
+ACE_OutputCDR ace_ocdr;
+xml_schema::ocdrstream ocdr (ace_ocdr);
+
+if (!(ocdr &lt;&lt; x))
+{
+  cerr &lt;&lt; "CDR operation failed" &lt;&lt; endl;
+}
+
+// Load from a CDR stream.
+//
+ACE_InputCDR ace_icdr (buf, size);
+xml_schema::icdrstream icdr (ace_icdr);
+
+type copy;
+
+if (!(icdr >> copy))
+{
+  cerr &lt;&lt; "CDR operation failed" &lt;&lt; endl;
+}
+  </pre>
+
+  <p>The <code>cdr</code> example which can be found in the
+     <code>examples/cxx/hybrid/binary/</code> directory of the XSD/e
+     distribution includes complete source code that shows how to
+     save the object model to and load it from the CDR format.</p>
+
+  <h2><a name="7.2">7.2 XDR (eXternal Data Representation)</a></h2>
+
+  <p>When you request the generation of XDR stream insertion and extraction
+     operators, the <code>oxdrstream</code> and <code>xcdrstream</code>
+     types are defined in the <code>xml_schema</code> namespace. Additionally,
+     if C++ exceptions are enabled, the  <code>xdr_exception</code> exception
+     is also defined in <code>xml_schema</code>. The <code>ixdrstream</code>
+     and <code>oxdrstream</code> types are simple wrappers for the XDR
+     API. The following code fragment shows how we can use these types
+     when C++ exceptions are enabled:</p>
+
+  <pre class="c++">
+try
+{
+  const type&amp; x = ... // Object model.
+
+  // Save to a XDR stream.
+  //
+  XDR xdr;
+  xdrrec_create (&amp;xdr, ...);
+  xml_schema::oxdrstream oxdr (xdr);
+
+  oxdr &lt;&lt; x;
+
+  // Load from a XDR stream.
+  //
+  xdrrec_create (&amp;xdr, ...);
+  xml_schema::ixdrstream ixdr (xdr);
+
+  type copy;
+  ixdr >> copy;
+}
+catch (const xml_schema::xdr_exception&amp;)
+{
+  cerr &lt;&lt; "XDR operation failed" &lt;&lt; endl;
+}
+  </pre>
+
+  <p>The same code fragment but when C++ exceptions are disabled:</p>
+
+  <pre class="c++">
+const type&amp; x = ... // Object model.
+
+// Save to a XDR stream.
+//
+XDR xdr;
+xdrrec_create (&amp;xdr, ...);
+xml_schema::oxdrstream oxdr (xdr);
+
+if (!(oxdr &lt;&lt; x))
+{
+  cerr &lt;&lt; "XDR operation failed" &lt;&lt; endl;
+}
+
+// Load from a XDR stream.
+//
+xdrrec_create (&amp;xdr, ...);
+xml_schema::ixdrstream ixdr (xdr);
+
+type copy;
+
+if (!(ixdr >> copy))
+{
+  cerr &lt;&lt; "XDR operation failed" &lt;&lt; endl;
+}
+  </pre>
+
+  <p>The <code>xdr</code> example which can be found in the
+     <code>examples/cxx/hybrid/binary/</code> directory of the XSD/e
+     distribution includes complete source code that shows how to
+     save the object model to and load it from the XDR format.</p>
+
+
+  <h2><a name="7.3">7.3 Custom Representations</a></h2>
+
+  <p>To add support for saving the object model to and loading it
+     from a custom format, you will need to perform the following
+     general steps:</p>
+
+  <ol class="list">
+    <li>Generate a header file corresponding to the XML Schema
+        namespace using the <code>--generate-xml-schema</code>
+        compiler option.</li>
+
+    <li>Implement custom stream insertion and extraction operators
+        for the built-in XML Schema types and sequence templates.
+        Include the header file obtained in the previous step to
+        get definitions for these types.</li>
+
+    <li>Compile your schemas with the <code>--generate-insertion</code>
+        and <code>--generate-extraction</code> options. The arguments
+        to these options will be your custom output and input stream
+        types, respectively. Use the <code>--hxx-prologue</code>
+        option to include the definitions for these stream types
+        into the generated code. Also use the
+        <code>--extern-xml-schema</code> option to include the
+        header file obtained in the first step  instead of generating
+        the same code directly.</li>
+  </ol>
+
+  <p>The <code>custom</code> example which can be found in the
+     <code>examples/cxx/hybrid/binary/</code> directory of the XSD/e
+     distribution includes complete source code that shows how to
+     save the object model to and load it from a custom format using
+     the raw binary representation as an example. You can use the
+     source code from this example as a base to implement support
+     for your own format.</p>
 
   </div>
 </div>

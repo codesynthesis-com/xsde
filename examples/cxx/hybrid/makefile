@@ -5,10 +5,10 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
-all_examples := compositors hello multiroot streaming library wildcard \
-filter minimal
+all_examples := binary compositors hello multiroot streaming library \
+wildcard filter minimal
 
-build_examples := compositors
+build_examples := binary compositors
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)

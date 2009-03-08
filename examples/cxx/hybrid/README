@@ -35,3 +35,7 @@ streaming
 compositors
   Shows how to create, access, and modify object models with complex
   nested choice and sequence compositors.
+
+binary/
+  A collection of examples that show how to serialize the object model
+  into a number of predefined and custom binary formats.

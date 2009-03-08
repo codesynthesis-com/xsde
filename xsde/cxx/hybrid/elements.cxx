@@ -41,11 +41,29 @@ namespace CXX
           fwd_expr (fe),
           hxx_expr (he),
           ixx_expr (ie),
-          ns_stack (ns_stack_)
+          ns_stack (ns_stack_),
+          istreams (ops.value<CLI::generate_extraction> ()),
+          ostreams (ops.value<CLI::generate_insertion> ()),
+          icdrstream (icdrstream_),
+          ocdrstream (ocdrstream_),
+          ixdrstream (ixdrstream_),
+          oxdrstream (oxdrstream_)
     {
       String xs_ns (xs_ns_name ());
 
       string_type = L"::xsde::cxx::ro_string";
+
+      if (!ostreams.empty ())
+      {
+        ocdrstream = xs_ns + L"::ocdrstream";
+        oxdrstream = xs_ns + L"::oxdrstream";
+      }
+
+      if (!istreams.empty ())
+      {
+        icdrstream = xs_ns + L"::icdrstream";
+        ixdrstream = xs_ns + L"::ixdrstream";
+      }
     }
 
     // Parser
@@ -382,6 +400,28 @@ namespace CXX
         os << "namespace " << *i
            << "{";
       }
+    }
+
+    String Context::
+    istream (NarrowString const& is) const
+    {
+      if (is == "CDR")
+        return icdrstream;
+      else if (is == "XDR")
+        return ixdrstream;
+      else
+        return is;
+    }
+
+    String Context::
+    ostream (NarrowString const& os) const
+    {
+      if (os == "CDR")
+        return ocdrstream;
+      else if (os == "XDR")
+        return oxdrstream;
+      else
+        return os;
     }
 
     // Namespace

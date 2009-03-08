@@ -789,7 +789,7 @@ namespace xsde
         swap (var_seq&);
 
 #ifdef XSDE_EXCEPTIONS
-      private:
+      public:
         struct guard
         {
           ~guard () { delete p_; }

@@ -100,6 +100,22 @@ XSDE_SERIALIZER_VALIDATION := y
 XSDE_REUSE_STYLE := tiein
 
 
+# Set to 'y' if you want support for serialization of the C++/Hybrid
+# object model to the CDR (Common Data Representation) binary format.
+# This functionality requires the ACE library.
+#
+XSDE_CDR := n
+
+
+# Set to 'y' if you want support for serialization of the C++/Hybrid
+# object model to the XDR (eXternal Data Representation) binary format.
+# This functionality requires the XDR API which is available out of the
+# box on most POSIX systems as part of Sun RPC. On other platforms you
+# may need to install a third-party library which provides the XDR API.
+#
+XSDE_XDR := n
+
+
 # Set to 'y' if you need to handle XML vocabularies that use XML Schema
 # polymorphism (xsi:type or substitution groups). Also don't forget to
 # use either --generate-polymorphic (generates polymorphism-aware code)

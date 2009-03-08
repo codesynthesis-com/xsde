@@ -944,6 +944,34 @@ Suppress the generation of validation code in parser.
 .IP "\fB\--suppress-serializer-val\fR"
 Suppress the generation of validation code in serializer.
 
+.IP "\fB\--generate-insertion \fIos\fR"
+Generate data representation stream insertion operators for the
+.I os
+output stream type. Repeat this option to specify more than one stream
+type. The special
+.B CDR
+and
+.B XDR
+arguments are recognized as ACE CDR and Sun RPC XDR stream types and the
+corresponding stream wrappers provided by the XSD/e runtime are automatically
+used. For custom stream types use the
+.B --hxx-prologue*
+options to include the necessary declarations.
+
+.IP "\fB\--generate-extraction \fIis\fR"
+Generate data representation stream extraction operators for the
+.I is
+input stream type. Repeat this option to specify more than one stream
+type. The special
+.B CDR
+and
+.B XDR
+arguments are recognized as ACE CDR and Sun RPC XDR stream types and the
+corresponding stream wrappers provided by the XSD/e runtime are automatically
+used. For custom stream types use the
+.B --hxx-prologue*
+options to include the necessary declarations.
+
 .IP "\fB\--generate-forward\fR"
 Generate forward declaration file.
 

@@ -10,6 +10,14 @@ tests := sequences
 ifeq ($(xsde_iostream),y)
 tests += built-in list test-template union
 
+ifeq ($(xsde_cdr),y)
+tests += binary/cdr
+endif
+
+ifeq ($(xsde_xdr),y)
+tests += binary/xdr
+endif
+
 ifeq ($(xsde_parser_validation),y)
 tests += choice
 endif

@@ -415,6 +415,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Base64Binary&)
         {
+          gen_using ("::xsde::cxx::buffer");
           gen_typedef ("base64_binary", "::xsde::cxx::buffer");
         }
 
@@ -431,6 +432,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Date&)
         {
+          gen_using ("::xsde::cxx::time_zone");
           gen_using ("::xsde::cxx::date");
         }
 
@@ -534,6 +536,66 @@ namespace CXX
                << "using ::xsde::cxx::strndupx;";
           }
 
+          // sequences
+          //
+          os << endl
+             << "using ::xsde::cxx::hybrid::pod_seq;"
+             << "using ::xsde::cxx::hybrid::fix_seq;"
+             << "using ::xsde::cxx::hybrid::var_seq;"
+             << "using ::xsde::cxx::hybrid::str_seq;"
+             << "using ::xsde::cxx::hybrid::data_seq;";
+
+          // Data representation stream types.
+          //
+          Boolean icdr (false), ocdr (false);
+          Boolean ixdr (false), oxdr (false);
+
+          for (Streams::ConstIterator i (istreams.begin ());
+               i != istreams.end (); ++i)
+          {
+            if (*i == "CDR")
+              icdr = true;
+            else if (*i == "XDR")
+              ixdr = true;
+          }
+
+          for (Streams::ConstIterator i (ostreams.begin ());
+               i != ostreams.end (); ++i)
+          {
+            if (*i == "CDR")
+              ocdr = true;
+            else if (*i == "XDR")
+              oxdr = true;
+          }
+
+          if (icdr || ocdr)
+          {
+            os << endl;
+
+            if (exceptions)
+              os << "using ::xsde::cxx::hybrid::cdr_exception;";
+
+            if (icdr)
+              os << "using ::xsde::cxx::hybrid::icdrstream;";
+
+            if (ocdr)
+              os << "using ::xsde::cxx::hybrid::ocdrstream;";
+          }
+
+          if (ixdr || oxdr)
+          {
+            os << endl;
+
+            if (exceptions)
+              os << "using ::xsde::cxx::hybrid::xdr_exception;";
+
+            if (ixdr)
+              os << "using ::xsde::cxx::hybrid::ixdrstream;";
+
+            if (oxdr)
+              os << "using ::xsde::cxx::hybrid::oxdrstream;";
+          }
+
           post (ns);
         }
       };
@@ -561,7 +623,32 @@ namespace CXX
           ctx.os << "#include <xsde/cxx/strdupx.hxx>" << endl;
 
         ctx.os << "#include <xsde/cxx/hybrid/xml-schema.hxx>" << endl
+               << "#include <xsde/cxx/hybrid/sequence.hxx>" << endl
                << endl;
+
+        // Data representation stream includes.
+        //
+        for (Context::Streams::ConstIterator i (ctx.istreams.begin ());
+             i != ctx.istreams.end (); ++i)
+        {
+          if (*i == "CDR")
+            ctx.os << "#include <xsde/cxx/hybrid/cdr/istream.hxx>" << endl
+                   << endl;
+          else if (*i == "XDR")
+            ctx.os << "#include <xsde/cxx/hybrid/xdr/istream.hxx>" << endl
+                   << endl;
+        }
+
+        for (Context::Streams::ConstIterator i (ctx.ostreams.begin ());
+             i != ctx.ostreams.end (); ++i)
+        {
+          if (*i == "CDR")
+            ctx.os << "#include <xsde/cxx/hybrid/cdr/ostream.hxx>" << endl
+                   << endl;
+          else if (*i == "XDR")
+            ctx.os << "#include <xsde/cxx/hybrid/xdr/ostream.hxx>" << endl
+                   << endl;
+        }
 
         if (generate_xml_schema)
         {

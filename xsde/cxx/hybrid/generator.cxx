@@ -11,12 +11,16 @@
 #include <cxx/hybrid/tree-size-processor.hxx>
 #include <cxx/hybrid/tree-name-processor.hxx>
 
-
 #include <cxx/hybrid/tree-forward.hxx>
 #include <cxx/hybrid/tree-header.hxx>
 #include <cxx/hybrid/tree-inline.hxx>
 #include <cxx/hybrid/tree-source.hxx>
 #include <cxx/hybrid/tree-type-map.hxx>
+
+#include <cxx/hybrid/insertion-header.hxx>
+#include <cxx/hybrid/insertion-source.hxx>
+#include <cxx/hybrid/extraction-header.hxx>
+#include <cxx/hybrid/extraction-source.hxx>
 
 #include <cxx/hybrid/parser-name-processor.hxx>
 #include <cxx/hybrid/parser-header.hxx>
@@ -117,6 +121,8 @@ namespace CXX
       extern Key suppress_validation      = "suppress-validation";
       extern Key suppress_parser_val      = "suppress-parser-val";
       extern Key suppress_serializer_val  = "suppress-serializer-val";
+      extern Key generate_insertion       = "generate-insertion";
+      extern Key generate_extraction      = "generate-extraction";
       extern Key generate_inline          = "generate-inline";
       extern Key generate_forward         = "generate-forward";
       extern Key generate_xml_schema      = "generate-xml-schema";
@@ -236,6 +242,16 @@ namespace CXX
     e << "--suppress-serializer-val" << endl
       << " Suppress the generation of validation code in\n"
       << " serializer."
+      << endl;
+
+    e << "--generate-insertion <os>" << endl
+      << " Generate data representation stream insertion\n"
+      << " operators for the <os> output stream type."
+      << endl;
+
+    e << "--generate-extraction <is>" << endl
+      << " Generate data representation stream extraction\n"
+      << " operators for the <is> input stream type."
       << endl;
 
     e << "--generate-inline" << endl
@@ -1491,6 +1507,12 @@ namespace CXX
               generate_tree_forward (ctx, false);
 
             generate_tree_header (ctx);
+
+            if (!ops.value<CLI::generate_insertion> ().empty ())
+              generate_insertion_header (ctx);
+
+            if (!ops.value<CLI::generate_extraction> ().empty ())
+              generate_extraction_header (ctx);
           }
           else
             generate_tree_forward (ctx, true);
@@ -1649,6 +1671,12 @@ namespace CXX
             generate_tree_inline (ctx);
 
           generate_tree_source (ctx);
+
+          if (!ops.value<CLI::generate_insertion> ().empty ())
+              generate_insertion_source (ctx);
+
+          if (!ops.value<CLI::generate_extraction> ().empty ())
+            generate_extraction_source (ctx);
 
           cxx << "#include <xsde/cxx/post.hxx>" << endl
               << endl;

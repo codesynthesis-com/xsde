@@ -45,6 +45,26 @@ endif
 ##
 cxx_tun += cxx/hybrid/sequence.cxx
 
+ifeq ($(xsde_cdr),y)
+cxx_tun +=                         \
+cxx/hybrid/cdr/exceptions.cxx      \
+cxx/hybrid/cdr/istream.cxx         \
+cxx/hybrid/cdr/ostream.cxx         \
+cxx/hybrid/cdr/qname.cxx           \
+cxx/hybrid/cdr/date-time.cxx       \
+cxx/hybrid/cdr/string-sequence.cxx
+endif
+
+ifeq ($(xsde_xdr),y)
+cxx_tun +=                         \
+cxx/hybrid/xdr/exceptions.cxx      \
+cxx/hybrid/xdr/istream.cxx         \
+cxx/hybrid/xdr/ostream.cxx         \
+cxx/hybrid/xdr/qname.cxx           \
+cxx/hybrid/xdr/date-time.cxx       \
+cxx/hybrid/xdr/string-sequence.cxx
+endif
+
 
 ## C++/Parser
 ##
@@ -441,12 +461,24 @@ dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 clean    := $(out_base)/.clean
 
+# Import.
+#
+
+ifeq ($(xsde_cdr),y)
+$(call import,\
+  $(scf_root)/import/libace/stub.make,\
+  l: ace.l,cpp-options: ace.l.cpp-options)
+endif
 
 # Build.
 #
 $(xsde.l): $(cxx_o) -lexpat -lgenx
-
 $(cxx_o) $(cxx_d): $(xsde.l.cpp-options) $(out_base)/config.h
+
+ifeq ($(xsde_cdr),y)
+$(xsde.l): $(ace.l)
+$(cxx_o) $(cxx_d): $(ace.l.cpp-options)
+endif
 
 $(xsde.l.cpp-options): prefix := xsde/ $(out_root)/libxsde/
 $(xsde.l.cpp-options): value := -I$(out_root)/libxsde -I$(src_root)/libxsde

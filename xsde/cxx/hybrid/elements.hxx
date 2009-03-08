@@ -49,7 +49,13 @@ namespace CXX
             fwd_expr (c.fwd_expr),
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
-            ns_stack (c.ns_stack)
+            ns_stack (c.ns_stack),
+            istreams (c.istreams),
+            ostreams (c.ostreams),
+            icdrstream (c.icdrstream),
+            ocdrstream (c.ocdrstream),
+            ixdrstream (c.ixdrstream),
+            oxdrstream (c.oxdrstream)
       {
       }
 
@@ -66,7 +72,13 @@ namespace CXX
             fwd_expr (c.fwd_expr),
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
-            ns_stack (c.ns_stack)
+            ns_stack (c.ns_stack),
+            istreams (c.istreams),
+            ostreams (c.ostreams),
+            icdrstream (c.icdrstream),
+            ocdrstream (c.ocdrstream),
+            ixdrstream (c.ixdrstream),
+            oxdrstream (c.oxdrstream)
       {
       }
 
@@ -468,6 +480,13 @@ namespace CXX
       }
 
     public:
+      String
+      istream (NarrowString const& is) const;
+
+      String
+      ostream (NarrowString const& os) const;
+
+    public:
       Void
       close_ns ();
 
@@ -496,8 +515,22 @@ namespace CXX
 
       NamespaceStack& ns_stack;
 
+      typedef Containers::Vector<NarrowString> Streams;
+      Streams const& istreams;
+      Streams const& ostreams;
+
+      String& icdrstream;
+      String& ocdrstream;
+      String& ixdrstream;
+      String& oxdrstream;
+
     private:
       NamespaceStack ns_stack_;
+
+      String icdrstream_;
+      String ocdrstream_;
+      String ixdrstream_;
+      String oxdrstream_;
     };
 
     //

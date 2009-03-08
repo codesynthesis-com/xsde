@@ -70,7 +70,7 @@ namespace xsde
       void
       swap_ (sequence_base&);
 
-    protected:
+    public:
       void* data_;
       size_t size_;
       size_t capacity_;

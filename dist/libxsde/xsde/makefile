@@ -49,6 +49,25 @@ endif
 ##
 src += cxx/hybrid/sequence.cxx
 
+ifeq ($(XSDE_CDR),y)
+src +=                             \
+cxx/hybrid/cdr/exceptions.cxx      \
+cxx/hybrid/cdr/istream.cxx         \
+cxx/hybrid/cdr/ostream.cxx         \
+cxx/hybrid/cdr/qname.cxx           \
+cxx/hybrid/cdr/date-time.cxx       \
+cxx/hybrid/cdr/string-sequence.cxx
+endif
+
+ifeq ($(XSDE_XDR),y)
+src +=                             \
+cxx/hybrid/xdr/exceptions.cxx      \
+cxx/hybrid/xdr/istream.cxx         \
+cxx/hybrid/xdr/ostream.cxx         \
+cxx/hybrid/xdr/qname.cxx           \
+cxx/hybrid/xdr/date-time.cxx       \
+cxx/hybrid/xdr/string-sequence.cxx
+endif
 
 ## C++/Parser
 ##

@@ -2379,9 +2379,6 @@ namespace CXX
     Void
     generate_tree_header (Context& ctx)
     {
-      ctx.os << "#include <xsde/cxx/hybrid/sequence.hxx>" << endl
-             << endl;
-
       Boolean inline_ (ctx.options.value<CLI::generate_inline> ());
 
       // Emit header includes.

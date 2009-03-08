@@ -816,6 +816,28 @@
     <dt><code><b>--suppress-serializer-val</b></code></dt>
     <dd>Suppress the generation of validation code in serializer.</dd>
 
+    <dt><code><b>--generate-insertion</b> <i>os</i></code></dt>
+    <dd>Generate data representation stream insertion operators for
+        the <code><i>os</i></code> output stream type. Repeat this
+        option to specify more than one stream type. The special
+        <code><b>CDR</b></code> and <code><b>XDR</b></code> arguments
+        are recognized as ACE CDR and Sun RPC XDR stream types and
+        the corresponding stream wrappers provided by the XSD/e runtime
+        are automatically used. For custom stream types use the
+        <code><b>--hxx-prologue*</b></code> options to include the
+        necessary declarations.</dd>
+
+    <dt><code><b>--generate-extraction</b> <i>is</i></code></dt>
+    <dd>Generate data representation stream extraction operators for
+        the <code><i>is</i></code> input stream type. Repeat this
+        option to specify more than one stream type. The special
+        <code><b>CDR</b></code> and <code><b>XDR</b></code> arguments
+        are recognized as ACE CDR and Sun RPC XDR stream types and
+        the corresponding stream wrappers provided by the XSD/e runtime
+        are automatically used. For custom stream types use the
+        <code><b>--hxx-prologue*</b></code> options to include the
+        necessary declarations.</dd>
+
     <dt><code><b>--generate-forward</b></code></dt>
     <dd>Generate forward declaration file.</dd>
 

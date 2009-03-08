@@ -1,3 +1,18 @@
+Version 3.1.0
+
+ C++/Hybrid
+
+  * Support for saving the object model to and loading it from binary
+    representations. The new --generate--insertion and --generate-extraction
+    options trigger generation of data representation stream insertion and
+    extraction operators, respectively. The XSD/e runtime provides support
+    for the ACE CDR streams and XDR API that is part of Sun RPC. Custom
+    representations can supported by implementing insertion and extraction
+    operators for the built-in XML Schema types and sequence templates. For
+    more information, see Chapter 7, "Binary Representation" in the Getting
+    Started Guide as well as examples in the examples/cxx/hybrid/binary/
+    directory.
+
 Version 3.0.0
 
   * The new Embedded C++/Hybrid mapping provides a light-weight, tree-

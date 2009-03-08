@@ -60,6 +60,10 @@ cxx_tun += cxx/hybrid/elements.cxx                        \
            cxx/hybrid/tree-inline.cxx                     \
            cxx/hybrid/tree-source.cxx                     \
            cxx/hybrid/tree-type-map.cxx                   \
+	   cxx/hybrid/insertion-header.cxx                \
+	   cxx/hybrid/insertion-source.cxx                \
+	   cxx/hybrid/extraction-header.cxx               \
+	   cxx/hybrid/extraction-source.cxx               \
            cxx/hybrid/parser-name-processor.cxx           \
            cxx/hybrid/parser-header.cxx                   \
            cxx/hybrid/parser-source.cxx                   \
