@@ -67,18 +67,27 @@ namespace xsde
         {
         }
 
+#ifdef XSDE_EXCEPTIONS
+        inline void all_stack::
+#else
         inline stack::error all_stack::
+#endif
         push ()
         {
+#ifdef XSDE_EXCEPTIONS
+          stack_.push ();
+#else
           if (stack::error e = stack_.push ())
             return e;
-
+#endif
           unsigned char* p = static_cast<unsigned char*> (stack_.top ());
 
           for (size_t i = 0; i < stack_.element_size (); ++i)
             p[i] = 0;
 
+#ifndef XSDE_EXCEPTIONS
           return stack::error_none;
+#endif
         }
 
         inline void all_stack::
@@ -118,4 +127,3 @@ namespace xsde
     }
   }
 }
-

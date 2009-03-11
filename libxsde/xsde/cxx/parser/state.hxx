@@ -6,8 +6,9 @@
 #ifndef XSDE_CXX_PARSER_STATE_HXX
 #define XSDE_CXX_PARSER_STATE_HXX
 
-#include <stddef.h> // size_t
+#include <xsde/cxx/config.hxx>
 
+#include <xsde/cxx/stack.hxx>
 #include <xsde/cxx/parser/elements.hxx>
 
 namespace xsde
@@ -16,55 +17,17 @@ namespace xsde
   {
     namespace parser
     {
-      // POD stack with pre-allocated first element. You may
-      // need to pad your elements to get the proper alignment.
-      //
-      struct stack
-      {
-        enum error
-        {
-          error_none,
-          error_no_memory
-        };
-
-        ~stack ();
-        stack (size_t element_size, void* first_element);
-
-      public:
-        void
-        pop ();
-
-        error
-        push ();
-
-        void*
-        top ();
-
-        size_t
-        element_size () const;
-
-        void
-        clear ();
-
-      private:
-        error
-        grow ();
-
-      private:
-        size_t el_size_;
-        void* first_;
-        char* data_;
-        size_t size_;
-        size_t capacity_;
-      };
-
       // Optimized state stack for non-recursive case (one element).
       //
       struct parser_stack
       {
         parser_stack (parser_state& first);
 
+#ifdef XSDE_EXCEPTIONS
+        void
+#else
         stack::error
+#endif
         push (parser_state&);
 
         void

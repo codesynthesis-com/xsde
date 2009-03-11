@@ -68,7 +68,7 @@ endif
 
 ## C++/Parser
 ##
-cxx_tun += cxx/parser/elements.cxx cxx/parser/state.cxx
+cxx_tun += cxx/parser/elements.cxx
 
 ifeq ($(xsde_polymorphic),y)
 cxx_tun += cxx/parser/map.cxx cxx/parser/substitution-map.cxx

@@ -10,6 +10,7 @@
 
 #include <stddef.h> // size_t
 
+#include <xsde/cxx/stack.hxx>
 #include <xsde/cxx/string.hxx>
 #include <xsde/cxx/ro-string.hxx>
 
@@ -253,7 +254,11 @@ namespace xsde
         {
           all_stack (size_t n, unsigned char* first);
 
+#ifdef XSDE_EXCEPTIONS
+          void
+#else
           stack::error
+#endif
           push ();
 
           void

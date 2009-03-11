@@ -73,7 +73,7 @@ cxx\hybrid\xdr\string-sequence.cxx
 
 ## C++/Parser
 ##
-src = $(src) cxx\parser\elements.cxx cxx\parser\state.cxx
+src = $(src) cxx\parser\elements.cxx
 src = $(src) cxx\parser\expat\document.cxx cxx\parser\expat\xml-error.cxx
 
 !if "$(XSDE_POLYMORPHIC)" == "y"

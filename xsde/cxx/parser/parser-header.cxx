@@ -1006,7 +1006,7 @@ namespace CXX
                << "};";
 
             os << "v_state_ v_state_first_;"
-               << "::xsde::cxx::parser::stack v_state_stack_;"
+               << "::xsde::cxx::stack v_state_stack_;"
                << endl;
 
             os << "virtual void" << endl
@@ -1033,7 +1033,7 @@ namespace CXX
             os << "};";
 
             os << "v_state_attr_ v_state_attr_first_;"
-               << "::xsde::cxx::parser::stack v_state_attr_stack_;"
+               << "::xsde::cxx::stack v_state_attr_stack_;"
                << endl;
 
             os << "virtual void" << endl
@@ -1716,7 +1716,8 @@ namespace CXX
         // Parsers.
         //
         if (ctx.validation)
-          ctx.os << "#include <xsde/cxx/parser/validating/parser.hxx>" << endl
+          ctx.os << "#include <xsde/cxx/stack.hxx>" << endl
+                 << "#include <xsde/cxx/parser/validating/parser.hxx>" << endl
                  << "#include <xsde/cxx/parser/validating/xml-schema-pskel.hxx>" << endl
                  << "#include <xsde/cxx/parser/validating/xml-schema-pimpl.hxx>" << endl
                  << endl;

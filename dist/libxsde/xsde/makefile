@@ -71,7 +71,7 @@ endif
 
 ## C++/Parser
 ##
-src += cxx/parser/elements.cxx cxx/parser/state.cxx
+src += cxx/parser/elements.cxx
 src += cxx/parser/expat/document.cxx cxx/parser/expat/xml-error.cxx
 
 ifeq ($(XSDE_POLYMORPHIC),y)
