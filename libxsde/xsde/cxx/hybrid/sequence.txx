@@ -28,6 +28,34 @@ namespace xsde
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
       void fix_seq<T>::
+      assign (const T* p, size_t n)
+      {
+        clear ();
+        reserve (n);
+
+        for (; size_ < n; ++size_)
+          new (static_cast<T*> (data_) + size_) T (p[size_]);
+      }
+#else
+      template <typename T>
+      sequence_base::error fix_seq<T>::
+      assign (const T* p, size_t n)
+      {
+        clear ();
+
+        if (error r = reserve (n))
+          return r;
+
+        for (; size_ < n; ++size_)
+          new (static_cast<T*> (data_) + size_) T (p[size_]);
+
+        return error_none;
+      }
+#endif
+
+#ifdef XSDE_EXCEPTIONS
+      template <typename T>
+      void fix_seq<T>::
       move_ (void* dst, void* src, size_t n)
       {
         T* d = static_cast<T*> (dst);

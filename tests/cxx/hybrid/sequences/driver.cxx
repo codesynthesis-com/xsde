@@ -85,6 +85,10 @@ main ()
     s.push_back (222);
     s.push_back (333);
     assert (s.size () == 3 && s[0] == 111 && s[1] == 222 && s[2] == 333);
+
+    pod c;
+    c.assign (s.begin (), s.size ());
+    assert (c.size () == 3 && c[0] == 111 && c[1] == 222 && c[2] == 333);
   }
 
   {
@@ -158,6 +162,11 @@ main ()
     s.push_back ("ccc");
     assert (s.size () == 3 && s[0] == "aaa" &&
             s[1] == "bbb" && s[2] == "ccc");
+
+    fix c;
+    c.assign (s.begin (), s.size ());
+    assert (c.size () == 3 && c[0] == "aaa" &&
+            c[1] == "bbb" && c[2] == "ccc");
   }
 
   {

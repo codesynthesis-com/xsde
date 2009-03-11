@@ -3,7 +3,9 @@
 // copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <new> // placement new
+#include <string.h> // memcpy
+
+#include <new>      // placement new
 
 namespace xsde
 {
@@ -154,6 +156,17 @@ namespace xsde
         if (capacity_ < n)
           grow_ (n, sizeof (T), 0);
       }
+
+      template <typename T>
+      inline void pod_seq<T>::
+      assign (const T* p, size_t n)
+      {
+        if (capacity_ < n)
+          grow_ (n, sizeof (T), 0);
+
+        memcpy (data_, p, n * sizeof (T));
+        size_ = n;
+      }
 #else
       template <typename T>
       inline sequence_base::error pod_seq<T>::
@@ -209,6 +222,21 @@ namespace xsde
         if (capacity_ < n)
           r = grow_ (n, sizeof (T), 0);
         return r;
+      }
+
+      template <typename T>
+      inline sequence_base::error pod_seq<T>::
+      assign (const T* p, size_t n)
+      {
+        if (capacity_ < n)
+        {
+          if (error r = grow_ (n, sizeof (T), 0))
+            return r;
+        }
+
+        memcpy (data_, p, n * sizeof (T));
+        size_ = n;
+        return error_none;
       }
 #endif
 

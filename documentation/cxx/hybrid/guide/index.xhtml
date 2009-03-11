@@ -2008,12 +2008,16 @@ public:
 
   void
   reserve (size_t);
+
+  void
+  assign (const T* src, size_t n);
 };
   </pre>
 
   <p>When C++ exceptions are disabled, the signatures of the
-     <code>push_back()</code>, <code>insert()</code>, and
-     <code>reserve()</code> functions change as follows:</p>
+     <code>push_back()</code>, <code>insert()</code>,
+     <code>reserve()</code>, and <code>assign()</code> functions
+     change as follows:</p>
 
   <pre class="c++">
 template &lt;typename T>
@@ -2040,6 +2044,9 @@ public:
 
   error
   reserve (size_t);
+
+  error
+  assign (const T* src, size_t n);
 };
   </pre>
 

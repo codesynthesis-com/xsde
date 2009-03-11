@@ -15,12 +15,8 @@ operator>> (irawstream& s, xml_schema::pod_seq<T>& x)
   x.clear ();
 
   if (n > 0)
-  {
-    x.reserve (n);
-    size_t mn = sizeof (T) * n;
-    memcpy (x.data_, s.align (sizeof (T), mn), mn);
-    x.size_ = n;
-  }
+    x.assign (
+      reinterpret_cast<const T*> (s.align (sizeof (T), sizeof (T) * n)), n);
 }
 
 template <typename T>

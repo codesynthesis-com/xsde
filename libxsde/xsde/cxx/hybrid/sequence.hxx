@@ -110,6 +110,13 @@ namespace xsde
 #endif
         reserve (size_t);
 
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        assign (const T*, size_t);
+
         void
         swap (pod_seq&);
       };
@@ -203,6 +210,13 @@ namespace xsde
         void
 #endif
         reserve (size_t);
+
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        assign (const T*, size_t);
 
         void
         swap (fix_seq&);

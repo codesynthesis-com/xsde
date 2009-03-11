@@ -19,6 +19,12 @@ Version 3.1.0
     optimized non-recursive case (i.e., the first iteration still does
     not result in any heap allocations for the state maintenance).
 
+  * Assignment function with signature assign(const T*, size_t) for
+    sequences of fixed-length types. With this function you can, for
+    example, initialize a sequence with a C array. Assignment of 
+    sequences of fundamental types (e.g., int, float, etc.) is 
+    implemented in terms of memcpy().
+
 Version 3.0.0
 
   * The new Embedded C++/Hybrid mapping provides a light-weight, tree-
