@@ -177,6 +177,21 @@ namespace CXX
                << "delete[] this->" << member << ";"
                << "this->" << member << " = x;"
                << "}";
+
+            // char*
+            // detach ()
+            //
+            if (detach)
+            {
+              os << inl
+                 << "char* " << name << "::" << endl
+                 << uc.get<String> ("value-detach") << " ()"
+                 << "{"
+                 << "char* r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
 
           // Custom data.
@@ -326,6 +341,24 @@ namespace CXX
             os << "this->" << epresent_member (a) << " = true;";
 
           os << "}";
+
+
+          // type*
+          // detach ()
+          //
+          if (detach && !fl)
+          {
+            os << inl;
+            arg_.dispatch (t);
+            os << " " << scope << "::" << endl
+               << edetach (a) << " ()"
+               << "{";
+            arg_.dispatch (t);
+            os << " r = this->" << member << ";"
+               << "this->" << member << " = 0;"
+               << "return r;"
+               << "}";
+          }
         }
 
       private:
@@ -475,6 +508,23 @@ namespace CXX
               os << "this->" << epresent_member (e) << " = true;";
 
             os << "}";
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl;
+              arg_.dispatch (t);
+              os << " " << scope << "::" << endl
+                 << edetach (e) << " ()"
+                 << "{";
+              arg_.dispatch (t);
+              os << " r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
 
@@ -691,6 +741,23 @@ namespace CXX
             }
 
             os << "}";
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl;
+              arg_.dispatch (t);
+              os << " " << scope << "::" << endl
+                 << edetach (e) << " ()"
+                 << "{";
+              arg_.dispatch (t);
+              os << " r = this->" << umember << "." << member << ";"
+                 << "this->" << umember << "." << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
 
@@ -822,6 +889,21 @@ namespace CXX
               os << "this->" << epresent_member (a) << " = true;";
 
             os << "}";
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl
+                 << type << "* " << scope << "::" << endl
+                 << edetach (a) << " ()"
+                 << "{"
+                 << type << "* r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
           else
             All::contains (a);
@@ -989,6 +1071,21 @@ namespace CXX
               os << "this->" << epresent_member (c) << " = true;";
 
             os << "}";
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl
+                 << type << "* " << scope << "::" << endl
+                 << edetach (c) << " ()"
+                 << "{"
+                 << type << "* r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
       };
@@ -1142,6 +1239,21 @@ namespace CXX
               os << "this->" << epresent_member (s) << " = true;";
 
             os << "}";
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl
+                 << type << "* " << scope << "::" << endl
+                 << edetach (s) << " ()"
+                 << "{"
+                 << type << "* r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
       };
@@ -1331,6 +1443,22 @@ namespace CXX
             }
 
             os << "}";
+
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl
+                 << type << "* " << scope << "::" << endl
+                 << edetach (c) << " ()"
+                 << "{"
+                 << type << "* r = this->" << umember << "." << member << ";"
+                 << "this->" << umember << "." << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
       };

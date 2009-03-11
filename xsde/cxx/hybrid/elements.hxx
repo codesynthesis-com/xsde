@@ -44,6 +44,7 @@ namespace CXX
             poly_code (c.poly_code),
             poly_runtime (c.poly_runtime),
             reset (c.reset),
+            detach (c.detach),
             mixin (c.mixin),
             tiein (c.tiein),
             fwd_expr (c.fwd_expr),
@@ -67,6 +68,7 @@ namespace CXX
             poly_code (c.poly_code),
             poly_runtime (c.poly_runtime),
             reset (c.reset),
+            detach (c.detach),
             mixin (c.mixin),
             tiein (c.tiein),
             fwd_expr (c.fwd_expr),
@@ -107,6 +109,20 @@ namespace CXX
       emember (SemanticGraph::Attribute& a)
       {
         return a.context ().get<String> ("member");
+      }
+
+      // Detach.
+      //
+      static String const&
+      edetach (SemanticGraph::Particle& p)
+      {
+        return p.context ().get<String> ("detach");
+      }
+
+      static String const&
+      edetach (SemanticGraph::Attribute& a)
+      {
+        return a.context ().get<String> ("detach");
       }
 
       // Optional.
@@ -524,6 +540,7 @@ namespace CXX
       Boolean poly_code;
       Boolean poly_runtime;
       Boolean reset;
+      Boolean detach;
       Boolean mixin;
       Boolean tiein;
 

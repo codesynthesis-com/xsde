@@ -49,6 +49,8 @@ namespace CXX
               schema_path_ (file),
               schema (root),
               schema_path (schema_path_),
+              stl (!ops.value<CLI::no_stl> ()),
+              detach (ops.value<CLI::generate_detach> ()),
               custom_data_map (custom_data_map_),
               global_type_names (global_type_names_)
         {
@@ -98,6 +100,8 @@ namespace CXX
             : CXX::Context (c),
               schema (c.schema),
               schema_path (c.schema_path),
+              stl (c.stl),
+              detach (c.detach),
               custom_data_map (c.custom_data_map),
               global_type_names (c.global_type_names)
         {
@@ -173,6 +177,9 @@ namespace CXX
       public:
         SemanticGraph::Schema& schema;
         SemanticGraph::Path const& schema_path;
+
+        Boolean stl;
+        Boolean detach;
 
         CustomDataMap& custom_data_map;
         Cult::Containers::Map<String, NameSet*>& global_type_names;
@@ -263,7 +270,11 @@ namespace CXX
             NameSet& set (uc.get<NameSet> (member_set_key));
             set.insert (name);
 
-            uc.set ("value", find_name ("value", set));
+            String v (find_name ("value", set));
+            uc.set ("value", v);
+
+            if (detach && !stl)
+              uc.set ("value-detach", find_name (v + L"_detach", set));
 
             // Check if this type has custom data.
             //
@@ -432,6 +443,12 @@ namespace CXX
               ac.set (
                 "present",
                 find_name (ac.get<String> ("name") + L"_present", set_));
+
+            if (detach && !fixed_length (a.type ()))
+              ac.set (
+                "detach",
+                find_name (ac.get<String> ("name") + L"_detach", set_));
+
           }
           else
           {
@@ -476,11 +493,17 @@ namespace CXX
               ec.set ("const-iterator",
                       find_name (base + L"_const_iterator", set_));
             }
-            else if (e.min () == 0)
+            else
             {
-              ec.set (
-                "present",
-                find_name (ec.get<String> ("name") + L"_present", set_));
+              if (e.min () == 0)
+                ec.set (
+                  "present",
+                  find_name (ec.get<String> ("name") + L"_present", set_));
+
+              if (detach && !fixed_length (e.type ()))
+                ec.set (
+                  "detach",
+                  find_name (ec.get<String> ("name") + L"_detach", set_));
             }
           }
           else
@@ -589,6 +612,9 @@ namespace CXX
               }
 
               ac.set ("present", find_name (base + L"_present", set_));
+
+              if (detach && !fixed_length (a))
+                ac.set ("detach", find_name (base + L"_detach", set_));
             }
             else
             {
@@ -819,8 +845,14 @@ namespace CXX
               cc.set ("const-iterator",
                       find_name (base + L"_const_iterator", set_));
             }
-            else if (c.min () == 0)
-              cc.set ("present", find_name (base + L"_present", set_));
+            else
+            {
+              if (c.min () == 0)
+                cc.set ("present", find_name (base + L"_present", set_));
+
+              if (detach && !fixed_length (c))
+                cc.set ("detach", find_name (base + L"_detach", set_));
+            }
           }
           else
           {
@@ -1018,8 +1050,15 @@ namespace CXX
               sc.set ("const-iterator",
                       find_name (base + L"_const_iterator", set_));
             }
-            else if (s.min () == 0)
-              sc.set ("present", find_name (base + L"_present", set_));
+            else
+            {
+              if (s.min () == 0)
+                sc.set ("present", find_name (base + L"_present", set_));
+
+              if (detach && !fixed_length (s))
+                sc.set ("detach", find_name (base + L"_detach", set_));
+            }
+
           }
           else
           {

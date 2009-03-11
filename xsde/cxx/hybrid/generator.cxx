@@ -121,6 +121,7 @@ namespace CXX
       extern Key suppress_validation      = "suppress-validation";
       extern Key suppress_parser_val      = "suppress-parser-val";
       extern Key suppress_serializer_val  = "suppress-serializer-val";
+      extern Key generate_detach          = "generate-detach";
       extern Key generate_insertion       = "generate-insertion";
       extern Key generate_extraction      = "generate-extraction";
       extern Key generate_inline          = "generate-inline";
@@ -242,6 +243,11 @@ namespace CXX
     e << "--suppress-serializer-val" << endl
       << " Suppress the generation of validation code in\n"
       << " serializer."
+      << endl;
+
+    e << "--generate-detach" << endl
+      << " Generate detach functions for elements and\n"
+      << " attributes of variable-length types."
       << endl;
 
     e << "--generate-insertion <os>" << endl

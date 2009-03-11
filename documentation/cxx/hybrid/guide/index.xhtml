@@ -1712,7 +1712,10 @@ private:
      variable-length type, the object model assumes ownership of
      the pointed to object. It expects you to allocate the object with
      operator <code>new</code> and will eventually delete it
-     with operator <code>delete</code>. As an example, let us extend
+     with operator <code>delete</code>. You can also request generation
+     of detach functions with the <code>--generate-detach</code> compiler
+     option. These functions allow you to detach a variable-length
+     object from the object model. As an example, let us extend
      our <code>people.xsd</code> schema with the following type:</p>
 
   <pre class="xml">
@@ -1724,8 +1727,8 @@ private:
 &lt;/xs:complexType>
   </pre>
 
-  <p>If we compile it with XSD/e, we will get the following C++
-     class:</p>
+  <p>If we compile it with XSD/e and specify the <code>--generate-detach</code>
+     option, we will get the following C++ class:</p>
 
   <pre class="c++">
 // staff (variable-length)
@@ -1751,6 +1754,9 @@ public:
   void
   permanent (people*);
 
+  people*
+  permanent_detach ();
+
   // contract
   //
   const people&amp;
@@ -1761,6 +1767,9 @@ public:
 
   void
   contract (people*);
+
+  people*
+  contract_detach ();
 
 private:
   ...
@@ -2135,31 +2144,43 @@ public:
   clear ();
 
   void
+  push_back (T*);
+
+  iterator
+  insert (iterator, T*);
+
+  void
   pop_back ();
 
   iterator
   erase (iterator);
 
   void
-  push_back (T*);
-
-  iterator
-  insert (iterator, T*);
-
-  error
   reserve (size_t);
+
+  T*
+  detach (iterator);
+
+  void
+  attach (iterator, T*);
 };
   </pre>
 
   <p>Most of this interface is identical to the fixed-length type
-     version except for the <code>push_back()</code> and
+     version except for the <code>push_back()</code>, and
      <code>insert()</code> functions. Similar to the modifier
      functions for elements and attributes of variable-length
      types, these two functions expect a pointer to the
      dynamically-allocated instance of the type and assume
      ownership of the passed object. To simplify error handling,
      these two functions delete the passed object if the reallocation
-     of the underlying sequence buffer fails.</p>
+     of the underlying sequence buffer fails. The <code>var_sequence</code>
+     interface also provides the <code>detach()</code> and <code>attach()</code>
+     functions. The <code>detach()</code> function allows you to detach
+     the contained object at the specified position. A detached object
+     should eventually be deallocated with operator <code>delete</code>.
+     Similarly, the <code>attach()</code> function allows you to attach
+     a new object at the specified position.</p>
 
   <p>When C++ exceptions are disabled, the <code>push_back()</code>,
      <code>insert()</code>, and <code>reserve()</code> functions
@@ -2295,12 +2316,11 @@ namespace xml_schema
     void
     reserve (size_t);
 
-    // Detach a string from the sequence at a given position.
-    // The string pointer at this position in the sequence is
-    // set to 0.
-    //
     char*
     detach (iterator);
+
+    void
+    attach (iterator, char*);
   };
 }
   </pre>
@@ -2313,8 +2333,13 @@ namespace xml_schema
      free the passed string if the reallocation of the underlying
      sequence buffer fails. The <code>push_back_copy()</code>
      function makes a copy of the passed string.
-     If you detach the underlying element string, then it should
-     eventually be deallocated with operator <code>delete[]</code>.</p>
+     The <code>string_sequence</code> interface also provides the
+     <code>detach()</code> and <code>attach()</code> functions.
+     The <code>detach()</code> function allows you to detach
+     the contained string at the specified position. A detached string
+     should eventually be deallocated with operator <code>delete[]</code>.
+     Similarly, the <code>attach()</code> function allows you to attach
+     a new string at the specified position.</p>
 
   <p>When C++ exceptions are disabled, the signatures of the
      <code>push_back()</code>, <code>push_back_copy()</code>,
@@ -3714,6 +3739,9 @@ namespace xml_schema
     void
     base_value (char* x);
 
+    char*
+    base_value_detach ();
+
     operator const char* () const;
     operator char* ();
   };
@@ -3722,7 +3750,9 @@ namespace xml_schema
 
   <p>Note that the <code>string_base</code> object assumes ownership
      of the strings passed to the assignment operator and the
-     <code>base_value()</code> modifier.</p>
+     <code>base_value()</code> modifier. If you detach the
+     string value then it should eventually be deallocated with
+     operator <code>delete[]</code>.</p>
 
   <h2><a name="5.1">5.1 Mapping for <code>QName</code></a></h2>
 

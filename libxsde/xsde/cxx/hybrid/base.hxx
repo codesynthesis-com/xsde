@@ -354,6 +354,7 @@ namespace xsde
         const char* base_value () const {return x_;}
         char* base_value () {return x_;}
         void base_value (char* x) {delete[] x_; x_ = x;}
+        char* base_value_detach () {char* r = x_; x_ = 0; return r;}
 
         operator const char* () const {return x_;}
         operator char* () {return x_;}

@@ -569,6 +569,23 @@ namespace xsde
         return i;
       }
 
+      template <typename T>
+      inline T* var_seq<T>::
+      detach (iterator i)
+      {
+        T* r = *i.i_;
+        *i.i_ = 0;
+        return r;
+      }
+
+      template <typename T>
+      inline void var_seq<T>::
+      attach (iterator i, T* x)
+      {
+        delete *i.i_;
+        *i.i_ = x;
+      }
+
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
       inline void var_seq<T>::

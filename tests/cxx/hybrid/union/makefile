@@ -43,7 +43,7 @@ gen := $(addprefix $(out_base)/,$(genf))
 $(gen): $(out_root)/xsde/xsde
 $(gen): xsde := $(out_root)/xsde/xsde
 $(gen): xsde_options += --generate-parser --generate-serializer \
---generate-aggregate
+--generate-aggregate --generate-detach
 
 $(call include-dep,$(dep))
 

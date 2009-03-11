@@ -178,6 +178,16 @@ namespace CXX
             os << "void" << endl
                << value << " (char*);"
                << endl;
+
+            // char*
+            // detach ()
+            //
+            if (detach)
+            {
+              os << "char*" << endl
+                 << uc.get<String> ("value-detach") << " ();"
+                 << endl;
+            }
           }
 
           // Custom data.
@@ -1050,6 +1060,17 @@ namespace CXX
           arg_.dispatch (t);
           os << ");"
              << endl;
+
+          // type*
+          // detach ()
+          //
+          if (detach && !fixed_length (t))
+          {
+            arg_.dispatch (t);
+            os << endl
+               << edetach (a) << " ();"
+               << endl;
+          }
         }
 
       private:
@@ -1150,6 +1171,17 @@ namespace CXX
             arg_.dispatch (t);
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fixed_length (t))
+            {
+              arg_.dispatch (t);
+              os << endl
+                 << edetach (e) << " ();"
+                 << endl;
+            }
           }
         }
 
@@ -1293,6 +1325,16 @@ namespace CXX
 
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << type << "*" << endl
+                 << edetach (a) << " ();"
+                 << endl;
+            }
           }
           else
             All::contains (a);
@@ -1571,6 +1613,16 @@ namespace CXX
 
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << type << "*" << endl
+                 << edetach (c) << " ();"
+                 << endl;
+            }
           }
         }
 
@@ -1786,6 +1838,16 @@ namespace CXX
 
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << type << "*" << endl
+                 << edetach (c) << " ();"
+                 << endl;
+            }
           }
         }
 
@@ -1970,6 +2032,16 @@ namespace CXX
 
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << type << "*" << endl
+                 << edetach (s) << " ();"
+                 << endl;
+            }
           }
         }
 
@@ -2149,6 +2221,16 @@ namespace CXX
 
             os << ");"
                << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << type << "*" << endl
+                 << edetach (s) << " ();"
+                 << endl;
+            }
           }
         }
 

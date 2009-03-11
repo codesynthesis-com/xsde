@@ -36,6 +36,7 @@ namespace CXX
           poly_code (false),
           poly_runtime (false),
           reset (!ops.value<CLI::suppress_reset> ()),
+          detach (ops.value<CLI::generate_detach> ()),
           mixin (ops.value<CLI::reuse_style_mixin> ()),
           tiein (!mixin),
           fwd_expr (fe),

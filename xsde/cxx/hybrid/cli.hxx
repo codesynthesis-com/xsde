@@ -33,6 +33,7 @@ namespace CXX
       extern Key suppress_validation;
       extern Key suppress_parser_val;
       extern Key suppress_serializer_val;
+      extern Key generate_detach;
       extern Key generate_insertion;
       extern Key generate_extraction;
       extern Key generate_inline;
@@ -113,6 +114,7 @@ namespace CXX
         suppress_validation,      Boolean,
         suppress_parser_val,      Boolean,
         suppress_serializer_val,  Boolean,
+        generate_detach,          Boolean,
         generate_insertion,       Cult::Containers::Vector<NarrowString>,
         generate_extraction,      Cult::Containers::Vector<NarrowString>,
         generate_inline,          Boolean,

@@ -944,6 +944,11 @@ Suppress the generation of validation code in parser.
 .IP "\fB\--suppress-serializer-val\fR"
 Suppress the generation of validation code in serializer.
 
+.IP "\fB\--generate-detach\fR"
+Generate detach functions for elements and attributes of variable-length
+types. These functions, for example, allow you to move sub-trees in the
+object model either within the same tree or between different trees.
+
 .IP "\fB\--generate-insertion \fIos\fR"
 Generate data representation stream insertion operators for the
 .I os

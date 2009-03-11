@@ -792,6 +792,18 @@ namespace xsde
         insert (iterator, T*);
 #endif
 
+        // Detach an object from the sequence at a given position.
+        // The object pointer at this position in the sequence is
+        // set to 0.
+        //
+        T*
+        detach (iterator);
+
+        // Attach an object to the sequence at a given position.
+        //
+        void
+        attach (iterator, T*);
+
 #ifndef XSDE_EXCEPTIONS
         error
 #else

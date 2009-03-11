@@ -271,6 +271,16 @@ main ()
     assert (s[0] == "aaa" && s[1] == "ccc" && s[2] == "bbb");
   }
 
+  {
+    var s;
+    s.push_back (new string ("aaa"));
+    s.push_back (new string ("bbb"));
+    s.push_back (new string ("ccc"));
+    delete s.detach (s.begin () + 1);
+    s.attach (s.begin () + 1, new string ("bbb"));
+    assert (s[0] == "aaa" && s[1] == "bbb" && s[2] == "ccc");
+  }
+
   //
   // str_seq
   //
@@ -353,6 +363,19 @@ main ()
     assert (s[0] == string ("aaa") &&
             s[1] == string ("ccc") &&
             s[2] == string ("bbb"));
+  }
+
+  {
+    str s;
+    s.reserve (2);
+    s.push_back_copy ("aaa");
+    s.push_back_copy ("bbb");
+    s.push_back_copy ("ccc");
+    delete[] s.detach (s.begin () + 1);
+    s.attach (s.begin () + 1, strdupc ("bbb"));
+    assert (s[0] == string ("aaa") &&
+            s[1] == string ("bbb") &&
+            s[2] == string ("ccc"));
   }
 
 #else

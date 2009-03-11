@@ -109,6 +109,11 @@ namespace xsde
       char*
       detach (iterator);
 
+      // Attach a string to the sequence at a given position.
+      //
+      void
+      attach (iterator, char*);
+
 #ifndef XSDE_EXCEPTIONS
       error
 #else

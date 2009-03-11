@@ -222,6 +222,13 @@ namespace xsde
       return r;
     }
 
+    inline void string_sequence::
+    attach (iterator p, char* x)
+    {
+      delete[] *p;
+      *p = x;
+    }
+
     //
     //
     inline bool
