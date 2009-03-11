@@ -13,6 +13,12 @@ Version 3.1.0
     Started Guide as well as examples in the examples/cxx/hybrid/binary/
     directory.
 
+  * The generated parser and serializer implementations are now capable
+    of parsing/serializing recursive types. The XSD/e compiler detects
+    recursive types and generates stack-based implementations with
+    optimized non-recursive case (i.e., the first iteration still does
+    not result in any heap allocations for the state maintenance).
+
 Version 3.0.0
 
   * The new Embedded C++/Hybrid mapping provides a light-weight, tree-

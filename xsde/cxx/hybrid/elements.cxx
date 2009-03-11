@@ -144,15 +144,27 @@ namespace CXX
     }
 
     String const& Context::
-    epstate_member (SemanticGraph::Type& t)
-    {
-      return t.context ().get<String> ("pstate-member");
-    }
-
-    String const& Context::
     epstate_base (SemanticGraph::Type& t)
     {
       return t.context ().get<String> ("pstate-base");
+    }
+
+    String const& Context::
+    epstate_first (SemanticGraph::Type& t)
+    {
+      return t.context ().get<String> ("pstate-first");
+    }
+
+    String const& Context::
+    epstate_top (SemanticGraph::Type& t)
+    {
+      return t.context ().get<String> ("pstate-top");
+    }
+
+    String const& Context::
+    epstate_member (SemanticGraph::Type& t)
+    {
+      return t.context ().get<String> ("pstate-member");
     }
 
     String const& Context::
@@ -253,6 +265,18 @@ namespace CXX
     esstate_type (SemanticGraph::Type& t)
     {
       return t.context ().get<String> ("sstate-type");
+    }
+
+    String const& Context::
+    esstate_first (SemanticGraph::Type& t)
+    {
+      return t.context ().get<String> ("sstate-first");
+    }
+
+    String const& Context::
+    esstate_top (SemanticGraph::Type& t)
+    {
+      return t.context ().get<String> ("sstate-top");
     }
 
     String const& Context::

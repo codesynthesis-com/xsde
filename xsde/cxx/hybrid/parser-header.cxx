@@ -397,6 +397,7 @@ namespace CXX
 
             Boolean restriction (restriction_p (c));
             Boolean fixed (fixed_length (c));
+            Boolean rec (recursive (c));
 
             String const& ret (pret_type (c));
 
@@ -460,6 +461,15 @@ namespace CXX
               }
             }
 
+            // _post
+            //
+            if (rec && hb && !recursive (c.inherits ().base ()))
+            {
+              os << "virtual void" << endl
+                 << "_post ();"
+                 << endl;
+            }
+
             // post
             //
             os << "virtual " << ret << endl
@@ -474,6 +484,13 @@ namespace CXX
               os << (tiein ? "public:" : "protected:") << endl
                  << "void" << endl
                  << pre_impl_name (c) <<  " (" << type << "*);"
+                 << endl;
+
+            // Base implementation.
+            //
+            if (tiein && hb)
+              os << (tiein ? "public:" : "protected:") << endl
+                 << fq_name (c.inherits ().base (), "p:impl") << " base_impl_;"
                  << endl;
 
             // State.
@@ -493,32 +510,35 @@ namespace CXX
             if (!restriction && c.contains_compositor_p ())
               contains_compositor (c, contains_compositor_state_);
 
-            os << "};"
-               << state_type << " " << epstate (c) << ";";
+            os << "};";
+
+            if (rec)
+            {
+              os << state_type << " " << epstate_first (c) << ";"
+                 << "::xsde::cxx::stack " << epstate (c) << ";";
+
+              if (hb && !recursive (c.inherits ().base ()))
+                os << "bool " << epstate_top (c) << ";";
+            }
+            else
+              os << state_type << " " << epstate (c) << ";";
 
             if (!fixed)
               os << "bool " << epstate_base (c) << ";";
-
-            os << endl;
-
-            // Base implementation.
-            //
-            if (tiein && hb)
-              os << (tiein ? "public:" : "protected:") << endl
-                 << fq_name (c.inherits ().base (), "p:impl") << " base_impl_;"
-                 << endl;
 
             os << "};";
           }
 
           // Generate include for custom parser.
           //
-          if (c.context ().count ("p:impl-include"))
+          SemanticGraph::Context& ctx (c.context ());
+
+          if (ctx.count ("p:impl-include"))
           {
             close_ns ();
 
             os << "#include " << process_include_path (
-              c.context ().get<String> ("p:impl-include")) << endl
+              ctx.get<String> ("p:impl-include")) << endl
                << endl;
 
             open_ns ();
@@ -547,6 +567,9 @@ namespace CXX
     Void
     generate_parser_header (Context& ctx)
     {
+      ctx.os << "#include <xsde/cxx/stack.hxx>" << endl
+             << endl;
+
       Traversal::Schema schema;
 
       Traversal::Sources sources;

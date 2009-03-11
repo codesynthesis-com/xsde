@@ -318,10 +318,23 @@ namespace CXX
 
           String tmp;
           tmp.swap (r);
-          r = esstate (t);
-          r += L".";
-          r += tmp;
 
+          if (!recursive (t))
+          {
+            r = L"this->";
+            r += esstate (t);
+            r += L".";
+          }
+          else
+          {
+            r = L"static_cast< ";
+            r += esstate_type (t);
+            r += L"* > (this->";
+            r += esstate (t);
+            r += L".top ())->";
+          }
+
+          r += tmp;
           return r;
         }
 
@@ -332,8 +345,23 @@ namespace CXX
 
           Complex& t (dynamic_cast<Complex&> (a.scope ()));
 
-          String r (esstate (t));
-          r += L".";
+          String r;
+
+          if (!recursive (t))
+          {
+            r = L"this->";
+            r += esstate (t);
+            r += L".";
+          }
+          else
+          {
+            r = L"static_cast< ";
+            r += esstate_type (t);
+            r += L"* > (this->";
+            r += esstate (t);
+            r += L".top ())->";
+          }
+
           r += esstate_member (t);
           r += L"->";
 
@@ -420,10 +448,10 @@ namespace CXX
 
             // Initialize the iterator.
             //
-            os << "this->" << access << end << " = this->" <<
-              access_s << ename (c) << " ().end ();"
-               << "this->" << access << iter << " = this->" <<
-              access << end << ";";
+            os << access << end << " = " << endl
+               << access_s << ename (c) << " ().end ();"
+               << access << iter << " = " << endl
+               << access << end << ";";
           }
         }
 
@@ -439,10 +467,10 @@ namespace CXX
 
             // Initialize the iterator.
             //
-            os << "this->" << access << end << " = this->" <<
-              access_s << ename (s) << " ().end ();"
-               << "this->" << access << iter << " = this->" <<
-              access << end << ";";
+            os << access << end << " = " << endl
+               << access_s << ename (s) << " ().end ();"
+               << access << iter << " = " << endl
+               << access << end << ";";
           }
           else if (s.min () == 1)
           {
@@ -473,10 +501,10 @@ namespace CXX
 
             // Initialize the iterator.
             //
-            os << "this->" << access << iter << " = this->" <<
-              access_s << name << " ().begin ();"
-               << "this->" << access << end << " = this->" <<
-              access_s << name << " ().end ();";
+            os << access << iter << " = " << endl
+               << access_s << name << " ().begin ();"
+               << access << end << " = " << endl
+               << access_s << name << " ().end ();";
           }
         }
       };
@@ -513,7 +541,7 @@ namespace CXX
             os << "bool " << s << "::" << endl
                << espresent (a) << " ()"
                << "{"
-               << "return this->" << access_seq (a) << epresent (a) << " ();"
+               << "return " << access_seq (a) << epresent (a) << " ();"
                << "}";
           }
 
@@ -543,37 +571,36 @@ namespace CXX
             os << "bool " << s << "::" << endl
                << esnext (c) << " ()"
                << "{"
-               << "if (this->" << access << iter << " != this->" <<
-              access << end << ")" << endl
-               << "this->" << access << iter << "++;"
+               << "if (" << access << iter << " != " << endl
+               << access << end << ")" << endl
+               << access << iter << "++;"
                << "else" << endl
-               << "this->" << access << iter << " = this->" <<
-              access_s << ename (c) << " ().begin ();"
+               << access << iter << " = " << endl
+               << access_s << ename (c) << " ().begin ();"
                << endl
-               << "return this->" << access << iter << " != this->" <<
-              access << end << ";"
+               << "return " << access << iter << " != " << endl
+               << access << end << ";"
                << "}";
 
             os << esskel (t) << "::" << arm_tag << " " << s << "::" << endl
                << esarm (c) << " ()"
                << "{"
                << arm_tag << " t (static_cast< " << arm_tag << " > (" << endl
-               << "this->" << access << iter << "->" << earm (c) << " ()));";
+               << access << iter << "->" << earm (c) << " ()));";
           }
           else if (c.min () == 0)
           {
             os << "bool " << s << "::" << endl
                << espresent (c) << " ()"
                << "{"
-               << "return this->" << access << epresent (c) << " ();"
+               << "return " << access << epresent (c) << " ();"
                << "}";
 
             os << esskel (t) << "::" << arm_tag << " " << s << "::" << endl
                << esarm (c) << " ()"
                << "{"
                << arm_tag << " t (static_cast< " << arm_tag << " > (" << endl
-               << "this->" << access << ename (c) << " ()." <<
-              earm (c) << " ()));";
+               << access << ename (c) << " ()." << earm (c) << " ()));";
           }
           else
           {
@@ -587,10 +614,9 @@ namespace CXX
             // type (and accessor function) even for min == max == 1.
             //
             if (c.context ().count ("type"))
-              os << "this->" << access << ename (c) << " ()." <<
-                earm (c) << " ()));";
+              os << access << ename (c) << " ()." << earm (c) << " ()));";
             else
-              os << "this->" << access << earm (c) << " ()));";
+              os << access << earm (c) << " ()));";
           }
 
           // Test whether we have any arms that need initialization.
@@ -663,15 +689,15 @@ namespace CXX
             os << "bool " << sc << "::" << endl
                << esnext (s) << " ()"
                << "{"
-               << "if (this->" << access << iter << " != this->" <<
-              access << end << ")" << endl
-               << "this->" << access << iter << "++;"
+               << "if (" << access << iter << " != " << endl
+               << access << end << ")" << endl
+               << access << iter << "++;"
                << "else" << endl
-               << "this->" << access << iter << " = this->" <<
-              access_s << ename (s) << " ().begin ();"
+               << access << iter << " = " << endl
+               << access_s << ename (s) << " ().begin ();"
                << endl
-               << "if (this->" << access << iter << " != this->" <<
-              access << end << ")"
+               << "if (" << access << iter << " != " << endl
+               << access << end << ")"
                << "{";
 
             Sequence::contains (s, init_);
@@ -687,7 +713,7 @@ namespace CXX
             os << "bool " << sc << "::" << endl
                << espresent (s) << " ()"
                << "{"
-               << "if (this->" << access_seq (s) << epresent (s) << " ())"
+               << "if (" << access_seq (s) << epresent (s) << " ())"
                << "{";
 
             Sequence::contains (s, init_);
@@ -749,8 +775,8 @@ namespace CXX
             os << "bool " << s << "::" << endl
                << esnext (e) << " ()"
                << "{"
-               << "return this->" << access << iter << " != this->" <<
-              access << esstate_member_end (e) << ";"
+               << "return " << access << iter << " != " << endl
+               << access << esstate_member_end (e) << ";"
                << "}";
 
             os << ret << " " << s << "::" << endl
@@ -761,7 +787,7 @@ namespace CXX
             {
               os << "return ";
               type_pass_.dispatch (t);
-              os << "*this->" << access << iter << "++;";
+              os << "*" << access << iter << "++;";
             }
 
             os << "}";
@@ -773,7 +799,7 @@ namespace CXX
               os << "bool " << s << "::" << endl
                  << espresent (e) << " ()"
                  << "{"
-                 << "return this->" << access << epresent (e) << " ();"
+                 << "return " << access << epresent (e) << " ();"
                  << "}";
             }
 
@@ -785,7 +811,7 @@ namespace CXX
             {
               os << "return ";
               type_pass_.dispatch (t);
-              os << "this->" << access << ename (e) << " ();";
+              os << access << ename (e) << " ();";
             }
 
             os << "}";
@@ -817,7 +843,7 @@ namespace CXX
             os << "bool " << s << "::" << endl
                << espresent (a) << " ()"
                << "{"
-               << "return this->" << access << epresent (a) << " ();"
+               << "return " << access << epresent (a) << " ();"
                << "}";
           }
 
@@ -832,7 +858,7 @@ namespace CXX
           {
             os << "return ";
             type_pass_.dispatch (t);
-              os << "this->" << access << ename (a) << " ();";
+              os << access << ename (a) << " ();";
           }
 
           os << "}";
@@ -887,7 +913,22 @@ namespace CXX
             return;
 
           Boolean hb (c.inherits_p ());
+          Boolean rec (recursive (c));
           Boolean restriction (restriction_p (c));
+
+          Boolean validation (!options.value<CLI::suppress_validation> () &&
+                              !options.value<CLI::suppress_serializer_val> ());
+
+          String const& state (esstate (c));
+          String const& member (esstate_member (c));
+          String const& state_type (esstate_type (c));
+
+          String top_member;
+          if (rec)
+          {
+            top_member = L"static_cast< " + state_type + L"* > (this->" +
+              state + L".top ())->" + member;
+          }
 
           os << "// " << name << endl
              << "//" << endl
@@ -895,12 +936,28 @@ namespace CXX
 
           // c-tor
           //
-          if (tiein && hb)
+          if (rec || (tiein && hb))
+          {
             os << name << "::" << endl
-               << name << " ()" << endl
-               << ": " << esskel (c) << " (&base_impl_)"
-               << "{"
+               << name << " ()" << endl;
+
+            String d ("\n: ");
+
+            if (tiein && hb)
+            {
+              os << d << esskel (c) << " (&base_impl_)";
+              d = ",\n  ";
+            }
+
+            if (rec)
+            {
+              os << d << state << " (sizeof (" << state_type <<
+                " ), &" << esstate_first (c) << ")";
+            }
+
+            os << "{"
                << "}";
+          }
 
           // pre
           //
@@ -914,8 +971,44 @@ namespace CXX
           {
             SemanticGraph::Type& b (c.inherits ().base ());
 
-            // Default serializer implementations for anyType and
-            // anySimpleType return void.
+            // If we are recursive but our base is not, we need to call
+            // _post() and post() to end serialization.
+            //
+            if (rec && !recursive (b))
+            {
+              os << "if (!this->" << state << ".empty ())"
+                 << "{";
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << esimpl (b) << "::";
+
+              os << "_post ();";
+
+              if (!exceptions || validation)
+              {
+                os << endl
+                   << "if (this->_context ().error_type ())" << endl
+                   << "return;"
+                   << endl;
+              }
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << esimpl (b) << "::";
+
+              os << "post ();";
+
+              os << "}"
+                 << "else" << endl
+                 << "this->" << esstate_top (c) << " = true;"
+                 << endl;
+            }
+
+            // Call base pre(). Default serializer implementations for
+            // anyType and anySimpleType return void.
             //
             if (!b.is_a<SemanticGraph::AnyType> () &&
                 !b.is_a<SemanticGraph::AnySimpleType> ())
@@ -934,8 +1027,19 @@ namespace CXX
 
           if (!restriction)
           {
-            os << "this->" << esstate (c) << "." << esstate_member (c) <<
-              " = &x;";
+            if (!rec)
+              os << "this->" << state << "." << member << " = &x;";
+            else
+            {
+              if (exceptions)
+                os << "this->" << state << ".push ();";
+              else
+                os << "if (this->" << state << ".push ())" << endl
+                   << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
+                   << endl;
+
+              os << top_member << " = &x;";
+            }
 
             contains_compositor (c, contains_compositor_init_);
           }
@@ -948,6 +1052,85 @@ namespace CXX
           {
             names (c, names_attribute_callback_);
             contains_compositor (c, contains_compositor_callback_);
+          }
+
+          if (rec)
+          {
+            // _post
+            //
+            if (hb && !recursive (c.inherits ().base ()))
+            {
+              // If we are recursive but our base is not, we only call
+              // base _post() if it is the first _post call.
+              //
+              os << "void " << name << "::" << endl
+                 << "_post ()"
+                 << "{"
+                 << "if (this->" << esstate_top (c) << ")" << endl;
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << esimpl (c.inherits ().base ()) << "::";
+
+              os << "_post ();"
+                 << "}";
+            }
+
+            // post
+            //
+            os << "void " << name << "::" << endl
+               << "post ()"
+               << "{"
+               << "this->" << state << ".pop ();";
+
+            if (hb)
+            {
+              SemanticGraph::Type& b (c.inherits ().base ());
+
+              // If we are recursive but our base is not, we only call
+              // base post() if it is the first post call.
+              //
+              if (!recursive (b))
+              {
+                os << "if (this->" << esstate_top (c) << ")"
+                   << "{"
+                   << "this->" << esstate_top (c) << " = false;";
+              }
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << esimpl (c.inherits ().base ()) << "::";
+
+              os << "post ();";
+
+              if (!recursive (b))
+                os << "}";
+            }
+
+            os << "}";
+
+            // reset
+            //
+            if (reset)
+            {
+              os << "void " << name << "::" << endl
+                 << "_reset ()"
+                 << "{";
+
+              if (mixin  && hb)
+                os << esimpl (c);
+              else
+                os << esskel (c);
+
+              os << "::_reset ();";
+
+              os << "for (; !this->" << state << ".empty (); " <<
+                "this->" << state << ".pop ());";
+
+              os << "}";
+            }
           }
         }
 

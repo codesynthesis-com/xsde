@@ -10,6 +10,7 @@
 #include <xsd-frontend/traversal.hxx>
 
 #include <cult/containers/set.hxx>
+#include <cult/containers/vector.hxx>
 
 namespace CXX
 {
@@ -55,24 +56,18 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Element& e)
         {
+          // Check the type. We need to do it even if fixed_ is
+          // false to detect recursive types.
+          //
+          SemanticGraph::Type& t (e.type ());
+          type_traverser_.dispatch (t);
+
           if (fixed_)
           {
-            // Check cardinality.
-            //
             if (e.max () != 1)
-            {
               fixed_ = false;
-              return;
-            }
-
-            // Check the type.
-            //
-            SemanticGraph::Type& t (e.type ());
-
-            if (!test (t))
-              type_traverser_.dispatch (t);
-
-            fixed_ = get (t);
+            else
+              fixed_ = get (t);
           }
         }
 
@@ -195,6 +190,8 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
+          // Simple types cannot be recursive.
+          //
           if (fixed_)
           {
             SemanticGraph::Type& t (a.type ());
@@ -264,14 +261,22 @@ namespace CXX
         {
           SemanticGraph::Context& ctx (c.context ());
 
-          if (test (c))
-            return;
-
           if (ctx.count ("recurse"))
+          {
             set (c, false);
-          else
+            ctx.set ("recursive", true);
+
+            // Mark all the types involved in the cycle as recursive.
+            //
+            for (Path::ReverseIterator i (path_.rbegin ()); *i != &c; ++i)
+            {
+              (*i)->context ().set ("recursive", true);
+            }
+          }
+          else if (!test (c))
           {
             ctx.set ("recurse", true);
+            path_.push_back (&c);
 
             Boolean fixed = true;
 
@@ -328,6 +333,7 @@ namespace CXX
             if (!test (c))
               set (c, fixed);
 
+            path_.pop_back ();
             ctx.remove ("recurse");
           }
         }
@@ -335,6 +341,9 @@ namespace CXX
       private:
         TypeSet& custom_data_;
         Boolean stl;
+
+        typedef Containers::Vector<SemanticGraph::Complex*> Path;
+        Path path_;
       };
 
       struct FundType : Traversal::AnyType,

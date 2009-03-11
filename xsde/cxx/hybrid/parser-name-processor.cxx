@@ -126,6 +126,12 @@ namespace CXX
           return t.context ().get<Boolean> ("fixed");
         }
 
+        Boolean
+        recursive (SemanticGraph::Type& t)
+        {
+          return t.context ().count ("recursive");
+        }
+
       public:
         String
         find_name (String const& n, String const& suffix, NameSet& set)
@@ -379,6 +385,15 @@ namespace CXX
 
           cc.set ("pstate-type", state_type);
           cc.set ("pstate", find_name (state_type, "_", set));
+
+          if (recursive (c))
+          {
+            cc.set ("pstate-first", find_name (state_type, "_first_", set));
+
+            if (c.inherits_p () && !recursive (c.inherits ().base ()))
+              cc.set ("pstate-top", find_name (state_type, "_top_", set));
+          }
+
           cc.set ("pstate-base", find_name (base + L"_base", "_",  set));
 
           // State members are in a nested struct so use a new and

@@ -332,6 +332,12 @@ namespace CXX
       epstate_base (SemanticGraph::Type&);
 
       static String const&
+      epstate_first (SemanticGraph::Type&);
+
+      static String const&
+      epstate_top (SemanticGraph::Type&);
+
+      static String const&
       epstate_member (SemanticGraph::Type&);
 
       static String const&
@@ -394,6 +400,12 @@ namespace CXX
 
       static String const&
       esstate_type (SemanticGraph::Type&);
+
+      static String const&
+      esstate_first (SemanticGraph::Type&);
+
+      static String const&
+      esstate_top (SemanticGraph::Type&);
 
       static String const&
       esstate_member (SemanticGraph::Type&);
@@ -477,6 +489,12 @@ namespace CXX
       fixed_length (SemanticGraph::Compositor& c)
       {
         return c.context ().get<Boolean> ("fixed");
+      }
+
+      Boolean
+      recursive (SemanticGraph::Type& t)
+      {
+        return t.context ().count ("recursive");
       }
 
     public:

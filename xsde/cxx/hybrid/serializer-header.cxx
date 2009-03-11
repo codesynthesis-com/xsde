@@ -400,6 +400,8 @@ namespace CXX
             Boolean hae (has_particle<Traversal::Any> (c));
             Boolean haa (has<Traversal::AnyAttribute> (c));
 
+            Boolean rec (recursive (c));
+
             String const& arg (sarg_type (c));
 
             os << "class " << name << ": public " <<
@@ -414,7 +416,7 @@ namespace CXX
 
             // c-tor
             //
-            if (tiein && hb)
+            if (rec || (tiein && hb))
               os << name << " ();"
                  << endl;
 
@@ -445,12 +447,40 @@ namespace CXX
               }
             }
 
+            if (rec)
+            {
+              // _post
+              //
+              if (hb && !recursive (c.inherits ().base ()))
+                os << "virtual void" << endl
+                   << "_post ();"
+                   << endl;
+
+              // post
+              //
+              os << "virtual void" << endl
+                 << "post ();"
+                 << endl;
+
+              // reset
+              //
+              if (reset)
+                os << "virtual void" << endl
+                   << "_reset ();"
+                   << endl;
+            }
+
+            if (tiein && hb)
+              os << (tiein ? "public:" : "protected:") << endl
+                 << fq_name (c.inherits ().base (), "s:impl") << " base_impl_;"
+                 << endl;
+
             if (!restriction)
             {
               String const& state_type (esstate_type (c));
               String const& member (esstate_member (c));
 
-              os << "protected:" << endl
+              os << (tiein ? "public:" : "protected:") << endl
                  << "struct " << state_type
                  << "{"
                  << "const " << fq_name (c) << "* " << member << ";";
@@ -458,26 +488,33 @@ namespace CXX
               if (c.contains_compositor_p ())
                 contains_compositor (c, contains_compositor_state_);
 
-              os << "};"
-                 << state_type <<  " " << esstate (c) << ";";
-            }
+              os << "};";
 
-            if (tiein && hb)
-              os << endl
-                 << "protected:" << endl
-                 << fq_name (c.inherits ().base (), "s:impl") << " base_impl_;";
+              if (rec)
+              {
+                os << state_type << " " << esstate_first (c) << ";"
+                   << "::xsde::cxx::stack " << esstate (c) << ";";
+
+                if (hb && !recursive (c.inherits ().base ()))
+                  os << "bool " << esstate_top (c) << ";";
+              }
+              else
+                os << state_type <<  " " << esstate (c) << ";";
+            }
 
             os << "};";
           }
 
           // Generate include for custom serializer.
           //
-          if (c.context ().count ("s:impl-include"))
+          SemanticGraph::Context& ctx (c.context ());
+
+          if (ctx.count ("s:impl-include"))
           {
             close_ns ();
 
             os << "#include " << process_include_path (
-              c.context ().get<String> ("s:impl-include")) << endl
+              ctx.get<String> ("s:impl-include")) << endl
                << endl;
 
             open_ns ();
@@ -507,6 +544,9 @@ namespace CXX
     Void
     generate_serializer_header (Context& ctx)
     {
+      ctx.os << "#include <xsde/cxx/stack.hxx>" << endl
+             << endl;
+
       Traversal::Schema schema;
 
       Traversal::Sources sources;

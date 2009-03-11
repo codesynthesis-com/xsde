@@ -5,7 +5,7 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 
-cxx_tun := cxx/string.cxx cxx/ro-string.cxx
+cxx_tun := cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
 
 ifeq ($(xsde_stl),n)
 cxx_tun += cxx/strdupx.cxx

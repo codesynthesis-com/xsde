@@ -73,9 +73,7 @@ namespace xsde
 
     private:
       hashmap (hashmap&);
-
-      hashmap&
-      operator= (hashmap&);
+      hashmap& operator= (hashmap&);
 
     public:
       void

@@ -412,8 +412,22 @@ namespace CXX
 
           String tmp;
           tmp.swap (r);
-          r = epstate (t);
-          r += L".";
+
+          if (!recursive (t))
+          {
+            r = L"this->";
+            r += epstate (t);
+            r += L".";
+          }
+          else
+          {
+            r = L"static_cast< ";
+            r += epstate_type (t);
+            r += L"* > (this->";
+            r += epstate (t);
+            r += L".top ())->";
+          }
+
           r += tmp;
 
           return r;
@@ -426,8 +440,23 @@ namespace CXX
 
           Complex& t (dynamic_cast<Complex&> (a.scope ()));
 
-          String r (epstate (t));
-          r += L".";
+          String r;
+
+          if (!recursive (t))
+          {
+            r = L"this->";
+            r += epstate (t);
+            r += L".";
+          }
+          else
+          {
+            r = L"static_cast< ";
+            r += epstate_type (t);
+            r += L"* > (this->";
+            r += epstate (t);
+            r += L".top ())->";
+          }
+
           r += epstate_member (t);
           r += fixed_length (t) ? L"." : L"->";
 
@@ -492,7 +521,7 @@ namespace CXX
             String access (access_seq (a));
 
             if (fixed_length (a))
-              os << "this->" << access << epresent (a) << " (true);";
+              os << access << epresent (a) << " (true);";
             else
             {
               String const& name (ename (a));
@@ -500,13 +529,13 @@ namespace CXX
               String const& scope (fq_scope (a));
 
               if (exceptions)
-                os << "this->" << access << name << " (new " <<
+                os << access << name << " (new " <<
                   scope << "::" << type << ");";
               else
                 os << scope << "::" << type << "* x = new " <<
                   scope << "::" << type << ";"
                    << "if (x)" << endl
-                   << "this->" << access << name << " (x);"
+                   << access << name << " (x);"
                    << "else" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
@@ -538,57 +567,57 @@ namespace CXX
             if (fixed_length (c))
             {
               if (exceptions)
-                os << "this->" << access_s << name << " ().push_back (" <<
+                os << access_s << name << " ().push_back (" <<
                   type_scope << "::" << type << " ());";
               else
-                os << "if (this->" << access_s << name << " ().push_back (" <<
+                os << "if (" << access_s << name << " ().push_back (" <<
                   type_scope << "::" << type << " ()))"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
                    << "return;"
                    << "}";
 
-              os << "this->" << access << ptr << " = &this->" <<
-                access_s << name << " ().back ();";
+              os << access << ptr << " = &" << access_s << name <<
+                " ().back ();";
             }
             else
             {
-              os << "this->" << access << ptr << " = new " <<
-                type_scope << "::" << type << ";";
+              os << access << ptr << " = new " << type_scope << "::" <<
+                type << ";";
 
               if (exceptions)
-                os << "this->" << access_s << name << " ().push_back (" <<
-                  "this->" << access << ptr << ");";
+                os << access_s << name << " ().push_back (" <<
+                  access << ptr << ");";
               else
-                os << "if (!this->" << access << ptr << " ||" << endl
-                   << "this->" << access_s << name << " ().push_back (" <<
-                  "this->" << access << ptr << "))"
+                os << "if (!" << access << ptr << " ||" << endl
+                   << access_s << name << " ().push_back (" <<
+                  access << ptr << "))"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
                    << "return;"
                    << "}";
             }
 
-            os << "this->" << access << ptr << "->";
+            os << access << ptr << "->";
           }
           else if (c.min () == 0)
           {
             String const& name (ename (c));
 
             if (fixed_length (c))
-              os << "this->" << access << epresent (c) << " (true);";
+              os << access << epresent (c) << " (true);";
             else
             {
               String const& type (etype (c));
 
               if (exceptions)
-                os << "this->" << access << name << " (new " <<
-                  type_scope << "::" << type << ");";
+                os << access << name << " (new " << type_scope << "::" <<
+                  type << ");";
               else
                 os << type_scope << "::" << type << "* x = new " <<
                   type_scope << "::" << type << ";"
                    << "if (x)" << endl
-                   << "this->" << access << name << " (x);"
+                   << access << name << " (x);"
                    << "else"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
@@ -596,7 +625,7 @@ namespace CXX
                    << "}";
             }
 
-            os << "this->" << access << name << " ().";
+            os << access << name << " ().";
           }
           else
           {
@@ -604,12 +633,13 @@ namespace CXX
             // type (and accessor function) even for min == max == 1.
             //
             if (c.context ().count ("type"))
-              os << "this->" << access << ename (c) << " ().";
+              os << access << ename (c) << " ().";
             else
-              os << "this->" << access;
+              os << access;
           }
 
-          os << earm (c) << " (static_cast< " << type_scope;
+          os << earm (c) << " (" << endl
+             << "static_cast< " << type_scope;
 
           if (c.context ().count ("type"))
             os << "::" << etype (c);
@@ -656,13 +686,13 @@ namespace CXX
                 String const& scope (fq_scope (p));
 
                 if (exceptions)
-                  os << "this->" << access_seq (p) << ename (p) <<
+                  os << access_seq (p) << ename (p) <<
                     " (new " << scope << "::" << type << ");";
                 else
                   os << scope << "::" << type << "* x = new " <<
                     scope << "::" << type << ";"
                      << "if (x)" << endl
-                     << "this->" << access_seq (p) << ename (p) << " (x);"
+                     << access_seq (p) << ename (p) << " (x);"
                      << "else" << endl
                      << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
 
@@ -704,31 +734,31 @@ namespace CXX
             if (fixed_length (s))
             {
               if (exceptions)
-                os << "this->" << access_s << name << " ().push_back (" <<
+                os << access_s << name << " ().push_back (" <<
                   scope << "::" << type << " ());";
               else
-                os << "if (this->" << access_s << name << " ().push_back (" <<
+                os << "if (" << access_s << name << " ().push_back (" <<
                   scope << "::" << type << " ()))"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
                    << "return;"
                    << "}";
 
-              os << "this->" << access << ptr << " = &this->" <<
-                access_s << name << " ().back ();";
+              os << access << ptr << " = &" << access_s << name <<
+                " ().back ();";
             }
             else
             {
-              os << "this->" << access << ptr << " = new " <<
-                scope << "::" << type << ";";
+              os << access << ptr << " = new " << scope << "::" <<
+                type << ";";
 
               if (exceptions)
-                os << "this->" << access_s << name << " ().push_back (" <<
-                  "this->" << access << ptr << ");";
+                os << access_s << name << " ().push_back (" <<
+                  access << ptr << ");";
               else
-                os << "if (!this->" << access << ptr << " ||" << endl
-                   << "this->" << access_s << name << " ().push_back (" <<
-                  "this->" << access << ptr << "))" << endl
+                os << "if (!" << access << ptr << " ||" << endl
+                   << access_s << name << " ().push_back (" <<
+                  access << ptr << "))" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
 
@@ -745,7 +775,7 @@ namespace CXX
             String access (access_seq (s));
 
             if (fixed_length (s))
-              os << "this->" << access << epresent (s) << " (true);";
+              os << access << epresent (s) << " (true);";
             else
             {
               String const& name (ename (s));
@@ -753,13 +783,13 @@ namespace CXX
               String const& scope (fq_scope (s));
 
               if (exceptions)
-                os << "this->" << access << name << " (new " <<
+                os << access << name << " (new " <<
                   scope << "::" << type << ");";
               else
                 os << scope << "::" << type << "* x = new " <<
                   scope << "::" << type << ";"
                    << "if (x)" << endl
-                   << "this->" << access << name << " (x);"
+                   << access << name << " (x);"
                    << "else" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
@@ -815,16 +845,15 @@ namespace CXX
             if (e.max () != 1)
             {
               if (exceptions)
-                os << "this->" << access_seq (e) << ename (e) <<
-                  " ().push_back (x);";
+                os << access_seq (e) << ename (e) << " ().push_back (x);";
               else
-                os << "if (this->" << access_seq (e) << ename (e) <<
+                os << "if (" << access_seq (e) << ename (e) <<
                   " ().push_back (x))" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
             else
             {
-              os << "this->" << access_seq (e) << ename (e) << " (x);";
+              os << access_seq (e) << ename (e) << " (x);";
             }
 
             os << "}";
@@ -861,7 +890,7 @@ namespace CXX
           {
             os << arg << " x)"
                << "{"
-               << "this->" << access_seq (a) << ename (a) << " (x);"
+               << access_seq (a) << ename (a) << " (x);"
                << "}";
           }
           else
@@ -903,8 +932,12 @@ namespace CXX
           Boolean hb (c.inherits_p ());
           Boolean restriction (restriction_p (c));
           Boolean fixed (fixed_length (c));
-          Boolean c_string_base (false);
+          Boolean rec (recursive (c));
 
+          Boolean validation (!options.value<CLI::suppress_validation> () &&
+                              !options.value<CLI::suppress_parser_val> ());
+
+          Boolean c_string_base (false);
           if (!stl && hb)
           {
             StringType test (c_string_base);
@@ -915,7 +948,16 @@ namespace CXX
 
           String const& state (epstate (c));
           String const& member (epstate_member (c));
+          String const& state_type (epstate_type (c));
           String const& type (fq_name (c));
+
+          String top_member;
+          if (rec)
+          {
+            top_member = L"static_cast< " + state_type + L"* > (this->" +
+              state + L".top ())->" + member;
+          }
+
 
           os << "// " << name << endl
              << "//" << endl
@@ -928,11 +970,15 @@ namespace CXX
             os << name << "::" << endl
                << name << " (" << (fixed ? "" : "bool b") << ")";
 
+            String d ("\n: ");
+
             if (hb)
             {
               if (tiein)
-                os << endl
-                   << ": " << epskel (c) << " (&base_impl_)";
+              {
+                os << d << epskel (c) << " (&base_impl_)";
+                d = ",\n  ";
+              }
 
               SemanticGraph::Type& b (c.inherits ().base ());
 
@@ -942,19 +988,29 @@ namespace CXX
               if (!c_string_base && !fixed_length (b))
               {
                 if (tiein)
-                  os << "," << endl
-                     << "  " << "base_impl_" << " (true)";
+                  os << d << "base_impl_" << " (true)";
                 else
-                  os << endl
-                     << ": " << fq_name (b, "p:impl") << " (true)";
+                  os << d << fq_name (b, "p:impl") << " (true)";
+
+                d = ",\n  ";
               }
+            }
+
+            if (rec)
+            {
+              os << d << state << " (sizeof (" << state_type <<
+                " ), &" << epstate_first (c) << ")";
             }
 
             os << "{";
 
             if (!fixed)
-              os << "this->" << epstate_base (c) << " = b;"
-                 << "this->" << state << "." << member << " = 0;";
+            {
+              os << "this->" << epstate_base (c) << " = b;";
+
+              if (!rec)
+                os << "this->" << state << "." << member << " = 0;";
+            }
 
             os << "}";
           }
@@ -965,32 +1021,63 @@ namespace CXX
             //
             os << name << "::" << endl
                << "~" << name << " ()"
-               << "{"
-               << "if (!this->" << epstate_base (c) << ")" << endl
-               << "delete this->" << state << "." << member << ";"
-               << "}";
+               << "{";
+
+            if (!rec)
+            {
+              os << "if (!this->" << epstate_base (c) << ")" << endl
+                 << "delete this->" << state << "." << member << ";";
+            }
+            else
+            {
+              os << "for (; !this->" << state << ".empty (); " <<
+                "this->" << state << ".pop ())"
+                 << "{"
+                 << "if (!this->" << epstate_base (c) << ")" << endl
+                 << "delete " << top_member << ";"
+                 << "}";
+            }
+
+            os << "}";
 
             // reset
             //
             if (reset)
+            {
               os << "void " << name << "::" << endl
                  << "_reset ()"
                  << "{";
 
-            if (mixin  && hb)
-              os << epimpl (c); //@@ fq-name
-            else
-              os << epskel (c); //@@ fq-name
+              if (mixin  && hb)
+                os << epimpl (c); //@@ fq-name
+              else
+                os << epskel (c); //@@ fq-name
 
-            os << "::_reset ();"
-               << endl;
+              os << "::_reset ();"
+                 << endl;
 
-            os << "if (!this->" << epstate_base (c) << ")"
-               << "{"
-               << "delete this->" << state << "." << member << ";"
-               << "this->" << state << "." << member << " = 0;"
-               << "}"
-               << "}";
+              if (!rec)
+              {
+                os << "if (!this->" << epstate_base (c) << ")"
+                   << "{"
+                   << "delete this->" << state << "." << member << ";"
+                   << "this->" << state << "." << member << " = 0;"
+                   << "}";
+              }
+              else
+              {
+                // Same code as in d-tor.
+                //
+                os << "for (; !this->" << state << ".empty (); " <<
+                  "this->" << state << ".pop ())"
+                   << "{"
+                   << "if (!this->" << epstate_base (c) << ")" << endl
+                   << "delete " << top_member << ";"
+                   << "}";
+              }
+
+              os << "}";
+            }
           }
 
           // pre_impl
@@ -999,8 +1086,83 @@ namespace CXX
           {
             os << "void " << name << "::" << endl
                << pre_impl_name (c) << " (" << type << "* x)"
-               << "{"
-               << "this->" << state << "." << member << " = x;";
+               << "{";
+
+            if (!rec)
+              os << "this->" << state << "." << member << " = x;";
+            else
+            {
+              // If we are recursive but our base is not, we need
+              // to call _post() and post() to end parsing and copy
+              // the result in case of recursion.
+              //
+              if (hb && !recursive (c.inherits ().base ()))
+              {
+                SemanticGraph::Type& b (c.inherits ().base ());
+
+                os << "if (!this->" << state << ".empty ())"
+                   << "{";
+
+                if (tiein)
+                  os << "this->base_impl_.";
+                else
+                  os << epimpl (b) << "::"; //@@ fq-name.
+
+                os << "_post ();";
+
+                if (!exceptions || validation)
+                {
+                  os << endl
+                     << "if (this->_context ().error_type ())" << endl
+                     << "return;"
+                     << endl;
+                }
+
+                // The following code is similar to what we have in post().
+                //
+
+                // Default parser implementations for anyType and
+                // anySimpleType return void.
+                //
+                if (!b.is_a<SemanticGraph::AnyType> () &&
+                    !b.is_a<SemanticGraph::AnySimpleType> ())
+                {
+                  // If our base is a fixed-length type then copy the data
+                  // over. Note that it cannot be a C-string.
+                  //
+                  if (fixed_length (b))
+                  {
+                    os << "static_cast< ";
+
+                    base_name_.dispatch (b);
+
+                    os << "& > (" << endl
+                       << "*" << top_member << ") = " << endl;
+                  }
+
+                  if (tiein)
+                    os << "this->base_impl_.";
+                  else
+                    os << epimpl (b) << "::"; //@@ fq-name.
+
+                  os << post_name (b) << " ();";
+                }
+
+                os << "}"
+                   << "else" << endl
+                   << "this->" << epstate_top (c) << " = true;"
+                   << endl;
+              }
+
+              if (exceptions)
+                os << "this->" << state << ".push ();";
+              else
+                os << "if (this->" << state << ".push ())" << endl
+                   << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
+                   << endl;
+
+              os << top_member << " = x;";
+            }
 
             // Call base pre_impl (var-length) or pre (fix-length). C-string-
             // based built-in parser implementations don't have pre_impl().
@@ -1068,6 +1230,27 @@ namespace CXX
             contains_compositor (c, contains_compositor_callback_);
           }
 
+          // _post
+          //
+          if (rec && hb && !recursive (c.inherits ().base ()))
+          {
+            // If we are recursive but our base is not, we only call
+            // base _post() if it is the first _post call.
+            //
+            os << "void " << name << "::" << endl
+               << "_post ()"
+               << "{"
+               << "if (this->" << epstate_top (c) << ")" << endl;
+
+            if (tiein)
+              os << "this->base_impl_.";
+            else
+              os << epimpl (c.inherits ().base ()) << "::"; //@@ fq-name.
+
+            os << "_post ();"
+               << "}";
+          }
+
           // post
           //
           os << ret << " " << name << "::" << endl
@@ -1084,6 +1267,16 @@ namespace CXX
             if (!b.is_a<SemanticGraph::AnyType> () &&
                 !b.is_a<SemanticGraph::AnySimpleType> ())
             {
+              // If we are recursive but our base is not, we only call
+              // base post() if it is the first post call.
+              //
+              if (rec && !recursive (b))
+              {
+                os << "if (this->" << epstate_top (c) << ")"
+                   << "{"
+                   << "this->" << epstate_top (c) << " = false;";
+              }
+
               // If our base is a fixed-length type or C-string-base, then
               // copy the data over.
               //
@@ -1093,8 +1286,16 @@ namespace CXX
 
                 base_name_.dispatch (b);
 
-                os << "& > (" << (fixed ? "" : "*") << "this->" <<
-                  state << "." << member << ") = ";
+                os << "& > (";
+
+                if (!rec)
+                  os << (fixed ? "" : "*") << "this->" << state << "." <<
+                    member;
+                else
+                  os << endl
+                     << "*" << top_member;
+
+                os << ") = " << endl;
               }
 
               if (c_string_base)
@@ -1103,8 +1304,14 @@ namespace CXX
 
                 base_name_.dispatch (b);
 
-                os << "* > (this->" <<
-                  state << "." << member << ")->base_value (";
+                os << "* > (";
+
+                if (!rec)
+                  os << "this->" << state << "." << member;
+                else
+                  os << top_member;
+
+                os << ")->base_value (" << endl;
               }
 
               if (tiein)
@@ -1118,15 +1325,25 @@ namespace CXX
                 os << ")";
 
               os << ";";
+
+              if (rec && !recursive (b))
+                os << "}";
             }
           }
 
           if (fixed)
             os << "return this->" << state << "." << member << ";";
           else
-            os << type << "* r = this->" << state << "." << member << ";"
-               << "this->" << state << "." << member << " = 0;"
-               << "return r;";
+          {
+            if (!rec)
+              os << type << "* r = this->" << state << "." << member << ";"
+                 << "this->" << state << "." << member << " = 0;";
+            else
+              os << type << "* r = " << top_member << ";"
+                 << "this->" << state << ".pop ();";
+
+            os << "return r;";
+          }
 
           os << "}";
         }
