@@ -9,7 +9,7 @@ EXTRA_CPPFLAGS := -I..
 src := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 src += c/genx/genx.c c/genx/char-props.c
 
-src += cxx/string.cxx cxx/ro-string.cxx
+src += cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
 
 ifeq ($(XSDE_STL),n)
 src += cxx/strdupx.cxx

@@ -11,7 +11,7 @@ EXTRA_CPPFLAGS = /I..
 src = c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
 src = $(src) c\genx\genx.c c\genx\char-props.c
 
-src = $(src) cxx\string.cxx cxx\ro-string.cxx
+src = $(src) cxx\string.cxx cxx\ro-string.cxx cxx\stack.cxx
 
 !if "$(XSDE_STL)" == "n"
 src = $(src) cxx\strdupx.cxx
