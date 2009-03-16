@@ -8,7 +8,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 all_examples := binary compositors custom hello multiroot streaming \
 library wildcard filter minimal
 
-build_examples := binary compositors
+build_examples := binary compositors custom
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
