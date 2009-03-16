@@ -704,7 +704,16 @@ main (Int argc, Char* argv[])
         // Calculate type sizes.
         //
         if (gen_hybrid)
-          CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, tu);
+        {
+          try
+          {
+            CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, tu);
+          }
+          catch (CXX::Hybrid::Generator::Failed const&)
+          {
+            return 1; // Diagnostic has already been issued.
+          }
+        }
 
         // Try to rearrange definitions so that there is no forward
         // inheritance.
@@ -913,7 +922,16 @@ main (Int argc, Char* argv[])
       // Calculate type sizes.
       //
       if (gen_hybrid)
-        CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, "");
+      {
+        try
+        {
+          CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, "");
+        }
+        catch (CXX::Hybrid::Generator::Failed const&)
+        {
+          return 1; // Diagnostic has already been issued.
+        }
+      }
 
       // Normalize and annotate complex content restrictions.
       //

@@ -13,6 +13,13 @@ Version 3.1.0
     Started Guide as well as examples in the examples/cxx/hybrid/binary/
     directory.
 
+  * New option, --custom-type, allows customization of the object model
+    classes. You have the option of either basing your custom implementation
+    on the generated version or providing your own implementation from
+    scratch. For details see Section 4.8, "Customizing the Object Model"
+    in the Getting Started Guide as well as examples in the 
+    examples/cxx/hybrid/custom/ directory.
+
   * New option, --generate-detach, triggers generation of detach functions
     for elements and attributes of variable-length types. These functions,
     for example, allow you to move sub-trees in the object model either 

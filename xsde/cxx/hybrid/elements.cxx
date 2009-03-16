@@ -375,12 +375,19 @@ namespace CXX
           p->contained_compositor ().container ()));
 
       if (!r)
-        r = fq ? fq_name (t) : ename (t);
+        r = fq ? fq_name (t) : ename_custom (t);
       else
       {
         String tmp;
         tmp.swap (r);
-        r = fq ? fq_name (t) : ename (t);
+
+        if (fq)
+        {
+          r += fq_name (t.scope ());
+          r += L"::";
+        }
+
+        r = ename_custom (t);
         r += L"::";
         r += tmp;
       }
@@ -405,7 +412,10 @@ namespace CXX
       using SemanticGraph::Complex;
 
       Complex& t (dynamic_cast<Complex&> (a.scope ()));
-      return fq ? fq_name (t) : ename (t);
+
+      return fq
+        ? fq_name (t.scope ()) + L"::" + ename_custom (t)
+        : ename_custom (t);
     }
 
     Void Context::
@@ -474,7 +484,25 @@ namespace CXX
     Void TypeForward::
     traverse (SemanticGraph::Type& t)
     {
-      os << "class " << ename (t) << ";";
+      SemanticGraph::Context& ctx (t.context ());
+
+      // Forward-declare the base.
+      //
+      if (ctx.count ("name-base"))
+      {
+        if (String base = ctx.get<String> ("name-base"))
+          os << "class " << base << ";";
+      }
+
+      // Typedef or forward-declare the type.
+      //
+      if (ctx.count ("name-typedef"))
+      {
+        os << "typedef " << ctx.get<String> ("name-typedef") << " " <<
+          ename (t) << ";";
+      }
+      else
+        os << "class " << ename (t) << ";";
     }
 
     Void Includes::

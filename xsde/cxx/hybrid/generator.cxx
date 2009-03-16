@@ -131,6 +131,7 @@ namespace CXX
       extern Key suppress_reset           = "suppress-reset";
       extern Key reuse_style_mixin        = "reuse-style-mixin";
       extern Key custom_data              = "custom-data";
+      extern Key custom_type              = "custom-type";
       extern Key custom_parser            = "custom-parser";
       extern Key custom_serializer        = "custom-serializer";
       extern Key root_element_first       = "root-element-first";
@@ -294,20 +295,34 @@ namespace CXX
       << " XML Schema type <type>."
       << endl;
 
+    e << "--custom-type <map>" << endl
+      << " Use a custom type implementation instead of the\n"
+      << " generated version. The <map> argument is in the\n"
+      << " form name[=[flags][/[type][/[base][/include]]]],\n"
+      << " where <name> is an XML Schema type name,\n"
+      << " optional <flags> specify whether the custom type\n"
+      << " is fixed or variable-length, optional <type> is\n"
+      << " a C++ type name that should be used instead,\n"
+      << " optional <base> is a C++ name that should be\n"
+      << " given to the generated version, and optional\n"
+      << " <include> is the header file that defines the\n"
+      << " custom implementation."
+      << endl;
+
     e << "--custom-parser <map>" << endl
       << " Use a custom parser implementation instead of the\n"
       << " generated version. The <map> argument is in the\n"
-      << " form type[=base[/include]], where <type> is an XML\n"
-      << " Schema type name, optional <base> is a C++ name\n"
-      << " that should be given to the generated version,\n"
-      << " and optional <include> is the header file that\n"
-      << " defines the custom implementation."
+      << " form name[=[base][/include]], where <name> is an\n"
+      << " XML Schema type name, optional <base> is a C++\n"
+      << " name that should be given to the generated\n"
+      << " version, and optional <include> is the header\n"
+      << " file that defines the custom implementation."
       << endl;
 
     e << "--custom-serializer <map>" << endl
       << " Use a custom serializer implementation instead of\n"
       << " the generated version. The <map> argument is in\n"
-      << " the form type[=base[/include]], where <type> is\n"
+      << " the form name[=[base][/include]], where <name> is\n"
       << " an XML Schema type name, optional <base> is a C++\n"
       << " name that should be given to the generated\n"
       << " version, and optional <include> is the header\n"
@@ -914,7 +929,9 @@ namespace CXX
     // Determine which types are fixed/variable-sized.
     //
     TreeSizeProcessor proc;
-    proc.process (ops, schema, file);
+
+    if (!proc.process (ops, schema, file))
+      throw Failed ();
   }
 
   namespace

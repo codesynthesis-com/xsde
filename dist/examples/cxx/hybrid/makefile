@@ -2,7 +2,7 @@ root := ../../..
 
 include $(root)/build/config.make
 
-dirs := binary compositors
+dirs := binary compositors custom
 
 ifeq ($(XSDE_IOSTREAM),y)
 ifeq ($(XSDE_EXCEPTIONS),y)

@@ -3102,21 +3102,30 @@ main ()
 
   <h2><a name="4.8">4.8 Customizing the Object Model</a></h2>
 
-  <p>Sometimes it is desirable to be able to store extra,
-     application-specific data in some object model classes or
-     nested compositor classes. Cases where this functionality
-     may be required include handling of typeless content
-     matched by XML Schema wildcards as well as a need for
-     an application to pass extra data as part of the object
-     model. The C++/Hybrid mapping provides a light-weight
-     mechanism for storing custom data by allowing you to add
-     a sequence of opaque objects, stored as <code>void*</code>,
-     to select generated classes. It is also possible to
-     customize the parsing and serialization code for such
-     classes in order to populate the custom data sequence
-     during parsing and later serialize it to XML. See
+  <p>Sometimes it is desirable to add extra, application-specific
+     data or functionality to some object model classes or
+     nested compositor classes. Cases where this may be required
+     include handling of typeless content matched by XML Schema
+     wildcards as well as a need for an application to pass extra
+     data or provide custom functions as part of the object model.
+     The C++/Hybrid mapping provides two mechanisms for accomplishing
+     this: custom data and custom types. Custom data is a light-weight
+     mechanism for storing application-specific data by allowing you
+     to add a sequence of opaque objects, stored as <code>void*</code>,
+     to select generated classes. Type customization is a more
+     powerful mechanism that allows you to provide custom implementations
+     for select object model classes. You have the option of either extending
+     the generated version of the class (for example, by adding extra data
+     members and/or functions) or providing your own implementation from
+     scratch. The latter approach essentially allows you to change the
+     mapping of XML Schema to C++ on a case by case basis.</p>
+
+  <p>It is also possible to customize the parsing and serialization code,
+     for example, to populate the custom data sequence or custom data
+     members during parsing and later serialize them to XML. See
      <a href="#6.1">Section 6.1, "Customizing Parsers and
-     Serializers"</a> for details.</p>
+     Serializers"</a> for details. The remainder of this section discusses
+     the custom data and custom types mechanisms in more detail.</p>
 
   <p>To instruct the XSD/e compiler to include custom data
      in a specific object model class, we need to use the
@@ -3126,12 +3135,12 @@ main ()
      name starting with the XML Schema type, for example
      <code>type::sequence1</code>. If we would like to
      add the ability to store custom data in the generated
-     <code>person</code> class for our person records
+     <code>person</code> class from our person records
      vocabulary, we can compile <code>people.xsd</code>
      like this:</p>
 
   <pre class="terminal">
-$ xsde cxx-hybrid --custom-type person people.xsd
+$ xsde cxx-hybrid --custom-data person people.xsd
   </pre>
 
   <p>The resulting <code>person</code> class will have the
@@ -3333,6 +3342,178 @@ cd.push_back (d);
 for (person::custom_data_iterator i = cd.begin (); i != cd.end (); ++i)
 {
   data* d = static_cast&lt;data*> (*i);
+}
+  </pre>
+
+  <p>To instruct the XSD/e compiler to use a custom implementation
+     for a specific object model class, we need to use the
+     <code>--custom-type</code> option. The argument format for this
+     option is <code>name[=[flags][/[type][/[base][/include]]]]</code>.
+     The <code><i>name</i></code> component is the XML Schema type name being
+     customized. Optional <code><i>flags</i></code> allow you to specify whether
+     the custom class is fixed or variable-length since customization can
+     alter this property, normally from fixed-length to
+     variable-length. The <code>f</code> flag indicates the type is
+     fixed-length and the <code>v</code> flag indicates the type is
+     variable-length. If omitted, the default rules are used to determine
+     the type length (see <a href="#4.2">Section 4.2, "Memory Management"</a>).
+
+     Optional <code><i>type</i></code> is a C++ type name, potentially qualified,
+     that should be used as a custom implementation. If specified, the
+     object model type is defined as a <code>typedef</code> alias for
+     this C++ type. Optional <code><i>base</i></code> is a C++ name that should
+     be given to the generated version. It is normally used as a base for
+     the custom implementation. Optional <code><i>include</i></code> is the header
+     file that defines the custom implementation. It is <code>#include</code>'ed
+     into the generated code immediately after (if <code><i>base</i></code> is
+     specified) or instead of the generated version. The following
+     examples show how we can use this option:</p>
+
+  <pre class="terminal">
+--custom-type foo
+--custom-type foo=///foo.hxx
+--custom-type foo=v///foo.hxx
+--custom-type foo=f/int
+--custom-type foo=//foo_base/my/foo.hxx
+--custom-type foo=v/wrapper&lt;foo_base>/foo_base
+  </pre>
+
+  <p>The first version instructs the XSD/e compiler not to generate
+     the object model class for the <code>foo</code> XML Schema
+     type. The generated code simply forward-declares <code>foo</code>
+     as a class and leaves it to you to provide the implementation.
+
+     The second version is similar to the first, except now we specify
+     the header file which defines the custom implementation.
+     This file is automatically included into the generated header
+     file instead of the standard implementation.
+
+     The third version is similar to the second, except now we specify
+     that the <code>foo</code> type is variable-length. In the previous
+     two cases the type length was determined automatically based on the
+     type definition in the schema.
+
+     In the fourth version we specify that schema type <code>foo</code>
+     is fixed-length and should be mapped to <code>int</code>.
+
+     The fifth version instructs the XSD/e compiler to generate
+     the object model class for type <code>foo</code> but call it
+     <code>foo_base</code>. It also tells the compiler to generate
+     the <code>#include</code> directive with the <code>my/foo.hxx</code>
+     file (which presumably defines <code>foo</code>) right after the
+     <code>foo_base</code> class.
+
+     Finally, the last version specifies that schema type <code>foo</code>
+     is variable-length and should be mapped to <code>wrapper&lt;foo_base></code>.
+     The compiler is also instructed to generate the standard object
+     model class for type <code>foo</code> but call it <code>foo_base</code>.
+
+     If you omit the last component (<code><i>include</i></code>), as in the
+     final version, then you can provide the custom type definitions using
+     one of the prologue or epilogue XSD/e compiler options. See the
+     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     Compiler Command Line Manual</a> for details.</p>
+
+  <p>Note also that if the type length you specified with the
+     <code>--custom-type</code> option differs from the default type
+     length that would have been determined by the XSD/e compiler,
+     then you need to specify this <code>--custom-type</code> option
+     when compiling every schema file that includes or imports the
+     schema that defines the type being customized.</p>
+
+  <p>As an example, let us add a flag to the <code>person</code> class
+     from our person records vocabulary. This flag can be used by the
+     application to keep track of whether a particular person record
+     has been verified. To customize the <code>person</code> type we
+     can compile <code>people.xsd</code> like this:</p>
+
+  <pre class="terminal">
+$ xsde cxx-hybrid --custom-type person=//person_base/person.hxx \
+people.xsd
+  </pre>
+
+  <p>The relevant code fragment from the generated header file
+     looks like this:</p>
+
+  <pre class="c++">
+// person_base (fixed-length)
+//
+class person_base
+{
+  ...
+};
+
+#include "person.hxx"
+
+// people (variable-length)
+//
+class people
+{
+  ...
+
+  // person
+  //
+  typedef xsde::fix_sequence&lt;person> person_sequence;
+  typedef person_sequence::iterator person_iterator;
+  typedef person_sequence::const_iterator person_const_iterator;
+
+  const person_sequence&amp;
+  person () const;
+
+  person_sequence&amp;
+  person ();
+
+private:
+  ...
+};
+  </pre>
+
+  <p>We base our custom implementation of the <code>person</code>
+     class on generated <code>person_base</code> and save it to
+     <code>person.hxx</code>:</p>
+
+  <pre class="c++">
+class person: public person_base
+{
+public:
+  person ()
+    : verified_ (false)
+  {
+  }
+
+  bool
+  verified () const
+  {
+    return verified_;
+  }
+
+  void
+  verified (bool v)
+  {
+    verified_ = v;
+  }
+
+private:
+  bool verified_;
+};
+  </pre>
+
+  <p>The client code can use our custom implementation as if the
+     flag was part of the vocabulary:</p>
+
+  <pre class="c++">
+people::person_sequence&amp; ps = ...;
+
+for (people::person_iterator i = ps.begin (); i != ps.end (); ++i)
+{
+  if (!i->verified ())
+  {
+    // Verify the record.
+
+    ...
+
+    i->verified (true);
+  }
 }
   </pre>
 
@@ -4868,13 +5049,13 @@ hello_s.post ();
      implementation, you will need to specify the
      <code>--custom-parser</code> or <code>--custom-serializer</code>
      option, respectively. The argument format for these two options
-     is <code>type[=base[/include]]</code>. The <code>type</code>
+     is <code>name[=[base][/include]]]</code>. The <code><i>name</i></code>
      component is the XML Schema type name being customized. Optional
-     <code>base</code> is a C++ name that should be given to the
+     <code><i>base</i></code> is a C++ name that should be given to the
      generated version. It is normally used as a base for the custom
-     implementation. Optional <code>include</code> is the header file
+     implementation. Optional <code><i>include</i></code> is the header file
      that defines the custom implementation. It is <code>#include</code>'ed
-     into the generated code immediately after (if <code>base</code>
+     into the generated code immediately after (if <code><i>base</i></code>
      is specified) or instead of the generated version. The following
      examples show how we can use these options:</p>
 
@@ -4896,7 +5077,8 @@ hello_s.post ();
      <code>foo_base_pimpl</code> class. The last version instructs
      the XSD/e compiler to include <code>foo/foo-custom.hxx</code>
      instead of generating the parser implementation for
-     <code>foo</code>. If you omit the last component, then
+     <code>foo</code>. If you omit the last component
+     (<code><i>include</i></code>), then
      you can include the custom parser/serializer definitions
      using one of the prologue or epilogue XSD/e compiler options.
      See the <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e

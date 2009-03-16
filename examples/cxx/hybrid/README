@@ -36,6 +36,12 @@ compositors
   Shows how to create, access, and modify object models with complex
   nested choice and sequence compositors.
 
+custom/
+  A collection of examples that show how to customize the C++/Hybrid
+  object model by using custom C++ classes instead of or in addition
+  to the generated ones. See the accompanying README file for an
+  overview of each example in this directory.
+
 binary/
   A collection of examples that show how to serialize the object model
   into a number of predefined and custom binary formats.

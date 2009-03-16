@@ -1,24 +1,14 @@
-root = ..\..\..
+root = ..\..\..\..
 
 !include $(root)\build\config.nmake
 
-dirs = binary compositors custom
+dirs =
 
 !if "$(XSDE_IOSTREAM)" == "y"
 !if "$(XSDE_EXCEPTIONS)" == "y"
 
-dirs = $(dirs) hello multiroot streaming
+dirs = $(dirs) wildcard
 
-!if "$(XSDE_STL)" == "y"
-dirs = $(dirs) library wildcard filter
-!endif
-
-!endif
-!endif
-
-!if "$(XSDE_STL)" == "n"
-!if "$(XSDE_EXCEPTIONS)" == "n"
-dirs = $(dirs) minimal
 !endif
 !endif
 

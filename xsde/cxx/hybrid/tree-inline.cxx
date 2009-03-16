@@ -24,7 +24,13 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
-          String name (ename (l));
+          String const& name (ename_custom (l));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
 
           os << "// " << comment (l.name ()) << endl
              << "//" << endl
@@ -82,7 +88,13 @@ namespace CXX
         virtual Void
         traverse (Type& u)
         {
-          String name (ename (u));
+          String const& name (ename_custom (u));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
 
           os << "// " << comment (u.name ()) << endl
              << "//" << endl
@@ -1810,12 +1822,20 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
+          String const& scope (ename_custom (c));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!scope)
+            return;
+
+          os << "// " << comment (c.name ()) << endl
+             << "//" << endl
+             << endl;
+
           if (!restriction_p (c))
           {
-            os << "// " << comment (c.name ()) << endl
-               << "//" << endl
-               << endl;
-
             Complex::names (c, attribute_names_func_);
 
             if (c.contains_compositor_p ())
@@ -1831,7 +1851,6 @@ namespace CXX
           //
           if (c.context ().count ("cd-name"))
           {
-            String const& scope (ename (c));
             String const& name (ecd_name (c));
             String const& member (ecd_member (c));
             String const& sequence (ecd_sequence (c));

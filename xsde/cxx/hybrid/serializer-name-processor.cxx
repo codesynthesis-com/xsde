@@ -371,12 +371,6 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          Boolean restriction (false);
-
-          if (c.inherits_p ())
-            restriction = c.inherits ().is_a<SemanticGraph::Restricts> () &&
-              !c.inherits ().base ().is_a<SemanticGraph::AnyType> ();
-
           SemanticGraph::Context& cc (c.context ());
 
           // In case of customization use s:impl-base instead of s:impl.
@@ -387,6 +381,14 @@ namespace CXX
                               : cc.get<String> ("s:impl"));
           if (!base)
             return;
+
+          //
+          //
+          Boolean restriction (false);
+
+          if (c.inherits_p ())
+            restriction = c.inherits ().is_a<SemanticGraph::Restricts> () &&
+              !c.inherits ().base ().is_a<SemanticGraph::AnyType> ();
 
           // Use skeleton's name set to make sure we don't clash
           // with callbacks which we are overriding.

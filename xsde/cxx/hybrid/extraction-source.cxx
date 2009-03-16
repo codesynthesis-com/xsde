@@ -24,7 +24,13 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
-          String name (ename (l));
+          String const& name (ename_custom (l));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
 
           for (Streams::ConstIterator i (istreams.begin ());
                i != istreams.end (); ++i)
@@ -56,7 +62,14 @@ namespace CXX
         virtual Void
         traverse (Type& u)
         {
-          String name (ename (u));
+          String const& name (ename_custom (u));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
           String const& value (u.context ().get<String> ("value"));
 
           for (Streams::ConstIterator i (istreams.begin ());
@@ -930,9 +943,15 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          Boolean restriction (restriction_p (c));
+          String const& name (ename_custom (c));
 
-          String name (ename (c));
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          Boolean restriction (restriction_p (c));
 
           for (Streams::ConstIterator i (istreams.begin ());
                i != istreams.end (); ++i)

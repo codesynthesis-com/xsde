@@ -1,30 +1,18 @@
-# file      : examples/cxx/hybrid/makefile
+# file      : examples/cxx/hybrid/custom/makefile
 # author    : Boris Kolpackov <boris@codesynthesis.com>
 # copyright : Copyright (c) 2006-2009 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
+include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 
-all_examples := binary compositors custom hello multiroot streaming \
-library wildcard filter minimal
-
-build_examples := binary compositors
+all_examples := wildcard
+build_examples :=
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
 
-build_examples += hello multiroot streaming
+build_examples += wildcard
 
-ifeq ($(xsde_stl),y)
-build_examples += library wildcard filter
-endif
-
-endif
-endif
-
-ifeq ($(xsde_stl),n)
-ifeq ($(xsde_exceptions),n)
-build_examples += minimal
 endif
 endif
 

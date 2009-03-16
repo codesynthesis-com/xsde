@@ -52,6 +52,7 @@ namespace CXX
               stl (!ops.value<CLI::no_stl> ()),
               detach (ops.value<CLI::generate_detach> ()),
               custom_data_map (custom_data_map_),
+              custom_type_map (custom_type_map_),
               global_type_names (global_type_names_)
         {
           // Translate the type names with custom data.
@@ -93,6 +94,82 @@ namespace CXX
               } while (true);
             }
           }
+
+          // Custom type mapping.
+          //
+          {
+            typedef Containers::Vector<NarrowString> Vector;
+            Vector const& v (ops.value<CLI::custom_type> ());
+
+            for (Vector::ConstIterator i (v.begin ()), e (v.end ());
+                 i != e; ++i)
+            {
+              String s (*i);
+
+              if (s.empty ())
+                continue;
+
+              // Split the string in two parts at the last '='.
+              //
+              Size pos (s.rfind ('='));
+
+              // If no delimiter found type, base, and include are empty.
+              //
+              if (pos == String::npos)
+              {
+                custom_type_map_[s].type.clear ();
+                custom_type_map_[s].base.clear ();
+                custom_type_map_[s].include.clear ();
+                continue;
+              }
+
+              String name (s, 0, pos);
+
+              // Skip the flags component.
+              //
+              pos = s.find ('/', pos + 1);
+
+              if (pos == String::npos)
+              {
+                custom_type_map_[name].type.clear ();
+                custom_type_map_[name].base.clear ();
+                custom_type_map_[name].include.clear ();
+                continue;
+              }
+
+              String bi (s, pos + 1);
+
+              // See if we've got the base/include part after '/'.
+              //
+              pos = bi.find ('/');
+
+              String type, base, include;
+
+              if (pos != String::npos)
+              {
+                type.assign (bi, 0, pos);
+                String i (bi, pos + 1);
+
+                // See if we've got the include part after '/'.
+                //
+                pos = i.find ('/');
+
+                if (pos != String::npos)
+                {
+                  base.assign (i, 0, pos);
+                  include.assign (i, pos + 1, String::npos);
+                }
+                else
+                  base = i;
+              }
+              else
+                type = bi;
+
+              custom_type_map_[name].type = type;
+              custom_type_map_[name].base = base;
+              custom_type_map_[name].include = include;
+            }
+          }
         }
 
       protected:
@@ -103,6 +180,7 @@ namespace CXX
               stl (c.stl),
               detach (c.detach),
               custom_data_map (c.custom_data_map),
+              custom_type_map (c.custom_type_map),
               global_type_names (c.global_type_names)
         {
         }
@@ -168,10 +246,31 @@ namespace CXX
         {
         };
 
+      public:
+        struct CustomType
+        {
+          CustomType (String const& t = L"",
+                      String const& b = L"",
+                      String const& i = L"")
+              : type (t), base (b), include (i)
+          {
+          }
+
+          String type;
+          String base;
+          String include;
+        };
+
+        typedef
+        Cult::Containers::Map<String, CustomType>
+        CustomTypeMap;
+
       private:
         SemanticGraph::Path const schema_path_;
 
         CustomDataMap custom_data_map_;
+        CustomTypeMap custom_type_map_;
+
         Cult::Containers::Map<String, NameSet*> global_type_names_;
 
       public:
@@ -182,6 +281,8 @@ namespace CXX
         Boolean detach;
 
         CustomDataMap& custom_data_map;
+        CustomTypeMap& custom_type_map;
+
         Cult::Containers::Map<String, NameSet*>& global_type_names;
       };
 
@@ -197,6 +298,17 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
+          SemanticGraph::Context& lc (l.context ());
+
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (lc.count ("name-base")
+                              ? lc.get<String> ("name-base")
+                              : lc.get<String> ("name"));
+          if (!name)
+            return;
+
           if (!data_members_)
           {
             // Check if this type has custom data.
@@ -206,12 +318,6 @@ namespace CXX
             if (i != custom_data_map.end () &&
                 i->second->find (L"") != i->second->end ())
             {
-              SemanticGraph::Context& lc (l.context ());
-
-              // Use processed name.
-              //
-              String const& name (lc.get<String> ("name"));
-
               lc.set (member_set_key, NameSet ());
               NameSet& set (lc.get<NameSet> (member_set_key));
               set.insert (name);
@@ -229,8 +335,6 @@ namespace CXX
           }
           else
           {
-            SemanticGraph::Context& lc (l.context ());
-
             // Custom data.
             //
             if (lc.count ("cd-name"))
@@ -260,12 +364,17 @@ namespace CXX
         {
           SemanticGraph::Context& uc (u.context ());
 
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (uc.count ("name-base")
+                              ? uc.get<String> ("name-base")
+                              : uc.get<String> ("name"));
+          if (!name)
+            return;
+
           if (!data_members_)
           {
-            // Use processed name.
-            //
-            String const& name (uc.get<String> ("name"));
-
             uc.set (member_set_key, NameSet ());
             NameSet& set (uc.get<NameSet> (member_set_key));
             set.insert (name);
@@ -1173,6 +1282,15 @@ namespace CXX
         {
           SemanticGraph::Context& cc (c.context ());
 
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (cc.count ("name-base")
+                              ? cc.get<String> ("name-base")
+                              : cc.get<String> ("name"));
+          if (!name)
+            return;
+
           // Check if this type or any of its nested types have
           // custom data.
           //
@@ -1182,10 +1300,6 @@ namespace CXX
             if (i != custom_data_map.end ())
               map = i->second.get ();
           }
-
-          // Use processed name.
-          //
-          String const& name (cc.get<String> ("name"));
 
           cc.set (member_set_key, NameSet ());
           NameSet& member_set (cc.get<NameSet> (member_set_key));
@@ -1207,8 +1321,14 @@ namespace CXX
               if (!bc.count (member_set_key))
                 dispatch (b);
 
-              NameSet const& bset (bc.get<NameSet> (member_set_key));
-              member_set.insert (bset.begin (), bset.end ());
+              // We may still not have the set if this type is being
+              // customized.
+              //
+              if (bc.count (member_set_key))
+              {
+                NameSet const& bset (bc.get<NameSet> (member_set_key));
+                member_set.insert (bset.begin (), bset.end ());
+              }
             }
 
             // Inheritance by restriction from anyType is a special case.
@@ -1335,6 +1455,18 @@ namespace CXX
         assign_data (Type& c)
         {
           SemanticGraph::Context& cc (c.context ());
+
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (cc.count ("name-base")
+                              ? cc.get<String> ("name-base")
+                              : cc.get<String> ("name"));
+          if (!name)
+            return;
+
+          //
+          //
           Boolean restriction (false);
 
           if (c.inherits_p ())
@@ -1421,8 +1553,30 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Type& t)
         {
-          String name (find_name (t.name (), set_));
-          t.context ().set ("name", name);
+          String const& name (t.name ());
+          SemanticGraph::Context& tc (t.context ());
+
+          tc.set ("name", find_name (name, set_));
+
+          // See if this parser is being customized.
+          //
+          CustomTypeMap::ConstIterator i (custom_type_map.find (name));
+
+          if (i != custom_type_map.end ())
+          {
+            if (i->second.type)
+              tc.set ("name-typedef", i->second.type);
+
+            // The empty name-base indicates that we don't need to
+            // generate anything.
+            //
+            tc.set ("name-base", i->second.base
+                    ? find_name (i->second.base, set_)
+                    : i->second.base);
+
+            if (i->second.include)
+              tc.set ("name-include", i->second.include);
+          }
         }
 
       private:

@@ -43,6 +43,7 @@ namespace CXX
       extern Key suppress_reset;
       extern Key reuse_style_mixin;
       extern Key custom_data;
+      extern Key custom_type;
       extern Key custom_parser;
       extern Key custom_serializer;
       extern Key root_element_first;
@@ -124,6 +125,7 @@ namespace CXX
         suppress_reset,           Boolean,
         reuse_style_mixin,        Boolean,
         custom_data,              Cult::Containers::Vector<NarrowString>,
+        custom_type,              Cult::Containers::Vector<NarrowString>,
         custom_parser,            Cult::Containers::Vector<NarrowString>,
         custom_serializer,        Cult::Containers::Vector<NarrowString>,
         root_element_first,       Boolean,

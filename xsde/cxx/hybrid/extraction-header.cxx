@@ -24,7 +24,13 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
-          String name (ename (l));
+          String const& name (ename_custom (l));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
 
           for (Streams::ConstIterator i (istreams.begin ());
                i != istreams.end (); ++i)
@@ -47,7 +53,13 @@ namespace CXX
         virtual Void
         traverse (Type& u)
         {
-          String name (ename (u));
+          String const& name (ename_custom (u));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
 
           for (Streams::ConstIterator i (istreams.begin ());
                i != istreams.end (); ++i)
@@ -195,24 +207,27 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          if (!restriction_p (c))
+          String const& name (ename_custom (c));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          for (Streams::ConstIterator i (istreams.begin ());
+               i != istreams.end (); ++i)
           {
-            String name (ename (c));
-
-            for (Streams::ConstIterator i (istreams.begin ());
-                 i != istreams.end (); ++i)
-            {
-              os << (exceptions ? "void" : "bool") << endl
-                 << "operator>> (" << istream (*i) << "&," << endl
-                 << name << "&);"
-                 << endl;
-            }
-
-            // Operators for nested classes.
-            //
-            if (c.contains_compositor_p ())
-              Complex::contains_compositor (c, contains_compositor_);
+            os << (exceptions ? "void" : "bool") << endl
+               << "operator>> (" << istream (*i) << "&," << endl
+               << name << "&);"
+               << endl;
           }
+
+          // Operators for nested classes.
+          //
+          if (!restriction_p (c) && c.contains_compositor_p ())
+            Complex::contains_compositor (c, contains_compositor_);
         }
 
       private:

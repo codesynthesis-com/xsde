@@ -1456,9 +1456,15 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          Boolean restriction (restriction_p (c));
+          String const& name (ename_custom (c));
 
-          String name (ename (c));
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          Boolean restriction (restriction_p (c));
 
           os << "// " << comment (c.name ()) << endl
              << "//" << endl

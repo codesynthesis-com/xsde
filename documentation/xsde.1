@@ -1021,25 +1021,36 @@ name starting from the XML Schema type containing the compositor,
 for example,
 .BR foo::sequence::choise1 .
 
-.IP "\fB\--custom-parser \fItype\fR[\fB=\fIbase\fR[\fB/\fIinclude\fR]]"
-Use a custom parser implementation instead of the generated version.
-The
-.I type
+.IP "\fB\--custom-type \fIname\fR[\fB=\fR[\fIflags\fR][\fB/\fR[\fIbase\fR][\fB/\fR[\fItype\fR][\fB/\fIinclude\fR]]]]"
+Use a custom type implementation instead of the generated version. The
+.I name
 component is the XML Schema type name being customized. Optional
+.I flags
+allow you to specify whether the custom type is fixed or variable-length. The
+.B f
+flag indicates the type is fixed-length and the
+.B v
+flag indicates the type is variable-length. If omitted, the default rules
+are used to determine the type length. Optional
+.I type
+is a C++ type name that should be used instead. If specified, the object
+model type is defined as a
+.B typedef
+alias for this C++ type. Optional
 .I base
-is a C++ name that should be given to the generated version. It is
-normally used as a base for the custom implementation. Optional
+is a C++ name that should be given to the generated version. It is normally
+used as a base for the custom implementation. Optional
 .I include
 is the header file that defines the custom implementation. It is
 .BR #include 'ed
 into the generated code immediately after (if
-.B base
+.I base
 is specified) or instead of the generated version.
 
-.IP "\fB\--custom-serializer \fItype\fR[\fB=\fIbase\fR[\fB/\fIinclude\fR]]"
-Use a custom serializer implementation instead of the generated version.
+.IP "\fB\--custom-parser \fIname\fR[\fB=\fR[\fIbase\fR][\fB/\fIinclude\fR]]"
+Use a custom parser implementation instead of the generated version.
 The
-.I type
+.I name
 component is the XML Schema type name being customized. Optional
 .I base
 is a C++ name that should be given to the generated version. It is
@@ -1048,7 +1059,22 @@ normally used as a base for the custom implementation. Optional
 is the header file that defines the custom implementation. It is
 .BR #include 'ed
 into the generated code immediately after (if
-.B base
+.I base
+is specified) or instead of the generated version.
+
+.IP "\fB\--custom-serializer \fIname\fR[\fB=\fR[\fIbase\fR][\fB/\fIinclude\fR]]"
+Use a custom serializer implementation instead of the generated version.
+The
+.I name
+component is the XML Schema type name being customized. Optional
+.I base
+is a C++ name that should be given to the generated version. It is
+normally used as a base for the custom implementation. Optional
+.I include
+is the header file that defines the custom implementation. It is
+.BR #include 'ed
+into the generated code immediately after (if
+.I base
 is specified) or instead of the generated version.
 
 .IP "\fB\--root-element-first\fR"

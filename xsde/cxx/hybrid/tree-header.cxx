@@ -24,66 +24,86 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
-          String name (ename (l));
+          SemanticGraph::Context& lc (l.context ());
+          String const& name (ename_custom (l));
 
-          os << "// " << comment (l.name ()) << " (variable-length)" << endl
-             << "//" << endl;
-
-          os << "class " << name << ": public ";
-
-          base_name_.dispatch (l.argumented ().type ());
-
-          os << "{"
-             << "private:" << endl
-             << name << " (const " << name << "&);"
-             << name << "& operator= (const " << name << "&);"
-             << endl;
-
-          // c-tor
+          // We may not need to generate the class if this type is
+          // being customized.
           //
-          os << "public:" << endl
-             << name << " ();";
-
-          // Custom data.
-          //
-          if (l.context ().count ("cd-name"))
+          if (name)
           {
-            String const& name (ecd_name (l));
-            String const& sequence (ecd_sequence (l));
-            String const& iterator (ecd_iterator (l));
-            String const& const_iterator (ecd_const_iterator (l));
-
-            os << endl
-               << "// Custom data." << endl
+            os << "// " << comment (l.name ()) << " (variable-length)" << endl
                << "//" << endl;
 
-            // sequence & iterators
-            //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
-               << "typedef " << sequence << "::iterator " << iterator << ";"
-               << "typedef " << sequence << "::const_iterator " <<
-              const_iterator << ";"
+            os << "class " << name << ": public ";
+
+            base_name_.dispatch (l.argumented ().type ());
+
+            os << "{"
+               << "private:" << endl
+               << name << " (const " << name << "&);"
+               << name << "& operator= (const " << name << "&);"
                << endl;
 
-            // const seq&
-            // name () const
+            // c-tor
             //
-            os << "const " << sequence << "&" << endl
-               << name << " () const;"
-               << endl;
+            os << "public:" << endl
+               << name << " ();";
 
-            // seq&
-            // name ()
+            // Custom data.
             //
-            os << sequence << "&" << endl
-               << name << " ();"
-               << endl;
+            if (lc.count ("cd-name"))
+            {
+              String const& name (ecd_name (l));
+              String const& sequence (ecd_sequence (l));
+              String const& iterator (ecd_iterator (l));
+              String const& const_iterator (ecd_const_iterator (l));
 
-            os << "private:" << endl
-               << sequence << " " << ecd_member (l) << ";";
+              os << endl
+                 << "// Custom data." << endl
+                 << "//" << endl;
+
+              // sequence & iterators
+              //
+              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+                 << "typedef " << sequence << "::iterator " << iterator << ";"
+                 << "typedef " << sequence << "::const_iterator " <<
+                const_iterator << ";"
+                 << endl;
+
+              // const seq&
+              // name () const
+              //
+              os << "const " << sequence << "&" << endl
+                 << name << " () const;"
+                 << endl;
+
+              // seq&
+              // name ()
+              //
+              os << sequence << "&" << endl
+                 << name << " ();"
+                 << endl;
+
+              os << "private:" << endl
+                 << sequence << " " << ecd_member (l) << ";";
+            }
+
+            os << "};";
           }
 
-          os << "};";
+          // Generate include for custom type.
+          //
+          if (lc.count ("name-include"))
+          {
+            close_ns ();
+
+            os << "#include " << process_include_path (
+              lc.get<String> ("name-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
         }
 
       private:
@@ -101,147 +121,166 @@ namespace CXX
         traverse (Type& u)
         {
           SemanticGraph::Context& uc (u.context ());
+          String const& name (ename_custom (u));
 
-          String name (ename (u));
-          Boolean cd (uc.count ("cd-name"));
-
-          os << "// " << comment (u.name ()) << " (variable-length)" << endl
-             << "//" << endl;
-
-          os << "class " << name
-             << "{";
-
-          if (!fixed_length (u))
-            os << "private:" << endl
-               << name << " (const " << name << "&);"
-               << name << "& operator= (const " << name << "&);"
-               << endl;
-
-          os << "public:" << endl;
-
-          // c-tor
+          // We may not need to generate the class if this type is
+          // being customized.
           //
-          os << name << " ();";
-
-          String const& value (uc.get<String> ("value"));
-          String const& member (uc.get<String> ("value-member"));
-
-          if (stl)
+          if (name)
           {
-            os << endl;
+            Boolean cd (uc.count ("cd-name"));
 
-            // const std::string&
-            // name () const
-            //
-            os << "const ::std::string&" << endl
-               << value << " () const;"
-               << endl;
-
-            // std::string&
-            // name ()
-            //
-            os << "::std::string&" << endl
-               << value << " ();"
-               << endl;
-
-            // void
-            // name (const std::string&)
-            //
-            os << "void" << endl
-               << value << " (const ::std::string&);"
-               << endl;
-          }
-          else
-          {
-            // d-tor
-            //
-            os << "~" << name << " ();"
-               << endl;
-
-            // const char*
-            // name () const
-            //
-            os << "const char*" << endl
-               << value << " () const;"
-               << endl;
-
-            // char*
-            // name ()
-            //
-            os << "char*" << endl
-               << value << " ();"
-               << endl;
-
-            // void
-            // name (char*)
-            //
-            os << "void" << endl
-               << value << " (char*);"
-               << endl;
-
-            // char*
-            // detach ()
-            //
-            if (detach)
-            {
-              os << "char*" << endl
-                 << uc.get<String> ("value-detach") << " ();"
-                 << endl;
-            }
-          }
-
-          // Custom data.
-          //
-          if (cd)
-          {
-            String const& name (ecd_name (u));
-            String const& sequence (ecd_sequence (u));
-            String const& iterator (ecd_iterator (u));
-            String const& const_iterator (ecd_const_iterator (u));
-
-            os << "// Custom data." << endl
+            os << "// " << comment (u.name ()) << " (variable-length)" << endl
                << "//" << endl;
 
-            // sequence & iterators
-            //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
-               << "typedef " << sequence << "::iterator " << iterator << ";"
-               << "typedef " << sequence << "::const_iterator " <<
-              const_iterator << ";"
-               << endl;
+            os << "class " << name
+               << "{";
 
-            // const seq&
-            // name () const
-            //
-            os << "const " << sequence << "&" << endl
-               << name << " () const;"
-               << endl;
+            if (!fixed_length (u))
+              os << "private:" << endl
+                 << name << " (const " << name << "&);"
+                 << name << "& operator= (const " << name << "&);"
+                 << endl;
 
-            // seq&
-            // name ()
+            os << "public:" << endl;
+
+            // c-tor
             //
-            os << sequence << "&" << endl
-               << name << " ();"
-               << endl;
+            os << name << " ();";
+
+            String const& value (uc.get<String> ("value"));
+            String const& member (uc.get<String> ("value-member"));
+
+            if (stl)
+            {
+              os << endl;
+
+              // const std::string&
+              // name () const
+              //
+              os << "const ::std::string&" << endl
+                 << value << " () const;"
+                 << endl;
+
+              // std::string&
+              // name ()
+              //
+              os << "::std::string&" << endl
+                 << value << " ();"
+                 << endl;
+
+              // void
+              // name (const std::string&)
+              //
+              os << "void" << endl
+                 << value << " (const ::std::string&);"
+                 << endl;
+            }
+            else
+            {
+              // d-tor
+              //
+              os << "~" << name << " ();"
+                 << endl;
+
+              // const char*
+              // name () const
+              //
+              os << "const char*" << endl
+                 << value << " () const;"
+                 << endl;
+
+              // char*
+              // name ()
+              //
+              os << "char*" << endl
+                 << value << " ();"
+                 << endl;
+
+              // void
+              // name (char*)
+              //
+              os << "void" << endl
+                 << value << " (char*);"
+                 << endl;
+
+              // char*
+              // detach ()
+              //
+              if (detach)
+              {
+                os << "char*" << endl
+                   << uc.get<String> ("value-detach") << " ();"
+                   << endl;
+              }
+            }
+
+            // Custom data.
+            //
+            if (cd)
+            {
+              String const& name (ecd_name (u));
+              String const& sequence (ecd_sequence (u));
+              String const& iterator (ecd_iterator (u));
+              String const& const_iterator (ecd_const_iterator (u));
+
+              os << "// Custom data." << endl
+                 << "//" << endl;
+
+              // sequence & iterators
+              //
+              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+                 << "typedef " << sequence << "::iterator " << iterator << ";"
+                 << "typedef " << sequence << "::const_iterator " <<
+                const_iterator << ";"
+                 << endl;
+
+              // const seq&
+              // name () const
+              //
+              os << "const " << sequence << "&" << endl
+                 << name << " () const;"
+                 << endl;
+
+              // seq&
+              // name ()
+              //
+              os << sequence << "&" << endl
+                 << name << " ();"
+                 << endl;
+            }
+
+            if (stl)
+            {
+              os << "private:" << endl
+                 << "::std::string " << member << ";";
+            }
+            else
+            {
+              os << "private:" << endl
+                 << "char* " << member << ";";
+            }
+
+            // Custom data.
+            //
+            if (cd)
+              os << ecd_sequence (u) << " " << ecd_member (u) << ";";
+
+            os << "};";
           }
 
-          if (stl)
-          {
-            os << "private:" << endl
-               << "::std::string " << member << ";";
-          }
-          else
-          {
-            os << "private:" << endl
-               << "char* " << member << ";";
-          }
-
-          // Custom data.
+          // Generate include for custom type.
           //
-          if (cd)
-            os << ecd_sequence (u) << " " << ecd_member (u) << ";";
+          if (uc.count ("name-include"))
+          {
+            close_ns ();
 
-          os << "};";
+            os << "#include " << process_include_path (
+              uc.get<String> ("name-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
         }
       };
 
@@ -2313,109 +2352,130 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          String name (ename (c));
-          Boolean fl (fixed_length (c));
-          Boolean restriction (restriction_p (c));
-          Boolean cd (c.context ().count ("cd-name"));
+          SemanticGraph::Context& cc (c.context ());
+          String const& name (ename_custom (c));
 
-          os << "// " << comment (c.name ()) << " (" <<
-            (fl ? "fixed-length" : "variable-length") << ")" << endl
-             << "//" << endl;
-
-          os << "class " << name;
-
-          if (c.inherits_p ())
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (name)
           {
-            os << ": public ";
-            base_name_.dispatch (c.inherits ().base ());
-          }
+            Boolean fl (fixed_length (c));
+            Boolean restriction (restriction_p (c));
+            Boolean cd (cc.count ("cd-name"));
 
-          os << "{";
-
-          // c-tor
-          //
-          os << "public:" << endl
-             << name << " ();";
-
-          // d-tor
-          //
-          if (!restriction)
-            os << "~" << name << " ();";
-
-          // copy c-tor & operator=
-          //
-          if (!fl)
-            os << endl
-               << "private:" << endl;
-
-          if (!fl || !restriction)
-            os << name << " (const " << name << "&);"
-               << name << "& operator= (const " << name << "&);"
-               << endl;
-
-          if ((!restriction && !fl) || cd)
-            os << "public:" << endl;
-
-          if (!restriction)
-          {
-            Complex::names (c, attribute_names_);
-
-            if (c.contains_compositor_p ())
-              Complex::contains_compositor (c, contains_compositor_);
-          }
-
-          // Custom data.
-          //
-          if (cd)
-          {
-            String const& name (ecd_name (c));
-            String const& sequence (ecd_sequence (c));
-            String const& iterator (ecd_iterator (c));
-            String const& const_iterator (ecd_const_iterator (c));
-
-            os << "// Custom data." << endl
+            os << "// " << comment (c.name ()) << " (" <<
+              (fl ? "fixed-length" : "variable-length") << ")" << endl
                << "//" << endl;
 
-            // sequence & iterators
-            //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
-               << "typedef " << sequence << "::iterator " << iterator << ";"
-               << "typedef " << sequence << "::const_iterator " <<
-              const_iterator << ";"
-               << endl;
+            os << "class " << name;
 
-            // const seq&
-            // name () const
-            //
-            os << "const " << sequence << "&" << endl
-               << name << " () const;"
-               << endl;
+            if (c.inherits_p ())
+            {
+              os << ": public ";
+              base_name_.dispatch (c.inherits ().base ());
+            }
 
-            // seq&
-            // name ()
+            os << "{";
+
+            // c-tor
             //
-            os << sequence << "&" << endl
-               << name << " ();"
-               << endl;
+            os << "public:" << endl
+               << name << " ();";
+
+            // d-tor
+            //
+            if (!restriction)
+              os << "~" << name << " ();";
+
+            // copy c-tor & operator=
+            //
+            if (!fl)
+              os << endl
+                 << "private:" << endl;
+
+            if (!fl || !restriction)
+              os << name << " (const " << name << "&);"
+                 << name << "& operator= (const " << name << "&);"
+                 << endl;
+
+            if ((!restriction && !fl) || cd)
+              os << "public:" << endl;
+
+            if (!restriction)
+            {
+              Complex::names (c, attribute_names_);
+
+              if (c.contains_compositor_p ())
+                Complex::contains_compositor (c, contains_compositor_);
+            }
+
+            // Custom data.
+            //
+            if (cd)
+            {
+              String const& name (ecd_name (c));
+              String const& sequence (ecd_sequence (c));
+              String const& iterator (ecd_iterator (c));
+              String const& const_iterator (ecd_const_iterator (c));
+
+              os << "// Custom data." << endl
+                 << "//" << endl;
+
+              // sequence & iterators
+              //
+              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+                 << "typedef " << sequence << "::iterator " << iterator << ";"
+                 << "typedef " << sequence << "::const_iterator " <<
+                const_iterator << ";"
+                 << endl;
+
+              // const seq&
+              // name () const
+              //
+              os << "const " << sequence << "&" << endl
+                 << name << " () const;"
+                 << endl;
+
+              // seq&
+              // name ()
+              //
+              os << sequence << "&" << endl
+                 << name << " ();"
+                 << endl;
+            }
+
+            if (!restriction || cd)
+              os << "private:" << endl;
+
+            if (!restriction)
+            {
+              Complex::names (c, attribute_names_data_);
+
+              if (c.contains_compositor_p ())
+                Complex::contains_compositor (c, contains_compositor_data_);
+            }
+
+            // Custom data.
+            //
+            if (cd)
+              os << ecd_sequence (c) << " " << ecd_member (c) << ";";
+
+            os << "};";
           }
 
-          if (!restriction || cd)
-            os << "private:" << endl;
-
-          if (!restriction)
-          {
-            Complex::names (c, attribute_names_data_);
-
-            if (c.contains_compositor_p ())
-              Complex::contains_compositor (c, contains_compositor_data_);
-          }
-
-          // Custom data.
+          // Generate include for custom type.
           //
-          if (cd)
-            os << ecd_sequence (c) << " " << ecd_member (c) << ";";
+          if (cc.count ("name-include"))
+          {
+            close_ns ();
 
-          os << "};";
+            os << "#include " << process_include_path (
+              cc.get<String> ("name-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
         }
 
       private:
@@ -2499,7 +2559,7 @@ namespace CXX
         Traversal::Sources sources;
         Traversal::Names names_ns, names;
 
-        Namespace ns (ctx);
+        Namespace ns (ctx, true);
 
         List list (ctx);
         Union union_ (ctx);

@@ -9,8 +9,13 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
+#include <cult/containers/map.hxx>
 #include <cult/containers/set.hxx>
 #include <cult/containers/vector.hxx>
+
+#include <iostream>
+
+using std::wcerr;
 
 namespace CXX
 {
@@ -19,6 +24,15 @@ namespace CXX
     namespace
     {
       typedef Cult::Containers::Set<String> TypeSet;
+
+
+      struct CustomType
+      {
+        Boolean fixed;
+        String base;
+      };
+
+      typedef Cult::Containers::Map<String, CustomType> CustomTypeMap;
 
       Boolean
       test (SemanticGraph::Type& t)
@@ -225,8 +239,14 @@ namespace CXX
                    Traversal::Union,
                    Traversal::Complex
       {
-        Type (TypeSet& custom_data, Boolean stl_)
-            : custom_data_ (custom_data), stl (stl_)
+        Type (Boolean& valid,
+              TypeSet& custom_data,
+              CustomTypeMap& custom_type_map,
+              Boolean stl_)
+            : valid_ (valid),
+              custom_data_ (custom_data),
+              custom_type_map_ (custom_type_map),
+              stl (stl_)
         {
         }
 
@@ -263,7 +283,9 @@ namespace CXX
 
           if (ctx.count ("recurse"))
           {
-            set (c, false);
+            if (!test (c))
+              set (c, false);
+
             ctx.set ("recursive", true);
 
             // Mark all the types involved in the cycle as recursive.
@@ -339,7 +361,35 @@ namespace CXX
         }
 
       private:
+        Void
+        set (SemanticGraph::Type& t, Boolean v)
+        {
+          // Check if this is a custom type.
+          //
+          CustomTypeMap::Iterator i = custom_type_map_.find (t.name ());
+
+          if (i != custom_type_map_.end ())
+          {
+            if (i->second.base && i->second.fixed && !v)
+            {
+              wcerr << t.file () << ":" << t.line () << ":" << t.column ()
+                    << ": error: generated base type '" << i->second.base
+                    << "' is variable-length while the custom type is "
+                    << "declared fixed-length" << endl;
+
+              valid_ = false;
+            }
+
+            Hybrid::set (t, i->second.fixed);
+          }
+          else
+            Hybrid::set (t, v);
+        }
+
+      private:
+        Boolean& valid_;
         TypeSet& custom_data_;
+        CustomTypeMap& custom_type_map_;
         Boolean stl;
 
         typedef Containers::Vector<SemanticGraph::Complex*> Path;
@@ -751,11 +801,12 @@ namespace CXX
         }
       };
 
-      Void
+      Boolean
       process_impl (CLI::Options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const&)
       {
+        Boolean valid (true);
         Boolean stl (!ops.value<CLI::no_stl> ());
 
         // Root schema in the file-per-type mode is just a bunch
@@ -826,34 +877,111 @@ namespace CXX
               }
             }
 
-            Traversal::Schema schema;
-            Uses uses;
-
-            schema >> uses >> schema;
-
-            Traversal::Names schema_names;
-            Traversal::Namespace ns;
-            Traversal::Names ns_names;
-            Type type (custom_data_types, stl);
-
-            schema >> schema_names >> ns >> ns_names >> type;
-
-            // Some twisted schemas do recusive self-inclusion.
+            // Prepare a map of types custom types that specify type
+            // size.
             //
-            tu.context ().set ("cxx-hybrid-size-processor-seen", true);
+            CustomTypeMap custom_type_map;
 
-            schema.dispatch (tu);
+            {
+              typedef Containers::Vector<NarrowString> Vector;
+              Vector const& v (ops.value<CLI::custom_type> ());
+
+              for (Vector::ConstIterator i (v.begin ()), e (v.end ());
+                   i != e; ++i)
+              {
+                String s (*i);
+
+                if (s.empty ())
+                  continue;
+
+                // Split the string in two parts at the last '='.
+                //
+                Size pos (s.rfind ('='));
+
+                if (pos == String::npos)
+                  continue;
+
+                String name (s, 0, pos);
+                String fb (s, pos + 1);
+
+                pos = fb.find ('/');
+
+                String flags, base;
+
+                if (pos != String::npos)
+                {
+                  flags.assign (fb, 0, pos);
+
+                  // Skip the type component.
+                  //
+                  pos = fb.find ('/', pos + 1);
+
+                  if (pos != String::npos)
+                  {
+                    String b (fb, pos + 1);
+
+                    // See if we've got the include component.
+                    //
+                    pos = b.find ('/');
+
+                    if (pos != String::npos)
+                      base.assign (b, 0, pos);
+                    else
+                      base = b;
+                  }
+                }
+                else
+                  flags = fb;
+
+                if (!flags)
+                  continue;
+
+                if (flags != L"f" && flags != L"v")
+                {
+                  wcerr << "error: invalid custom type flag: '" <<
+                    flags << "'" << endl;
+
+                  valid = false;
+                }
+
+                custom_type_map[name].base = base;
+                custom_type_map[name].fixed = (flags == L"f");
+              }
+            }
+
+            if (valid)
+            {
+              Traversal::Schema schema;
+              Uses uses;
+
+              schema >> uses >> schema;
+
+              Traversal::Names schema_names;
+              Traversal::Namespace ns;
+              Traversal::Names ns_names;
+              Type type (valid, custom_data_types, custom_type_map, stl);
+
+              schema >> schema_names >> ns >> ns_names >> type;
+
+              // Some twisted schemas do recusive self-inclusion.
+              //
+              tu.context ().set ("cxx-hybrid-size-processor-seen", true);
+
+              schema.dispatch (tu);
+            }
           }
         }
+
+        return valid;
       }
     }
 
-    Void TreeSizeProcessor::
+    Boolean TreeSizeProcessor::
     process (CLI::Options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file)
     {
-      process_impl (ops, tu, file);
+      return process_impl (ops, tu, file);
     }
   }
 }

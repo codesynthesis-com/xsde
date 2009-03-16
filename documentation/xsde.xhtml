@@ -885,10 +885,30 @@
         starting from the XML Schema type containing the compositor,
         for example, <code><b>foo::sequence::choise1</b></code>.</dd>
 
+    <dt><code><b>--custom-type</b>
+    <i>name</i>[<b>=</b>[<i>flags</i>][<b>/</b>[<i>type</i>][<b>/</b>[<i>base</i>][<b>/</b><i>include</i>]]]]</code></dt>
+    <dd>Use a custom type implementation instead of the generated version.
+        The <code><i>name</i></code> component is the XML Schema type name
+        being customized. Optional <code><i>flags</i></code> allow you to
+        specify whether the custom type is fixed or variable-length. The
+        <code><b>f</b></code> flag indicates the type is fixed-length and
+        the <code><b>v</b></code> flag indicates the type is variable-length.
+        If omitted, the default rules are used to determine the type length.
+        Optional <code><i>type</i></code> is a C++ type name that should
+        be used instead. If specified, the object model type is defined
+        as a <code><b>typedef</b></code> alias for this C++ type. Optional
+        <code><i>base</i></code> is a C++ name that should be given to the
+        generated version. It is normally used as a base for the custom
+        implementation. Optional <code><i>include</i></code> is the header
+        file that defines the custom implementation. It is
+        <code><b>#include</b></code>'ed into the generated code immediately
+        after (if <code><i>base</i></code> is specified) or instead of the
+        generated version.</dd>
+
     <dt><code><b>--custom-parser</b>
-    <i>type</i>[<b>=</b><i>base</i>[<b>/</b><i>include</i>]]</code></dt>
+    <i>name</i>[<b>=</b>[<i>base</i>][<b>/</b><i>include</i>]]</code></dt>
     <dd>Use a custom parser implementation instead of the generated version.
-        The <code><i>type</i></code> component is the XML Schema type name
+        The <code><i>name</i></code> component is the XML Schema type name
         being customized. Optional <code><i>base</i></code> is a C++ name
         that should be given to the generated version. It is normally used
         as a base for the custom implementation. Optional
@@ -898,9 +918,9 @@
         is specified) or instead of the generated version.</dd>
 
     <dt><code><b>--custom-serializer</b>
-    <i>type</i>[<b>=</b><i>base</i>[<b>/</b><i>include</i>]]</code></dt>
+    <i>name</i>[<b>=</b>[<i>base</i>][<b>/</b><i>include</i>]]</code></dt>
     <dd>Use a custom serializer implementation instead of the generated version.
-        The <code><i>type</i></code> component is the XML Schema type name
+        The <code><i>name</i></code> component is the XML Schema type name
         being customized. Optional <code><i>base</i></code> is a C++ name
         that should be given to the generated version. It is normally used
         as a base for the custom implementation. Optional

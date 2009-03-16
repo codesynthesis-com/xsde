@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/wildcard/envelope-pimpl.hxx
+// file      : examples/cxx/hybrid/custom/wildcard/envelope-pimpl.hxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
@@ -37,9 +37,6 @@ namespace email
     }
 
   public:
-    virtual void
-    _pre ();
-
     // If the XSD runtime library was configured with polymorphism
     // support, then _start_any_element has a third argument which
     // is a dynamic type id that comes from xsi:type or substitution

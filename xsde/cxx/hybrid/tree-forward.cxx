@@ -24,7 +24,25 @@ namespace CXX
         virtual Void
         traverse (Type& l)
         {
-          os << "class " << ename (l) << ";";
+          SemanticGraph::Context& ctx (l.context ());
+
+          // Forward-declare the base.
+          //
+          if (ctx.count ("name-base"))
+          {
+            if (String base = ctx.get<String> ("name-base"))
+              os << "class " << base << ";";
+          }
+
+          // Typedef or forward-declare the type.
+          //
+          if (ctx.count ("name-typedef"))
+          {
+            os << "typedef " << ctx.get<String> ("name-typedef") << " " <<
+              ename (l) << ";";
+          }
+          else
+            os << "class " << ename (l) << ";";
         }
       };
 
@@ -38,7 +56,25 @@ namespace CXX
         virtual Void
         traverse (Type& u)
         {
-          os << "class " << ename (u) << ";";
+          SemanticGraph::Context& ctx (u.context ());
+
+          // Forward-declare the base.
+          //
+          if (ctx.count ("name-base"))
+          {
+            if (String base = ctx.get<String> ("name-base"))
+              os << "class " << base << ";";
+          }
+
+          // Typedef or forward-declare the type.
+          //
+          if (ctx.count ("name-typedef"))
+          {
+            os << "typedef " << ctx.get<String> ("name-typedef") << " " <<
+              ename (u) << ";";
+          }
+          else
+            os << "class " << ename (u) << ";";
         }
       };
 
@@ -52,7 +88,25 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          os << "class " << ename (c) << ";";
+          SemanticGraph::Context& ctx (c.context ());
+
+          // Forward-declare the base.
+          //
+          if (ctx.count ("name-base"))
+          {
+            if (String base = ctx.get<String> ("name-base"))
+              os << "class " << base << ";";
+          }
+
+          // Typedef or forward-declare the type.
+          //
+          if (ctx.count ("name-typedef"))
+          {
+            os << "typedef " << ctx.get<String> ("name-typedef") << " " <<
+              ename (c) << ";";
+          }
+          else
+            os << "class " << ename (c) << ";";
         }
       };
 

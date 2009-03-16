@@ -904,7 +904,7 @@ namespace CXX
 
       //
       //
-      struct Complex : Traversal::Complex, Context
+      struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),

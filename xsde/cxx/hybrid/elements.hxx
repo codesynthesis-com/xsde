@@ -94,6 +94,17 @@ namespace CXX
       }
 
       static String const&
+      ename_custom (SemanticGraph::Type& t)
+      {
+        SemanticGraph::Context& c (t.context ());
+
+        if (!c.count ("name-base"))
+          return c.get<String> ("name");
+        else
+          return c.get<String> ("name-base");
+      }
+
+      static String const&
       etype (SemanticGraph::Compositor& c)
       {
         return c.context ().get<String> ("type");
