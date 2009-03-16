@@ -154,22 +154,22 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      void operator>> (ixdrstream&, pod_seq<T>&);
+      void operator>> (ixdrstream&, pod_sequence<T>&);
 
       template <typename T>
-      void operator>> (ixdrstream&, fix_seq<T>&);
+      void operator>> (ixdrstream&, fix_sequence<T>&);
 
       template <typename T>
-      void operator>> (ixdrstream&, var_seq<T>&);
+      void operator>> (ixdrstream&, var_sequence<T>&);
 #else
       template <typename T>
-      bool operator>> (ixdrstream&, pod_seq<T>&);
+      bool operator>> (ixdrstream&, pod_sequence<T>&);
 
       template <typename T>
-      bool operator>> (ixdrstream&, fix_seq<T>&);
+      bool operator>> (ixdrstream&, fix_sequence<T>&);
 
       template <typename T>
-      bool operator>> (ixdrstream&, var_seq<T>&);
+      bool operator>> (ixdrstream&, var_sequence<T>&);
 #endif
     }
   }

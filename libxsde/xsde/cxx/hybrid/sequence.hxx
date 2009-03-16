@@ -26,7 +26,7 @@ namespace xsde
       // Sequence with fixed-length POD elements.
       //
       template <typename T>
-      class pod_seq: public sequence_base
+      class pod_sequence: public sequence_base
       {
       public:
         typedef T         value_type;
@@ -118,13 +118,13 @@ namespace xsde
         assign (const T*, size_t);
 
         void
-        swap (pod_seq&);
+        swap (pod_sequence&);
       };
 
       // Sequence with fixed-length elements.
       //
       template <typename T>
-      class fix_seq: public sequence_base
+      class fix_sequence: public sequence_base
       {
       public:
         typedef T         value_type;
@@ -140,7 +140,7 @@ namespace xsde
         typedef const T*  const_iterator;
 
       public:
-        ~fix_seq ();
+        ~fix_sequence ();
 
       public:
         iterator
@@ -219,7 +219,7 @@ namespace xsde
         assign (const T*, size_t);
 
         void
-        swap (fix_seq&);
+        swap (fix_sequence&);
 
       private:
         static void
@@ -712,7 +712,7 @@ namespace xsde
       //
       //
       template <typename T>
-      class var_seq: public sequence_base
+      class var_sequence: public sequence_base
       {
       public:
         typedef T         value_type;
@@ -728,7 +728,7 @@ namespace xsde
         typedef var_const_iterator<T> const_iterator;
 
       public:
-        ~var_seq ();
+        ~var_sequence ();
 
       public:
         iterator
@@ -812,7 +812,7 @@ namespace xsde
         reserve (size_t);
 
         void
-        swap (var_seq&);
+        swap (var_sequence&);
 
 #ifdef XSDE_EXCEPTIONS
       public:
@@ -833,12 +833,12 @@ namespace xsde
 
       // String sequence.
       //
-      typedef string_sequence str_seq;
+      using cxx::string_sequence;
 
 
       // Custom data sequence.
       //
-      class data_seq: public sequence_base
+      class data_sequence: public sequence_base
       {
       public:
         typedef void*         value_type;
@@ -854,8 +854,8 @@ namespace xsde
         typedef const void* const* const_iterator;
 
       public:
-        ~data_seq ();
-        data_seq ();
+        ~data_sequence ();
+        data_sequence ();
 
         typedef void (*destroy_func) (void* data, size_t pos);
 
@@ -932,7 +932,7 @@ namespace xsde
         reserve (size_t);
 
         void
-        swap (data_seq&);
+        swap (data_sequence&);
 
       private:
         destroy_func destructor_;

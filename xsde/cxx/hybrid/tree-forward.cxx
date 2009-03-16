@@ -593,11 +593,11 @@ namespace CXX
           // sequences
           //
           os << endl
-             << "using ::xsde::cxx::hybrid::pod_seq;"
-             << "using ::xsde::cxx::hybrid::fix_seq;"
-             << "using ::xsde::cxx::hybrid::var_seq;"
-             << "using ::xsde::cxx::hybrid::str_seq;"
-             << "using ::xsde::cxx::hybrid::data_seq;";
+             << "using ::xsde::cxx::hybrid::pod_sequence;"
+             << "using ::xsde::cxx::hybrid::fix_sequence;"
+             << "using ::xsde::cxx::hybrid::var_sequence;"
+             << "using ::xsde::cxx::hybrid::string_sequence;"
+             << "using ::xsde::cxx::hybrid::data_sequence;";
 
           // Data representation stream types.
           //

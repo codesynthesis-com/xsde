@@ -65,7 +65,7 @@ namespace CXX
 
               // sequence & iterators
               //
-              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+              os << "typedef " << data_seq << " " << sequence << ";"
                  << "typedef " << sequence << "::iterator " << iterator << ";"
                  << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"
@@ -229,7 +229,7 @@ namespace CXX
 
               // sequence & iterators
               //
-              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+              os << "typedef " << data_seq << " " << sequence << ";"
                  << "typedef " << sequence << "::iterator " << iterator << ";"
                  << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"
@@ -1295,7 +1295,7 @@ namespace CXX
 
               // sequence & iterators
               //
-              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+              os << "typedef " << data_seq << " " << sequence << ";"
                  << "typedef " << sequence << "::iterator " << iterator << ";"
                  << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"
@@ -1537,7 +1537,7 @@ namespace CXX
 
               // sequence & iterators
               //
-              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+              os << "typedef " << data_seq << " " << sequence << ";"
                  << "typedef " << sequence << "::iterator " << iterator << ";"
                  << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"
@@ -1583,14 +1583,8 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::";
-
-            if (fl)
-              os << "fix_seq";
-            else
-              os << "var_seq";
-
-            os << "< " << type << " > " << sequence << ";"
+            os << "typedef " << (fl ? fix_seq : var_seq) << "< " <<
+              type << " > " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -1761,7 +1755,7 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+            os << "typedef " << data_seq << " " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"
@@ -1806,14 +1800,8 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::";
-
-            if (fl)
-              os << "fix_seq";
-            else
-              os << "var_seq";
-
-            os << "< " << type << " > " << sequence << ";"
+            os << "typedef " << (fl ? fix_seq : var_seq) << "< " <<
+              type << " > " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -1962,7 +1950,7 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+            os << "typedef " << data_seq << " " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -2002,14 +1990,8 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::";
-
-            if (fl)
-              os << "fix_seq";
-            else
-              os << "var_seq";
-
-            os << "< " << type << " > " << sequence << ";"
+            os << "typedef " << (fl ? fix_seq : var_seq) << "< " <<
+              type << " > " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -2148,7 +2130,7 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+            os << "typedef " << data_seq << " " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -2188,14 +2170,8 @@ namespace CXX
 
             // sequence & iterators
             //
-            os << "typedef ::xsde::cxx::hybrid::";
-
-            if (fl)
-              os << "fix_seq";
-            else
-              os << "var_seq";
-
-            os << "< " << type << " > " << sequence << ";"
+            os << "typedef " << (fl ? fix_seq : var_seq) << "< " <<
+              type << " > " << sequence << ";"
                << "typedef " << sequence << "::iterator " << iterator << ";"
                << "typedef " << sequence << "::const_iterator " <<
               const_iterator << ";"
@@ -2424,7 +2400,7 @@ namespace CXX
 
               // sequence & iterators
               //
-              os << "typedef ::xsde::cxx::hybrid::data_seq " << sequence << ";"
+              os << "typedef " << data_seq << " " << sequence << ";"
                  << "typedef " << sequence << "::iterator " << iterator << ";"
                  << "typedef " << sequence << "::const_iterator " <<
                 const_iterator << ";"

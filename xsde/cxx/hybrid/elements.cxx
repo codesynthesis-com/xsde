@@ -43,6 +43,11 @@ namespace CXX
           hxx_expr (he),
           ixx_expr (ie),
           ns_stack (ns_stack_),
+          pod_seq (pod_seq_),
+          fix_seq (fix_seq_),
+          var_seq (var_seq_),
+          str_seq (str_seq_),
+          data_seq (data_seq_),
           istreams (ops.value<CLI::generate_extraction> ()),
           ostreams (ops.value<CLI::generate_insertion> ()),
           icdrstream (icdrstream_),
@@ -54,16 +59,22 @@ namespace CXX
 
       string_type = L"::xsde::cxx::ro_string";
 
+      pod_seq_ = xs_ns + L"::pod_sequence";
+      fix_seq_ = xs_ns + L"::fix_sequence";
+      var_seq_ = xs_ns + L"::var_sequence";
+      str_seq_ = xs_ns + L"::string_sequence";
+      data_seq_ = xs_ns + L"::data_sequence";
+
       if (!ostreams.empty ())
       {
-        ocdrstream = xs_ns + L"::ocdrstream";
-        oxdrstream = xs_ns + L"::oxdrstream";
+        ocdrstream_ = xs_ns + L"::ocdrstream";
+        oxdrstream_ = xs_ns + L"::oxdrstream";
       }
 
       if (!istreams.empty ())
       {
-        icdrstream = xs_ns + L"::icdrstream";
-        ixdrstream = xs_ns + L"::ixdrstream";
+        icdrstream_ = xs_ns + L"::icdrstream";
+        ixdrstream_ = xs_ns + L"::ixdrstream";
       }
     }
 

@@ -675,7 +675,7 @@ public:
 
   // name
   //
-  typedef xsde::string_sequence name_sequence;
+  typedef xml_schema::string_sequence name_sequence;
   typedef name_sequence::iterator name_iterator;
   typedef name_sequence::const_iterator name_const_iterator;
 
@@ -702,8 +702,8 @@ private:
 
   <p>It is also evident that the built-in XML Schema type
      <code>string</code> is mapped to <code>std::string</code>.
-     The internal <code>string_sequence</code> class that
-     is used in the <code>name_sequence</code> type definition
+     The <code>string_sequence</code> class that is used in
+     the <code>name_sequence</code> type definition
      has an interface similar to <code>std::vector</code>. The
      mapping between the built-in XML Schema types and C++ types
      is described in more detail in <a href="#5">Chapter 5,
@@ -1599,7 +1599,7 @@ private:
 public:
   // person
   //
-  typedef xsde::fix_sequence&lt;person> person_sequence;
+  typedef xml_schema::fix_sequence&lt;person> person_sequence;
   typedef person_sequence::iterator person_iterator;
   typedef person_sequence::const_iterator person_const_iterator;
 
@@ -1891,7 +1891,7 @@ class people
 {
   // person
   //
-  typedef xsde::fix_sequence&lt;person> person_sequence;
+  typedef xml_schema::fix_sequence&lt;person> person_sequence;
   typedef person_sequence::iterator person_iterator;
   typedef person_sequence::const_iterator person_const_iterator;
 
@@ -1927,100 +1927,103 @@ class people
      are implemented in terms of the following class template:</p>
 
   <pre class="c++">
-template &lt;typename T>
-class fix_sequence
+namespace xml_schema
 {
-public:
-  typedef T         value_type;
-  typedef T*        pointer;
-  typedef const T*  const_pointer;
-  typedef T&amp;        reference;
-  typedef const T&amp;  const_reference;
+  template &lt;typename T>
+  class fix_sequence
+  {
+  public:
+    typedef T         value_type;
+    typedef T*        pointer;
+    typedef const T*  const_pointer;
+    typedef T&amp;        reference;
+    typedef const T&amp;  const_reference;
 
-  typedef size_t    size_type;
-  typedef ptrdiff_t difference_type;
+    typedef size_t    size_type;
+    typedef ptrdiff_t difference_type;
 
-  typedef T*        iterator;
-  typedef const T*  const_iterator;
+    typedef T*        iterator;
+    typedef const T*  const_iterator;
 
-public:
-  fix_sequence ();
+  public:
+    fix_sequence ();
 
-  void
-  swap (fix_sequence&amp;);
+    void
+    swap (fix_sequence&amp;);
 
-private:
-  fix_sequence (const fix_sequence&amp;);
+  private:
+    fix_sequence (const fix_sequence&amp;);
 
-  fix_sequence&amp;
-  operator= (fix_sequence&amp;);
+    fix_sequence&amp;
+    operator= (fix_sequence&amp;);
 
-public:
-  iterator
-  begin ();
+  public:
+    iterator
+    begin ();
 
-  const_iterator
-  begin () const;
+    const_iterator
+    begin () const;
 
-  iterator
-  end ();
+    iterator
+    end ();
 
-  const_iterator
-  end () const;
+    const_iterator
+    end () const;
 
-  T&amp;
-  front ();
+    T&amp;
+    front ();
 
-  const T&amp;
-  front () const;
+    const T&amp;
+    front () const;
 
-  T&amp;
-  back ();
+    T&amp;
+    back ();
 
-  const T&amp;
-  back () const;
+    const T&amp;
+    back () const;
 
-  T&amp;
-  operator[] (size_t);
+    T&amp;
+    operator[] (size_t);
 
-  const T&amp;
-  operator[] (size_t) const;
+    const T&amp;
+    operator[] (size_t) const;
 
-public:
-  bool
-  empty () const;
+  public:
+    bool
+    empty () const;
 
-  size_t
-  size () const;
+    size_t
+    size () const;
 
-  size_t
-  capacity () const;
+    size_t
+    capacity () const;
 
-  size_t
-  max_size () const;
+    size_t
+    max_size () const;
 
-public:
-  void
-  clear ();
+  public:
+    void
+    clear ();
 
-  void
-  pop_back ();
+    void
+    pop_back ();
 
-  iterator
-  erase (iterator);
+    iterator
+    erase (iterator);
 
-  void
-  push_back (const T&amp;);
+    void
+    push_back (const T&amp;);
 
-  iterator
-  insert (iterator, const T&amp;);
+    iterator
+    insert (iterator, const T&amp;);
 
-  void
-  reserve (size_t);
+    void
+    reserve (size_t);
 
-  void
-  assign (const T* src, size_t n);
-};
+    void
+    assign (const T* src, size_t n);
+  };
+}
   </pre>
 
   <p>When C++ exceptions are disabled, the signatures of the
@@ -2029,34 +2032,37 @@ public:
      change as follows:</p>
 
   <pre class="c++">
-template &lt;typename T>
-class fix_sequence
+namespace xml_schema
 {
-public:
-  enum error
+  template &lt;typename T>
+  class fix_sequence
   {
-    error_none,
-    error_no_memory
+  public:
+    enum error
+    {
+      error_none,
+      error_no_memory
+    };
+
+    ...
+
+  public:
+    error
+    push_back (const T&amp;);
+
+    error
+    insert (iterator, const T&amp;);
+
+    error
+    insert (iterator, const T&amp;, iterator&amp; result);
+
+    error
+    reserve (size_t);
+
+    error
+    assign (const T* src, size_t n);
   };
-
-  ...
-
-public:
-  error
-  push_back (const T&amp;);
-
-  error
-  insert (iterator, const T&amp;);
-
-  error
-  insert (iterator, const T&amp;, iterator&amp; result);
-
-  error
-  reserve (size_t);
-
-  error
-  assign (const T* src, size_t n);
-};
+}
   </pre>
 
   <p>That is, the functions that may require memory allocation
@@ -2067,103 +2073,106 @@ public:
      are implemented in terms of the following class template:</p>
 
   <pre class="c++">
-template &lt;typename T>
-class var_sequence
+namespace xml_schema
 {
-public:
-  typedef T         value_type;
-  typedef T*        pointer;
-  typedef const T*  const_pointer;
-  typedef T&amp;        reference;
-  typedef const T&amp;  const_reference;
+  template &lt;typename T>
+  class var_sequence
+  {
+  public:
+    typedef T         value_type;
+    typedef T*        pointer;
+    typedef const T*  const_pointer;
+    typedef T&amp;        reference;
+    typedef const T&amp;  const_reference;
 
-  typedef size_t    size_type;
-  typedef ptrdiff_t difference_type;
+    typedef size_t    size_type;
+    typedef ptrdiff_t difference_type;
 
-  typedef &lt;implementation details> iterator;
-  typedef &lt;implementation details> const_iterator;
+    typedef &lt;implementation details> iterator;
+    typedef &lt;implementation details> const_iterator;
 
-public:
-  var_sequence ();
+  public:
+    var_sequence ();
 
-  void
-  swap (var_sequence&amp;);
+    void
+    swap (var_sequence&amp;);
 
-private:
-  var_sequence (const var_sequence&amp;);
+  private:
+    var_sequence (const var_sequence&amp;);
 
-  var_sequence&amp;
-  operator= (var_sequence&amp;);
+    var_sequence&amp;
+    operator= (var_sequence&amp;);
 
-public:
-  iterator
-  begin ();
+  public:
+    iterator
+    begin ();
 
-  const_iterator
-  begin () const;
+    const_iterator
+    begin () const;
 
-  iterator
-  end ();
+    iterator
+    end ();
 
-  const_iterator
-  end () const;
+    const_iterator
+    end () const;
 
-  T&amp;
-  front ();
+    T&amp;
+    front ();
 
-  const T&amp;
-  front () const;
+    const T&amp;
+    front () const;
 
-  T&amp;
-  back ();
+    T&amp;
+    back ();
 
-  const T&amp;
-  back () const;
+    const T&amp;
+    back () const;
 
-  T&amp;
-  operator[] (size_t);
+    T&amp;
+    operator[] (size_t);
 
-  const T&amp;
-  operator[] (size_t) const;
+    const T&amp;
+    operator[] (size_t) const;
 
-public:
-  bool
-  empty () const;
+  public:
+    bool
+    empty () const;
 
-  size_t
-  size () const;
+    size_t
+    size () const;
 
-  size_t
-  capacity () const;
+    size_t
+    capacity () const;
 
-  size_t
-  max_size () const;
+    size_t
+    max_size () const;
 
-public:
-  void
-  clear ();
+  public:
+    void
+    clear ();
 
-  void
-  push_back (T*);
+    void
+    push_back (T*);
 
-  iterator
-  insert (iterator, T*);
+    iterator
+    insert (iterator, T*);
 
-  void
-  pop_back ();
+    void
+    pop_back ();
 
-  iterator
-  erase (iterator);
+    iterator
+    erase (iterator);
 
-  void
-  reserve (size_t);
+    void
+    reserve (size_t);
 
-  T*
-  detach (iterator);
+    T*
+    detach (iterator);
 
-  void
-  attach (iterator, T*);
-};
+    void
+    attach (iterator, T*);
+  };
+}
   </pre>
 
   <p>Most of this interface is identical to the fixed-length type
@@ -2175,7 +2184,7 @@ public:
      ownership of the passed object. To simplify error handling,
      these two functions delete the passed object if the reallocation
      of the underlying sequence buffer fails. The <code>var_sequence</code>
-     interface also provides the <code>detach()</code> and <code>attach()</code>
+     class template also provides the <code>detach()</code> and <code>attach()</code>
      functions. The <code>detach()</code> function allows you to detach
      the contained object at the specified position. A detached object
      should eventually be deallocated with operator <code>delete</code>.
@@ -2187,39 +2196,42 @@ public:
      return an error code to signal the out of memory condition:</p>
 
   <pre class="c++">
-template &lt;typename T>
-class var_sequence
+namespace xml_schema
 {
-public:
-  enum error
+  template &lt;typename T>
+  class var_sequence
   {
-    error_none,
-    error_no_memory
+  public:
+    enum error
+    {
+      error_none,
+      error_no_memory
+    };
+
+    ...
+
+  public:
+    error
+    push_back (T*);
+
+    error
+    insert (iterator, T*);
+
+    error
+    insert (iterator, T*, iterator&amp; result);
+
+    error
+    reserve (size_t);
   };
-
-  ...
-
-public:
-  error
-  push_back (T*);
-
-  error
-  insert (iterator, T*);
-
-  error
-  insert (iterator, T*, iterator&amp; result);
-
-  error
-  reserve (size_t);
-};
+}
   </pre>
 
 
-  <p>When STL is enabled, the string sequence have the same
-     interface as <code>fix_sequence&lt;std::string></code>. When
+  <p>When STL is enabled, the <code>string_sequence</code> class has
+     the same interface as <code>fix_sequence&lt;std::string></code>. When
      STL is disabled and strings are mapped to <code>char*</code>,
-     the string sequence has a special interface. When C++ exceptions are
-     enabled, it has the following definition:</p>
+     <code>string_sequence</code> has a special interface. When C++
+     exceptions are enabled, it has the following definition:</p>
 
   <pre class="c++">
 namespace xml_schema
@@ -2333,7 +2345,7 @@ namespace xml_schema
      free the passed string if the reallocation of the underlying
      sequence buffer fails. The <code>push_back_copy()</code>
      function makes a copy of the passed string.
-     The <code>string_sequence</code> interface also provides the
+     The <code>string_sequence</code> class also provides the
      <code>detach()</code> and <code>attach()</code> functions.
      The <code>detach()</code> function allows you to detach
      the contained string at the specified position. A detached string
@@ -2454,7 +2466,7 @@ public:
 
     // b
     //
-    typedef xsde::string_sequence b_sequence;
+    typedef xml_schema::string_sequence b_sequence;
     typedef b_sequence::iterator b_iterator;
     typedef b_sequence::const_iterator b_const_iterator;
 
@@ -2518,7 +2530,7 @@ public:
     ...
   };
 
-  typedef xsde::fix_sequence&lt;sequence1_type> sequence1_sequence;
+  typedef xml_schema::fix_sequence&lt;sequence1_type> sequence1_sequence;
   typedef sequence1_sequence::iterator sequence1_iterator;
   typedef sequence1_sequence::const_iterator sequence1_const_iterator;
 
@@ -2782,7 +2794,7 @@ public:
     ...
   };
 
-  typedef xsde::fix_sequence&lt;choice_type> choice_sequence;
+  typedef xml_schema::fix_sequence&lt;choice_type> choice_sequence;
   typedef choice_sequence::iterator choice_iterator;
   typedef choice_sequence::const_iterator choice_const_iterator;
 
@@ -3158,7 +3170,7 @@ public:
 
   // Custom data.
   //
-  typedef xsde::data_sequence custom_data_sequence;
+  typedef xml_schema::data_sequence custom_data_sequence;
   typedef custom_data_sequence::iterator custom_data_iterator;
   typedef custom_data_sequence::const_iterator custom_data_const_iterator;
 
@@ -3175,101 +3187,104 @@ public:
      custom data sequence has the following interface:</p>
 
   <pre class="c++">
-class data_sequence
+namespace xml_schema
 {
-public:
-  typedef void*         value_type;
-  typedef void**        pointer;
-  typedef const void**  const_pointer;
-  typedef void*         reference;
-  typedef const void*   const_reference;
+  class data_sequence
+  {
+  public:
+    typedef void*         value_type;
+    typedef void**        pointer;
+    typedef const void**  const_pointer;
+    typedef void*         reference;
+    typedef const void*   const_reference;
 
-  typedef size_t        size_type;
-  typedef ptrdiff_t     difference_type;
+    typedef size_t        size_type;
+    typedef ptrdiff_t     difference_type;
 
-  typedef void** iterator;
-  typedef const void* const* const_iterator;
+    typedef void** iterator;
+    typedef const void* const* const_iterator;
 
-  typedef void (*destroy_func) (void* data, size_t pos);
+    typedef void (*destroy_func) (void* data, size_t pos);
 
-public:
-  data_sequence ();
+  public:
+    data_sequence ();
 
-  void
-  destructor (destroy_func);
+    void
+    destructor (destroy_func);
 
-  void
-  swap (data_sequence&amp;);
+    void
+    swap (data_sequence&amp;);
 
-private:
-  data_sequence (const data_sequence&amp;);
+  private:
+    data_sequence (const data_sequence&amp;);
 
-  data_sequence&amp;
-  operator= (data_sequence&amp;);
+    data_sequence&amp;
+    operator= (data_sequence&amp;);
 
-public:
-  iterator
-  begin ();
+  public:
+    iterator
+    begin ();
 
-  const_iterator
-  begin () const;
+    const_iterator
+    begin () const;
 
-  iterator
-  end ();
+    iterator
+    end ();
 
-  const_iterator
-  end () const;
+    const_iterator
+    end () const;
 
-  void*
-  front ();
+    void*
+    front ();
 
-  const void*
-  front () const;
+    const void*
+    front () const;
 
-  void*
-  back ();
+    void*
+    back ();
 
-  const void*
-  back () const;
+    const void*
+    back () const;
 
-  void*
-  operator[] (size_t);
+    void*
+    operator[] (size_t);
 
-  const void*
-  operator[] (size_t) const;
+    const void*
+    operator[] (size_t) const;
 
-public:
-  bool
-  empty () const;
+  public:
+    bool
+    empty () const;
 
-  size_t
-  size () const;
+    size_t
+    size () const;
 
-  size_t
-  capacity () const;
+    size_t
+    capacity () const;
 
-  size_t
-  max_size () const;
+    size_t
+    max_size () const;
 
-public:
-  void
-  clear ();
+  public:
+    void
+    clear ();
 
-  void
-  pop_back ();
+    void
+    pop_back ();
 
-  iterator
-  erase (iterator);
+    iterator
+    erase (iterator);
 
-  void
-  push_back (void*);
+    void
+    push_back (void*);
 
-  iterator
-  insert (iterator, void*);
+    iterator
+    insert (iterator, void*);
 
-  void
-  reserve (size_t);
-};
+    void
+    reserve (size_t);
+  };
+}
   </pre>
 
   <p>The <code>destructor()</code> modifier allows you to specify
@@ -3286,30 +3301,33 @@ public:
      return an error code to signal the out of memory condition:</p>
 
   <pre class="c++">
-class data_sequence
+namespace xml_schema
 {
-public:
-  enum error
+  class data_sequence
   {
-    error_none,
-    error_no_memory
+  public:
+    enum error
+    {
+      error_none,
+      error_no_memory
+    };
+
+    ...
+
+  public:
+    error
+    push_back (void*);
+
+    error
+    insert (iterator, void*);
+
+    error
+    insert (iterator, void*, iterator&amp; result);
+
+    error
+    reserve (size_t);
   };
-
-  ...
-
-public:
-  error
-  push_back (void*);
-
-  error
-  insert (iterator, void*);
-
-  error
-  insert (iterator, void*, iterator&amp; result);
-
-  error
-  reserve (size_t);
-};
+}
   </pre>
 
   <p>The following code fragment shows how we can store and retrieve
@@ -3453,7 +3471,7 @@ class people
 
   // person
   //
-  typedef xsde::fix_sequence&lt;person> person_sequence;
+  typedef xml_schema::fix_sequence&lt;person> person_sequence;
   typedef person_sequence::iterator person_iterator;
   typedef person_sequence::const_iterator person_const_iterator;
 

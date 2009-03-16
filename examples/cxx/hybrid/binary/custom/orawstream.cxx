@@ -63,11 +63,11 @@ operator<< (const buffer& x)
 }
 
 void
-operator<< (orawstream& s, const str_seq& x)
+operator<< (orawstream& s, const string_sequence& x)
 {
   s << orawstream::as_size (x.size ());
 
-  for (str_seq::const_iterator i = x.begin ();
+  for (string_sequence::const_iterator i = x.begin ();
        i != x.end (); ++i)
   {
     s << *i;

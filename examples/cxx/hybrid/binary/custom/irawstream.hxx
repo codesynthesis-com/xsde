@@ -75,16 +75,16 @@ void operator>> (irawstream&, xml_schema::gyear&);
 void operator>> (irawstream&, xml_schema::gyear_month&);
 void operator>> (irawstream&, xml_schema::time&);
 
-void operator>> (irawstream&, xml_schema::str_seq&);
+void operator>> (irawstream&, xml_schema::string_sequence&);
 
 template <typename T>
-void operator>> (irawstream&, xml_schema::pod_seq<T>&);
+void operator>> (irawstream&, xml_schema::pod_sequence<T>&);
 
 template <typename T>
-void operator>> (irawstream&, xml_schema::fix_seq<T>&);
+void operator>> (irawstream&, xml_schema::fix_sequence<T>&);
 
 template <typename T>
-void operator>> (irawstream&, xml_schema::var_seq<T>&);
+void operator>> (irawstream&, xml_schema::var_sequence<T>&);
 
 #include "irawstream.ixx"
 #include "irawstream.txx"

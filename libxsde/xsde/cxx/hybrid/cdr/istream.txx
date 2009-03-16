@@ -13,7 +13,7 @@ namespace xsde
 
       template <typename T>
       void
-      operator>> (icdrstream& s, pod_seq<T>& x)
+      operator>> (icdrstream& s, pod_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);
@@ -36,7 +36,7 @@ namespace xsde
 
       template <typename T>
       void
-      operator>> (icdrstream& s, fix_seq<T>& x)
+      operator>> (icdrstream& s, fix_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);
@@ -59,7 +59,7 @@ namespace xsde
 
       template <typename T>
       void
-      operator>> (icdrstream& s, var_seq<T>& x)
+      operator>> (icdrstream& s, var_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);
@@ -74,7 +74,7 @@ namespace xsde
           while (n--)
           {
             T* p = new T;
-            typename var_seq<T>::guard g (p);
+            typename var_sequence<T>::guard g (p);
             s >> *p;
             g.release ();
             x.push_back (p);
@@ -86,7 +86,7 @@ namespace xsde
 
       template <typename T>
       bool
-      operator>> (icdrstream& s, pod_seq<T>& x)
+      operator>> (icdrstream& s, pod_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);
@@ -114,7 +114,7 @@ namespace xsde
 
       template <typename T>
       bool
-      operator>> (icdrstream& s, fix_seq<T>& x)
+      operator>> (icdrstream& s, fix_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);
@@ -142,7 +142,7 @@ namespace xsde
 
       template <typename T>
       bool
-      operator>> (icdrstream& s, var_seq<T>& x)
+      operator>> (icdrstream& s, var_sequence<T>& x)
       {
         size_t n;
         icdrstream::as_size as_size (n);

@@ -74,16 +74,16 @@ void operator<< (orawstream&, const xml_schema::gyear&);
 void operator<< (orawstream&, const xml_schema::gyear_month&);
 void operator<< (orawstream&, const xml_schema::time&);
 
-void operator<< (orawstream&, const xml_schema::str_seq&);
+void operator<< (orawstream&, const xml_schema::string_sequence&);
 
 template <typename T>
-void operator<< (orawstream&, const xml_schema::pod_seq<T>&);
+void operator<< (orawstream&, const xml_schema::pod_sequence<T>&);
 
 template <typename T>
-void operator<< (orawstream&, const xml_schema::fix_seq<T>&);
+void operator<< (orawstream&, const xml_schema::fix_sequence<T>&);
 
 template <typename T>
-void operator<< (orawstream&, const xml_schema::var_seq<T>&);
+void operator<< (orawstream&, const xml_schema::var_sequence<T>&);
 
 #include "orawstream.ixx"
 #include "orawstream.txx"

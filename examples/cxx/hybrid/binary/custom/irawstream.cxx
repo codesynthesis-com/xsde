@@ -56,7 +56,7 @@ operator>> (buffer& x)
 }
 
 void
-operator>> (irawstream& s, str_seq& x)
+operator>> (irawstream& s, string_sequence& x)
 {
   size_t n;
   irawstream::as_size as_size (n);

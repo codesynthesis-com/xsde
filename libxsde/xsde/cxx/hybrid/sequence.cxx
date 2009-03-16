@@ -12,10 +12,10 @@ namespace xsde
     namespace hybrid
     {
       //
-      // data_seq
+      // data_sequence
       //
 
-      void data_seq::
+      void data_sequence::
       clear ()
       {
         if (destructor_)

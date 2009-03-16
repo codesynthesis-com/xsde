@@ -6,7 +6,7 @@
 
 template <typename T>
 void
-operator>> (irawstream& s, xml_schema::pod_seq<T>& x)
+operator>> (irawstream& s, xml_schema::pod_sequence<T>& x)
 {
   size_t n;
   irawstream::as_size as_size (n);
@@ -21,7 +21,7 @@ operator>> (irawstream& s, xml_schema::pod_seq<T>& x)
 
 template <typename T>
 void
-operator>> (irawstream& s, xml_schema::fix_seq<T>& x)
+operator>> (irawstream& s, xml_schema::fix_sequence<T>& x)
 {
   size_t n;
   irawstream::as_size as_size (n);
@@ -44,7 +44,7 @@ operator>> (irawstream& s, xml_schema::fix_seq<T>& x)
 
 template <typename T>
 void
-operator>> (irawstream& s, xml_schema::var_seq<T>& x)
+operator>> (irawstream& s, xml_schema::var_sequence<T>& x)
 {
   size_t n;
   irawstream::as_size as_size (n);
@@ -59,7 +59,7 @@ operator>> (irawstream& s, xml_schema::var_seq<T>& x)
     while (n--)
     {
       T* p = new T;
-      typename xml_schema::var_seq<T>::guard g (p);
+      typename xml_schema::var_sequence<T>::guard g (p);
       s >> *p;
       g.release ();
       x.push_back (p);

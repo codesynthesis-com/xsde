@@ -14,32 +14,32 @@ namespace xsde
     namespace hybrid
     {
       //
-      // pod_seq
+      // pod_sequence
       //
 
       template <typename T>
-      inline size_t pod_seq<T>::
+      inline size_t pod_sequence<T>::
       max_size () const
       {
         return size_t (-1) / sizeof (T);
       }
 
       template <typename T>
-      inline void pod_seq<T>::
-      swap (pod_seq& x)
+      inline void pod_sequence<T>::
+      swap (pod_sequence& x)
       {
         swap_ (x);
       }
 
       template <typename T>
-      inline T* pod_seq<T>::
+      inline T* pod_sequence<T>::
       begin ()
       {
         return static_cast<T*> (data_);
       }
 
       template <typename T>
-      inline const T* pod_seq<T>::
+      inline const T* pod_sequence<T>::
       begin () const
       {
         // g++ 2.95 does not like static_cast here.
@@ -48,77 +48,77 @@ namespace xsde
       }
 
       template <typename T>
-      inline T* pod_seq<T>::
+      inline T* pod_sequence<T>::
       end ()
       {
         return static_cast<T*> (data_) + size_;
       }
 
       template <typename T>
-      inline const T* pod_seq<T>::
+      inline const T* pod_sequence<T>::
       end () const
       {
         return ((const T*) (data_)) + size_;
       }
 
       template <typename T>
-      inline T& pod_seq<T>::
+      inline T& pod_sequence<T>::
       front ()
       {
         return *static_cast<T*> (data_);
       }
 
       template <typename T>
-      inline const T& pod_seq<T>::
+      inline const T& pod_sequence<T>::
       front () const
       {
         return *((const T*) (data_));
       }
 
       template <typename T>
-      inline T& pod_seq<T>::
+      inline T& pod_sequence<T>::
       back ()
       {
         return static_cast<T*> (data_)[size_ - 1];
       }
 
       template <typename T>
-      inline const T& pod_seq<T>::
+      inline const T& pod_sequence<T>::
       back () const
       {
         return ((const T*) (data_))[size_ - 1];
       }
 
       template <typename T>
-      inline T& pod_seq<T>::
+      inline T& pod_sequence<T>::
       operator[] (size_t i)
       {
         return static_cast<T*> (data_)[i];
       }
 
       template <typename T>
-      inline const T& pod_seq<T>::
+      inline const T& pod_sequence<T>::
       operator[] (size_t i) const
       {
         return ((const T*) (data_))[i];
       }
 
       template <typename T>
-      inline void pod_seq<T>::
+      inline void pod_sequence<T>::
       clear ()
       {
         size_ = 0;
       }
 
       template <typename T>
-      inline void pod_seq<T>::
+      inline void pod_sequence<T>::
       pop_back ()
       {
         --size_;
       }
 
       template <typename T>
-      inline T* pod_seq<T>::
+      inline T* pod_sequence<T>::
       erase (T* i)
       {
         if (i != static_cast<T*> (data_) + (size_ - 1))
@@ -131,7 +131,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      inline void pod_seq<T>::
+      inline void pod_sequence<T>::
       push_back (const T& x)
       {
         if (capacity_ < size_ + 1)
@@ -141,7 +141,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline T* pod_seq<T>::
+      inline T* pod_sequence<T>::
       insert (T* i, const T& x)
       {
         T* p = static_cast<T*> (insert_ (i, sizeof (T), 0, 0));
@@ -150,7 +150,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline void pod_seq<T>::
+      inline void pod_sequence<T>::
       reserve (size_t n)
       {
         if (capacity_ < n)
@@ -158,7 +158,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline void pod_seq<T>::
+      inline void pod_sequence<T>::
       assign (const T* p, size_t n)
       {
         if (capacity_ < n)
@@ -169,7 +169,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      inline sequence_base::error pod_seq<T>::
+      inline sequence_base::error pod_sequence<T>::
       push_back (const T& x)
       {
         error r = error_none;
@@ -184,7 +184,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error pod_seq<T>::
+      inline sequence_base::error pod_sequence<T>::
       insert (T* i, const T& x)
       {
         T* p = static_cast<T*> (insert_ (i, sizeof (T), 0, 0));
@@ -199,7 +199,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error pod_seq<T>::
+      inline sequence_base::error pod_sequence<T>::
       insert (T* i, const T& x, T*& r)
       {
         T* p = static_cast<T*> (insert_ (i, sizeof (T), 0, 0));
@@ -215,7 +215,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error pod_seq<T>::
+      inline sequence_base::error pod_sequence<T>::
       reserve (size_t n)
       {
         error r = error_none;
@@ -225,7 +225,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error pod_seq<T>::
+      inline sequence_base::error pod_sequence<T>::
       assign (const T* p, size_t n)
       {
         if (capacity_ < n)
@@ -241,102 +241,102 @@ namespace xsde
 #endif
 
       //
-      // fix_seq
+      // fix_sequence
       //
 
       template <typename T>
-      inline fix_seq<T>::
-      ~fix_seq ()
+      inline fix_sequence<T>::
+      ~fix_sequence ()
       {
         clear ();
       }
 
       template <typename T>
-      inline size_t fix_seq<T>::
+      inline size_t fix_sequence<T>::
       max_size () const
       {
         return size_t (-1) / sizeof (T);
       }
 
       template <typename T>
-      inline void fix_seq<T>::
-      swap (fix_seq& x)
+      inline void fix_sequence<T>::
+      swap (fix_sequence& x)
       {
         swap_ (x);
       }
 
       template <typename T>
-      inline T* fix_seq<T>::
+      inline T* fix_sequence<T>::
       begin ()
       {
         return static_cast<T*> (data_);
       }
 
       template <typename T>
-      inline const T* fix_seq<T>::
+      inline const T* fix_sequence<T>::
       begin () const
       {
         return (const T*) (data_);
       }
 
       template <typename T>
-      inline T* fix_seq<T>::
+      inline T* fix_sequence<T>::
       end ()
       {
         return static_cast<T*> (data_) + size_;
       }
 
       template <typename T>
-      inline const T* fix_seq<T>::
+      inline const T* fix_sequence<T>::
       end () const
       {
         return ((const T*) (data_)) + size_;
       }
 
       template <typename T>
-      inline T& fix_seq<T>::
+      inline T& fix_sequence<T>::
       front ()
       {
         return *static_cast<T*> (data_);
       }
 
       template <typename T>
-      inline const T& fix_seq<T>::
+      inline const T& fix_sequence<T>::
       front () const
       {
         return *((const T*) (data_));
       }
 
       template <typename T>
-      inline T& fix_seq<T>::
+      inline T& fix_sequence<T>::
       back ()
       {
         return static_cast<T*> (data_)[size_ - 1];
       }
 
       template <typename T>
-      inline const T& fix_seq<T>::
+      inline const T& fix_sequence<T>::
       back () const
       {
         return ((const T*) (data_))[size_ - 1];
       }
 
       template <typename T>
-      inline T& fix_seq<T>::
+      inline T& fix_sequence<T>::
       operator[] (size_t i)
       {
         return static_cast<T*> (data_)[i];
       }
 
       template <typename T>
-      inline const T& fix_seq<T>::
+      inline const T& fix_sequence<T>::
       operator[] (size_t i) const
       {
         return ((const T*) (data_))[i];
       }
 
       template <typename T>
-      inline void fix_seq<T>::
+      inline void fix_sequence<T>::
       pop_back ()
       {
         static_cast<T*> (data_)[size_ - 1].~T ();
@@ -344,7 +344,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline T* fix_seq<T>::
+      inline T* fix_sequence<T>::
       erase (T* i)
       {
         if (i != static_cast<T*> (data_) + (size_ - 1))
@@ -360,7 +360,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      inline void fix_seq<T>::
+      inline void fix_sequence<T>::
       push_back (const T& x)
       {
         if (capacity_ < size_ + 1)
@@ -371,7 +371,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline T* fix_seq<T>::
+      inline T* fix_sequence<T>::
       insert (T* i, const T& x)
       {
         T* p = static_cast<T*> (
@@ -381,7 +381,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline void fix_seq<T>::
+      inline void fix_sequence<T>::
       reserve (size_t n)
       {
         if (capacity_ < n)
@@ -389,7 +389,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      inline sequence_base::error fix_seq<T>::
+      inline sequence_base::error fix_sequence<T>::
       push_back (const T& x)
       {
         error r = error_none;
@@ -407,7 +407,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error fix_seq<T>::
+      inline sequence_base::error fix_sequence<T>::
       insert (T* i, const T& x)
       {
         T* p = static_cast<T*> (
@@ -423,7 +423,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error fix_seq<T>::
+      inline sequence_base::error fix_sequence<T>::
       insert (T* i, const T& x, T*& r)
       {
         T* p = static_cast<T*> (
@@ -440,7 +440,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error fix_seq<T>::
+      inline sequence_base::error fix_sequence<T>::
       reserve (size_t n)
       {
         error r = error_none;
@@ -451,67 +451,67 @@ namespace xsde
 #endif
 
       //
-      // var_seq
+      // var_sequence
       //
 
       template <typename T>
-      inline var_seq<T>::
-      ~var_seq ()
+      inline var_sequence<T>::
+      ~var_sequence ()
       {
         clear ();
       }
 
       template <typename T>
-      inline size_t var_seq<T>::
+      inline size_t var_sequence<T>::
       max_size () const
       {
         return size_t (-1) / sizeof (T*);
       }
 
       template <typename T>
-      inline void var_seq<T>::
-      swap (var_seq& x)
+      inline void var_sequence<T>::
+      swap (var_sequence& x)
       {
         swap_ (x);
       }
 
       template <typename T>
-      inline var_iterator<T> var_seq<T>::
+      inline var_iterator<T> var_sequence<T>::
       begin ()
       {
         return iterator (static_cast<T**> (data_));
       }
 
       template <typename T>
-      inline var_const_iterator<T> var_seq<T>::
+      inline var_const_iterator<T> var_sequence<T>::
       begin () const
       {
         return const_iterator ((const T**) (data_));
       }
 
       template <typename T>
-      inline var_iterator<T> var_seq<T>::
+      inline var_iterator<T> var_sequence<T>::
       end ()
       {
         return iterator (static_cast<T**> (data_) + size_);
       }
 
       template <typename T>
-      inline var_const_iterator<T> var_seq<T>::
+      inline var_const_iterator<T> var_sequence<T>::
       end () const
       {
         return const_iterator (((const T**) (data_)) + size_);
       }
 
       template <typename T>
-      inline T& var_seq<T>::
+      inline T& var_sequence<T>::
       front ()
       {
         return **static_cast<T**> (data_);
       }
 
       template <typename T>
-      inline const T& var_seq<T>::
+      inline const T& var_sequence<T>::
       front () const
       {
         // g++ 2.95 does not like static_cast here.
@@ -520,35 +520,35 @@ namespace xsde
       }
 
       template <typename T>
-      inline T& var_seq<T>::
+      inline T& var_sequence<T>::
       back ()
       {
         return *(static_cast<T**> (data_)[size_ - 1]);
       }
 
       template <typename T>
-      inline const T& var_seq<T>::
+      inline const T& var_sequence<T>::
       back () const
       {
         return *(((const T* const*) (data_))[size_ - 1]);
       }
 
       template <typename T>
-      inline T& var_seq<T>::
+      inline T& var_sequence<T>::
       operator[] (size_t i)
       {
         return *(static_cast<T**> (data_)[i]);
       }
 
       template <typename T>
-      inline const T& var_seq<T>::
+      inline const T& var_sequence<T>::
       operator[] (size_t i) const
       {
         return *(((const T* const*) (data_))[i]);
       }
 
       template <typename T>
-      inline void var_seq<T>::
+      inline void var_sequence<T>::
       pop_back ()
       {
         delete static_cast<T**> (data_)[size_ - 1];
@@ -556,7 +556,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline var_iterator<T> var_seq<T>::
+      inline var_iterator<T> var_sequence<T>::
       erase (iterator i)
       {
         delete *i.i_;
@@ -570,7 +570,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline T* var_seq<T>::
+      inline T* var_sequence<T>::
       detach (iterator i)
       {
         T* r = *i.i_;
@@ -579,7 +579,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline void var_seq<T>::
+      inline void var_sequence<T>::
       attach (iterator i, T* x)
       {
         delete *i.i_;
@@ -588,7 +588,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      inline void var_seq<T>::
+      inline void var_sequence<T>::
       push_back (T* x)
       {
         guard g (x);
@@ -602,7 +602,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline var_iterator<T> var_seq<T>::
+      inline var_iterator<T> var_sequence<T>::
       insert (iterator i, T* x)
       {
         guard g (x);
@@ -613,7 +613,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline void var_seq<T>::
+      inline void var_sequence<T>::
       reserve (size_t n)
       {
         if (capacity_ < n)
@@ -621,7 +621,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      inline sequence_base::error var_seq<T>::
+      inline sequence_base::error var_sequence<T>::
       push_back (T* x)
       {
         error r = error_none;
@@ -638,7 +638,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error var_seq<T>::
+      inline sequence_base::error var_sequence<T>::
       insert (iterator i, T* x)
       {
         T** p = static_cast<T**> (insert_ (i.i_, sizeof (T*), 0, 0));
@@ -656,7 +656,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error var_seq<T>::
+      inline sequence_base::error var_sequence<T>::
       insert (iterator i, T* x, iterator& r)
       {
         T** p = static_cast<T**> (insert_ (i.i_, sizeof (T*), 0, 0));
@@ -675,7 +675,7 @@ namespace xsde
       }
 
       template <typename T>
-      inline sequence_base::error var_seq<T>::
+      inline sequence_base::error var_sequence<T>::
       reserve (size_t n)
       {
         error r = error_none;
@@ -686,46 +686,46 @@ namespace xsde
 #endif
 
       //
-      // data_seq
+      // data_sequence
       //
 
-      inline data_seq::
-      ~data_seq ()
+      inline data_sequence::
+      ~data_sequence ()
       {
         clear ();
       }
 
-      inline data_seq::
-      data_seq ()
+      inline data_sequence::
+      data_sequence ()
           : destructor_ (0)
       {
       }
 
-      inline void data_seq::
-      destructor (data_seq::destroy_func d)
+      inline void data_sequence::
+      destructor (data_sequence::destroy_func d)
       {
         destructor_ = d;
       }
 
-      inline size_t data_seq::
+      inline size_t data_sequence::
       max_size () const
       {
         return size_t (-1) / sizeof (void*);
       }
 
-      inline void data_seq::
-      swap (data_seq& x)
+      inline void data_sequence::
+      swap (data_sequence& x)
       {
         swap_ (x);
       }
 
-      inline data_seq::iterator data_seq::
+      inline data_sequence::iterator data_sequence::
       begin ()
       {
         return static_cast<void**> (data_);
       }
 
-      inline data_seq::const_iterator data_seq::
+      inline data_sequence::const_iterator data_sequence::
       begin () const
       {
         // g++ 2.95 does not like static_cast here.
@@ -733,55 +733,55 @@ namespace xsde
         return (const void* const*) (data_);
       }
 
-      inline data_seq::iterator data_seq::
+      inline data_sequence::iterator data_sequence::
       end ()
       {
         return static_cast<void**> (data_) + size_;
       }
 
-      inline data_seq::const_iterator data_seq::
+      inline data_sequence::const_iterator data_sequence::
       end () const
       {
         return ((const void* const*) (data_)) + size_;
       }
 
-      inline void* data_seq::
+      inline void* data_sequence::
       front ()
       {
         return *static_cast<void**> (data_);
       }
 
-      inline const void* data_seq::
+      inline const void* data_sequence::
       front () const
       {
         return *((const void* const*) (data_));
       }
 
-      inline void* data_seq::
+      inline void* data_sequence::
       back ()
       {
         return static_cast<void**> (data_)[size_ - 1];
       }
 
-      inline const void* data_seq::
+      inline const void* data_sequence::
       back () const
       {
         return ((const void* const*) (data_))[size_ - 1];
       }
 
-      inline void* data_seq::
+      inline void* data_sequence::
       operator[] (size_t i)
       {
         return static_cast<void**> (data_)[i];
       }
 
-      inline const void* data_seq::
+      inline const void* data_sequence::
       operator[] (size_t i) const
       {
         return ((const void* const*) (data_))[i];
       }
 
-      inline void data_seq::
+      inline void data_sequence::
       pop_back ()
       {
         if (destructor_)
@@ -789,7 +789,7 @@ namespace xsde
         --size_;
       }
 
-      inline data_seq::iterator data_seq::
+      inline data_sequence::iterator data_sequence::
       erase (iterator i)
       {
         if (destructor_)
@@ -804,28 +804,28 @@ namespace xsde
       }
 
 #ifdef XSDE_EXCEPTIONS
-      namespace data_seq_bits
+      namespace data_sequence_bits
       {
         struct guard
         {
           ~guard () { if (p_ && d_) d_ (p_, i_); }
-          guard (data_seq::destroy_func d, void* p, size_t i)
+          guard (data_sequence::destroy_func d, void* p, size_t i)
               : d_ (d), p_ (p), i_ (i) {}
 
           void
           release () { p_ = 0; }
 
         private:
-          data_seq::destroy_func d_;
+          data_sequence::destroy_func d_;
           void* p_;
           size_t i_;
         };
       }
 
-      inline void data_seq::
+      inline void data_sequence::
       push_back (void* x)
       {
-        data_seq_bits::guard g (destructor_, x, size_);
+        data_sequence_bits::guard g (destructor_, x, size_);
 
         if (capacity_ < size_ + 1)
           grow_ (0, sizeof (void*), 0);
@@ -835,10 +835,10 @@ namespace xsde
         g.release ();
       }
 
-      inline data_seq::iterator data_seq::
+      inline data_sequence::iterator data_sequence::
       insert (iterator i, void* x)
       {
-        data_seq_bits::guard g (
+        data_sequence_bits::guard g (
           destructor_, x, i - static_cast<void**> (data_));
 
         void** p = static_cast<void**> (insert_ (i, sizeof (void*), 0, 0));
@@ -847,14 +847,14 @@ namespace xsde
         return p;
       }
 
-      inline void data_seq::
+      inline void data_sequence::
       reserve (size_t n)
       {
         if (capacity_ < n)
           grow_ (n, sizeof (void*), 0);
       }
 #else
-      inline sequence_base::error data_seq::
+      inline sequence_base::error data_sequence::
       push_back (void* x)
       {
         error r = error_none;
@@ -873,7 +873,7 @@ namespace xsde
         return r;
       }
 
-      inline sequence_base::error data_seq::
+      inline sequence_base::error data_sequence::
       insert (iterator i, void* x)
       {
         size_t pos = i - static_cast<void**> (data_);
@@ -892,7 +892,7 @@ namespace xsde
         }
       }
 
-      inline sequence_base::error data_seq::
+      inline sequence_base::error data_sequence::
       insert (iterator i, void* x, iterator& r)
       {
         size_t pos = i - static_cast<void**> (data_);
@@ -912,7 +912,7 @@ namespace xsde
         }
       }
 
-      inline sequence_base::error data_seq::
+      inline sequence_base::error data_sequence::
       reserve (size_t n)
       {
         error r = error_none;

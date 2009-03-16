@@ -15,7 +15,7 @@ namespace email
   class envelope: public envelope_base
   {
   public:
-    typedef xml_schema::var_seq<email::body> body_sequence;
+    typedef xml_schema::var_sequence<email::body> body_sequence;
     typedef body_sequence::iterator body_iterator;
     typedef body_sequence::const_iterator body_const_iterator;
 

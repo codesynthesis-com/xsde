@@ -12,11 +12,11 @@ namespace xsde
     namespace hybrid
     {
       //
-      // fix_seq
+      // fix_sequence
       //
 
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       clear ()
       {
         for (size_t i = 0;  i < size_; ++i)
@@ -27,7 +27,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       assign (const T* p, size_t n)
       {
         clear ();
@@ -38,7 +38,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      sequence_base::error fix_seq<T>::
+      sequence_base::error fix_sequence<T>::
       assign (const T* p, size_t n)
       {
         clear ();
@@ -55,7 +55,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       move_ (void* dst, void* src, size_t n)
       {
         T* d = static_cast<T*> (dst);
@@ -77,7 +77,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       move_ (void* dst, void* src, size_t n)
       {
         T* d = static_cast<T*> (dst);
@@ -92,7 +92,7 @@ namespace xsde
 #endif
 
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       move_forward_ (void* p, size_t n)
       {
         // We are moving a sequence of elements one position to the left.
@@ -110,7 +110,7 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       move_backward_ (void* p, size_t n, size_t& size)
       {
         // We are moving a sequence of elements one position to the right.
@@ -128,7 +128,7 @@ namespace xsde
       }
 #else
       template <typename T>
-      void fix_seq<T>::
+      void fix_sequence<T>::
       move_backward_ (void* p, size_t n)
       {
         // We are moving a sequence of elements one position to the right.
@@ -144,11 +144,11 @@ namespace xsde
 #endif
 
       //
-      // var_seq
+      // var_sequence
       //
 
       template <typename T>
-      void var_seq<T>::
+      void var_sequence<T>::
       clear ()
       {
         for (size_t i = 0;  i < size_; ++i)

@@ -51,6 +51,11 @@ namespace CXX
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
             ns_stack (c.ns_stack),
+            pod_seq (c.pod_seq),
+            fix_seq (c.fix_seq),
+            var_seq (c.var_seq),
+            str_seq (c.str_seq),
+            data_seq (c.data_seq),
             istreams (c.istreams),
             ostreams (c.ostreams),
             icdrstream (c.icdrstream),
@@ -75,6 +80,11 @@ namespace CXX
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
             ns_stack (c.ns_stack),
+            pod_seq (c.pod_seq),
+            fix_seq (c.fix_seq),
+            var_seq (c.var_seq),
+            str_seq (c.str_seq),
+            data_seq (c.data_seq),
             istreams (c.istreams),
             ostreams (c.ostreams),
             icdrstream (c.icdrstream),
@@ -561,17 +571,29 @@ namespace CXX
 
       NamespaceStack& ns_stack;
 
+      String const& pod_seq;
+      String const& fix_seq;
+      String const& var_seq;
+      String const& str_seq;
+      String const& data_seq;
+
       typedef Containers::Vector<NarrowString> Streams;
       Streams const& istreams;
       Streams const& ostreams;
 
-      String& icdrstream;
-      String& ocdrstream;
-      String& ixdrstream;
-      String& oxdrstream;
+      String const& icdrstream;
+      String const& ocdrstream;
+      String const& ixdrstream;
+      String const& oxdrstream;
 
     private:
       NamespaceStack ns_stack_;
+
+      String pod_seq_;
+      String fix_seq_;
+      String var_seq_;
+      String str_seq_;
+      String data_seq_;
 
       String icdrstream_;
       String ocdrstream_;
@@ -1342,12 +1364,8 @@ namespace CXX
           }
         case seq:
           {
-            if (fixed_length (t))
-              os << "::xsde::cxx::hybrid::fix_seq";
-            else
-              os << "::xsde::cxx::hybrid::var_seq";
-
-            os << "< " << fq << " >";
+            os << (fixed_length (t) ? fix_seq : var_seq) << "< " <<
+              fq << " >";
             break;
           }
         }
@@ -1365,7 +1383,7 @@ namespace CXX
           }
         case seq:
           {
-            os << "::xsde::cxx::hybrid::pod_seq< " << name << " >";
+            os << pod_seq << "< " << name << " >";
             break;
           }
         default:
@@ -1422,7 +1440,7 @@ namespace CXX
           }
         case seq:
           {
-            os << "::xsde::cxx::hybrid::str_seq";
+            os << str_seq;
             break;
           }
         }

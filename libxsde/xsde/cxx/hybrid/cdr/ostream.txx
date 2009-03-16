@@ -14,11 +14,11 @@ namespace xsde
 
       template <typename T>
       void
-      operator<< (ocdrstream& s, const pod_seq<T>& x)
+      operator<< (ocdrstream& s, const pod_sequence<T>& x)
       {
         s << ocdrstream::as_size (x.size ());
 
-        for (typename pod_seq<T>::const_iterator i = x.begin ();
+        for (typename pod_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           s << *i;
@@ -27,11 +27,11 @@ namespace xsde
 
       template <typename T>
       void
-      operator<< (ocdrstream& s, const fix_seq<T>& x)
+      operator<< (ocdrstream& s, const fix_sequence<T>& x)
       {
         s << ocdrstream::as_size (x.size ());
 
-        for (typename fix_seq<T>::const_iterator i = x.begin ();
+        for (typename fix_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           s << *i;
@@ -40,11 +40,11 @@ namespace xsde
 
       template <typename T>
       void
-      operator<< (ocdrstream& s, const var_seq<T>& x)
+      operator<< (ocdrstream& s, const var_sequence<T>& x)
       {
         s << ocdrstream::as_size (x.size ());
 
-        for (typename var_seq<T>::const_iterator i = x.begin ();
+        for (typename var_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           s << *i;
@@ -55,12 +55,12 @@ namespace xsde
 
       template <typename T>
       bool
-      operator<< (ocdrstream& s, const pod_seq<T>& x)
+      operator<< (ocdrstream& s, const pod_sequence<T>& x)
       {
         if (!(s << ocdrstream::as_size (x.size ())))
           return false;
 
-        for (typename pod_seq<T>::const_iterator i = x.begin ();
+        for (typename pod_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           if (!(s << *i))
@@ -72,12 +72,12 @@ namespace xsde
 
       template <typename T>
       bool
-      operator<< (ocdrstream& s, const fix_seq<T>& x)
+      operator<< (ocdrstream& s, const fix_sequence<T>& x)
       {
         if (!(s << ocdrstream::as_size (x.size ())))
           return false;
 
-        for (typename fix_seq<T>::const_iterator i = x.begin ();
+        for (typename fix_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           if (!(s << *i))
@@ -89,12 +89,12 @@ namespace xsde
 
       template <typename T>
       bool
-      operator<< (ocdrstream& s, const var_seq<T>& x)
+      operator<< (ocdrstream& s, const var_sequence<T>& x)
       {
         if (!(s << ocdrstream::as_size (x.size ())))
           return false;
 
-        for (typename var_seq<T>::const_iterator i = x.begin ();
+        for (typename var_sequence<T>::const_iterator i = x.begin ();
              i != x.end (); ++i)
         {
           if (!(s << *i))

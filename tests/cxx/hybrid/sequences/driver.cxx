@@ -45,9 +45,9 @@ int
 main ()
 {
   //
-  // pod_seq
+  // pod_sequence
   //
-  typedef pod_seq<int> pod;
+  typedef pod_sequence<int> pod;
 
   {
     pod s;
@@ -121,9 +121,9 @@ main ()
   }
 
   //
-  // fix_seq
+  // fix_sequence
   //
-  typedef fix_seq<string> fix;
+  typedef fix_sequence<string> fix;
 
   {
     fix s;
@@ -199,9 +199,9 @@ main ()
   }
 
   //
-  // var_seq
+  // var_sequence
   //
-  typedef var_seq<string> var;
+  typedef var_sequence<string> var;
 
   {
     var s;
@@ -282,9 +282,9 @@ main ()
   }
 
   //
-  // str_seq
+  // string_sequence
   //
-  typedef str_seq str;
+  typedef string_sequence str;
 
 #ifndef XSDE_STL
   using xsde::cxx::strdupx;
@@ -450,9 +450,9 @@ main ()
 #endif
 
   //
-  // data_seq
+  // data_sequence
   //
-  typedef data_seq data;
+  typedef data_sequence data;
 
   {
     data s;
