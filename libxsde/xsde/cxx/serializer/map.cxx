@@ -23,12 +23,20 @@ namespace xsde
       void serializer_map_impl::
       reset () const
       {
+        if (resetting_)
+          return;
+
+        bool& r = const_cast<bool&> (resetting_);
+        r = true;
+
         for (hashmap::const_iterator i (map_.begin ()), e (map_.end ());
              i != e; ++i)
         {
           serializer_base* s = *static_cast<serializer_base* const*> (*i);
           s->_reset ();
         }
+
+        r = false;
       }
     }
   }

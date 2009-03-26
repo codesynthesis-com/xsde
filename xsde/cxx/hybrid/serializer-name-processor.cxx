@@ -265,7 +265,7 @@ namespace CXX
           if (!name)
             return;
 
-          String const& skel (lc.get<String> ("p:name"));
+          String const& skel (lc.get<String> ("s:name"));
 
           NameSet set;
           set.insert (name);
@@ -672,7 +672,8 @@ namespace CXX
       Void
       process_impl (CLI::Options const& ops,
                     SemanticGraph::Schema& tu,
-                    SemanticGraph::Path const& file)
+                    SemanticGraph::Path const& file,
+                    Boolean deep)
       {
         Context ctx (ops, tu, file);
 
@@ -700,6 +701,9 @@ namespace CXX
 
           schema.dispatch (tu);
         }
+
+        if (!deep)
+          return;
 
         // Pass two - assign names inside complex types. Here we don't
         // need to go into included/imported schemas.
@@ -732,9 +736,10 @@ namespace CXX
     Void SerializerNameProcessor::
     process (CLI::Options const& ops,
              SemanticGraph::Schema& tu,
-             SemanticGraph::Path const& file)
+             SemanticGraph::Path const& file,
+             Boolean deep)
     {
-      process_impl (ops, tu, file);
+      process_impl (ops, tu, file, deep);
     }
   }
 }

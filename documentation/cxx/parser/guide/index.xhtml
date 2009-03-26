@@ -522,7 +522,7 @@
   &lt;greeting>Hello&lt;/greeting>
 
   &lt;name>sun&lt;/name>
-  &lt;name>earth&lt;/name>
+  &lt;name>moon&lt;/name>
   &lt;name>world&lt;/name>
 
 &lt;/hello>
@@ -2322,7 +2322,7 @@ protected:
      runtime with support for polymorphism, compile your schemas with the
      <code>--generate-polymorphic</code> option to produce polymorphism-aware
      code, as well as pass <code>true</code> as the last argument to the
-     <code>xml_schema::document</code>'s constructors. If some of your
+     <code>xml_schema::document_pimpl</code>'s constructors. If some of your
      schemas do not require support for polymorphism then you can compile
      them with the <code>--runtime-polymorphic</code> option and still
      use the XSD/e runtime configured with polymorphism support.

@@ -526,6 +526,14 @@ namespace CXX
     return spec;
   }
 
+  Void Parser::Generator::
+  process_names (CLI::Options const& ops,
+                 XSDFrontend::SemanticGraph::Schema& schema,
+                 XSDFrontend::SemanticGraph::Path const& file)
+  {
+    NameProcessor proc;
+    proc.process (ops, schema, file, false);
+  }
 
   namespace
   {
@@ -646,7 +654,7 @@ namespace CXX
       //
       {
         NameProcessor proc;
-        proc.process (ops, schema, file_path);
+        proc.process (ops, schema, file_path, true);
       }
 
       Boolean validation (!ops.value<CLI::suppress_validation> ());

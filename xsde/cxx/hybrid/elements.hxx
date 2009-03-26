@@ -42,9 +42,9 @@ namespace CXX
             exceptions (c.exceptions),
             stl (c.stl),
             poly_code (c.poly_code),
-            poly_runtime (c.poly_runtime),
             reset (c.reset),
             detach (c.detach),
+            typeinfo (c.typeinfo),
             mixin (c.mixin),
             tiein (c.tiein),
             fwd_expr (c.fwd_expr),
@@ -71,9 +71,9 @@ namespace CXX
             exceptions (c.exceptions),
             stl (c.stl),
             poly_code (c.poly_code),
-            poly_runtime (c.poly_runtime),
             reset (c.reset),
             detach (c.detach),
+            typeinfo (c.typeinfo),
             mixin (c.mixin),
             tiein (c.tiein),
             fwd_expr (c.fwd_expr),
@@ -534,6 +534,12 @@ namespace CXX
         return t.context ().count ("recursive");
       }
 
+      Boolean
+      polymorphic (SemanticGraph::Type& t)
+      {
+        return t.context ().count ("polymorphic");
+      }
+
     public:
       String
       istream (NarrowString const& is) const;
@@ -559,9 +565,9 @@ namespace CXX
       Boolean exceptions;
       Boolean stl;
       Boolean poly_code;
-      Boolean poly_runtime;
       Boolean reset;
       Boolean detach;
+      Boolean typeinfo;
       Boolean mixin;
       Boolean tiein;
 

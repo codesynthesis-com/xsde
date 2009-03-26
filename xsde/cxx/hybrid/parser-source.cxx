@@ -904,11 +904,59 @@ namespace CXX
 
       //
       //
+      struct PostOverride: Traversal::Complex, Context
+      {
+        PostOverride (Context& c)
+            : Context (c), scope_ (0)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          Boolean clear (false);
+
+          if (scope_ == 0)
+          {
+            scope_ = &c;
+            clear = true;
+          }
+
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              String const& scope (epimpl_custom (*scope_));
+
+              os << pret_type (b) << " " << scope << "::" << endl
+                 << post_name (b) << " ()"
+                 << "{"
+                 << "return this->" << post_name (c) << " ();"
+                 << "}";
+            }
+          }
+
+          if (clear)
+            scope_ = 0;
+        }
+
+      private:
+        SemanticGraph::Complex* scope_;
+      };
+
+      //
+      //
       struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),
               base_name_ (c, TypeName::base),
+              post_override_ (c),
               compositor_callback_ (c),
               particle_callback_ (c),
               attribute_callback_ (c)
@@ -1253,6 +1301,9 @@ namespace CXX
 
           // post
           //
+          if (polymorphic (c))
+            post_override_.dispatch (c);
+
           os << ret << " " << name << "::" << endl
              << post_name (c) << " ()"
              << "{";
@@ -1350,6 +1401,7 @@ namespace CXX
 
       private:
         TypeName base_name_;
+        PostOverride post_override_;
 
         CompositorCallback compositor_callback_;
         ParticleCallback particle_callback_;

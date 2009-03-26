@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include "email.hxx"
-
 #include "email-pimpl.hxx"
 #include "email-simpl.hxx"
 

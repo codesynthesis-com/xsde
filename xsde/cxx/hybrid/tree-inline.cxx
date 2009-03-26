@@ -150,15 +150,6 @@ namespace CXX
           }
           else
           {
-            // d-tor
-            //
-            os << inl
-               << name << "::" << endl
-               << "~" << name << " ()"
-               << "{"
-               << "delete[] this->" << member << ";"
-               << "}";
-
             // const char*
             // name () const
             //

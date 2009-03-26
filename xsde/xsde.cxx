@@ -583,6 +583,11 @@ main (Int argc, Char* argv[])
       cmd == "cxx-serializer" ||
       (gen_hybrid && h_ops->value<CXX::Hybrid::CLI::generate_serializer> ()));
 
+    Boolean poly_aggr (
+      gen_hybrid &&
+      h_ops->value<CXX::Hybrid::CLI::generate_polymorphic> () &&
+      h_ops->value<CXX::Hybrid::CLI::generate_aggregate> ());
+
     if (!fpt)
     {
       // File-per-schema compilation mode.
@@ -592,18 +597,7 @@ main (Int argc, Char* argv[])
         // Parse schema.
         //
         SemanticGraph::Path tu;
-
-        try
-        {
-          tu = SemanticGraph::Path (args[i], boost::filesystem::native);
-        }
-        catch (SemanticGraph::InvalidPath const&)
-        {
-          e << "error: '" << args[i] << "' is not a valid "
-            << "filesystem path" << endl;
-
-          return 1;
-        }
+        SemanticGraph::Paths paths;
 
         XSDFrontend::Parser parser (
           true,
@@ -613,18 +607,30 @@ main (Int argc, Char* argv[])
 
         Evptr<SemanticGraph::Schema> schema;
 
+        try
+        {
+          tu = SemanticGraph::Path (args[i], boost::filesystem::native);
+        }
+        catch (SemanticGraph::InvalidPath const&)
+        {
+          e << "error: '" << args[i] << "' is not a valid "
+            << "filesystem path" << endl;
+          return 1;
+        }
+
+        // See if we are generating code for the XML Schema namespace.
+        // We could be compiling several schemas at once in which case
+        // handling of the --generate-xml-schema option gets tricky: we
+        // will need to rely on the presence of the --extern-xml-schema
+        // to tell us which (fake) schema file corresponds to XML Schema.
+        //
+        Boolean gen_xml_schema (false);
+        NarrowString xml_schema_file;
+
         if (cmd == "cxx-parser" ||
             cmd == "cxx-serializer" ||
             cmd == "cxx-hybrid")
         {
-          // See if we are generating code for the XML Schema namespace.
-          // We could be compiling several schemas at once in which case
-          // handling of the --generate-xml-schema option gets tricky: we
-          // will need to rely on the presence of the --extern-xml-schema
-          // to tell us which (fake) schema file corresponds to XML Schema.
-          //
-          Boolean gen_xml_schema (false);
-
           if (cmd == "cxx-parser")
           {
             gen_xml_schema =
@@ -632,10 +638,10 @@ main (Int argc, Char* argv[])
 
             if (gen_xml_schema)
             {
-              if (NarrowString name =
+              if (xml_schema_file =
                   p_ops->value<CXX::Parser::CLI::extern_xml_schema> ())
               {
-                if (tu.native_file_string () != name)
+                if (tu.native_file_string () != xml_schema_file)
                   gen_xml_schema = false;
               }
             }
@@ -647,10 +653,10 @@ main (Int argc, Char* argv[])
 
             if (gen_xml_schema)
             {
-              if (NarrowString name =
+              if (xml_schema_file =
                   s_ops->value<CXX::Serializer::CLI::extern_xml_schema> ())
               {
-                if (tu.native_file_string () != name)
+                if (tu.native_file_string () != xml_schema_file)
                   gen_xml_schema = false;
               }
             }
@@ -662,22 +668,81 @@ main (Int argc, Char* argv[])
 
             if (gen_xml_schema)
             {
-              if (NarrowString name =
+              if (xml_schema_file =
                   h_ops->value<CXX::Hybrid::CLI::extern_xml_schema> ())
               {
-                if (tu.native_file_string () != name)
+                if (tu.native_file_string () != xml_schema_file)
                   gen_xml_schema = false;
               }
             }
           }
+        }
 
-          if (gen_xml_schema)
-            schema = parser.xml_schema (tu);
+        // If we are generating polymorphic aggregates then we need
+        // to add all the schemas to the semantic graph in case they
+        // define derived polymorphic types, except for the fake XML
+        // Schema file.
+        //
+        Boolean multi (poly_aggr && !gen_xml_schema);
+
+        if (multi)
+        {
+          Size ai (1);
+          paths.push_back (tu);
+
+          try
+          {
+            for (; ai < args.size (); ++ai)
+            {
+              if (ai != i && args[ai] != xml_schema_file)
+                paths.push_back (
+                  SemanticGraph::Path (args[ai], boost::filesystem::native));
+            }
+          }
+          catch (SemanticGraph::InvalidPath const&)
+          {
+            e << "error: '" << args[ai] << "' is not a valid "
+              << "filesystem path" << endl;
+            return 1;
+          }
+
+          // Also include additional schemas that may be specified with
+          // the --polymorphic-schema option.
+          //
+          NarrowStrings const& extra_files (
+            h_ops->value<CXX::Hybrid::CLI::polymorphic_schema> ());
+
+          NarrowStrings::ConstIterator i (extra_files.begin ());
+
+          try
+          {
+            for (; i != extra_files.end (); ++i)
+            {
+              paths.push_back (
+                SemanticGraph::Path (*i, boost::filesystem::native));
+            }
+          }
+          catch (SemanticGraph::InvalidPath const&)
+          {
+            e << "error: '" << i->c_str () << "' is not a valid "
+              << "filesystem path" << endl;
+            return 1;
+          }
+
+
+          if (args.size () <= 1)
+            multi = false;
+        }
+
+        if (gen_xml_schema)
+          schema = parser.xml_schema (tu);
+        else
+        {
+          if (multi)
+            schema = parser.parse (paths);
           else
             schema = parser.parse (tu);
         }
-        else
-          schema = parser.parse (tu);
 
         // Morph anonymous types.
         //
@@ -686,7 +751,11 @@ main (Int argc, Char* argv[])
           try
           {
             Transformations::Anonymous trans (anon_translator);
-            trans.transform (*schema, tu, true);
+
+            if (multi)
+              trans.transform (*schema, "", true);
+            else
+              trans.transform (*schema, tu, true);
           }
           catch (Transformations::Anonymous::Failed const&)
           {
@@ -698,7 +767,11 @@ main (Int argc, Char* argv[])
         //
         {
           Transformations::Simplifier trans;
-          trans.transform (*schema, tu);
+
+          if (multi)
+            trans.transform (*schema, "");
+          else
+            trans.transform (*schema, tu);
         }
 
         // Calculate type sizes.
@@ -707,7 +780,12 @@ main (Int argc, Char* argv[])
         {
           try
           {
-            CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, tu);
+            if (multi)
+              CXX::Hybrid::Generator::calculate_size (
+                *h_ops, *schema, "", disabled_w);
+            else
+              CXX::Hybrid::Generator::calculate_size (
+                *h_ops, *schema, tu, disabled_w);
           }
           catch (CXX::Hybrid::Generator::Failed const&)
           {
@@ -721,7 +799,11 @@ main (Int argc, Char* argv[])
         try
         {
           Processing::Inheritance::Processor proc;
-          proc.process (*schema, tu, gen_hybrid ? "fixed" : 0);
+
+          if (multi)
+            proc.process (*schema, "", gen_hybrid ? "fixed" : 0);
+          else
+            proc.process (*schema, tu, gen_hybrid ? "fixed" : 0);
         }
         catch (Processing::Inheritance::Processor::Failed const&)
         {
@@ -735,13 +817,58 @@ main (Int argc, Char* argv[])
           try
           {
             Transformations::Restriction trans;
-            trans.transform (*schema, tu);
+
+            if (multi)
+              trans.transform (*schema, "");
+            else
+              trans.transform (*schema, tu);
           }
           catch (Transformations::Restriction::Failed const&)
           {
             return 1; // Diagnostic has already been issued.
           }
         }
+
+        // Get the first schema and assign names in additional
+        // schemas.
+        //
+        SemanticGraph::Schema* root;
+
+        if (multi)
+        {
+          using SemanticGraph::Schema;
+
+          Schema::UsesIterator b (schema->uses_begin ());
+          ++b; // Implied XML Schema namespace.
+
+          // The first schema. Will be handled later.
+          //
+          root = &b->schema ();
+          ++b;
+
+          for (Schema::UsesIterator e (schema->uses_end ()); b != e; ++b)
+          {
+            SemanticGraph::Schema& s (b->schema ());
+            SemanticGraph::Path f (b->path ());
+
+            if (gen_hybrid)
+              CXX::Hybrid::Generator::process_tree_names (*h_ops, s, f);
+
+            if (gen_parser)
+              CXX::Parser::Generator::process_names (*p_ops, s, f);
+
+            if (gen_serializer)
+              CXX::Serializer::Generator::process_names (*s_ops, s, f);
+
+            if (gen_hybrid && gen_parser)
+              CXX::Hybrid::Generator::process_parser_names (*h_ops, s, f);
+
+            if (gen_hybrid && gen_serializer)
+              CXX::Hybrid::Generator::process_serializer_names (*h_ops, s, f);
+          }
+        }
+        else
+          root = schema.get ();
 
         // Generate mapping.
         //
@@ -753,7 +880,7 @@ main (Int argc, Char* argv[])
           {
             sloc += CXX::Hybrid::Generator::generate_tree (
               *h_ops,
-              *schema,
+              *root,
               tu,
               disabled_w,
               parser_type_map,
@@ -775,7 +902,7 @@ main (Int argc, Char* argv[])
           {
             sloc += CXX::Parser::Generator::generate (
               *p_ops,
-              *schema,
+              *root,
               tu,
               parser_type_map,
               true,
@@ -797,7 +924,7 @@ main (Int argc, Char* argv[])
           {
             sloc += CXX::Serializer::Generator::generate (
               *s_ops,
-              *schema,
+              *root,
               tu,
               serializer_type_map,
               true,
@@ -821,7 +948,7 @@ main (Int argc, Char* argv[])
             {
               sloc += CXX::Hybrid::Generator::generate_parser (
                 *h_ops,
-                *schema,
+                *root,
                 tu,
                 disabled_w,
                 file_list,
@@ -841,7 +968,7 @@ main (Int argc, Char* argv[])
             {
               sloc += CXX::Hybrid::Generator::generate_serializer (
                 *h_ops,
-                *schema,
+                *root,
                 tu,
                 disabled_w,
                 file_list,
@@ -925,7 +1052,8 @@ main (Int argc, Char* argv[])
       {
         try
         {
-          CXX::Hybrid::Generator::calculate_size (*h_ops, *schema, "");
+          CXX::Hybrid::Generator::calculate_size (
+            *h_ops, *schema, "", disabled_w);
         }
         catch (CXX::Hybrid::Generator::Failed const&)
         {

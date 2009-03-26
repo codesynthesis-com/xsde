@@ -19,7 +19,7 @@ namespace xsde
 
       inline serializer_map_impl::
       serializer_map_impl (size_t buckets)
-          : map_ (buckets, sizeof (serializer_base*))
+          : map_ (buckets, sizeof (serializer_base*)), resetting_ (false)
       {
       }
 

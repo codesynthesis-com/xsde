@@ -8,7 +8,6 @@
 
 #include "email.hxx"
 #include "body.hxx"
-
 #include "email-pimpl.hxx"
 #include "email-simpl.hxx"
 

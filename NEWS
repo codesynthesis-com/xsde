@@ -2,6 +2,15 @@ Version 3.1.0
 
  C++/Hybrid
 
+  * Support for XML Schema polymorphism. The new --generate-polymorphic
+    option triggers generation of polymorphism-aware code. This option
+    should be used on XML vocabularies which use xsi:type and/or
+    substitution groups. For more information see Section 3.7, "Support
+    for Polymorphism" and Section 4.9, "Polymorphic Object Models" in
+    the Embedded C++/Parser Mapping Getting Started Guide we well as
+    the polymorphism and polyroot examples in the examples/cxx/hybrid/
+    directory.
+
   * Support for saving the object model to and loading it from binary
     representations. The new --generate--insertion and --generate-extraction
     options trigger generation of data representation stream insertion and

@@ -5,8 +5,8 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
-all_examples := binary compositors custom hello multiroot streaming \
-library wildcard filter minimal
+all_examples := binary compositors custom hello multiroot polymorphism \
+polyroot streaming library wildcard filter minimal
 
 build_examples := binary compositors custom
 
@@ -17,6 +17,10 @@ build_examples += hello multiroot streaming
 
 ifeq ($(xsde_stl),y)
 build_examples += library wildcard filter
+endif
+
+ifeq ($(xsde_polymorphic),y)
+build_examples += polymorphism polyroot
 endif
 
 endif

@@ -1005,6 +1005,43 @@ Suppress the generation of parser and serializer reset code.
 Reset support allows you to reuse parsers and serializers
 after an error.
 
+.IP "\fB\--generate-polymorphic\fR"
+Generate polymorphism-aware code. Specify this option if you use substitution
+groups or
+.BR xsi:type .
+Use the
+.B --polymorphic-type
+option to specify which type hierarchies are polymorphic.
+
+.IP "\fB\--runtime-polymorphic\fR"
+Generate non-polymorphic code that uses the runtime library configured with
+polymorphism support.
+
+.IP "\fB\--polymorphic-type \fItype\fR"
+Indicate that
+.I type
+is a root of a polymorphic type hierarchy. The compiler can often
+automatically determine which types are polymorphic based on the
+substitution group declarations. However, you may need to use this
+option if you are not using substitution groups or if substitution
+groups are defined in another schema. You need to specify this option
+when compiling every schema file that references
+.IR type .
+
+.IP "\fB\--generate-typeinfo\fR"
+Generate custom type information querying functions for polymorphic
+object model types. These functions can be used instead of the standard
+C++ RTTI mechanism to determine object's type at runtime.
+
+.IP "\fB\--polymorphic-schema \fIfile\fR"
+Indicate that
+.I file
+contains derivations of polymorphic types that are not otherwise visible
+from the schema being compiled. This option is used to make sure that
+during the generation of parser and serializer aggregates the compiler
+is aware of all possible derivations of polymorphic types. Repeat this
+option to specify more than one schema file.
+
 .IP "\fB\--reuse-style-mixin\fR"
 Generate code that supports the mixin base parser/serializer
 implementation reuse style. Note that this reuse style

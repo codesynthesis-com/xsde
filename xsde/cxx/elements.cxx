@@ -194,8 +194,15 @@ namespace CXX
 
       if (schema.used ())
       {
+        // Here we need to detect a special multi-schema compilation
+        // case where the root schemas are imported into a special
+        // schema that doesn't have a namespace.
+        //
         SemanticGraph::Uses& u (*schema.used_begin ());
-        path = u.path ();
+        SemanticGraph::Schema& s (u.user ());
+
+        if (s.names_begin () != s.names_end ())
+          path = u.path ();
       }
 
       String pair;

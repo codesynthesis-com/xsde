@@ -6,6 +6,14 @@
 #ifndef XSDE_CXX_HYBRID_ANY_TYPE_HXX
 #define XSDE_CXX_HYBRID_ANY_TYPE_HXX
 
+#include <xsde/cxx/config.hxx>
+
+/*
+#ifdef XSDE_STL
+#  include <string>
+#endif
+*/
+
 namespace xsde
 {
   namespace cxx
@@ -14,6 +22,26 @@ namespace xsde
     {
       struct any_type
       {
+        /*
+#ifdef XSDE_POLYMORPHIC
+        virtual
+        ~any_type ();
+
+#ifdef XSDE_STL
+        virtual const std::string&
+        _dynamic_type () const;
+
+        static const std::string&
+        _static_type ();
+#else
+        virtual const char*
+        _dynamic_type () const;
+
+        static const char*
+        _static_type ();
+#endif
+#endif
+        */
       };
 
       struct any_simple_type

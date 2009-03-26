@@ -22,6 +22,10 @@ ifeq ($(XSDE_REUSE_STYLE),mixin)
 EXTRA_XSDFLAGS += --reuse-style-mixin
 endif
 
+ifeq ($(XSDE_POLYMORPHIC),y)
+EXTRA_XSDFLAGS += --runtime-polymorphic
+endif
+
 driver: driver.o library.o library-pskel.o library-pimpl.o \
 library-sskel.o library-simpl.o exceptions.o orawstream.o \
 irawstream.o $(root)/libxsde/xsde/libxsde.a

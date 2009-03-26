@@ -23,12 +23,20 @@ namespace xsde
       void parser_map_impl::
       reset () const
       {
+        if (resetting_)
+          return;
+
+        bool& r = const_cast<bool&> (resetting_);
+        r = true;
+
         for (hashmap::const_iterator i (map_.begin ()), e (map_.end ());
              i != e; ++i)
         {
           parser_base* p = *static_cast<parser_base* const*> (*i);
           p->_reset ();
         }
+
+        r = false;
       }
     }
   }

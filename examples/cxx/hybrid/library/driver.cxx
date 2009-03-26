@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "library.hxx"
-
 #include "library-pimpl.hxx"
 #include "library-simpl.hxx"
 

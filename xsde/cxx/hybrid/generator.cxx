@@ -129,6 +129,11 @@ namespace CXX
       extern Key generate_xml_schema      = "generate-xml-schema";
       extern Key extern_xml_schema        = "extern-xml-schema";
       extern Key suppress_reset           = "suppress-reset";
+      extern Key generate_polymorphic     = "generate-polymorphic";
+      extern Key runtime_polymorphic      = "runtime-polymorphic";
+      extern Key polymorphic_type         = "polymorphic-type";
+      extern Key generate_typeinfo        = "generate-typeinfo";
+      extern Key polymorphic_schema       = "polymorphic-schema";
       extern Key reuse_style_mixin        = "reuse-style-mixin";
       extern Key custom_data              = "custom-data";
       extern Key custom_type              = "custom-type";
@@ -283,6 +288,32 @@ namespace CXX
     e << "--suppress-reset" << endl
       << " Suppress the generation of parser and serializer\n"
       << " reset code."
+      << endl;
+
+    e << "--generate-polymorphic" << endl
+      << " Generate polymorphism-aware code. Specify this\n"
+      << " option if you use substitution groups or xsi:type."
+      << endl;
+
+    e << "--runtime-polymorphic" << endl
+      << " Generate non-polymorphic code that uses the\n"
+      << " runtime library configured with polymorphism\n"
+      << " support."
+      << endl;
+
+    e << "--polymorphic-type <type>" << endl
+      << " Indicate that <type> is a root of a polymorphic\n"
+      << " type hierarchy."
+      << endl;
+
+    e << "--generate-typeinfo" << endl
+      << " Generate type information functions for\n"
+      << " polymorphic object model types."
+      << endl;
+
+    e << "--polymorphic-schema <file>" << endl
+      << " Indicate that <file> contains derivations of\n"
+      << " polymorphic types."
       << endl;
 
     e << "--reuse-style-mixin" << endl
@@ -783,6 +814,8 @@ namespace CXX
     r->value<P::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
     r->value<P::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
     r->value<P::suppress_reset> ()        = h.value<H::suppress_reset> ();
+    r->value<P::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
+    r->value<P::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
     r->value<P::output_dir> ()            = h.value<H::output_dir> ();
     r->value<P::skel_file_suffix> ()      = h.value<H::pskel_file_suffix> ();
     r->value<P::skel_type_suffix> ()      = h.value<H::pskel_type_suffix> ();
@@ -862,6 +895,8 @@ namespace CXX
     r->value<S::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
     r->value<S::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
     r->value<S::suppress_reset> ()        = h.value<H::suppress_reset> ();
+    r->value<S::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
+    r->value<S::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
     r->value<S::output_dir> ()            = h.value<H::output_dir> ();
     r->value<S::skel_file_suffix> ()      = h.value<H::sskel_file_suffix> ();
     r->value<S::skel_type_suffix> ()      = h.value<H::sskel_type_suffix> ();
@@ -924,14 +959,42 @@ namespace CXX
   Void Hybrid::Generator::
   calculate_size (CLI::Options const& ops,
                   XSDFrontend::SemanticGraph::Schema& schema,
-                  XSDFrontend::SemanticGraph::Path const& file)
+                  XSDFrontend::SemanticGraph::Path const& file,
+                  const WarningSet& disabled_warnings)
   {
     // Determine which types are fixed/variable-sized.
     //
     TreeSizeProcessor proc;
 
-    if (!proc.process (ops, schema, file))
+    if (!proc.process (ops, schema, file, disabled_warnings))
       throw Failed ();
+  }
+
+  Void Hybrid::Generator::
+  process_tree_names (CLI::Options const& ops,
+                      XSDFrontend::SemanticGraph::Schema& schema,
+                      XSDFrontend::SemanticGraph::Path const& file)
+  {
+    TreeNameProcessor proc;
+    proc.process (ops, schema, file, false);
+  }
+
+  Void Hybrid::Generator::
+  process_parser_names (CLI::Options const& ops,
+                        XSDFrontend::SemanticGraph::Schema& schema,
+                        XSDFrontend::SemanticGraph::Path const& file)
+  {
+    ParserNameProcessor proc;
+    proc.process (ops, schema, file, false);
+  }
+
+  Void Hybrid::Generator::
+  process_serializer_names (CLI::Options const& ops,
+                            XSDFrontend::SemanticGraph::Schema& schema,
+                            XSDFrontend::SemanticGraph::Path const& file)
+  {
+    SerializerNameProcessor proc;
+    proc.process (ops, schema, file, false);
   }
 
   namespace
@@ -1095,7 +1158,7 @@ namespace CXX
       //
       {
         TreeNameProcessor proc;
-        proc.process (ops, schema, file_path);
+        proc.process (ops, schema, file_path, true);
       }
 
       // Generate code.
@@ -1819,7 +1882,7 @@ namespace CXX
       //
       {
         ParserNameProcessor proc;
-        proc.process (ops, schema, file_path);
+        proc.process (ops, schema, file_path, true);
       }
 
       NarrowString name (file_path.leaf ());
@@ -1976,6 +2039,8 @@ namespace CXX
         guard_prefix += '_';
 
 
+      Boolean aggr (ops.value<CLI::generate_aggregate> ());
+
       // HXX
       //
       {
@@ -2012,6 +2077,14 @@ namespace CXX
           hxx << "#include <xsde/cxx/pre.hxx>" << endl
               << endl;
 
+          // Define omit aggregate macro.
+          //
+          hxx << "#ifndef XSDE_OMIT_PAGGR" << endl
+              << "#  define XSDE_OMIT_PAGGR" << endl
+              << "#  define " << guard << "_CLEAR_OMIT_PAGGR" << endl
+              << "#endif" << endl
+              << endl;
+
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> hxx_clip (hxx);
@@ -2021,8 +2094,23 @@ namespace CXX
 
           generate_parser_header (ctx);
 
-          if (ops.value<CLI::generate_aggregate> ())
+          // Clear omit aggregate macro.
+          //
+          hxx << "#ifdef " << guard << "_CLEAR_OMIT_PAGGR" << endl
+              << "#  undef XSDE_OMIT_PAGGR" << endl
+              << "#endif" << endl
+              << endl;
+
+          if (aggr)
+          {
+            hxx << "#ifndef XSDE_OMIT_PAGGR" << endl
+                << endl;
+
             generate_parser_aggregate_header (ctx);
+
+            hxx << "#endif // XSDE_OMIT_PAGGR" << endl
+                << endl;
+          }
 
           hxx << "#include <xsde/cxx/post.hxx>" << endl
               << endl;
@@ -2090,7 +2178,7 @@ namespace CXX
 
           generate_parser_source (ctx);
 
-          if (ops.value<CLI::generate_aggregate> ())
+          if (aggr)
             generate_parser_aggregate_source (ctx);
         }
 
@@ -2198,7 +2286,7 @@ namespace CXX
       //
       {
         SerializerNameProcessor proc;
-        proc.process (ops, schema, file_path);
+        proc.process (ops, schema, file_path, true);
       }
 
       NarrowString name (file_path.leaf ());
@@ -2342,6 +2430,7 @@ namespace CXX
       if (guard_prefix)
         guard_prefix += '_';
 
+      Boolean aggr (ops.value<CLI::generate_aggregate> ());
 
       // HXX
       //
@@ -2379,6 +2468,14 @@ namespace CXX
           hxx << "#include <xsde/cxx/pre.hxx>" << endl
               << endl;
 
+          // Define omit aggregate macro.
+          //
+          hxx << "#ifndef XSDE_OMIT_SAGGR" << endl
+              << "#  define XSDE_OMIT_SAGGR" << endl
+              << "#  define " << guard << "_CLEAR_OMIT_SAGGR" << endl
+              << "#endif" << endl
+              << endl;
+
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> hxx_clip (hxx);
@@ -2388,8 +2485,23 @@ namespace CXX
 
           generate_serializer_header (ctx);
 
-          if (ops.value<CLI::generate_aggregate> ())
+          // Clear omit aggregate macro.
+          //
+          hxx << "#ifdef " << guard << "_CLEAR_OMIT_SAGGR" << endl
+              << "#  undef XSDE_OMIT_SAGGR" << endl
+              << "#endif" << endl
+              << endl;
+
+          if (aggr)
+          {
+            hxx << "#ifndef XSDE_OMIT_SAGGR" << endl
+                << endl;
+
             generate_serializer_aggregate_header (ctx);
+
+            hxx << "#endif // XSDE_OMIT_SAGGR" << endl
+                << endl;
+          }
 
           hxx << "#include <xsde/cxx/post.hxx>" << endl
               << endl;
@@ -2457,7 +2569,7 @@ namespace CXX
 
           generate_serializer_source (ctx);
 
-          if (ops.value<CLI::generate_aggregate> ())
+          if (aggr)
             generate_serializer_aggregate_source (ctx);
         }
 

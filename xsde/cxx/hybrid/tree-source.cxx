@@ -14,6 +14,161 @@ namespace CXX
   {
     namespace
     {
+      struct List : Traversal::List, Context
+      {
+        List (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& l)
+        {
+          String const& name (ename_custom (l));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          if (polymorphic (l))
+          {
+            os << "// " << comment (l.name ()) << endl
+               << "//" << endl
+               << endl;
+
+            // d-tor
+            //
+            os << name << "::" << endl
+               << "~" << name << " ()"
+               << "{"
+               << "}";
+
+            if (typeinfo)
+            {
+              String id (l.name ());
+
+              if (String ns = xml_ns_name (l))
+              {
+                id += L' ';
+                id += ns;
+              }
+
+              if (stl)
+              {
+                os << "static const ::std::string _xsde_" << name <<
+                  "_static_type_ = " << strlit (id) << ";"
+                   << endl;
+
+                os << "const ::std::string& " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return _xsde_" << name << "_static_type_;"
+                   << "}";
+              }
+              else
+              {
+                os << "const char* " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return " << strlit (id) << ";"
+                   << "}";
+              }
+
+              os << "const " << (stl ? "::std::string& " : "char* ") <<
+                name << "::" << endl
+                 << "_dynamic_type () const"
+                 << "{"
+                 << "return _static_type ();"
+                 << "}";
+            }
+          }
+        }
+      };
+
+      //
+      //
+      struct Union : Traversal::Union, Context
+      {
+        Union (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& u)
+        {
+          String const& name (ename_custom (u));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          Boolean poly (polymorphic (u));
+
+          if (!stl || poly)
+          {
+            os << "// " << comment (u.name ()) << endl
+               << "//" << endl
+               << endl;
+
+            // d-tor
+            //
+            os << name << "::" << endl
+               << "~" << name << " ()"
+               << "{";
+
+            if (!stl)
+              os << "delete[] this->" <<
+                u.context ().get<String> ("value-member") << ";";
+
+            os << "}";
+
+            if (poly && typeinfo)
+            {
+              String id (u.name ());
+
+              if (String ns = xml_ns_name (u))
+              {
+                id += L' ';
+                id += ns;
+              }
+
+              if (stl)
+              {
+                os << "static const ::std::string _xsde_" << name <<
+                  "_static_type_ = " << strlit (id) << ";"
+                   << endl;
+
+                os << "const ::std::string& " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return _xsde_" << name << "_static_type_;"
+                   << "}";
+              }
+              else
+              {
+                os << "const char* " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return " << strlit (id) << ";"
+                   << "}";
+              }
+
+              os << "const " << (stl ? "::std::string& " : "char* ") <<
+                name << "::" << endl
+                 << "_dynamic_type () const"
+                 << "{"
+                 << "return _static_type ();"
+                 << "}";
+            }
+          }
+        }
+      };
+
       struct ChoiceParticle: Traversal::Element,
                              Traversal::Compositor,
                              Context
@@ -1464,6 +1619,7 @@ namespace CXX
           if (!name)
             return;
 
+          Boolean poly (polymorphic (c));
           Boolean restriction (restriction_p (c));
 
           os << "// " << comment (c.name ()) << endl
@@ -1486,22 +1642,27 @@ namespace CXX
 
           os << "}";
 
-
-          if (!restriction)
+          // d-tor ()
+          //
+          if (!restriction || poly)
           {
-            // d-tor ()
-            //
             os << name << "::" << endl
                << "~" << name << " ()"
                << "{";
 
-            Complex::names (c, attribute_names_dtor_);
+            if (!restriction)
+            {
+              Complex::names (c, attribute_names_dtor_);
 
-            if (c.contains_compositor_p ())
-              Complex::contains_compositor (c, contains_compositor_dtor_);
+              if (c.contains_compositor_p ())
+                Complex::contains_compositor (c, contains_compositor_dtor_);
+            }
 
             os << "}";
+          }
 
+          if (!restriction)
+          {
             if (fixed_length (c))
             {
               // copy c-tor
@@ -1554,7 +1715,49 @@ namespace CXX
             //
             if (c.contains_compositor_p ())
               Complex::contains_compositor (c, contains_compositor_func_);
+          }
 
+          if (poly && typeinfo)
+          {
+            String id (c.name ());
+
+            if (String ns = xml_ns_name (c))
+            {
+              id += L' ';
+              id += ns;
+            }
+
+            if (stl)
+            {
+              os << "static const ::std::string _xsde_" << name <<
+                "_static_type_ = " << strlit (id) << ";"
+                 << endl;
+
+              os << "const ::std::string& " << name << "::" << endl
+                 << "_static_type ()"
+                 << "{"
+                 << "return _xsde_" << name << "_static_type_;"
+                 << "}";
+            }
+            else
+            {
+              os << "const char* " << name << "::" << endl
+                 << "_static_type ()"
+                 << "{"
+                 << "return " << strlit (id) << ";"
+                 << "}";
+            }
+
+            os << "const " << (stl ? "::std::string& " : "char* ") <<
+              name << "::" << endl
+               << "_dynamic_type () const"
+               << "{"
+               << "return _static_type ();"
+               << "}";
+          }
+
+          if (!restriction)
+          {
             // Nested c-tors, etc.
             //
             if (c.contains_compositor_p ())
@@ -1661,16 +1864,16 @@ namespace CXX
 
       Namespace ns (ctx);
 
-      //Union union_ (ctx);
+      List list (ctx);
+      Union union_ (ctx);
       Complex complex (ctx);
-      //Enumeration enumeration (ctx);
 
       schema >> sources >> schema;
       schema >> names_ns >> ns >> names;
 
-      //names >> union_;
+      names >> list;
+      names >> union_;
       names >> complex;
-      //names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

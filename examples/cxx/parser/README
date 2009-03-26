@@ -1,7 +1,7 @@
-This directory contains a number of examples that show how to
-use the Embedded C++/Parser mapping. The following list gives
-an overview of each example. See the README files in example
-directories for more information on each example.
+This directory contains a number of examples that show how to use the
+Embedded C++/Parser mapping. The following list gives an overview of
+each example. See the README files in example directories for more
+information on each example.
 
 hello
   A simple "Hello, world!" example that shows how to parse XML
@@ -30,3 +30,11 @@ multiroot
 mixed
   Shows how to handle raw, "type-less content" such as mixed content
   models, anyType/anySimpleType, and any/anyAttribute.
+
+polymorphism
+  Shows how to handle XML vocabularies that use XML Schema polymorphism
+  features such as the xsi:type attribute and substitution groups.
+
+polyroot
+  Shows how to handle XML vocabularies with polymorphic document root 
+  elements.

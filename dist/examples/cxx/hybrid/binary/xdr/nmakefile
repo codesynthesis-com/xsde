@@ -22,6 +22,10 @@ EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation
 EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin
 !endif
 
+!if "$(XSDE_POLYMORPHIC)" == "y"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --runtime-polymorphic
+!endif
+
 driver.exe: driver.obj library.obj library-pskel.obj library-pimpl.obj \
 library-sskel.obj library-simpl.obj $(root)\libxsde\xsde\xsde.lib
 

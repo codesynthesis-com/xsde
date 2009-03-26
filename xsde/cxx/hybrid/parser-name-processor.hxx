@@ -24,7 +24,8 @@ namespace CXX
       Void
       process (CLI::Options const& options,
                XSDFrontend::SemanticGraph::Schema&,
-               XSDFrontend::SemanticGraph::Path const& file);
+               XSDFrontend::SemanticGraph::Path const& file,
+               Boolean deep);
     };
   }
 }

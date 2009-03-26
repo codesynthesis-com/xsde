@@ -33,8 +33,7 @@ namespace CXX
           options (ops),
           exceptions (!ops.value<CLI::no_exceptions> ()),
           stl (!ops.value<CLI::no_stl> ()),
-          poly_code (false),
-          poly_runtime (false),
+          poly_code (ops.value<CLI::generate_polymorphic> ()),
           reset (!ops.value<CLI::suppress_reset> ()),
           detach (ops.value<CLI::generate_detach> ()),
           mixin (ops.value<CLI::reuse_style_mixin> ()),
@@ -55,6 +54,10 @@ namespace CXX
           ixdrstream (ixdrstream_),
           oxdrstream (oxdrstream_)
     {
+      typeinfo = poly_code &&
+        (ops.value<CLI::generate_typeinfo> () ||
+         ops.value<CLI::generate_serializer> ());
+
       String xs_ns (xs_ns_name ());
 
       string_type = L"::xsde::cxx::ro_string";

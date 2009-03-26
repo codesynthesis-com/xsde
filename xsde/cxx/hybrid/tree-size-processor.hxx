@@ -12,6 +12,8 @@
 
 #include <cxx/hybrid/cli.hxx>
 
+#include <xsde.hxx>
+
 namespace CXX
 {
   namespace Hybrid
@@ -24,7 +26,8 @@ namespace CXX
       Boolean
       process (CLI::Options const& options,
                XSDFrontend::SemanticGraph::Schema&,
-               XSDFrontend::SemanticGraph::Path const& file);
+               XSDFrontend::SemanticGraph::Path const& file,
+               const WarningSet& disabled_warnings);
     };
   }
 }

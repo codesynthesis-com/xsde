@@ -18,6 +18,10 @@ ifeq ($(XSDE_REUSE_STYLE),mixin)
 EXTRA_XSDFLAGS += --reuse-style-mixin
 endif
 
+ifeq ($(XSDE_POLYMORPHIC),y)
+EXTRA_XSDFLAGS += --runtime-polymorphic
+endif
+
 driver: driver.o email.o body.o email-pskel.o email-pimpl.o \
 email-sskel.o email-simpl.o envelope-pimpl.o envelope-simpl.o \
 $(root)/libxsde/xsde/libxsde.a

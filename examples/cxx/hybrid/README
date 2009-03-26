@@ -36,6 +36,14 @@ compositors
   Shows how to create, access, and modify object models with complex
   nested choice and sequence compositors.
 
+polymorphism
+  Shows how to handle XML vocabularies that use XML Schema polymorphism
+  features such as the xsi:type attribute and substitution groups.
+
+polyroot
+  Shows how to handle XML vocabularies with polymorphic document root 
+  elements.
+
 custom/
   A collection of examples that show how to customize the C++/Hybrid
   object model by using custom C++ classes instead of or in addition

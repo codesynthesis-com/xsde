@@ -1,7 +1,7 @@
-This example shows how to handle XML Schema polymorphism features such as
+This example shows how to handle the XML Schema polymorphism features such as
 xsi:type attributes and substitution groups in the Embedded C++/Serializer
-mapping. The case when xsi:type or substitution groups are used on root
-elements is covered in the polyroot examples.
+mapping. The case where xsi:type or substitution groups are used on document
+root elements is covered in the polyroot examples.
 
 The example consists of the following files:
 

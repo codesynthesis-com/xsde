@@ -35,17 +35,26 @@ namespace CXX
       static CLI::OptionsSpec
       options_spec ();
 
+      // Assign names to global declarations.
+      //
+      static Void
+      process_names (CLI::Options const&,
+                     XSDFrontend::SemanticGraph::Schema&,
+                     XSDFrontend::SemanticGraph::Path const&);
+
+      // Generate code.
+      //
       struct Failed {};
 
       static UnsignedLong
-      generate (CLI::Options const& options,
+      generate (CLI::Options const&,
                 XSDFrontend::SemanticGraph::Schema&,
-                XSDFrontend::SemanticGraph::Path const& file,
+                XSDFrontend::SemanticGraph::Path const&,
                 TypeMap::Namespaces& type_map,
                 Boolean gen_driver,
                 const WarningSet& disabled_warnings,
-                FileList& file_list,
-                AutoUnlinks& unlinks);
+                FileList&,
+                AutoUnlinks&);
 
     private:
       Generator ();

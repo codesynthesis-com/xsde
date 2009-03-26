@@ -34,6 +34,8 @@ namespace CXX
               subst_group_warning_issued (subst_group_warning_issued_),
               subst_group_warning_issued_ (false)
         {
+          if (disabled_warnings_.find ("all") != disabled_warnings_.end ())
+            disabled_warnings_all_ = true;
         }
 
       public:

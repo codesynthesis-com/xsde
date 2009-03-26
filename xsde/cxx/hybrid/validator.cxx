@@ -20,6 +20,9 @@ namespace CXX
   {
     namespace
     {
+      // H004 is used by tree-size-processor.
+      //
+
       class ValidationContext: public Context
       {
       public:
@@ -34,6 +37,8 @@ namespace CXX
               subst_group_warning_issued (subst_group_warning_issued_),
               subst_group_warning_issued_ (false)
         {
+          if (disabled_warnings_.find ("all") != disabled_warnings_.end ())
+            disabled_warnings_all_ = true;
         }
 
       public:
@@ -147,7 +152,6 @@ namespace CXX
           }
         }
 
-        /*
         virtual Void
         traverse (SemanticGraph::Element& e)
         {
@@ -165,11 +169,10 @@ namespace CXX
                << "--generate-polymorphic was not specified" << endl;
 
             os << e.file () << ":" << e.line () << ":" << e.column ()
-               << ": info: generated code may not be able to serialize "
+               << ": info: generated code may not be able to handle "
                << "some conforming instances" << endl;
           }
         }
-        */
 
         // Return true if root sources s.
         //

@@ -45,6 +45,12 @@ endif
 ##
 cxx_tun += cxx/hybrid/sequence.cxx
 
+ifeq ($(xsde_polymorphic),y)
+cxx_tun +=                    \
+cxx/hybrid/parser-map.cxx     \
+cxx/hybrid/serializer-map.cxx
+endif
+
 ifeq ($(xsde_cdr),y)
 cxx_tun +=                         \
 cxx/hybrid/cdr/exceptions.cxx      \

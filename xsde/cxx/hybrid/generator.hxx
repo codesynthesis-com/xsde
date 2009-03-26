@@ -44,42 +44,67 @@ namespace CXX
       static Serializer::CLI::Options*
       serializer_options (CLI::Options const&);
 
-      struct Failed {};
-
+      // Calculate type sizes.
+      //
       static Void
       calculate_size (
-        CLI::Options const& options,
+        CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
-        XSDFrontend::SemanticGraph::Path const& file);
+        XSDFrontend::SemanticGraph::Path const&,
+        WarningSet const& disabled_warnings);
+
+      // Assign names to global declarations.
+      //
+      static Void
+      process_tree_names (
+        CLI::Options const&,
+        XSDFrontend::SemanticGraph::Schema&,
+        XSDFrontend::SemanticGraph::Path const&);
+
+      static Void
+      process_parser_names (
+        CLI::Options const&,
+        XSDFrontend::SemanticGraph::Schema&,
+        XSDFrontend::SemanticGraph::Path const&);
+
+      static Void
+      process_serializer_names (
+        CLI::Options const&,
+        XSDFrontend::SemanticGraph::Schema&,
+        XSDFrontend::SemanticGraph::Path const&);
+
+      // Generate code.
+      //
+      struct Failed {};
 
       static UnsignedLong
       generate_tree (
-        CLI::Options const& options,
+        CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
-        XSDFrontend::SemanticGraph::Path const& file,
-        const WarningSet& disabled_warnings,
+        XSDFrontend::SemanticGraph::Path const&,
+        WarningSet const& disabled_warnings,
         TypeMap::Namespaces& parser_type_map,
         TypeMap::Namespaces& serializer_type_map,
-        FileList& file_list,
-        AutoUnlinks& unlinks);
+        FileList&,
+        AutoUnlinks&);
 
       static UnsignedLong
       generate_parser (
-        CLI::Options const& options,
+        CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
-        XSDFrontend::SemanticGraph::Path const& file,
-        const WarningSet& disabled_warnings,
-        FileList& file_list,
-        AutoUnlinks& unlinks);
+        XSDFrontend::SemanticGraph::Path const&,
+        WarningSet const& disabled_warnings,
+        FileList&,
+        AutoUnlinks&);
 
       static UnsignedLong
       generate_serializer (
-        CLI::Options const& options,
+        CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
-        XSDFrontend::SemanticGraph::Path const& file,
-        const WarningSet& disabled_warnings,
-        FileList& file_list,
-        AutoUnlinks& unlinks);
+        XSDFrontend::SemanticGraph::Path const&,
+        WarningSet const& disabled_warnings,
+        FileList&,
+        AutoUnlinks&);
 
     private:
       Generator ();

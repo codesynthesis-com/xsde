@@ -49,6 +49,12 @@ endif
 ##
 src += cxx/hybrid/sequence.cxx
 
+ifeq ($(XSDE_POLYMORPHIC),y)
+src +=                        \
+cxx/hybrid/parser-map.cxx     \
+cxx/hybrid/serializer-map.cxx
+endif
+
 ifeq ($(XSDE_CDR),y)
 src +=                             \
 cxx/hybrid/cdr/exceptions.cxx      \

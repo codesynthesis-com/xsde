@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "people.hxx"
-
 #include "people-pimpl.hxx"
 #include "people-simpl.hxx"
 

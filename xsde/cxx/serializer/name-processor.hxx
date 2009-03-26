@@ -22,9 +22,10 @@ namespace CXX
     {
     public:
       Void
-      process (CLI::Options const& options,
+      process (CLI::Options const&,
                XSDFrontend::SemanticGraph::Schema&,
-               XSDFrontend::SemanticGraph::Path const& file);
+               XSDFrontend::SemanticGraph::Path const&,
+               Boolean deep);
     };
   }
 }

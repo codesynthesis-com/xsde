@@ -4,11 +4,12 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/hybrid/parser-aggregate-header.hxx>
+#include <cxx/hybrid/aggregate-elements.hxx>
+#include <cxx/hybrid/aggregate-include.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/map.hxx>
 #include <cult/containers/set.hxx>
 
 namespace CXX
@@ -17,10 +18,6 @@ namespace CXX
   {
     namespace
     {
-      typedef
-      Cult::Containers::Map<SemanticGraph::Type*, String>
-      TypeInstanceMap;
-
       typedef Cult::Containers::Set<String> InstanceSet;
 
       // For base types we only want member's types, but not the
@@ -108,8 +105,15 @@ namespace CXX
 
                         Context
       {
-        ParserDef (Context& c, TypeInstanceMap& map, InstanceSet& set)
-            : Context (c), map_ (map), set_ (set), base_ (c)
+        ParserDef (Context& c,
+                   TypeInstanceMap& map,
+                   TypeIdInstanceMap& tid_map,
+                   InstanceSet& set)
+            : Context (c),
+              map_ (map),
+              tid_map_ (tid_map),
+              set_ (set),
+              base_ (c)
         {
           *this >> inherits_ >> base_ >> inherits_;
 
@@ -136,8 +140,10 @@ namespace CXX
         {
           if (map_.find (&t) == map_.end ())
           {
-            String inst (find_instance_name (t));
-            map_[&t] = inst;
+            map_[&t] = find_instance_name (t);
+
+            if (polymorphic (t))
+              collect (t);
           }
         }
 
@@ -146,10 +152,12 @@ namespace CXX
         {
           if (map_.find (&l) == map_.end ())
           {
-            String inst (find_instance_name (l));
-            map_[&l] = inst;
+            map_[&l] = find_instance_name (l);
 
             dispatch (l.argumented ().type ());
+
+            if (polymorphic (l))
+              collect (l);
           }
         }
 
@@ -158,8 +166,7 @@ namespace CXX
         {
           if (map_.find (&c) == map_.end ())
           {
-            String inst (find_instance_name (c));
-            map_[&c] = inst;
+            map_[&c] = find_instance_name (c);
 
             // Use base type's parsers in case of a restriction
             // since we are not capable of using a derived type
@@ -171,6 +178,38 @@ namespace CXX
             {
               names (c);
               contains_compositor (c);
+            }
+
+            if (polymorphic (c))
+              collect (c);
+          }
+        }
+
+        virtual Void
+        collect (SemanticGraph::Type& t)
+        {
+          using SemanticGraph::Type;
+
+          for (Type::BegetsIterator i (t.begets_begin ());
+               i != t.begets_end ();
+               ++i)
+          {
+            Type& d (i->derived ());
+
+            String id (d.name ());
+            if (String ns = xml_ns_name (d))
+            {
+              id += L' ';
+              id += ns;
+            }
+
+            dispatch (d);
+
+            if (tid_map_.find (id) == tid_map_.end ())
+            {
+              tid_map_[id].type = &d;
+              tid_map_[id].name = map_.find (&d)->second;
+              collect (d);
             }
           }
         }
@@ -475,10 +514,7 @@ namespace CXX
         fund_type (SemanticGraph::Type& t, String const& name)
         {
           if (map_.find (&t) == map_.end ())
-          {
-            String inst (find_instance_name (name));
-            map_[&t] = inst;
-          }
+            map_[&t] = find_instance_name (name);
         }
 
         String
@@ -504,6 +540,7 @@ namespace CXX
         }
 
         TypeInstanceMap& map_;
+        TypeIdInstanceMap& tid_map_;
         InstanceSet& set_;
 
         BaseType base_;
@@ -535,36 +572,64 @@ namespace CXX
           if (!tc.count ("paggr"))
             return;
 
+          Boolean poly (polymorphic (t));
           String const& name (tc.get<String> ("paggr"));
 
-          String pre (unclash (name, "pre"));
-          String post (unclash (name, "post"));
+          String pre;
+          String post;
           String root_parser (unclash (name, "root_parser"));
+          String root_map;
           String error, reset;
+          String parser_map, parser_map_entries;
 
           InstanceSet set;
-          set.insert (pre);
-          set.insert (post);
           set.insert (name);
           set.insert (root_parser);
 
-          if (!exceptions)
+          if (poly)
+          {
+            root_map = unclash (name, "root_map");
+            set.insert (root_map);
+          }
+          else
+          {
+            pre = unclash (name, "pre");
+            post = unclash (name, "post");
+
+            set.insert (pre);
+            set.insert (post);
+          }
+
+          if (!poly && !exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (Context::reset)
+          if (!poly && Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
           }
 
+          if (poly_code)
+          {
+            parser_map = unclash (name, "parser_map_");
+            parser_map_entries = unclash (name, "parser_map_entries_");
+
+            tc.set ("paggr-parser-map", parser_map);
+            tc.set ("paggr-parser-map-entries", parser_map_entries);
+          }
+
           tc.set ("paggr-map", TypeInstanceMap ());
           TypeInstanceMap& map (tc.get<TypeInstanceMap> ("paggr-map"));
+          TypeIdInstanceMap tid_map;
 
-          ParserDef def (*this, map, set);
+          ParserDef def (*this, map, tid_map, set);
           def.dispatch (t);
+
+          if (poly_code && !tid_map.empty ())
+            tc.set ("paggr-tid-map", tid_map);
 
           String const& root_member (map.find (&t)->second);
 
@@ -581,24 +646,27 @@ namespace CXX
           os << name << " ();"
              << endl;
 
-          // pre ()
-          //
-          os << "void" << endl
-             << pre << " ()"
-             << "{"
-             << "this->" << root_member << ".pre ();"
-             << "}";
+          if (!poly)
+          {
+            // pre ()
+            //
+            os << "void" << endl
+               << pre << " ()"
+               << "{"
+               << "this->" << root_member << ".pre ();"
+               << "}";
 
-          // post ()
-          //
-          String const& ret (pret_type (t));
+            // post ()
+            //
+            String const& ret (pret_type (t));
 
-          os << ret << endl
-             << post << " ()"
-             << "{"
-             << (ret == L"void" ? "" : "return ") << "this->" <<
-            root_member << "." << post_name (t) << " ();"
-             << "}";
+            os << ret << endl
+               << post << " ()"
+               << "{"
+               << (ret == L"void" ? "" : "return ") << "this->" <<
+              root_member << "." << post_name (t) << " ();"
+               << "}";
+          }
 
           // root_parser ()
           //
@@ -608,9 +676,23 @@ namespace CXX
              << "return this->" << root_member << ";"
              << "}";
 
+          if (poly)
+          {
+            // root_map ()
+            //
+            if (poly)
+            {
+              os << "const " << xs_ns_name () + L"::parser_map&" << endl
+                 << root_map << " ()"
+                 << "{"
+                 << "return this->" << parser_map << ";"
+                 << "}";
+            }
+          }
+
           // _error ()
           //
-          if (error)
+          if (!poly && error)
           {
             os << xs_ns_name () << "::parser_error" << endl
                << error << " ()"
@@ -626,8 +708,12 @@ namespace CXX
             os << "void" << endl
                << reset << " ()"
                << "{"
-               << "this->" << root_member << "._reset ();"
-               << "}";
+               << "this->" << root_member << "._reset ();";
+
+            if (poly && tid_map.size () > 0)
+              os << "this->" << parser_map << ".reset ();";
+
+            os << "}";
           }
 
           os << "public:" << endl;
@@ -636,6 +722,13 @@ namespace CXX
                i != end; ++i)
             os << fq_name (*i->first, "p:impl") << " " << i->second << ";";
 
+          if (tid_map.size () > 0)
+          {
+            os << endl
+               << "::xsde::cxx::hybrid::parser_map_impl " << parser_map << ";"
+               << "::xsde::cxx::hybrid::parser_map_impl::entry " <<
+              parser_map_entries << "[" << tid_map.size () << "UL];";
+          }
           os << "};";
         }
       };
@@ -656,40 +749,69 @@ namespace CXX
             return;
 
           SemanticGraph::Type& t (e.type ());
+          Boolean poly (polymorphic (t));
           String const& name (ec.get<String> ("paggr"));
 
-          String pre (unclash (name, "pre"));
-          String post (unclash (name, "post"));
+          String pre;
+          String post;
           String root_parser (unclash (name, "root_parser"));
+          String root_map;
           String root_name (unclash (name, "root_name"));
           String root_namespace (unclash (name, "root_namespace"));
           String error, reset;
+          String parser_map, parser_map_entries;
 
           InstanceSet set;
-          set.insert (pre);
-          set.insert (post);
           set.insert (name);
           set.insert (root_parser);
+
+          if (poly)
+          {
+            root_map = unclash (name, "root_map");
+            set.insert (root_map);
+          }
+          else
+          {
+            pre = unclash (name, "pre");
+            post = unclash (name, "post");
+
+            set.insert (pre);
+            set.insert (post);
+          }
+
           set.insert (root_name);
           set.insert (root_namespace);
 
-          if (!exceptions)
+          if (!poly && !exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (Context::reset)
+          if (!poly && Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
           }
 
+          if (poly_code)
+          {
+            parser_map = unclash (name, "parser_map_");
+            parser_map_entries = unclash (name, "parser_map_entries_");
+
+            ec.set ("paggr-parser-map", parser_map);
+            ec.set ("paggr-parser-map-entries", parser_map_entries);
+          }
+
           ec.set ("paggr-map", TypeInstanceMap ());
           TypeInstanceMap& map (ec.get<TypeInstanceMap> ("paggr-map"));
+          TypeIdInstanceMap tid_map;
 
-          ParserDef def (*this, map, set);
+          ParserDef def (*this, map, tid_map, set);
           def.dispatch (t);
+
+          if (poly_code && !tid_map.empty ())
+            ec.set ("paggr-tid-map", tid_map);
 
           String const& root_member (map.find (&t)->second);
 
@@ -706,24 +828,27 @@ namespace CXX
           os << name << " ();"
              << endl;
 
-          // pre ()
-          //
-          os << "void" << endl
-             << pre << " ()"
-             << "{"
-             << "this->" << root_member << ".pre ();"
-             << "}";
+          if (!poly)
+          {
+            // pre ()
+            //
+            os << "void" << endl
+               << pre << " ()"
+               << "{"
+               << "this->" << root_member << ".pre ();"
+               << "}";
 
-          // post ()
-          //
-          String const& ret (pret_type (t));
+            // post ()
+            //
+            String const& ret (pret_type (t));
 
-          os << ret << endl
-             << post << " ()"
-             << "{"
-             << (ret == L"void" ? "" : "return ") << "this->" <<
-            root_member << "." << post_name (t) << " ();"
-             << "}";
+            os << ret << endl
+               << post << " ()"
+               << "{"
+               << (ret == L"void" ? "" : "return ") << "this->" <<
+              root_member << "." << post_name (t) << " ();"
+               << "}";
+          }
 
           // root_parser ()
           //
@@ -732,6 +857,20 @@ namespace CXX
              << "{"
              << "return this->" << root_member << ";"
              << "}";
+
+          if (poly)
+          {
+            // root_map ()
+            //
+            if (poly)
+            {
+              os << "const " << xs_ns_name () + L"::parser_map&" << endl
+                 << root_map << " ()"
+                 << "{"
+                 << "return this->" << parser_map << ";"
+                 << "}";
+            }
+          }
 
           // root_name ()
           //
@@ -747,7 +886,7 @@ namespace CXX
 
           // _error ()
           //
-          if (error)
+          if (!poly && error)
           {
             os << xs_ns_name () << "::parser_error" << endl
                << error << " ()"
@@ -763,8 +902,12 @@ namespace CXX
             os << "void" << endl
                << reset << " ()"
                << "{"
-               << "this->" << root_member << "._reset ();"
-               << "}";
+               << "this->" << root_member << "._reset ();";
+
+            if (poly && tid_map.size () > 0)
+              os << "this->" << parser_map << ".reset ();";
+
+            os << "}";
           }
 
           os << "public:" << endl;
@@ -772,6 +915,14 @@ namespace CXX
           for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
                i != end; ++i)
             os << fq_name (*i->first, "p:impl") << " " << i->second << ";";
+
+          if (tid_map.size () > 0)
+          {
+            os << endl
+               << "::xsde::cxx::hybrid::parser_map_impl " << parser_map << ";"
+               << "::xsde::cxx::hybrid::parser_map_impl::entry " <<
+              parser_map_entries << "[" << tid_map.size () << "UL];";
+          }
 
           os << "};";
         }
@@ -801,6 +952,10 @@ namespace CXX
 
       if (gen)
       {
+        if (ctx.poly_code)
+          ctx.os << "#include <xsde/cxx/hybrid/parser-map.hxx>" << endl
+                 << endl;
+
         // Emit "weak" header includes that are used in the file-per-type
         // compilation model.
         //
@@ -813,6 +968,28 @@ namespace CXX
           schema.dispatch (ctx.schema_root);
         }
 
+        // Emit includes for additional schemas that define derived
+        // polymorphic types.
+        //
+        if (ctx.poly_code)
+        {
+          Traversal::Schema schema;
+          Traversal::Sources sources;
+
+          schema >> sources >> schema;
+
+          Traversal::Names schema_names;
+          Traversal::Namespace ns;
+          Traversal::Names names;
+          AggregateInclude include (ctx, "paggr");
+
+          schema >> schema_names >> ns >> names >> include;
+
+          schema.dispatch (ctx.schema_root);
+        }
+
+        // Generate code.
+        //
         Traversal::Schema schema;
         Traversal::Sources sources;
 

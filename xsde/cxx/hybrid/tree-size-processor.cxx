@@ -242,11 +242,15 @@ namespace CXX
         Type (Boolean& valid,
               TypeSet& custom_data,
               CustomTypeMap& custom_type_map,
-              Boolean stl_)
+              TypeSet& poly_types,
+              Boolean stl_,
+              Boolean poly_)
             : valid_ (valid),
               custom_data_ (custom_data),
               custom_type_map_ (custom_type_map),
-              stl (stl_)
+              poly_types_ (poly_types),
+              stl (stl_),
+              poly (poly_)
         {
         }
 
@@ -364,9 +368,40 @@ namespace CXX
         Void
         set (SemanticGraph::Type& t, Boolean v)
         {
+          using SemanticGraph::Complex;
+
+          String const& name (t.name ());
+
+          // Check if this type is polymorphic.
+          //
+          if (poly)
+          {
+            SemanticGraph::Context& ctx (t.context ());
+
+            if (!ctx.count ("polymorphic"))
+            {
+              // If our base is polymorphic then we are as well.
+              //
+              Boolean pb (false);
+              if (Complex* c = dynamic_cast<Complex*> (&t))
+              {
+                pb = c->inherits_p () &&
+                  c->inherits ().base ().context ().count ("polymorphic");
+              }
+
+              if (pb || poly_types_.find (name) != poly_types_.end ())
+              {
+                ctx.set ("polymorphic", true);
+                v = false;
+              }
+            }
+            else
+              v = false;
+          }
+
           // Check if this is a custom type.
           //
-          CustomTypeMap::Iterator i = custom_type_map_.find (t.name ());
+          CustomTypeMap::Iterator i = custom_type_map_.find (name);
 
           if (i != custom_type_map_.end ())
           {
@@ -390,7 +425,9 @@ namespace CXX
         Boolean& valid_;
         TypeSet& custom_data_;
         CustomTypeMap& custom_type_map_;
+        TypeSet& poly_types_;
         Boolean stl;
+        Boolean poly;
 
         typedef Containers::Vector<SemanticGraph::Complex*> Path;
         Path path_;
@@ -453,8 +490,8 @@ namespace CXX
                         Traversal::Fundamental::Entities
 
       {
-        FundType (Boolean stl_)
-            : stl (stl_)
+        FundType (Boolean stl_, TypeSet& poly_types)
+            : stl (stl_), poly_types_ (poly_types)
         {
         }
 
@@ -463,7 +500,18 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnyType& t)
         {
-          set (t, true);
+          /*
+            @@ disabled
+          // Check if this type is marked polymorphic.
+          //
+          if (poly_types_.find (t.name ()) != poly_types_.end ())
+          {
+            t.context ().set ("polymorphic", true);
+            set (t, false);
+          }
+          else
+          */
+            set (t, true);
         }
 
         virtual Void
@@ -755,6 +803,130 @@ namespace CXX
 
       private:
         Boolean stl;
+        TypeSet& poly_types_;
+      };
+
+      struct GlobalElement: Traversal::Element
+      {
+        GlobalElement (TypeSet& poly_types,
+                       Boolean& valid,
+                       const WarningSet& disabled_warnings)
+            : poly_types_ (poly_types), valid_ (valid), warning_ (true)
+        {
+          if (disabled_warnings.find ("all") != disabled_warnings.end () ||
+              disabled_warnings.find ("H004") != disabled_warnings.end ())
+            warning_ = false;
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          using SemanticGraph::Schema;
+
+          if (!e.substitutes_p ())
+            return;
+
+          // If we are a substitution for some element, then mark
+          // that element's type as polymorphic.
+          //
+          Type& r (e.substitutes ().root ());
+          SemanticGraph::Type& rt (r.type ());
+          SemanticGraph::Context& ctx (rt.context ());
+
+          if (ctx.count ("polymorphic"))
+            return;
+
+          // Only user-defined and anyType can be declared polymorphic.
+          //
+          /*
+            @@ disabled
+          if (rt.is_a<SemanticGraph::Fundamental::Type> () ||
+              rt.is_a<SemanticGraph::AnySimpleType> ())
+          */
+          if (rt.is_a<SemanticGraph::Fundamental::Type> () ||
+              rt.is_a<SemanticGraph::AnySimpleType> () ||
+              rt.is_a<SemanticGraph::AnyType> ())
+          {
+            wcerr << r.file () << ":" << r.line () << ":" << r.column ()
+                  << ": error: built-in type '" << rt.name () << "' "
+                  << "is expected to be polymorphic" << endl;
+
+            wcerr << e.file () << ":" << e.line () << ":" << e.column ()
+                  << ": info: because type '" << rt.name () << "' is "
+                  << "used in a substitution group declared here" << endl;
+
+            /*
+            @@ disabled
+            wcerr << r.file () << ":" << r.line () << ":" << r.column ()
+                  << ": info: only user-defined types and anyType can "
+                  << "be polymorphic in this mapping" << endl;
+            */
+
+            wcerr << r.file () << ":" << r.line () << ":" << r.column ()
+                  << ": info: only user-defined types can "
+                  << "be polymorphic in this mapping" << endl;
+
+            valid_ = false;
+            return;
+          }
+
+          ctx.set ("polymorphic", true);
+
+          if (!warning_)
+            return;
+
+          Schema& es (dynamic_cast<Schema&> (e.scope ().scope ()));
+          Schema& rts (dynamic_cast<Schema&> (rt.scope ().scope ()));
+
+          // If the root type and this element are in different schemas
+          // and the root type is not explicitly marked as polymorphic,
+          // then issue a warning.
+          //
+          if (&es != &rts &&
+              !sources_p (es, rts) &&
+              poly_types_.find (rt.name ()) == poly_types_.end ())
+          {
+            wcerr << rt.file () << ":" << rt.line () << ":" << rt.column ()
+                  << ": warning H004: assuming type '" << rt.name () << "' "
+                  << "is polymorphic" << endl;
+
+            wcerr << e.file () << ":" << e.line () << ":" << e.column ()
+                  << ": info: because type '" << rt.name () << "' is "
+                  << "used in a substitution group declared here" << endl;
+
+            wcerr << rt.file () << ":" << rt.line () << ":" << rt.column ()
+                  << ": info: use --polymorphic-type to indicate this type "
+                  << "is polymorphic when compiling schemas that "
+                  << "reference it" << endl;
+          }
+        }
+
+      private:
+        // Return true if root sources s.
+        //
+        Boolean
+        sources_p (SemanticGraph::Schema& root, SemanticGraph::Schema& s)
+        {
+          using SemanticGraph::Schema;
+          using SemanticGraph::Sources;
+
+          for (Schema::UsesIterator i (root.uses_begin ());
+               i != root.uses_end (); ++i)
+          {
+            if (i->is_a<Sources> ())
+            {
+              if (&i->schema () == &s || sources_p (i->schema (), s))
+                return true;
+            }
+          }
+
+          return false;
+        }
+
+      private:
+        TypeSet& poly_types_;
+        Boolean& valid_;
+        Boolean warning_;
       };
 
       // Go into sourced/included/imported schemas while making sure
@@ -764,14 +936,19 @@ namespace CXX
                    Traversal::Includes,
                    Traversal::Imports
       {
+        Uses (Char const* seen_key)
+            : seen_key_ (seen_key)
+        {
+        }
+
         virtual Void
         traverse (SemanticGraph::Sources& sr)
         {
           SemanticGraph::Schema& s (sr.schema ());
 
-          if (!s.context ().count ("cxx-hybrid-size-processor-seen"))
+          if (!s.context ().count (seen_key_))
           {
-            s.context ().set ("cxx-hybrid-size-processor-seen", true);
+            s.context ().set (seen_key_, true);
             Traversal::Sources::traverse (sr);
           }
         }
@@ -781,9 +958,9 @@ namespace CXX
         {
           SemanticGraph::Schema& s (i.schema ());
 
-          if (!s.context ().count ("cxx-hybrid-size-processor-seen"))
+          if (!s.context ().count (seen_key_))
           {
-            s.context ().set ("cxx-hybrid-size-processor-seen", true);
+            s.context ().set (seen_key_, true);
             Traversal::Includes::traverse (i);
           }
         }
@@ -793,21 +970,40 @@ namespace CXX
         {
           SemanticGraph::Schema& s (i.schema ());
 
-          if (!s.context ().count ("cxx-hybrid-size-processor-seen"))
+          if (!s.context ().count (seen_key_))
           {
-            s.context ().set ("cxx-hybrid-size-processor-seen", true);
+            s.context ().set (seen_key_, true);
             Traversal::Imports::traverse (i);
           }
         }
+
+      private:
+        Char const* seen_key_;
       };
+
+      Char const* pass_one_key = "cxx-hybrid-size-processor-seen-one";
+      Char const* pass_two_key = "cxx-hybrid-size-processor-seen-two";
 
       Boolean
       process_impl (CLI::Options const& ops,
                     SemanticGraph::Schema& tu,
-                    SemanticGraph::Path const&)
+                    SemanticGraph::Path const&,
+                    const WarningSet& disabled_warnings)
       {
         Boolean valid (true);
         Boolean stl (!ops.value<CLI::no_stl> ());
+        Boolean poly (ops.value<CLI::generate_polymorphic> ());
+
+        // Prepare a set of polymorphic types.
+        //
+
+        TypeSet poly_types;
+        if (poly)
+        {
+          poly_types.insert (
+            ops.value<CLI::polymorphic_type> ().begin (),
+            ops.value<CLI::polymorphic_type> ().end ());
+        }
 
         // Root schema in the file-per-type mode is just a bunch
         // of includes without a namespace.
@@ -824,7 +1020,7 @@ namespace CXX
           Traversal::Names schema_names;
           Traversal::Namespace ns;
           Traversal::Names ns_names;
-          FundType fund_type (stl);
+          FundType fund_type (stl, poly_types);
 
           schema >> schema_names >> ns >> ns_names >> fund_type;
 
@@ -832,7 +1028,7 @@ namespace CXX
         }
         else
         {
-          // Pass one - assign sizes to fundamental types.
+          // First assign sizes to fundamental types.
           //
           {
             Traversal::Schema schema;
@@ -844,7 +1040,7 @@ namespace CXX
             Traversal::Names xs_schema_names;
             Traversal::Namespace ns;
             Traversal::Names ns_names;
-            FundType fund_type (stl);
+            FundType fund_type (stl, poly_types);
 
             xs_schema >> xs_schema_names >> ns >> ns_names >> fund_type;
 
@@ -855,7 +1051,7 @@ namespace CXX
           // processed which may happen in the file-per-type compilation
           // mode.
           //
-          if (!tu.context ().count ("cxx-hybrid-size-processor-seen"))
+          if (!tu.context ().count (pass_two_key))
           {
             // Prepare a set of types with custom data. Here we are
             // only interested in detecting global types. If a type
@@ -877,8 +1073,7 @@ namespace CXX
               }
             }
 
-            // Prepare a map of types custom types that specify type
-            // size.
+            // Prepare a map of custom types that specify type length.
             //
             CustomTypeMap custom_type_map;
 
@@ -949,23 +1144,53 @@ namespace CXX
               }
             }
 
-            if (valid)
+            // Pass one - check substitution groups.
+            //
+            if (valid && poly)
             {
               Traversal::Schema schema;
-              Uses uses;
+              Uses uses (pass_one_key);
 
               schema >> uses >> schema;
 
               Traversal::Names schema_names;
               Traversal::Namespace ns;
               Traversal::Names ns_names;
-              Type type (valid, custom_data_types, custom_type_map, stl);
+              GlobalElement element (poly_types, valid, disabled_warnings);
+
+              schema >> schema_names >> ns >> ns_names >> element;
+
+              // Some twisted schemas do recusive self-inclusion.
+              //
+              tu.context ().set (pass_one_key, true);
+
+              schema.dispatch (tu);
+            }
+
+            // Pass two - process types.
+            //
+            if (valid)
+            {
+              Traversal::Schema schema;
+              Uses uses (pass_two_key);
+
+              schema >> uses >> schema;
+
+              Traversal::Names schema_names;
+              Traversal::Namespace ns;
+              Traversal::Names ns_names;
+              Type type (valid,
+                         custom_data_types,
+                         custom_type_map,
+                         poly_types,
+                         stl,
+                         poly);
 
               schema >> schema_names >> ns >> ns_names >> type;
 
               // Some twisted schemas do recusive self-inclusion.
               //
-              tu.context ().set ("cxx-hybrid-size-processor-seen", true);
+              tu.context ().set (pass_two_key, true);
 
               schema.dispatch (tu);
             }
@@ -979,9 +1204,10 @@ namespace CXX
     Boolean TreeSizeProcessor::
     process (CLI::Options const& ops,
              SemanticGraph::Schema& tu,
-             SemanticGraph::Path const& file)
+             SemanticGraph::Path const& file,
+             const WarningSet& disabled_warnings)
     {
-      return process_impl (ops, tu, file);
+      return process_impl (ops, tu, file, disabled_warnings);
     }
   }
 }

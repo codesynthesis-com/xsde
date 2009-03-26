@@ -347,6 +347,34 @@ namespace CXX
         }
       };
 
+      //
+      //
+      struct PostOverride: Traversal::Complex, Context
+      {
+        PostOverride (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              os << "virtual " << pret_type (b) << endl
+                 << post_name (b) << " ();"
+                 << endl;
+            }
+          }
+        }
+      };
 
       //
       //
@@ -354,6 +382,8 @@ namespace CXX
       {
         Complex (Context& c)
             : Context (c),
+              post_override_ (c),
+
               // State.
               //
               compositor_state_ (c),
@@ -472,6 +502,9 @@ namespace CXX
 
             // post
             //
+            if (polymorphic (c))
+              post_override_.dispatch (c);
+
             os << "virtual " << ret << endl
                << post_name (c) << " ();"
                << endl;
@@ -546,6 +579,8 @@ namespace CXX
         }
 
       private:
+        PostOverride post_override_;
+
         // State.
         //
         CompositorState compositor_state_;

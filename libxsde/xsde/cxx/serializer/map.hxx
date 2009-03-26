@@ -86,6 +86,7 @@ namespace xsde
 
       private:
         hashmap map_;
+        bool resetting_;
       };
     }
   }

@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "position.hxx"
-
 #include "position-pimpl.hxx"
 #include "position-simpl.hxx"
 

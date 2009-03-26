@@ -32,6 +32,9 @@ namespace CXX
           //
           if (name)
           {
+            Boolean cd (lc.count ("cd-name"));
+            Boolean poly (polymorphic (l));
+
             os << "// " << comment (l.name ()) << " (variable-length)" << endl
                << "//" << endl;
 
@@ -50,17 +53,23 @@ namespace CXX
             os << "public:" << endl
                << name << " ();";
 
+            // d-tor
+            //
+            if (poly)
+              os << "virtual ~" << name << " ();";
+
+            os << endl;
+
             // Custom data.
             //
-            if (lc.count ("cd-name"))
+            if (cd)
             {
               String const& name (ecd_name (l));
               String const& sequence (ecd_sequence (l));
               String const& iterator (ecd_iterator (l));
               String const& const_iterator (ecd_const_iterator (l));
 
-              os << endl
-                 << "// Custom data." << endl
+              os << "// Custom data." << endl
                  << "//" << endl;
 
               // sequence & iterators
@@ -84,9 +93,28 @@ namespace CXX
               os << sequence << "&" << endl
                  << name << " ();"
                  << endl;
+            }
 
+            if (poly && typeinfo)
+            {
+              os << "// Type information." << endl
+                 << "//" << endl;
+
+              os << "static const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_static_type ();"
+                 << endl;
+
+              os << "virtual const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_dynamic_type () const;"
+                 << endl;
+            }
+
+            if (cd)
+            {
               os << "private:" << endl
-                 << sequence << " " << ecd_member (l) << ";";
+                 << ecd_sequence (l) << " " << ecd_member (l) << ";";
             }
 
             os << "};";
@@ -128,15 +156,18 @@ namespace CXX
           //
           if (name)
           {
+            Boolean fl (fixed_length (u));
+            Boolean poly (polymorphic (u));
             Boolean cd (uc.count ("cd-name"));
 
-            os << "// " << comment (u.name ()) << " (variable-length)" << endl
+            os << "// " << comment (u.name ()) << " (" <<
+              (fl ? "fixed-length" : "variable-length") << ")" << endl
                << "//" << endl;
 
             os << "class " << name
                << "{";
 
-            if (!fixed_length (u))
+            if (!fl)
               os << "private:" << endl
                  << name << " (const " << name << "&);"
                  << name << "& operator= (const " << name << "&);"
@@ -148,13 +179,18 @@ namespace CXX
             //
             os << name << " ();";
 
+            // d-tor
+            //
+            if (!stl || poly)
+              os << (poly ? "virtual " : "") << "~" << name << " ();";
+
+            os << endl;
+
             String const& value (uc.get<String> ("value"));
             String const& member (uc.get<String> ("value-member"));
 
             if (stl)
             {
-              os << endl;
-
               // const std::string&
               // name () const
               //
@@ -178,11 +214,6 @@ namespace CXX
             }
             else
             {
-              // d-tor
-              //
-              os << "~" << name << " ();"
-                 << endl;
-
               // const char*
               // name () const
               //
@@ -247,6 +278,22 @@ namespace CXX
               //
               os << sequence << "&" << endl
                  << name << " ();"
+                 << endl;
+            }
+
+            if (poly && typeinfo)
+            {
+              os << "// Type information." << endl
+                 << "//" << endl;
+
+              os << "static const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_static_type ();"
+                 << endl;
+
+              os << "virtual const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_dynamic_type () const;"
                  << endl;
             }
 
@@ -2337,6 +2384,7 @@ namespace CXX
           if (name)
           {
             Boolean fl (fixed_length (c));
+            Boolean poly (polymorphic (c));
             Boolean restriction (restriction_p (c));
             Boolean cd (cc.count ("cd-name"));
 
@@ -2361,8 +2409,8 @@ namespace CXX
 
             // d-tor
             //
-            if (!restriction)
-              os << "~" << name << " ();";
+            if (!restriction || poly)
+              os << (poly ? "virtual " : "") << "~" << name << " ();";
 
             // copy c-tor & operator=
             //
@@ -2418,6 +2466,22 @@ namespace CXX
               //
               os << sequence << "&" << endl
                  << name << " ();"
+                 << endl;
+            }
+
+            if (poly && typeinfo)
+            {
+              os << "// Type information." << endl
+                 << "//" << endl;
+
+              os << "static const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_static_type ();"
+                 << endl;
+
+              os << "virtual const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_dynamic_type () const;"
                  << endl;
             }
 

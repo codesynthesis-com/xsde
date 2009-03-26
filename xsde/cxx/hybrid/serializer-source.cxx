@@ -783,12 +783,35 @@ namespace CXX
                << esname (e) << " ()"
                << "{";
 
+            if (polymorphic (t))
+            {
+              if (stl)
+              {
+                os << "const ::std::string& dt = " << access << iter <<
+                  "->_dynamic_type ();"
+                   << "if (dt != " << esskel (t) << "::_static_type ())" << endl
+                   << "this->_context ().type_id (dt.c_str ());"
+                   << endl;
+              }
+              else
+              {
+                os << "const char* dt = " << access << iter <<
+                  "->_dynamic_type ();"
+                   << "if (strcmp (dt, " << esskel (t) <<
+                  "::_static_type ()) != 0)" << endl
+                   << "this->_context ().type_id (dt);"
+                   << endl;
+              }
+            }
+
             if (ret != L"void")
             {
               os << "return ";
               type_pass_.dispatch (t);
               os << "*" << access << iter << "++;";
             }
+            else
+              os << access << iter << "++;";
 
             os << "}";
           }
@@ -806,6 +829,27 @@ namespace CXX
             os << ret << " " << s << "::" << endl
                << esname (e) << " ()"
                << "{";
+
+            if (polymorphic (t))
+            {
+              if (stl)
+              {
+                os << "const ::std::string& dt = " << access << ename (e) <<
+                  " ()._dynamic_type ();"
+                   << "if (dt != " << esskel (t) << "::_static_type ())" << endl
+                   << "this->_context ().type_id (dt.c_str ());"
+                   << endl;
+              }
+              else
+              {
+                os << "const char* dt = " << access << ename (e) <<
+                  " ()._dynamic_type ();"
+                   << "if (strcmp (dt, " << esskel (t) <<
+                  "::_static_type ()) != 0)" << endl
+                   << "this->_context ().type_id (dt);"
+                   << endl;
+              }
+            }
 
             if (ret != L"void")
             {
@@ -870,11 +914,59 @@ namespace CXX
 
       //
       //
+      struct PreOverride: Traversal::Complex, Context
+      {
+        PreOverride (Context& c)
+            : Context (c), scope_ (0)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          Boolean clear (false);
+
+          if (scope_ == 0)
+          {
+            scope_ = &c;
+            clear = true;
+          }
+
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              String const& scope (esimpl_custom (*scope_));
+
+              os << "void " << scope << "::" << endl
+                 << "pre (" << sarg_type (b) << " x)"
+                 << "{"
+                 << "this->pre (static_cast< " << sarg_type (c) << " > (x));"
+                 << "}";
+            }
+          }
+
+          if (clear)
+            scope_ = 0;
+        }
+
+      private:
+        SemanticGraph::Complex* scope_;
+      };
+
+      //
+      //
       struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),
               type_pass_ (c),
+              pre_override_ (c),
 
               // Initializers.
               //
@@ -961,6 +1053,9 @@ namespace CXX
 
           // pre
           //
+          if (polymorphic (c))
+            pre_override_.dispatch (c);
+
           String const& arg (sarg_type (c));
 
           os << "void " << name << "::" << endl
@@ -1136,6 +1231,7 @@ namespace CXX
 
       private:
         TypePass type_pass_;
+        PreOverride pre_override_;
 
         // Initializers.
         //
@@ -1159,6 +1255,10 @@ namespace CXX
     Void
     generate_serializer_source (Context& ctx)
     {
+      if (ctx.poly_code && !ctx.stl)
+        ctx.os << "#include <string.h>" << endl
+               << endl;
+
       Traversal::Schema schema;
 
       Traversal::Sources sources;

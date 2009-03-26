@@ -870,13 +870,45 @@
         Reset support allows you to reuse parsers and serializers
         after an error.</dd>
 
+    <dt><code><b>--generate-polymorphic</b></code></dt>
+    <dd>Generate polymorphism-aware code. Specify this option if you use
+        substitution groups or <code><b>xsi:type</b></code>. Use the
+        <code><b>--polymorphic-type</b></code> option to specify which
+        type hierarchies are polymorphic.</dd>
+
+    <dt><code><b>--runtime-polymorphic</b></code></dt>
+    <dd>Generate non-polymorphic code that uses the runtime library
+        configured with polymorphism support.</dd>
+
+    <dt><code><b>--polymorphic-type</b></code> <i>type</i></dt>
+    <dd>Indicate that <code><i>type</i></code> is a root of a polymorphic
+        type hierarchy. The compiler can often automatically determine
+        which types are polymorphic based on the substitution group
+        declarations. However, you may need to use this option if you are
+        not using substitution groups or if substitution groups are defined
+        in another schema. You need to specify this option when compiling
+        every schema file that references <code><i>type</i></code>.</dd>
+
+    <dt><code><b>--generate-typeinfo</b></code></dt>
+    <dd>Generate custom type information querying functions for
+        polymorphic object model types. These functions can be used
+        instead of the standard C++ RTTI mechanism to determine
+        object's type at runtime.</dd>
+
+    <dt><code><b>--polymorphic-schema</b></code> <i>file</i></dt>
+    <dd>Indicate that <code><i>file</i></code> contains derivations of
+        polymorphic types that are not otherwise visible from the schema
+        being compiled. This option is used to make sure that during the
+        generation of parser and serializer aggregates the compiler is
+        aware of all possible derivations of polymorphic types. Repeat
+        this option to specify more than one schema file.</dd>
+
     <dt><code><b>--reuse-style-mixin</b></code></dt>
     <dd>Generate code that supports the mixin base parser/serializer
         implementation reuse style. Note that this reuse style
         relies on virtual inheritance and may result in a substantial
         object code size increase for large vocabularies. By default
         the tiein reuse style is used.</dd>
-
 
     <dt><code><b>--custom-data</b></code> <i>type</i></dt>
     <dd>Add the ability to store custom data to the C++ class generated

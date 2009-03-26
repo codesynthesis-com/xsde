@@ -18,6 +18,10 @@ EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation
 EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin
 !endif
 
+!if "$(XSDE_POLYMORPHIC)" == "y"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --runtime-polymorphic
+!endif
+
 driver.exe: driver.obj email.obj body.obj email-pskel.obj email-pimpl.obj \
 email-sskel.obj email-simpl.obj envelope-pimpl.obj envelope-simpl.obj \
 $(root)\libxsde\xsde\xsde.lib

@@ -13,6 +13,10 @@ ifeq ($(XSDE_STL),y)
 dirs += library wildcard filter
 endif
 
+ifeq ($(XSDE_POLYMORPHIC),y)
+dirs += polymorphism polyroot
+endif
+
 endif
 endif
 

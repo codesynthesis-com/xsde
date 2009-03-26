@@ -41,6 +41,11 @@ namespace CXX
       extern Key generate_xml_schema;
       extern Key extern_xml_schema;
       extern Key suppress_reset;
+      extern Key generate_polymorphic;
+      extern Key runtime_polymorphic;
+      extern Key polymorphic_type;
+      extern Key generate_typeinfo;
+      extern Key polymorphic_schema;
       extern Key reuse_style_mixin;
       extern Key custom_data;
       extern Key custom_type;
@@ -123,6 +128,11 @@ namespace CXX
         generate_xml_schema,      Boolean,
         extern_xml_schema,        NarrowString,
         suppress_reset,           Boolean,
+        generate_polymorphic,     Boolean,
+        runtime_polymorphic,      Boolean,
+        polymorphic_type,         Cult::Containers::Vector<NarrowString>,
+        generate_typeinfo,        Boolean,
+        polymorphic_schema,       Cult::Containers::Vector<NarrowString>,
         reuse_style_mixin,        Boolean,
         custom_data,              Cult::Containers::Vector<NarrowString>,
         custom_type,              Cult::Containers::Vector<NarrowString>,

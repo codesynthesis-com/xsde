@@ -343,10 +343,40 @@ namespace CXX
 
       //
       //
+      struct PreOverride: Traversal::Complex, Context
+      {
+        PreOverride (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              os << "virtual void" << endl
+                 << "pre (" << sarg_type (b) << ");"
+                 << endl;
+            }
+          }
+        }
+      };
+
+      //
+      //
       struct Complex : Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),
+              pre_override_ (c),
 
               // State.
               //
@@ -422,6 +452,9 @@ namespace CXX
 
             // pre
             //
+            if (polymorphic (c))
+              pre_override_.dispatch (c);
+
             os << "virtual void" << endl
                << "pre (" << arg << ");"
                << endl;
@@ -522,6 +555,8 @@ namespace CXX
         }
 
       private:
+        PreOverride pre_override_;
+
         // State.
         //
         CompositorState compositor_state_;

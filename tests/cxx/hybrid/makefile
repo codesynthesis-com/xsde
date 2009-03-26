@@ -5,7 +5,7 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
-tests := sequences
+tests := polymorphism sequences
 
 ifeq ($(xsde_iostream),y)
 tests += built-in list recursive test-template union

@@ -13,6 +13,10 @@ dirs = $(dirs) hello multiroot streaming
 dirs = $(dirs) library wildcard filter
 !endif
 
+!if "$(XSDE_POLYMORPHIC)" == "y"
+dirs = $(dirs) polymorphism polyroot
+!endif
+
 !endif
 !endif
 

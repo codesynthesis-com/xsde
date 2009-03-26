@@ -81,9 +81,9 @@ ifeq ($(xsde_serializer_validation),n)
 ops += --suppress-serializer-val
 endif
 
-#ifeq ($(xsde_polymorphic),y)
-#ops += --runtime-polymorphic
-#endif
+ifeq ($(xsde_polymorphic),y)
+ops += --runtime-polymorphic
+endif
 
 ifeq ($(xsde_reuse_style),mixin)
 ops += --reuse-style-mixin

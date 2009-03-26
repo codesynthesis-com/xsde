@@ -19,7 +19,7 @@ namespace xsde
 
       inline parser_map_impl::
       parser_map_impl (size_t buckets)
-          : map_ (buckets, sizeof (parser_base*))
+          : map_ (buckets, sizeof (parser_base*)), resetting_ (false)
       {
       }
 

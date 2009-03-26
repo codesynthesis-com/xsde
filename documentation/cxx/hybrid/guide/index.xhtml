@@ -256,6 +256,7 @@
           <tr><th>3.4</th><td><a href="#3.4">XML Schema Validation</a></td></tr>
 	  <tr><th>3.5</th><td><a href="#3.5">64-bit Integer Type</a></td></tr>
           <tr><th>3.6</th><td><a href="#3.6">Parser and Serializer Reuse</a></td></tr>
+	  <tr><th>3.7</th><td><a href="#3.7">Support for Polymorphism</a></td></tr>
         </table>
       </td>
     </tr>
@@ -271,6 +272,7 @@
           <tr><th>4.6</th><td><a href="#4.6">Modifying the Object Model</a></td></tr>
           <tr><th>4.7</th><td><a href="#4.7">Creating the Object Model from Scratch</a></td></tr>
 	  <tr><th>4.8</th><td><a href="#4.8">Customizing the Object Model</a></td></tr>
+	  <tr><th>4.9</th><td><a href="#4.9">Polymorphic Object Models</a></td></tr>
         </table>
       </td>
     </tr>
@@ -560,7 +562,7 @@
   &lt;greeting>Hello&lt;/greeting>
 
   &lt;name>sun&lt;/name>
-  &lt;name>earth&lt;/name>
+  &lt;name>moon&lt;/name>
   &lt;name>world&lt;/name>
 
 &lt;/hello>
@@ -910,7 +912,7 @@ main (int argc, char* argv[])
 &lt;hello>
   &lt;greeting>Hi&lt;/greeting>
   &lt;name>sun&lt;/name>
-  &lt;name>earth&lt;/name>
+  &lt;name>moon&lt;/name>
   &lt;name>world&lt;/name>
   &lt;name>mars&lt;/name>
 &lt;/hello>
@@ -1410,6 +1412,154 @@ namespace xml_schema
      "Serializer Reuse"</a> in the Embedded C++/Serializer Mapping Getting
      Started Guide for details.</p>
 
+  <h2><a name="3.7">3.7 Support for Polymorphism</a></h2>
+
+  <p>By default the XSD/e compiler generates non-polymorphic code. If your
+     vocabulary uses XML Schema polymorphism in the form of <code>xsi:type</code>
+     and/or substitution groups, then you will need to configure the XSD/e
+     runtime with support for polymorphism, compile your schemas with the
+     <code>--generate-polymorphic</code> option to produce polymorphism-aware
+     code, as well as pass <code>true</code> as the last argument to the
+     <code>xml_schema::document_pimpl</code> and
+     <code>xml_schema::document_simpl</code> constructors (see
+     <a href="#6">Chapter 6, "Parsing and Serialization"</a> for details).
+     If some of your schemas do not require support for polymorphism then
+     you can compile them with the <code>--runtime-polymorphic</code> option
+     and still use the XSD/e runtime configured with polymorphism support.
+  </p>
+
+  <p>The XSD/e compiler can often automatically determine which types are
+     polymorphic based on the substitution group declarations. However,
+     if your XML vocabulary is not using substitution groups or if
+     substitution groups are defined in a separate schema, then you will
+     need to use the <code>--polymorphic-type</code> option to specify
+     which types are polymorphic. When using this option you only need
+     to specify the root of a polymorphic type hierarchy and the XSD/e
+     compiler will assume that all the derived types are also polymorphic.
+     Also note that you need to specify this option when compiling every
+     schema file that references the polymorphic type. Consider the following
+     two schemas as an example:</p>
+
+  <pre class="xml">
+&lt;!-- base.xsd -->
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  &lt;xs:complexType name="base">
+    &lt;xs:sequence>
+      &lt;xs:element name="b" type="xs:int"/>
+    &lt;/xs:sequence>
+  &lt;/xs:complexType>
+
+  &lt;!-- substitution group root -->
+  &lt;xs:element name="base" type="base"/>
+
+&lt;/xs:schema>
+  </pre>
+
+  <pre class="xml">
+&lt;!-- derived.xsd -->
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  &lt;include schemaLocation="base.xsd"/>
+
+  &lt;xs:complexType name="derived">
+    &lt;xs:complexContent>
+      &lt;xs:extension base="base">
+        &lt;xs:sequence>
+          &lt;xs:element name="d" type="xs:string"/>
+        &lt;/xs:sequence>
+      &lt;/xs:extension>
+    &lt;/xs:complexContent>
+  &lt;/xs:complexType>
+
+  &lt;xs:element name="derived" type="derived" substitutionGroup="base"/>
+
+&lt;/xs:schema>
+  </pre>
+
+  <p>In this example we need to specify "<code>--polymorphic-type base</code>"
+     when compiling both schemas because the substitution group is declared
+     in a schema other than the one defining type <code>base</code>.</p>
+
+  <p>Another issue that may arise when compiling polymorphic schemas is
+     the situation where the XSD/e compiler is unaware of all the
+     derivations of a polymorphic type while generating parser and
+     serializer aggregates. As a result, the generated code may not
+     be able to parse and serialize these "invisible" to the compiler
+     types. The following example will help illustrate this case.
+     Consider a modified version of  <code>base.xsd</code> from the
+     above example:</p>
+
+  <pre class="xml">
+&lt;!-- base.xsd -->
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  &lt;xs:complexType name="base">
+    &lt;xs:sequence>
+      &lt;xs:element name="b" type="xs:int"/>
+    &lt;/xs:sequence>
+  &lt;/xs:complexType>
+
+  &lt;!-- substitution group root -->
+  &lt;xs:element name="base" type="base"/>
+
+  &lt;xs:complexType name="root">
+    &lt;xs:sequence>
+      &lt;xs:element ref="base" maxOccurs="unbounded"/>
+    &lt;/xs:sequence>
+  &lt;/xs:complexType>
+
+  &lt;!-- document root -->
+  &lt;xs:element name="root" type="root"/>
+
+&lt;/xs:schema>
+  </pre>
+
+  <p>Suppose we compile this schema as follows:</p>
+
+  <pre class="terminal">
+$ xsde cxx-hybrid --generate-parser --generate-serializer \
+--generate-polymorphic --polymorphic-type base \
+--generate-aggregate --root-element root base.xsd
+  </pre>
+
+  <p>The resulting parser and serializer aggregates for the <code>root</code>
+     element will not include the parser and serializer for the
+     <code>derived</code> type that can be used instead of the
+     <code>base</code> type. This is because the XSD/e compiler
+     has no knowledge of the <code>derived</code>'s existence when
+     compiling <code>base.xsd</code>.</p>
+
+  <p>There are two ways to overcome this problem. The easier but
+     potentially slower approach is to compile all your schemas
+     at once, for example:</p>
+
+  <pre class="terminal">
+$ xsde cxx-hybrid --generate-parser --generate-serializer \
+--generate-polymorphic --polymorphic-type base \
+--generate-aggregate --root-element root base.xsd derived.xsd
+  </pre>
+
+  <p>This will make sure the XSD/e compiler "sees" all the derivations
+     of the polymorphic types. The other approach allows
+     you to explicitly specify, with the <code>--polymorphic-schema</code>
+     option, additional schemas that may contain derivations of the
+     polymorphic types. Using this approach we would compile
+     <code>base.xsd</code> and <code>derived.xsd</code> like this:</p>
+
+  <pre class="terminal">
+$ xsde cxx-hybrid --generate-parser --generate-serializer \
+--generate-polymorphic --polymorphic-type base \
+--generate-aggregate --root-element root \
+--polymorphic-schema derived.xsd base.xsd
+
+$ xsde cxx-hybrid --generate-parser --generate-serializer \
+--generate-polymorphic --polymorphic-type base derived.xsd
+  </pre>
+
+  <p>For information on how to use object models with polymorphic types,
+     refer to <a href="#4.9">Section 4.9, "Polymorphic Object Models"</a>.</p>
+
 
   <!-- Chapater 4 -->
 
@@ -1672,6 +1822,9 @@ private:
 
     <li>it is recursive (that is, one of its elements contains
         a reference, directly or indirectly, to the type itself)</li>
+
+    <li>it is polymorphic (see <a href="#4.9">Section 4.9, "Polymorphic
+        Object Models"</a> for details)</li>
   </ol>
 
   <p>The following build-in XML Schema types are variable-length:
@@ -3534,6 +3687,246 @@ for (people::person_iterator i = ps.begin (); i != ps.end (); ++i)
   }
 }
   </pre>
+
+
+  <h2><a name="4.9">4.9 Polymorphic Object Models</a></h2>
+
+  <p>When generating polymorphism-aware code (see <a href="#3.7">Section
+     3.7, "Support for Polymorphism"</a>), some objects
+     in the resulting object model will be polymorphic. By polymorphic
+     we mean that the object's (static) type as specified in the
+     object model's interface may differ from the object's actual
+     (dynamic) type. Because of this, it may be necessary to discover
+     the object's actual type at runtime and cast it to this type to
+     gain access to the object's extended interface. Consider the
+     following schema as an example:</p>
+
+  <pre class="xml">
+&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  &lt;xs:complexType name="person">
+    &lt;xs:sequence>
+      &lt;xs:element name="name" type="xs:string"/>
+    &lt;/xs:sequence>
+  &lt;/xs:complexType>
+
+  &lt;!-- substitution group root -->
+  &lt;xs:element name="person" type="person"/>
+
+  &lt;xs:complexType name="superman">
+    &lt;xs:complexContent>
+      &lt;xs:extension base="person">
+        &lt;xs:attribute name="can-fly" type="xs:boolean"/>
+      &lt;/xs:extension>
+    &lt;/xs:complexContent>
+  &lt;/xs:complexType>
+
+  &lt;xs:element name="superman"
+              type="superman"
+              substitutionGroup="person"/>
+
+  &lt;xs:complexType name="batman">
+    &lt;xs:complexContent>
+      &lt;xs:extension base="superman">
+        &lt;xs:attribute name="wing-span" type="xs:unsignedInt"/>
+      &lt;/xs:extension>
+    &lt;/xs:complexContent>
+  &lt;/xs:complexType>
+
+  &lt;xs:element name="batman"
+              type="batman"
+              substitutionGroup="superman"/>
+
+  &lt;xs:complexType name="supermen">
+    &lt;xs:sequence>
+      &lt;xs:element ref="person" maxOccurs="unbounded"/>
+    &lt;/xs:sequence>
+  &lt;/xs:complexType>
+
+  &lt;xs:element name="supermen" type="supermen"/>
+
+&lt;/xs:schema>
+  </pre>
+
+  <p>Conforming XML documents can use the <code>superman</code>
+     and <code>batman</code> types in place of the <code>person</code>
+     type either by specifying the type with the <code>xsi:type</code>
+     attributes or by using the elements from the substitution
+     group, for instance:</p>
+
+
+  <pre class="xml">
+&lt;supermen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  &lt;person>
+    &lt;name>John Doe&lt;/name>
+  &lt;/person>
+
+  &lt;superman can-fly="false">
+    &lt;name>James "007" Bond&lt;/name>
+  &lt;/superman>
+
+  &lt;superman can-fly="true" wing-span="10" xsi:type="batman">
+    &lt;name>Bruce Wayne&lt;/name>
+  &lt;/superman>
+
+&lt;/supermen>
+  </pre>
+
+  <p>When compiling the schema above with the
+     <code>--generate-polymorphic</code> option, the XSD/e compiler
+     automatically detects that the type hierarchy starting with
+     the <code>person</code> type is polymorphic. A polymorphic
+     type is always variable-length which means objects of polymorphic
+     types are allocated dynamically and are stored and passed around
+     as pointers or references. A polymorphic type also defines a
+     virtual destructor which allows you to delete an instance of a
+     polymorphic type via a pointer to its base. The following code
+     fragment shows how we can parse, access, modify, and serialize
+     the above XML document:</p>
+
+  <pre class="c++">
+// Parse.
+//
+supermen_paggr supermen_p;
+
+// The last argument to the document's constructor indicates that we
+// are parsing polymorphic XML documents.
+//
+xml_schema::document_pimpl doc_p (
+  supermen_p.root_parser (),
+  supermen_p.root_name (),
+  true);
+
+supermen_p.pre ();
+doc_p.parse ("supermen.xml");
+auto_ptr&lt;supermen> sm (supermen_p.post ());
+
+// Print what we've got.
+//
+for (supermen::person_iterator i = sm->person ().begin ();
+     i != sm->person ().end ();
+     ++i)
+{
+  person&amp; p = *i;
+
+  if (batman* b = dynamic_cast&lt;batman*> (&amp;p))
+  {
+    cerr &lt;&lt; b->name () &lt;&lt; ", batman, wing span " &lt;&lt;
+      b->wing_span () &lt;&lt; endl;
+  }
+  else if (superman* s = dynamic_cast&lt;superman*> (&amp;p))
+  {
+    cerr &lt;&lt; s->name () &lt;&lt; ", ";
+
+    if (s->can_fly ())
+      cerr &lt;&lt; "flying ";
+
+    cerr &lt;&lt; "superman" &lt;&lt; endl;
+  }
+  else
+  {
+    cerr &lt;&lt; p.name () &lt;&lt; ", ordinary person" &lt;&lt; endl;
+  }
+}
+
+// Add another superman entry.
+//
+auto_ptr&lt;superman> s (new superman);
+s->name ("Clark Kent");
+s->can_fly (true);
+sm->person ().push_back (s.release ());
+
+// Serialize.
+//
+supermen_saggr supermen_s;
+
+// The last argument to the document's constructor indicates that we
+// are serializing polymorphic XML documents.
+//
+xml_schema::document_simpl doc_s (
+  supermen_s.root_serializer (),
+  supermen_s.root_name (),
+  true);
+
+doc_s.add_no_namespace_schema ("supermen.xsd");
+
+supermen_s.pre (*sm);
+doc_s.serialize (cout);
+supermen_s.post ();
+  </pre>
+
+  <p>In the example above we used the standard C++ RTTI mechanism
+     to detect the object's actual (dynamic) type. If RTTI is not
+     available on your platform, then you can request the generation
+     of custom runtime type information for polymorphic types
+     with the <code>--generate-typeinfo</code> XSD/e compiler
+     option. When this option is specified, each polymorphic
+     type provides the following two public functions:</p>
+
+  <pre class="c++">
+virtual const std::string&amp;
+_dynamic_type () const;
+
+static const std::string&amp;
+_static_type ();
+  </pre>
+
+  <p>Or, if STL is disabled (<a href="#3.1">Section 3.1, "Standard Template
+     Library"</a>), the following two functions:</p>
+
+  <pre class="c++">
+virtual const char*
+_dynamic_type () const;
+
+static const char*
+_static_type ();
+  </pre>
+
+  <p>The <code>_dynamic_type()</code> function returns the object's
+     dynamic type id. The <code>_static_type()</code> function
+     returns the type's static id that can be compared to the
+     dynamic id. The following code fragment shows how
+     we can change the previous example to use custom type information
+     instead of C++ RTTI:</p>
+
+  <pre class="c++">
+for (supermen::person_iterator i = sm->person ().begin ();
+     i != sm->person ().end ();
+     ++i)
+{
+  person&amp; p = *i;
+  const string&amp; dt = p._dynamic_type ();
+
+  if (dt == batman::_static_type ())
+  {
+    batman&amp; b = static_cast&lt;batman&amp;> (p)
+    cerr &lt;&lt; b.name () &lt;&lt; ", batman, wing span " &lt;&lt;
+      b.wing_span () &lt;&lt; endl;
+  }
+  else if (dt == superman::_static_type ())
+  {
+    superman&amp; s = static_cast&lt;superman&amp;> (p)
+    cerr &lt;&lt; s.name () &lt;&lt; ", ";
+
+    if (s.can_fly ())
+      cerr &lt;&lt; "flying ";
+
+    cerr &lt;&lt; "superman" &lt;&lt; endl;
+  }
+  else
+  {
+    cerr &lt;&lt; p.name () &lt;&lt; ", ordinary person" &lt;&lt; endl;
+  }
+}
+  </pre>
+
+  <p>Most of the code presented in this section is taken from the
+     <code>polymorphism</code> example which can be found in the
+     <code>examples/cxx/hybrid/</code> directory of the XSD/e distribution.
+     Handling of <code>xsi:type</code> and substitution groups when used
+     on root elements requires a number of special actions as shown in
+     the <code>polyroot</code> example.</p>
 
 
   <!-- Built-in XML Schema Type Parsers -->
