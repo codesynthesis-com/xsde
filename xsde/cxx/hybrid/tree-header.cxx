@@ -369,7 +369,6 @@ namespace CXX
                         Traversal::Fundamental::Token,
                         Traversal::Fundamental::Name,
                         Traversal::Fundamental::NameToken,
-                        Traversal::Fundamental::NameTokens,
                         Traversal::Fundamental::NCName,
                         Traversal::Fundamental::Language,
 
@@ -377,7 +376,6 @@ namespace CXX
 
                         Traversal::Fundamental::Id,
                         Traversal::Fundamental::IdRef,
-                        Traversal::Fundamental::IdRefs,
 
                         Traversal::Fundamental::AnyURI,
 
@@ -392,12 +390,11 @@ namespace CXX
                         Traversal::Fundamental::Time,
 
                         Traversal::Fundamental::Entity,
-                        Traversal::Fundamental::Entities,
 
                         Context
       {
         AlignType (Context& c)
-            : Context (c), nested_ (false)
+            : Context (c)
         {
           *this >> inherits_ >> *this;
 
@@ -413,77 +410,56 @@ namespace CXX
           belongs_ >> *this;
         }
 
-        virtual Void
+        // Type alignment ranking (the high the rank, the stricter
+        // the alignment requirements):
+        //
+        // char      1
+        // short     2
+        // bool      4
+        // int       4
+        // float     4
+        // long      5
+        // void*     5
+        // size_t    5
+        // double    7
+        // long long 8
+        //
+        // Note also that this traverser only needs to handle fixed-
+        // length types.
+        //
+
+        Void
         dispatch (SemanticGraph::Node& n)
         {
-          found_ = false;
+          rank_ = 1;
+          type_ = "char";
+
           NodeBase::dispatch (n);
-        }
 
-        virtual Void
-        traverse (SemanticGraph::Compositor& c)
-        {
-          Boolean top (false);
-
-          if (!nested_)
-          {
-            nested_ = true;
-            top = true;
-          }
-
-          Traversal::Compositor::traverse (c);
-
-          if (top)
-          {
-            nested_ = false;
-
-            if (!found_)
-              os << "char"; // Empty compositor.
-          }
+          os << type_;
         }
 
         virtual Void
         traverse (SemanticGraph::List&)
         {
-          align_type ("size_t");
+          align_type ("size_t", 5);
         }
 
         virtual Void
         traverse (SemanticGraph::Union&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Complex& c)
         {
-          // Keep track of the nested calls for base types.
-          //
-          Boolean top (false);
-
-          if (!nested_)
-          {
-            nested_ = true;
-            top = true;
-          }
-
           Complex::inherits (c, inherits_);
 
-          if (!found_)
-          {
-            Complex::names (c, attribute_names_);
+          Complex::names (c, attribute_names_);
 
-            if (!found_ && c.contains_compositor_p ())
-              Complex::contains_compositor (c, contains_compositor_);
-          }
-
-          if (top)
-          {
-            nested_ = false;
-
-            if (!found_)
-              os << "char"; // Empty class.
-          }
+          if (c.contains_compositor_p ())
+            Complex::contains_compositor (c, contains_compositor_);
         }
 
         // anyType & anySimpleType.
@@ -491,13 +467,13 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnyType&)
         {
-          align_type ("char");
+          align_type ("char", 1);
         }
 
         virtual Void
         traverse (SemanticGraph::AnySimpleType&)
         {
-          align_type ("char");
+          align_type ("char", 1);
         }
 
         // Boolean.
@@ -505,7 +481,9 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Boolean&)
         {
-          align_type ("bool");
+          // In worst case scenario bool is 4 bytes. Assume that.
+          //
+          align_type ("int", 4);
         }
 
         // Integral types.
@@ -513,83 +491,85 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Byte&)
         {
-          align_type ("signed char");
+          align_type ("signed char", 1);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::UnsignedByte&)
         {
-          align_type ("unsigned char");
+          align_type ("unsigned char", 1);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Short&)
         {
-          align_type ("short");
+          align_type ("short", 2);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::UnsignedShort&)
         {
-          align_type ("unsigned short");
+          align_type ("unsigned short", 2);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Int&)
         {
-          align_type ("int");
+          align_type ("int", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::UnsignedInt&)
         {
-          align_type ("unsigned int");
+          align_type ("unsigned int", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Long&)
         {
-          align_type (options.value<CLI::no_long_long> ()
-                      ? "long"
-                      : "long long");
+          if (options.value<CLI::no_long_long> ())
+            align_type ("long", 5);
+          else
+            align_type ("long long", 8);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::UnsignedLong&)
         {
-          align_type (options.value<CLI::no_long_long> ()
-                      ? "unsigned long"
-                      : "unsigned long long");
+          if (options.value<CLI::no_long_long> ())
+            align_type ("unsigned long", 5);
+          else
+            align_type ("unsigned long long", 8);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Integer&)
         {
-          align_type ("long");
+          align_type ("long", 5);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NonPositiveInteger&)
         {
-          align_type ("long");
+          align_type ("long", 5);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NonNegativeInteger&)
         {
-          align_type ("unsigned long");
+          align_type ("unsigned long", 5);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::PositiveInteger&)
         {
-          align_type ("unsigned long");
+          align_type ("unsigned long", 5);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NegativeInteger&)
         {
-          align_type ("long");
+          align_type ("long", 5);
         }
 
         // Floats.
@@ -597,19 +577,19 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Float&)
         {
-          align_type ("float");
+          align_type ("float", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Double&)
         {
-          align_type ("double");
+          align_type ("double", 7);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Decimal&)
         {
-          align_type ("double");
+          align_type ("double", 7);
         }
 
         // Strings.
@@ -617,49 +597,43 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::String&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NormalizedString&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Token&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NameToken&)
         {
-          align_type ("size_t"); // std::string
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Fundamental::NameTokens&)
-        {
-          align_type ("size_t");
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Name&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::NCName&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Language&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         // Qualified name.
@@ -667,28 +641,21 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::QName&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
-
 
         // ID/IDREF.
         //
         virtual Void
         traverse (SemanticGraph::Fundamental::Id&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::IdRef&)
         {
-          align_type ("size_t"); // std::string
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Fundamental::IdRefs&)
-        {
-          align_type ("size_t");
+          align_type ("size_t", 5); // std::string
         }
 
         // URI.
@@ -696,64 +663,63 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::AnyURI&)
         {
-          align_type ("size_t"); // std::string
+          align_type ("size_t", 5); // std::string
         }
-
 
         // Date/time.
         //
         virtual Void
         traverse (SemanticGraph::Fundamental::Date&)
         {
-          align_type ("bool");
+          align_type ("int", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::DateTime&)
         {
-          align_type ("bool");
+          align_type ("double", 7);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Duration&)
         {
-          align_type ("bool");
+          align_type ("double", 7);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Day&)
         {
-          align_type ("bool");
+          align_type ("short", 2);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Month&)
         {
-          align_type ("bool");
+          align_type ("short", 2);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::MonthDay&)
         {
-          align_type ("bool");
+          align_type ("short", 2);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Year&)
         {
-          align_type ("bool");
+          align_type ("int", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::YearMonth&)
         {
-          align_type ("bool");
+          align_type ("int", 4);
         }
 
         virtual Void
         traverse (SemanticGraph::Fundamental::Time&)
         {
-          align_type ("bool");
+          align_type ("double", 7);
         }
 
         // Entity.
@@ -761,29 +727,23 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Entity&)
         {
-          align_type ("size_t"); // std::string
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Fundamental::Entities&)
-        {
-          align_type ("size_t");
+          align_type ("size_t", 5); // std::string
         }
 
       private:
         Void
-        align_type (Char const* t)
+        align_type (Char const* type, unsigned short rank)
         {
-          if (!found_)
+          if (rank > rank_)
           {
-            os << t;
-            found_ = true;
+            rank_ = rank;
+            type_ = type;
           }
         }
 
       private:
-        Boolean found_;
-        Boolean nested_;
+        String type_;
+        unsigned short rank_;
 
       private:
         Traversal::Inherits inherits_;
@@ -826,7 +786,7 @@ namespace CXX
             os << " " << emember (a) << ";";
 
             if (a.optional () && !a.default_ () && fixed_length (t))
-              os << "bool " << epresent_member (a) << ";";
+              os << "unsigned char " << epresent_member (a) << ";";
           }
         }
 
@@ -857,7 +817,7 @@ namespace CXX
             os << " " << emember (e) << ";";
 
             if (e.min () == 0 && fixed_length (t))
-              os << "bool " << epresent_member (e) << ";";
+              os << "unsigned char " << epresent_member (e) << ";";
           }
         }
 
@@ -891,9 +851,7 @@ namespace CXX
             {
               os << "union"
                  << "{";
-
               align_type_.dispatch (t);
-
               os << " align_;"
                  << "char data_[sizeof (";
 
@@ -943,7 +901,7 @@ namespace CXX
             if (fixed_length (a))
             {
               os << type << " " << member << ";"
-                 << "bool " << epresent_member (a) << ";";
+                 << "unsigned char " << epresent_member (a) << ";";
             }
             else
               os << type << "* " << member << ";";
@@ -974,7 +932,7 @@ namespace CXX
 
             if (fixed_length (c))
               os << type << " " << member << ";"
-                 << "bool " << epresent_member (c) << ";";
+                 << "unsigned char " << epresent_member (c) << ";";
             else
               os << type << "* " << member << ";";
           }
@@ -1017,9 +975,7 @@ namespace CXX
             {
               os << "union"
                  << "{";
-
               align_type_.dispatch (c);
-
               os << " align_;"
                  << "char data_[sizeof (" << etype (c) << ")";
 
@@ -1061,7 +1017,7 @@ namespace CXX
 
             if (fixed_length (s))
               os << type << " " << member << ";"
-                 << "bool " << epresent_member (s) << ";";
+                 << "unsigned char " << epresent_member (s) << ";";
             else
               os << type << "* " << member << ";";
           }
@@ -1096,9 +1052,7 @@ namespace CXX
             {
               os << "union"
                  << "{";
-
               align_type_.dispatch (s);
-
               os << " align_;"
                  << "char data_[sizeof (" << etype (s) << ")";
 

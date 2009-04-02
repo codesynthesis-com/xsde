@@ -35,6 +35,8 @@ main (int argc, char* argv[])
     y.a (123);
     z = y;
     assert (z.a () == 123);
+    z.c (123456789);
+    assert (z.c () == 123456789);
   }
 #endif
 

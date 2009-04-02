@@ -26,6 +26,7 @@
     <choice>
       <element name="a" type="int"/>
       <element name="b" type="string"/>
+      <element name="c" type="long"/>
     </choice>
   </complexType>
 
