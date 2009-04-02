@@ -53,6 +53,7 @@ cxx_tun += cxx/serializer/elements.cxx                    \
 cxx_tun += cxx/hybrid/elements.cxx                        \
            cxx/hybrid/validator.cxx                       \
            cxx/hybrid/generator.cxx                       \
+	   cxx/hybrid/default-value.cxx                   \
            cxx/hybrid/tree-size-processor.cxx             \
            cxx/hybrid/tree-name-processor.cxx             \
            cxx/hybrid/tree-forward.cxx                    \
@@ -75,12 +76,10 @@ cxx_tun += cxx/hybrid/elements.cxx                        \
            cxx/hybrid/serializer-aggregate-header.cxx     \
            cxx/hybrid/serializer-aggregate-source.cxx
 
-
 # Type map
 #
 cxx_tun += type-map/lexer.cxx  \
            type-map/parser.cxx
-
 
 # Processing
 #

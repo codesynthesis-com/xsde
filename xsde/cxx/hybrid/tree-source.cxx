@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/hybrid/tree-source.hxx>
+#include <cxx/hybrid/default-value.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
@@ -167,6 +168,73 @@ namespace CXX
             }
           }
         }
+      };
+
+
+      struct AttributeFunc: Traversal::Attribute, Context
+      {
+        AttributeFunc (Context& c)
+            : Context (c),
+              var_ (c, TypeName::var_value),
+              ro_ret_ (c, TypeName::ro_ret),
+              literal_value_ (c),
+              init_value_ (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Attribute& a)
+        {
+          if (a.default_ ())
+          {
+            SemanticGraph::Type& t (a.type ());
+
+            String literal (literal_value_.dispatch (t, a.value ()));
+            String init;
+
+            if (!literal)
+            {
+              String const& name (ename (a));
+              String const& scope_name (ename (a.scope ()));
+
+              init = L"_xsde_" + scope_name + L"_" + name + L"_default_value";
+
+              os << "struct " << init
+                 << "{"
+                 << init << " ()"
+                 << "{";
+              init_value_.dispatch (t, a.value ());
+              os << "}";
+
+              var_.dispatch (t);
+              os << " value_;"
+                 << "};"
+                 << "static const " << init << " " << init << "_;"
+                 << endl;
+            }
+
+            // static const type&
+            // name_{default|fixed}_value ()
+            //
+            ro_ret_.dispatch (t);
+            os << " " << scope (a) << "::" << endl
+               << edefault_value (a) << " ()"
+               << "{";
+
+            if (literal)
+              os << "return " << literal << ";";
+            else
+              os << "return " << init << "_.value_;";
+
+            os << "}";
+          }
+        }
+
+      private:
+        TypeName var_;
+        TypeName ro_ret_;
+        LiteralValue literal_value_;
+        InitValue init_value_;
       };
 
       struct ChoiceParticle: Traversal::Element,
@@ -600,13 +668,24 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          Boolean fl (fixed_length (a.type ()));
+          if (!a.fixed ())
+          {
+            Boolean def (a.default_ ());
+            Boolean fl (fixed_length (a.type ()));
 
-          if (!fl)
-            os << "this->" << emember (a) << " = 0;";
+            if (!fl)
+            {
+              os << "this->" << emember (a) << " = 0;";
+            }
+            else if (def)
+            {
+              os << "this->" << emember (a) << " = " <<
+                edefault_value (a) << " ();";
+            }
 
-          if (fl && a.optional ())
-            os << "this->" << epresent_member (a) << " = false;";
+            if (fl && !def && a.optional ())
+              os << "this->" << epresent_member (a) << " = false;";
+          }
         }
       };
 
@@ -726,12 +805,15 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          SemanticGraph::Type& t (a.type ());
-
-          if (!fixed_length (t))
+          if (!a.fixed ())
           {
-            delete_.dispatch (t);
-            os << " this->" << emember (a) << ";";
+            SemanticGraph::Type& t (a.type ());
+
+            if (!fixed_length (t))
+            {
+              delete_.dispatch (t);
+              os << " this->" << emember (a) << ";";
+            }
           }
         }
 
@@ -852,17 +934,20 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          String const& member (emember (a));
-
-          if (a.optional ())
+          if (!a.fixed ())
           {
-            String const& present_member (epresent_member (a));
+            String const& member (emember (a));
 
-            os << "this->" << present_member << " = x." << present_member << ";"
-               << "if (this->" << present_member << ")" << endl;
+            if (a.optional () && !a.default_ ())
+            {
+              String const& present (epresent_member (a));
+
+              os << "this->" << present << " = x." << present << ";"
+                 << "if (this->" << present << ")" << endl;
+            }
+
+            os << "this->" << member << " = x." << member << ";";
           }
-
-          os << "this->" << member << " = x." << member << ";";
         }
       };
 
@@ -993,17 +1078,20 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          String const& member (emember (a));
-
-          if (a.optional ())
+          if (!a.fixed ())
           {
-            String const& present_member (epresent_member (a));
+            String const& member (emember (a));
 
-            os << "this->" << present_member << " = x." << present_member << ";"
-               << "if (this->" << present_member << ")" << endl;
+            if (a.optional () && !a.default_ ())
+            {
+              String const& present (epresent_member (a));
+
+              os << "this->" << present << " = x." << present << ";"
+                 << "if (this->" << present << ")" << endl;
+            }
+
+            os << "this->" << member << " = x." << member << ";";
           }
-
-          os << "this->" << member << " = x." << member << ";";
         }
       };
 
@@ -1451,6 +1539,7 @@ namespace CXX
 
               // Functions.
               //
+              attribute_func_ (c),
               choice_in_choice_func_ (c, true),
               choice_in_sequence_func_ (c, false),
               sequence_in_choice_func_ (c, true),
@@ -1516,6 +1605,8 @@ namespace CXX
         {
           // Functions.
           //
+          attribute_names_func_ >> attribute_func_;
+
           sequence_in_choice_func_ >> sequence_contains_func_;
           sequence_in_sequence_func_ >> sequence_contains_func_;
           sequence_contains_func_ >> choice_in_sequence_func_;
@@ -1713,6 +1804,8 @@ namespace CXX
 
             // Functions.
             //
+            Complex::names (c, attribute_names_func_);
+
             if (c.contains_compositor_p ())
               Complex::contains_compositor (c, contains_compositor_func_);
           }
@@ -1770,6 +1863,9 @@ namespace CXX
 
         // Functions.
         //
+        AttributeFunc attribute_func_;
+        Traversal::Names attribute_names_func_;
+
         ChoiceFunc choice_in_choice_func_;
         ChoiceFunc choice_in_sequence_func_;
         SequenceFunc sequence_in_choice_func_;
@@ -1855,6 +1951,11 @@ namespace CXX
     {
       // Needed for placement new.
       //
+      ctx.os << "#include <stdlib.h>" << endl; // strtod, exit
+
+      if (!ctx.exceptions)
+        ctx.os << "#include <assert.h>" << endl;
+
       ctx.os << "#include <new>" << endl
              << endl;
 

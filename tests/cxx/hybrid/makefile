@@ -8,7 +8,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 tests := polymorphism sequences
 
 ifeq ($(xsde_iostream),y)
-tests += built-in list recursive test-template union
+tests += built-in default list recursive test-template union
 
 ifeq ($(xsde_cdr),y)
 tests += binary/cdr

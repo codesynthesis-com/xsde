@@ -35,6 +35,18 @@
 	  <element name="c" type="string" minOccurs="0" maxOccurs="unbounded"/>
         </sequence>
 	<attribute name="y" type="int"/>
+
+        <!-- test default/fixed values -->
+
+        <attribute name="df1" type="int" default="123"/>
+	<attribute name="df2" type="int" default="123"/>
+	<attribute name="ff1" type="int" fixed="123"/>
+	<attribute name="ff2" type="int" fixed="123" use="required"/>
+
+        <attribute name="dv1" type="NMTOKENS" default="aaa bbb ccc"/>
+	<attribute name="dv2" type="NMTOKENS" default="aaa bbb ccc"/>
+	<attribute name="fv1" type="NMTOKENS" fixed="aaa bbb ccc"/>
+	<attribute name="fv2" type="NMTOKENS" fixed="aaa bbb ccc" use="required"/>
       </extension>
     </complexContent>
   </complexType>

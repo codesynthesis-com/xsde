@@ -100,19 +100,41 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
+          // Don't waste space on fixed attributes.
+          //
+          if (a.fixed ())
+            return;
+
           if (a.optional ())
           {
-            String const& present (epresent (a));
+            if (!a.default_ ())
+            {
+              String const& present (epresent (a));
 
-            if (exceptions)
-              os << "s << x." << present << " ();";
+              if (exceptions)
+                os << "s << x." << present << " ();";
+              else
+                os << "if (!(s << x." << present << " ()))" << endl
+                   << "return false;";
+
+              os << endl
+                 << "if (x." << present << " ())"
+                 << "{";
+            }
             else
-              os << "if (!(s << x." << present << " ()))" << endl
-                 << "return false;";
+            {
+              String const& default_ (edefault (a));
 
-            os << endl
-               << "if (x." << present << " ())"
-               << "{";
+              if (exceptions)
+                os << "s << x." << default_ << " ();";
+              else
+                os << "if (!(s << x." << default_ << " ()))" << endl
+                   << "return false;";
+
+              os << endl
+                 << "if (!x." << default_ << " ())"
+                 << "{";
+            }
           }
 
           String const& name (ename (a));

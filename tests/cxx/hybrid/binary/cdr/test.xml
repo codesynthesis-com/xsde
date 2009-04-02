@@ -6,10 +6,10 @@
 
   <enumeration>left</enumeration>
 
-  <complex x="1">
+  <complex x="1" df2="456" ff2="123" dv2="mmm nnn" fv2="aaa bbb ccc">
     <a>aaa</a>
   </complex>
-  <complex x="1" y="2">
+  <complex x="1" y="2" ff2="123" fv2="aaa bbb ccc">
     <a>aaa</a>
     <b>bbb</b>
     <c>c</c>

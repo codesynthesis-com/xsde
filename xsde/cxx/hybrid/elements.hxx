@@ -161,6 +161,18 @@ namespace CXX
       }
 
       static String const&
+      edefault (SemanticGraph::Attribute& a)
+      {
+        return a.context ().get<String> ("default");
+      }
+
+      static String const&
+      edefault_value (SemanticGraph::Attribute& a)
+      {
+        return a.context ().get<String> ("default-value");
+      }
+
+      static String const&
       epresent_member (SemanticGraph::Particle& p)
       {
         return p.context ().get<String> ("present-member");
@@ -922,6 +934,7 @@ namespace CXX
         ret,
         arg,
         var,
+        var_value,
         seq
       };
 
@@ -1368,6 +1381,11 @@ namespace CXX
 
             break;
           }
+        case var_value:
+          {
+            os << fq;
+            break;
+          }
         case seq:
           {
             os << (fixed_length (t) ? fix_seq : var_seq) << "< " <<
@@ -1437,6 +1455,7 @@ namespace CXX
             break;
           }
         case var:
+        case var_value:
           {
             if (stl)
               os << "::std::string";

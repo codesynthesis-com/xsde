@@ -350,7 +350,10 @@ namespace CXX
         traverse (SemanticGraph::Fundamental::String&)
         {
           gen_typedef ("string", string_type_);
-          gen_using ("::xsde::cxx::hybrid::string_base");
+
+          if (!stl)
+            gen_using ("::xsde::cxx::hybrid::string_base");
+
           os << endl;
         }
 

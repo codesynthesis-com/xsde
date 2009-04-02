@@ -108,6 +108,11 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
+          // Nothing is serialized for fixed attributes.
+          //
+          if (a.fixed ())
+            return;
+
           SemanticGraph::Type& t (a.type ());
 
           Boolean fl (fixed_length (t));
@@ -125,21 +130,39 @@ namespace CXX
 
           if (a.optional ())
           {
-            os << "bool p;";
+            if (!a.default_ ())
+            {
+              os << "bool p;";
 
-            if (exceptions)
-              os << "s >> p;";
-            else
+              if (exceptions)
+                os << "s >> p;";
+              else
+                os << endl
+                   << "if (!(s >> p))" << endl
+                   << "return false;";
+
               os << endl
-                 << "if (!(s >> p))" << endl
-                 << "return false;";
+                 << "if (p)"
+                 << "{";
 
-            os << endl
-               << "if (p)"
-               << "{";
+              if (fl)
+                os << "x." << epresent (a) << " (true);";
+            }
+            else
+            {
+              os << "bool d;";
 
-            if (fl)
-              os << "x." << epresent (a) << " (true);";
+              if (exceptions)
+                os << "s >> d;";
+              else
+                os << endl
+                   << "if (!(s >> d))" << endl
+                   << "return false;";
+
+              os << endl
+                 << "if (!d)"
+                 << "{";
+            }
           }
 
           if (st)
@@ -181,9 +204,20 @@ namespace CXX
           }
 
           if (a.optional ())
-            os << "}"
-               << "else" << endl
-               << "x." << epresent (a) << " (false);";
+          {
+            if (!a.default_ ())
+            {
+              os << "}"
+                 << "else" << endl
+                 << "x." << epresent (a) << " (false);";
+            }
+            else
+            {
+              os << "}"
+                 << "else" << endl
+                 << "x." << edefault (a) << " (true);";
+            }
+          }
 
           os << "}";
         }

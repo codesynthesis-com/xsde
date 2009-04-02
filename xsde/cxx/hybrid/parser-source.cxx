@@ -879,6 +879,9 @@ namespace CXX
         {
           using SemanticGraph::Complex;
 
+          if (a.fixed ())
+            return;
+
           String const& name (epname (a));
           String const& arg (parg_type (a.type ()));
           Complex& c (dynamic_cast<Complex&> (a.scope ()));

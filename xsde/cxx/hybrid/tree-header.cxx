@@ -369,6 +369,7 @@ namespace CXX
                         Traversal::Fundamental::Token,
                         Traversal::Fundamental::Name,
                         Traversal::Fundamental::NameToken,
+                        Traversal::Fundamental::NameTokens,
                         Traversal::Fundamental::NCName,
                         Traversal::Fundamental::Language,
 
@@ -376,6 +377,7 @@ namespace CXX
 
                         Traversal::Fundamental::Id,
                         Traversal::Fundamental::IdRef,
+                        Traversal::Fundamental::IdRefs,
 
                         Traversal::Fundamental::AnyURI,
 
@@ -390,6 +392,7 @@ namespace CXX
                         Traversal::Fundamental::Time,
 
                         Traversal::Fundamental::Entity,
+                        Traversal::Fundamental::Entities,
 
                         Context
       {
@@ -636,6 +639,12 @@ namespace CXX
         }
 
         virtual Void
+        traverse (SemanticGraph::Fundamental::NameTokens&)
+        {
+          align_type ("size_t");
+        }
+
+        virtual Void
         traverse (SemanticGraph::Fundamental::Name&)
         {
           align_type ("size_t"); // std::string
@@ -674,6 +683,12 @@ namespace CXX
         traverse (SemanticGraph::Fundamental::IdRef&)
         {
           align_type ("size_t"); // std::string
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Fundamental::IdRefs&)
+        {
+          align_type ("size_t");
         }
 
         // URI.
@@ -749,6 +764,12 @@ namespace CXX
           align_type ("size_t"); // std::string
         }
 
+        virtual Void
+        traverse (SemanticGraph::Fundamental::Entities&)
+        {
+          align_type ("size_t");
+        }
+
       private:
         Void
         align_type (Char const* t)
@@ -767,7 +788,17 @@ namespace CXX
       private:
         Traversal::Inherits inherits_;
 
-        Traversal::Attribute attribute_;
+        struct Attribute: Traversal::Attribute
+        {
+          virtual Void
+          traverse (Type& a)
+          {
+            if (!a.fixed ())
+              Traversal::Attribute::traverse (a);
+          }
+        };
+
+        Attribute attribute_;
         Traversal::Names attribute_names_;
 
         Traversal::Element particle_;
@@ -787,13 +818,16 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          SemanticGraph::Type& t (a.type ());
+          if (!a.fixed ())
+          {
+            SemanticGraph::Type& t (a.type ());
 
-          var_.dispatch (t);
-          os << " " << emember (a) << ";";
+            var_.dispatch (t);
+            os << " " << emember (a) << ";";
 
-          if (a.optional () && fixed_length (t))
-            os << "bool " << epresent_member (a) << ";";
+            if (a.optional () && !a.default_ () && fixed_length (t))
+              os << "bool " << epresent_member (a) << ";";
+          }
         }
 
       private:
@@ -1105,19 +1139,23 @@ namespace CXX
           os << "// " << comment (a.name ()) << endl
              << "// " << endl;
 
+          Boolean def (a.default_ ());
+          Boolean fix (a.fixed ());
+
           String const& name (ename (a));
           SemanticGraph::Type& t (a.type ());
 
-          if (a.optional ())
+
+          if (a.optional () && !fix)
           {
-            String const& present (epresent (a));
+            String const& name (def ? edefault (a) : epresent (a));
 
             os << "bool" << endl
-               << present << " () const;"
+               << name << " () const;"
                << endl;
 
             os << "void" << endl
-               << present << " (bool);"
+               << name << " (bool);"
                << endl;
           }
 
@@ -1129,32 +1167,49 @@ namespace CXX
              << name << " () const;"
              << endl;
 
-          // type&
-          // name ()
+          // Do not generate modifiers for fixed attributes.
           //
-          ret_.dispatch (t);
-          os << endl
-             << name << " ();"
-             << endl;
-
-
-          // void
-          // name (const type& | type*)
-          //
-          os << "void" << endl
-             << name << " (";
-          arg_.dispatch (t);
-          os << ");"
-             << endl;
-
-          // type*
-          // detach ()
-          //
-          if (detach && !fixed_length (t))
+          if (!fix)
           {
-            arg_.dispatch (t);
+            // type&
+            // name ()
+            //
+            ret_.dispatch (t);
             os << endl
-               << edetach (a) << " ();"
+               << name << " ();"
+               << endl;
+
+
+            // void
+            // name (const type& | type*)
+            //
+            os << "void" << endl
+               << name << " (";
+            arg_.dispatch (t);
+            os << ");"
+               << endl;
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fixed_length (t))
+            {
+              arg_.dispatch (t);
+              os << endl
+                 << edetach (a) << " ();"
+                 << endl;
+            }
+          }
+
+          if (def)
+          {
+            // static const type&
+            // name_{default|fixed}_value ()
+            //
+            os << "static ";
+            ro_ret_.dispatch (t);
+            os << endl
+               << edefault_value (a) << " ();"
                << endl;
           }
         }

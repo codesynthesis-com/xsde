@@ -2031,7 +2031,143 @@ if (p.middle_name_present ())
 }
   </pre>
 
-  <p>Finally, the <em>sequence</em> cardinality class covers all elements
+  <p>There are two cases in the <em>optional</em> cardinality class that
+     are handled differently. These are optional attributes with default
+     and fixed values. When an optional attribute declaration in XML Schema
+     specifies a default or fixed value and such an attribute is not present
+     in the XML document, the attribute is assumed to have the default or
+     fixed value, respectively. Furthermore, if an attribute with the
+     fixed value is set in the XML document, then the attribute value
+     should be the same as its fixed value.</p>
+
+  <p>For an optional attribute with a default value, the functions for
+     querying and modifying the attribute's presence status are replaced
+     with functions that allow you to determine whether the attribute has
+     the default value. The accessor functions can be called at any time
+     since an optional attribute with a default value always has some
+     value. Also an extra static function is provided to allow you to
+     obtain the default value. Consider the following modification to
+     the <code>person</code> type which adds the <code>verified</code>
+     attribute with the default value:</p>
+
+  <pre class="xml">
+&lt;xs:complexType name="person">
+  &lt;xs:sequence>
+    &lt;xs:element name="first-name" type="xs:string"/>
+    ...
+  &lt;/xs:sequence>
+  &lt;xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+  &lt;xs:attribute name="verified" type="xs:boolean" default="false"/>
+&lt;/xs:complexType>
+  </pre>
+
+  <p>The code fragment below shows the accessor and modifier functions
+     that are generated for this new attribute in the <code>person</code>
+     class:</p>
+
+  <pre class="c++">
+class person
+{
+  // verified
+  //
+  bool
+  verified_default () const;
+
+  void
+  verified_default (bool);
+
+  bool
+  verified () const;
+
+  bool&amp;
+  verified ();
+
+  void
+  verified (bool);
+
+  static bool
+  verified_default_value ();
+};
+  </pre>
+
+  <p>When we create an object of the <code>person</code> class, the
+     <code>verified</code> member is automatically initialized to the
+     default value. The following example shows how we can manipulate
+     the <code>verified</code> attribute value:</p>
+
+  <pre class="c++">
+person p; // verified is set to the default value (false).
+
+if (p.verified_default ())
+  p.verified (true);
+else
+  p.verified_default (true); // Revert to the default value.
+
+bool v = p.verified (); // Ok, can always be called.
+bool vd = person::verified_default_value ();
+  </pre>
+
+  <p>Note that modifying an attribute of a variable-length type via
+     the reference when the attribute is set to the default value is
+     illegal since this will modify the default value shared by all
+     instances. For example:</p>
+
+  <pre class="c++">
+type&amp; x = ...
+
+if (x.foo_default ())
+{
+  foo&amp; f = x.foo (); // foo is variable-length, for example NMTOKENS
+  f.push_back ("aaa"); // Illegal.
+}
+
+if (x.foo_default ())
+{
+  foo* f = new foo;
+  f->push_back ("aaa");
+  x.foo (f); // Ok.
+}
+  </pre>
+
+  <p>Because an attribute with a fixed value can only be set to that
+     value, only the read-only (constant) accessor and the static
+     function for obtaining the fixed value are provided for such
+     attributes. Similar to the default values, members with fixed
+     values of a newly created object are automatically initialized
+     to their respective fixed values. Consider the following
+     modification to the <code>verified</code> attribute from the
+     schema above:</p>
+
+  <pre class="xml">
+&lt;xs:complexType name="person">
+  ...
+  &lt;xs:attribute name="verified" type="xs:boolean" fixed="true"/>
+&lt;/xs:complexType>
+  </pre>
+
+  <p>The code fragment below shows the accessor functions that are
+     generated for this attribute in the <code>person</code>
+     class:</p>
+
+  <pre class="c++">
+class person
+{
+  // verified
+  //
+  bool
+  verified () const;
+
+  static bool
+  verified_fixed_value ();
+};
+  </pre>
+
+  <p>During serialization, attributes that are set to default and fixed
+     values are explicitly specified in the resulting XML document.
+     You can use the <code>--omit-default-attributes</code> XSD/e
+     compiler option to omit such attributes from the serialized XML.</p>
+
+  <p>The <em>sequence</em> cardinality class covers all elements
      that can occur more than once. In our example, the
      <code>person</code> element in the <code>people</code> type
      belongs to this cardinality class. The following code fragment shows

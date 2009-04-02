@@ -22,6 +22,11 @@ Version 3.1.0
     Started Guide as well as examples in the examples/cxx/hybrid/binary/
     directory.
 
+  * Support for attributes with default and fixed values. For details see
+    Section 4.3, "Attributes and Elements" in the Getting Started Guide.
+    Use the new --omit-default-attributes option to omit the attributes
+    with default and fixed values from serialized XML documents.
+
   * New option, --custom-type, allows customization of the object model
     classes. You have the option of either basing your custom implementation
     on the generated version or providing your own implementation from

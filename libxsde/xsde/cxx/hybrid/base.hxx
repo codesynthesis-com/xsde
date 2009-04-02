@@ -8,6 +8,10 @@
 
 #include <xsde/cxx/config.hxx>
 
+#ifndef XSDE_STL
+#  include <string.h> // strcmp
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -31,6 +35,18 @@ namespace xsde
         bool x_;
       };
 
+      inline bool
+      operator== (const boolean_base& x, const boolean_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const boolean_base& x, const boolean_base& y)
+      {
+        return !(x == y);
+      }
+
       // byte
       //
       struct byte_base
@@ -47,6 +63,18 @@ namespace xsde
       protected:
         signed char x_;
       };
+
+      inline bool
+      operator== (const byte_base& x, const byte_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const byte_base& x, const byte_base& y)
+      {
+        return !(x == y);
+      }
 
       // unsigned_byte
       //
@@ -66,6 +94,18 @@ namespace xsde
         unsigned char x_;
       };
 
+      inline bool
+      operator== (const unsigned_byte_base& x, const unsigned_byte_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const unsigned_byte_base& x, const unsigned_byte_base& y)
+      {
+        return !(x == y);
+      }
+
       // short
       //
       struct short_base
@@ -82,6 +122,18 @@ namespace xsde
       protected:
         short x_;
       };
+
+      inline bool
+      operator== (const short_base& x, const short_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const short_base& x, const short_base& y)
+      {
+        return !(x == y);
+      }
 
       // unsigned_short
       //
@@ -101,6 +153,18 @@ namespace xsde
         unsigned short x_;
       };
 
+      inline bool
+      operator== (const unsigned_short_base& x, const unsigned_short_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const unsigned_short_base& x, const unsigned_short_base& y)
+      {
+        return !(x == y);
+      }
+
       // int
       //
       struct int_base
@@ -118,6 +182,18 @@ namespace xsde
         int x_;
       };
 
+      inline bool
+      operator== (const int_base& x, const int_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const int_base& x, const int_base& y)
+      {
+        return !(x == y);
+      }
+
       // unsigned_int
       //
       struct unsigned_int_base
@@ -134,6 +210,18 @@ namespace xsde
       protected:
         unsigned int x_;
       };
+
+      inline bool
+      operator== (const unsigned_int_base& x, const unsigned_int_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const unsigned_int_base& x, const unsigned_int_base& y)
+      {
+        return !(x == y);
+      }
 
       // long
       //
@@ -168,6 +256,18 @@ namespace xsde
         long x_;
       };
 #endif
+
+      inline bool
+      operator== (const long_base& x, const long_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const long_base& x, const long_base& y)
+      {
+        return !(x == y);
+      }
 
 
       // unsigned_long
@@ -206,6 +306,18 @@ namespace xsde
       };
 #endif
 
+      inline bool
+      operator== (const unsigned_long_base& x, const unsigned_long_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const unsigned_long_base& x, const unsigned_long_base& y)
+      {
+        return !(x == y);
+      }
+
       // integer
       //
       struct integer_base
@@ -222,6 +334,18 @@ namespace xsde
       protected:
         long x_;
       };
+
+      inline bool
+      operator== (const integer_base& x, const integer_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const integer_base& x, const integer_base& y)
+      {
+        return !(x == y);
+      }
 
       // negative_integer
       //
@@ -240,6 +364,20 @@ namespace xsde
         long x_;
       };
 
+      inline bool
+      operator== (const negative_integer_base& x,
+                  const negative_integer_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const negative_integer_base& x,
+                  const negative_integer_base& y)
+      {
+        return !(x == y);
+      }
+
       // non_positive_integer
       //
       struct non_positive_integer_base
@@ -256,6 +394,20 @@ namespace xsde
       protected:
         long x_;
       };
+
+      inline bool
+      operator== (const non_positive_integer_base& x,
+                  const non_positive_integer_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const non_positive_integer_base& x,
+                  const non_positive_integer_base& y)
+      {
+        return !(x == y);
+      }
 
       // positive_integer
       //
@@ -275,6 +427,20 @@ namespace xsde
         unsigned long x_;
       };
 
+      inline bool
+      operator== (const positive_integer_base& x,
+                  const positive_integer_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const positive_integer_base& x,
+                  const positive_integer_base& y)
+      {
+        return !(x == y);
+      }
+
       // non_negative_integer
       //
       struct non_negative_integer_base
@@ -293,6 +459,20 @@ namespace xsde
         unsigned long x_;
       };
 
+      inline bool
+      operator== (const non_negative_integer_base& x,
+                  const non_negative_integer_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const non_negative_integer_base& x,
+                  const non_negative_integer_base& y)
+      {
+        return !(x == y);
+      }
+
       // float
       //
       struct float_base
@@ -309,6 +489,18 @@ namespace xsde
       protected:
         float x_;
       };
+
+      inline bool
+      operator== (const float_base& x, const float_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const float_base& x, const float_base& y)
+      {
+        return !(x == y);
+      }
 
       // double
       //
@@ -327,6 +519,18 @@ namespace xsde
         double x_;
       };
 
+      inline bool
+      operator== (const double_base& x, const double_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const double_base& x, const double_base& y)
+      {
+        return !(x == y);
+      }
+
       // decimal
       //
       struct decimal_base
@@ -344,6 +548,19 @@ namespace xsde
         double x_;
       };
 
+      inline bool
+      operator== (const decimal_base& x, const decimal_base& y)
+      {
+        return x.base_value () == y.base_value ();
+      }
+
+      inline bool
+      operator!= (const decimal_base& x, const decimal_base& y)
+      {
+        return !(x == y);
+      }
+
+#ifndef XSDE_STL
       // string
       //
       struct string_base
@@ -364,6 +581,19 @@ namespace xsde
       protected:
         char* x_;
       };
+
+      inline bool
+      operator== (const string_base& x, const string_base& y)
+      {
+        return strcmp (x.base_value (), y.base_value ()) == 0;
+      }
+
+      inline bool
+      operator!= (const string_base& x, const string_base& y)
+      {
+        return !(x == y);
+      }
+#endif
     }
   }
 }

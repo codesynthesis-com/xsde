@@ -886,9 +886,26 @@ namespace CXX
           {
             os << "bool " << s << "::" << endl
                << espresent (a) << " ()"
-               << "{"
-               << "return " << access << epresent (a) << " ();"
-               << "}";
+               << "{";
+
+            if (a.default_ ())
+            {
+              Boolean omit (options.value<CLI::omit_default_attributes> ());
+
+              if (a.fixed ())
+                os << "return " << (omit ? "false" : "true") << ";";
+              else
+              {
+                if (omit)
+                  os << "return !" << access << edefault (a) << " ();";
+                else
+                  os << "return true;";
+              }
+            }
+            else
+              os << "return " << access << epresent (a) << " ();";
+
+            os << "}";
           }
 
           SemanticGraph::Type& t (a.type ());

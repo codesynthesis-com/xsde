@@ -546,28 +546,41 @@ namespace CXX
         {
           SemanticGraph::Context& ac (a.context ());
 
+          Boolean def (a.default_ ());
+          Boolean fix (a.fixed ());
+
+          String const& base (ac.get<String> ("name"));
+
           if (!data_members_)
           {
-            if (a.optional ())
-              ac.set (
-                "present",
-                find_name (ac.get<String> ("name") + L"_present", set_));
-
-            if (detach && !fixed_length (a.type ()))
-              ac.set (
-                "detach",
-                find_name (ac.get<String> ("name") + L"_detach", set_));
-
-          }
-          else
-          {
-            String const& base (ac.get<String> ("name"));
-
-            if (a.optional ())
+            if (a.optional () && !fix)
             {
-              if (fixed_length (a.type ()))
-                ac.set ("present-member",
-                        find_name (ac.get<String> ("present") + L"_", set_));
+              String n;
+              if (def)
+                n = find_name (base + L"_default", set_);
+              else
+                n = find_name (base + L"_present", set_);
+
+              ac.set (def ? "default" : "present", n);
+            }
+
+            if (detach && !fix && !fixed_length (a.type ()))
+              ac.set ("detach", find_name (base + L"_detach", set_));
+
+            if (def)
+            {
+              ac.set (
+                "default-value",
+                find_name (base + (fix ? L"_fixed_value" : L"_default_value"),
+                           set_));
+            }
+          }
+          else if (!fix)
+          {
+            if (a.optional () && !a.default_ () && fixed_length (a.type ()))
+            {
+              ac.set ("present-member",
+                      find_name (ac.get<String> ("present") + L"_", set_));
             }
 
             ac.set ("member", find_name (base + L"_", set_));

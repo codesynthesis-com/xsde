@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/hybrid/tree-inline.hxx>
+#include <cxx/hybrid/default-value.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
@@ -239,36 +240,58 @@ namespace CXX
               ret_ (c, TypeName::ret),
               arg_ (c, TypeName::arg),
               deref_ (c, TypeOps::deref),
-              delete_ (c, TypeOps::delete_)
+              delete_ (c, TypeOps::delete_),
+              compare_value_ (c)
         {
         }
 
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
+          Boolean def (a.default_ ());
+          Boolean fix (a.fixed ());
+
           String const& name (ename (a));
-          String const& member (emember (a));
+          String member;
+
+          if (!fix)
+            member = emember (a);
 
           SemanticGraph::Type& t (a.type ());
           Boolean fl (fixed_length (t));
           String scope (Context::scope (a));
 
-          if (a.optional ())
+          if (a.optional () && !fix)
           {
-            String const& present (epresent (a));
+            String const& name (def ? edefault (a) : epresent (a));
 
             // bool
             // preset () const;
             //
             os << inl
                << "bool " << scope << "::" << endl
-               << present << " () const"
+               << name << " () const"
                << "{";
 
-            if (fl)
-              os << "return this->" << epresent_member (a) << ";";
+            if (def)
+            {
+              if (fl)
+              {
+                os << "return ";
+                compare_value_.dispatch (
+                  t, L"this->" + member, edefault_value (a) + L" ()");
+                os << ";";
+              }
+              else
+                os << "return this->" << member << " == 0;";
+            }
             else
-              os << "return this->" << member << " != 0;";
+            {
+              if (fl)
+                os << "return this->" << epresent_member (a) << ";";
+              else
+                os << "return this->" << member << " != 0;";
+            }
 
             os << "}";
 
@@ -277,19 +300,41 @@ namespace CXX
             //
             os << inl
                << "void " << scope << "::" << endl
-               << present << " (bool x)"
+               << name << " (bool x)"
                << "{";
 
-            if (fl)
-              os << "this->" << epresent_member (a) << " = x;";
+            if (def)
+            {
+              os << "if (x)";
+
+              if (fl)
+              {
+                os << endl
+                   << "this->" << member << " = " << edefault_value (a) <<
+                  " ();";
+              }
+              else
+              {
+                os << "{";
+                delete_.dispatch (t);
+                os << " this->" << member << ";"
+                   << "this->" << member << " = 0;"
+                   << "}";
+              }
+            }
             else
             {
-              os << "if (!x)"
-                 << "{";
-              delete_.dispatch (t);
-              os << " this->" << member << ";"
-                 << "this->" << member << " = 0;"
-                 << "}";
+              if (fl)
+                os << "this->" << epresent_member (a) << " = x;";
+              else
+              {
+                os << "if (!x)"
+                   << "{";
+                delete_.dispatch (t);
+                os << " this->" << member << ";"
+                   << "this->" << member << " = 0;"
+                   << "}";
+              }
             }
 
             os << "}";
@@ -302,65 +347,109 @@ namespace CXX
           ro_ret_.dispatch (t);
           os << " " << scope << "::" << endl
              << name << " () const"
-             << "{"
-             << "return ";
-          deref_.dispatch (t);
-          os << "this->" << member << ";"
-             << "}";
-
-          // type&
-          // name ()
-          //
-          os << inl;
-          ret_.dispatch (t);
-          os << " " << scope << "::" << endl
-             << name << " ()"
-             << "{"
-             << "return ";
-          deref_.dispatch (t);
-          os << "this->" << member << ";"
-             << "}";
-
-
-          // void
-          // name (const type& | type*)
-          //
-          os << inl
-             << "void " << scope << "::" << endl
-             << name << " (";
-          arg_.dispatch (t);
-          os << " x)"
              << "{";
 
-          if (!fl)
+          if (fix)
           {
-            delete_.dispatch (t);
-            os << " this->" << member << ";";
+            os << "return " << edefault_value (a) << " ();";
           }
-
-          os << "this->" << member << " = x;";
-
-          if (fl && a.optional ())
-            os << "this->" << epresent_member (a) << " = true;";
+          else if (def)
+          {
+            if (fl)
+              os << "return this->" << member << ";";
+            else
+            {
+              os << "return this->" << member << " ? ";
+              deref_.dispatch (t);
+              os << "this->" << member << " : " <<
+                edefault_value (a) << " ();";
+            }
+          }
+          else
+          {
+            os << "return ";
+            deref_.dispatch (t);
+            os << "this->" << member << ";";
+          }
 
           os << "}";
 
-
-          // type*
-          // detach ()
+          // Do not generate modifiers for fixed attributes.
           //
-          if (detach && !fl)
+          if (!fix)
           {
+            // type&
+            // name ()
+            //
             os << inl;
-            arg_.dispatch (t);
+            ret_.dispatch (t);
             os << " " << scope << "::" << endl
-               << edetach (a) << " ()"
+               << name << " ()"
                << "{";
+
+            if (def)
+            {
+              if (fl)
+                os << "return this->" << member << ";";
+              else
+              {
+                os << "return this->" << member << " ? ";
+                deref_.dispatch (t);
+                os << "this->" << member << " : const_cast< ";
+                ret_.dispatch (t);
+                os << " > (" << edefault_value (a) << " ());";
+              }
+            }
+            else
+            {
+              os << "return ";
+              deref_.dispatch (t);
+              os << "this->" << member << ";";
+            }
+
+            os << "}";
+
+
+            // void
+            // name (const type& | type*)
+            //
+            os << inl
+               << "void " << scope << "::" << endl
+               << name << " (";
             arg_.dispatch (t);
-            os << " r = this->" << member << ";"
-               << "this->" << member << " = 0;"
-               << "return r;"
-               << "}";
+            os << " x)"
+               << "{";
+
+            if (!fl)
+            {
+              delete_.dispatch (t);
+              os << " this->" << member << ";";
+            }
+
+            os << "this->" << member << " = x;";
+
+            if (fl && !def && a.optional ())
+              os << "this->" << epresent_member (a) << " = true;";
+
+            os << "}";
+
+
+            // type*
+            // detach ()
+            //
+            if (detach && !fl)
+            {
+              os << inl;
+              arg_.dispatch (t);
+              os << " " << scope << "::" << endl
+                 << edetach (a) << " ()"
+                 << "{";
+              arg_.dispatch (t);
+              os << " r = this->" << member << ";"
+                 << "this->" << member << " = 0;"
+                 << "return r;"
+                 << "}";
+            }
           }
         }
 
@@ -370,6 +459,7 @@ namespace CXX
         TypeName arg_;
         TypeOps deref_;
         TypeOps delete_;
+        CompareValue compare_value_;
       };
 
       struct ElementFunc: Traversal::Element, Context
