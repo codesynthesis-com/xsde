@@ -4,6 +4,8 @@
 
 #include <stddef.h>  // size_t
 #include <string.h>  // memcpy
+
+#include <rpc/types.h>
 #include <rpc/xdr.h>
 
 #include <memory>    // std::auto_ptr

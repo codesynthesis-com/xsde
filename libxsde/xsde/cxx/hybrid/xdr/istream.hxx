@@ -9,6 +9,8 @@
 #include <xsde/cxx/config.hxx>
 
 #include <stddef.h>  // size_t
+
+#include <rpc/types.h>
 #include <rpc/xdr.h>
 
 #ifdef XSDE_STL
