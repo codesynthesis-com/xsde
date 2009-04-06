@@ -1221,7 +1221,7 @@ static genxStatus writeIndentation(genxWriter w)
  */
 static genxStatus writeStartTag(genxWriter w)
 {
-  int i, n;
+  int i;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
   genxElement e = w->nowStarting;
 
@@ -1660,7 +1660,7 @@ genxStatus genxEndAttribute(genxWriter w)
 genxStatus genxEndElement(genxWriter w)
 {
   genxElement e;
-  int i, n;
+  int i;
 
   switch (w->sequence)
   {
