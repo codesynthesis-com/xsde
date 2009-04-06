@@ -1529,7 +1529,7 @@ static genxStatus collectAttributeValue (genxWriter w, collector* value,
 
   utf8 last = (utf8) start;
 
-  while (*start && (end == NULL || start < end))
+  while (end != NULL ? start < end : *start)
   {
     int c = genxNextUnicodeChar(&start);
 
