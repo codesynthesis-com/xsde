@@ -870,7 +870,7 @@ main (int argc, char* argv[])
     xml_schema::document_simpl doc_s (hello_s.root_serializer (),
                                       hello_s.root_name ());
     hello_s.pre (*h);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     hello_s.post ();
 
     delete h;
@@ -893,15 +893,21 @@ main (int argc, char* argv[])
      object model as in the previous example. Then it changes the
      greeting string and adds another entry to the list of names.
      Finally, it creates a document serializer and serializes the
-     object model back to XML. The resulting XML is written to
-     the standard output (<code>cout</code>) for us to inspect.
-     We could have also written the result to a file or memory
-     buffer by creating an instance of <code>std::ofstream</code>
+     object model back to XML. The <code>hello_saggr</code> class
+     is the serializer aggregate class we discussed earlier.</p>
+
+  <p>The resulting XML is written to the standard output (<code>cout</code>)
+     for us to inspect. We could have also written the result to a
+     file or memory buffer by creating an instance of <code>std::ofstream</code>
      or <code>std::ostringstream</code> and passing it to
      <code>serialize()</code> instead of <code>cout</code>.
-     The <code>hello_saggr</code> class is the serializer aggregate
-     class we discussed earlier. Serialization is covered in more
-     detail in <a href="#6">Chapter 6, "Parsing and Serialization"</a>.</p>
+     The second argument in the call to
+     <code>serialize()</code> is a flag that requests pretty-printing
+     of the resulting XML document. You would normally specify this flag
+     during testing to obtain easily-readable XML and remove it
+     in production to get faster serialization and smaller documents.
+     Serialization is covered in more detail in <a href="#6">Chapter 6,
+     "Parsing and Serialization"</a>.</p>
 
   <p>If we now compile and run this application (don't forget to
      compile and link <code>hello-sskel.cxx</code> and
@@ -971,7 +977,7 @@ main (int argc, char* argv[])
     ostringstream ostr;
 
     hello_s.pre (*h);
-    doc_s.serialize (ostr);
+    doc_s.serialize (ostr, xml_schema::document_simpl::pretty_print);
     hello_s.post ();
 
     delete h;
@@ -1195,7 +1201,7 @@ main (int argc, char* argv[])
     if (se = hello_s._error ())
       break;
 
-    doc_s.serialize (w);
+    doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
     if (se = doc_s._error ())
       break;
@@ -3248,7 +3254,7 @@ main ()
   xml_schema::document_simpl doc_s (people_s.root_serializer (),
                                     people_s.root_name ());
   people_s.pre (*ppl);
-  doc_s.serialize (cout);
+  doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   people_s.post ();
 }
   </pre>
@@ -3360,7 +3366,7 @@ main ()
   xml_schema::document_simpl doc_s (people_s.root_serializer (),
                                     people_s.root_name ());
   people_s.pre (ppl);
-  doc_s.serialize (cout);
+  doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   people_s.post ();
 }
   </pre>
@@ -3988,7 +3994,7 @@ xml_schema::document_simpl doc_s (
 doc_s.add_no_namespace_schema ("supermen.xsd");
 
 supermen_s.pre (*sm);
-doc_s.serialize (cout);
+doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
 supermen_s.post ();
   </pre>
 
@@ -5566,7 +5572,7 @@ hello_saggr hello_s;
 xml_schema::document_simpl doc_s (hello_s.root_serializer (),
                                   hello_s.root_name ());
 hello_s.pre (*h);
-doc_s.serialize (std::cout);
+doc_s.serialize (std::cout, xml_schema::document_simpl::pretty_print);
 hello_s.post ();
   </pre>
 
@@ -5818,7 +5824,7 @@ main (int argc, char* argv[])
   xml_schema::document_simpl doc_s (root_s, people_s.root_name ());
 
   people_s.pre (*ppl);
-  doc_s.serialize (cout);
+  doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   people_s.post ();
 }
   </pre>

@@ -131,7 +131,7 @@ main (int argc, char* argv[])
     doc_s.add_schema ("http://www.codesynthesis.com/library", "library.xsd");
 
     catalog_s.pre (*c);
-    doc_s.serialize (std::cout);
+    doc_s.serialize (std::cout, xml_schema::document_simpl::pretty_print);
     catalog_s.post ();
   }
   catch (const xml_schema::xdr_exception&)

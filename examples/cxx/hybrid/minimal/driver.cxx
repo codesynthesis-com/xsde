@@ -212,7 +212,7 @@ main (int argc, char* argv[])
     if (se = people_s._error ())
       break;
 
-    doc_s.serialize (w);
+    doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
     if (se = doc_s._error ())
       break;

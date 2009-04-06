@@ -87,7 +87,7 @@ main ()
     if (e = people_s._error ())
       break;
 
-    doc_s.serialize (w);
+    doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
     if (e = doc_s._error ())
       break;

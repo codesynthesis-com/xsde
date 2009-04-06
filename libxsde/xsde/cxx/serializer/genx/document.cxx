@@ -64,6 +64,7 @@ namespace xsde
 
         // document_simpl
         //
+        const document_simpl::flags document_simpl::pretty_print = 0x01;
 
 	document_simpl::
 	~document_simpl ()
@@ -304,9 +305,9 @@ namespace xsde
 #endif
 
         void document_simpl::
-        serialize (std::ostream& os)
+        serialize (std::ostream& os, flags f)
         {
-          serialize (&ostream_write, &ostream_flush, &os);
+          serialize (&ostream_write, &ostream_flush, &os, f);
         }
 #endif // XSDE_IOSTREAM
 
@@ -351,9 +352,9 @@ namespace xsde
 #endif
 
         void document_simpl::
-        serialize (writer& w)
+        serialize (writer& w, flags f)
         {
-          serialize (&write_thunk, &write_bound_thunk, &flush_thunk, &w);
+          serialize (&write_thunk, &write_bound_thunk, &flush_thunk, &w, f);
         }
 
         // Genx write functions.
@@ -427,8 +428,8 @@ namespace xsde
         }
 
         void document_simpl::
-        serialize (write_func w, write_bound_func wb, flush_func f,
-                   void* user_data)
+        serialize (write_func wf, write_bound_func wbf, flush_func ff,
+                   void* user_data, flags f)
         {
           if (xml_serializer_ == 0)
           {
@@ -447,11 +448,14 @@ namespace xsde
 
           writer_info wi;
           wi.user_data = user_data;
-          wi.write = w;
-          wi.write_bound = wb;
-          wi.flush = f;
+          wi.write = wf;
+          wi.write_bound = wbf;
+          wi.flush = ff;
 
           genxSetUserData (xml_serializer_, &wi);
+
+          if (f & pretty_print)
+            genxSetPrettyPrint (xml_serializer_, 2);
 
           genxSender sender;
           sender.send = &genx_write;

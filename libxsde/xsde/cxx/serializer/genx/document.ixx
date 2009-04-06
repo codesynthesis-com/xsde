@@ -66,9 +66,10 @@ namespace xsde
 #endif
 
         inline void document_simpl::
-        serialize (write_bound_func wb, flush_func f, void* user_data)
+        serialize (write_bound_func wbf, flush_func ff,
+                   void* user_data, flags f)
         {
-          serialize (0, wb, f, user_data);
+          serialize (0, wbf, ff, user_data, f);
         }
 
 #ifndef XSDE_EXCEPTIONS

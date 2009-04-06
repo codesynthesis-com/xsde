@@ -392,7 +392,7 @@ main ()
     doc_s.add_schema ("http://www.codesynthesis.com/email", "email.xsd");
 
     envelope_s.pre (env);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     envelope_s.post ();
   }
   catch (const xml_schema::serializer_exception& e)

@@ -72,7 +72,7 @@ main ()
     doc_s.add_no_namespace_schema ("hello.xsd");
 
     hello_s.pre ();
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     hello_s.post ();
   }
   catch (const xml_schema::serializer_exception& e)

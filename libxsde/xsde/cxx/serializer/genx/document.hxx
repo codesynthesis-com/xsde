@@ -189,6 +189,13 @@ namespace xsde
           void
           reset ();
 
+        public:
+          // Serialization flags.
+          //
+          typedef unsigned short flags;
+
+          static const flags pretty_print;
+
 #ifdef XSDE_IOSTREAM
         public:
           // Serialize to std::ostream. The std::ios_base::failure
@@ -197,7 +204,7 @@ namespace xsde
           // used.
           //
           void
-          serialize (std::ostream&);
+          serialize (std::ostream&, flags = 0);
 #endif
 
         public:
@@ -205,7 +212,7 @@ namespace xsde
           // output XML.
           //
           void
-          serialize (writer&);
+          serialize (writer&, flags = 0);
 
           // Serialize by calling the write and flush functions. If the
           // unbounded write function is not provided, the bounded version
@@ -226,10 +233,17 @@ namespace xsde
 #endif
 
           void
-          serialize (write_bound_func, flush_func, void* user_data);
+          serialize (write_bound_func,
+                     flush_func,
+                     void* user_data,
+                     flags = 0);
 
           void
-          serialize (write_func, write_bound_func, flush_func, void* user_data);
+          serialize (write_func,
+                     write_bound_func,
+                     flush_func,
+                     void* user_data,
+                     flags = 0);
 
         public:
           // Low-level, genx-specific serialization. With this method

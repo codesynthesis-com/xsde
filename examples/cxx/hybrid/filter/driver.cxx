@@ -73,7 +73,7 @@ main (int argc, char* argv[])
     xml_schema::document_simpl doc_s (root_s, people_s.root_name ());
 
     people_s.pre (*ppl);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     people_s.post ();
   }
   catch (const xml_schema::parser_exception& e)

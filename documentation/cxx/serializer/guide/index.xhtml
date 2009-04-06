@@ -757,7 +757,7 @@ main ()
     xml_schema::document_simpl doc_s (hello_s, "hello");
 
     hello_s.pre ();
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     hello_s.post ();
   }
   catch (const xml_schema::serializer_exception&amp; e)
@@ -789,10 +789,14 @@ main ()
   <p>The final piece is the calls to <code>pre()</code>,
      <code>serialize()</code>, and <code>post()</code>. The call to
      <code>serialize()</code> performs the actual XML serialization
-     with the result written to <code>std::cout</code>. The calls
-     to <code>pre()</code> and <code>post()</code> make sure that
-     the serializer for the root element can perform proper
-     initialization and cleanup.</p>
+     with the result written to <code>std::cout</code>. The second
+     argument in this call is a flag that requests pretty-printing
+     of the resulting XML document. You would normally specify this flag
+     during testing to obtain easily-readable XML and remove it
+     in production to get faster serialization and smaller documents.
+     The calls to <code>pre()</code> and
+     <code>post()</code> make sure that the serializer for the
+     root element can perform proper initialization and cleanup.</p>
 
   <p>While our serializer implementation and test driver are pretty small and
      easy to write by hand, for bigger XML vocabularies it can be a
@@ -1338,7 +1342,7 @@ xml_schema::document_simpl doc_s (people_s, "people");
 std::ostringstream os;
 
 people_s.pre ();
-doc_s.serialize (os);
+doc_s.serialize (os, xml_schema::document_simpl::pretty_print);
 people_s.post ();
 
 cout &lt;&lt; os.str ();
@@ -1371,8 +1375,11 @@ namespace xml_schema
                     const std::string&amp; root_element_namespace,
                     const std::string&amp; root_element_name);
 
+    typedef unsigned short flags;
+    static const flags pretty_print;
+
     void
-    serialize (std::ostream&amp;);
+    serialize (std::ostream&amp;, flags = 0);
   };
 }
   </pre>
@@ -2003,7 +2010,7 @@ main ()
   xml_schema::document_simpl doc_s (people_s, "people");
 
   people_s.pre (ppl);
-  doc_s.serialize (cout);
+  doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   people_s.post ();
 }
   </pre>
@@ -2652,7 +2659,7 @@ public:
 
   <pre class="c++">
 void
-serialize (std::ostream&amp;);
+serialize (std::ostream&amp;, flags);
   </pre>
 
   <p>See <a href="#8.1">Section 8.1, "Document Serializer"</a>
@@ -3345,7 +3352,7 @@ main ()
   xml_schema::document_simpl doc_s (supermen_s, "supermen", true);
 
   supermen_s.pre (sm);
-  doc_s.serialize (std::cout);
+  doc_s.serialize (std::cout, xml_schema::document_simpl::pretty_print);
   supermen_s.post ();
 }
   </pre>
@@ -3856,7 +3863,7 @@ main ()
     if (e = people_s._error ())
       break;
 
-    doc_s.serialize (w);
+    doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
     if (e = doc_s._error ())
       break;
@@ -5696,20 +5703,27 @@ namespace xml_schema
     add_no_namespace_schema (const std::string&amp; location);
 
   public:
+    // Serialization flags.
+    //
+    typedef unsigned short flags;
+
+    static const flags pretty_print;
+
+  public:
     // Serialize to std::ostream. The std::ios_base::failure
     // exception is used to report io errors (badbit and failbit)
     // if C++ exceptions are enabled. Otherwise error codes are
     // used.
     //
     void
-    serialize (std::ostream&amp;);
+    serialize (std::ostream&amp;, flags = 0);
 
   public:
     // Serialize by calling writer::write() and writer::flush() to
     // output XML.
     //
     void
-    serialize (writer&amp;);
+    serialize (writer&amp;, flags = 0);
 
     // Serialize by calling the write and flush functions. If the
     // unbounded write function is not provided, the bounded version
@@ -5722,11 +5736,17 @@ namespace xml_schema
     typedef void (*flush_func) (void*);
 
     void
-    serialize (write_bound_func, flush_func, void* user_data);
+    serialize (write_bound_func,
+               flush_func,
+               void* user_data,
+               flags = 0);
 
     void
-    serialize (write_func, write_bound_func, flush_func, void* user_data);
-
+    serialize (write_func,
+               write_bound_func,
+               flush_func,
+               void* user_data,
+               flags = 0);
   public:
     // Low-level, genx-specific serialization. With this method
     // it is your responsibility to call genxStartDoc*() and

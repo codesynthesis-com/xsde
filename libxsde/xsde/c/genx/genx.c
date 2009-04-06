@@ -126,6 +126,11 @@ struct genxWriter_rec
   char *                   etext[100];
   void *       		(* alloc)(void * userData, int bytes);
   void         		(* dealloc)(void * userData, void * data);
+
+  /* Pretty-printing state */
+  int                      ppIndent;
+  int                      ppDepth;
+  Boolean                  ppSimple;
 };
 
 /*******************************
@@ -590,6 +595,8 @@ genxWriter genxNew(void * (* alloc)(void * userData, int bytes),
   xml->declCount = 1;
   xml->declaration = xml->defaultDecl;
 
+  w->ppIndent = 0; /* Pretty-printing is disabled by default. */
+
   return w;
 }
 
@@ -627,6 +634,24 @@ void genxSetUserData(genxWriter w, void * userData)
 void * genxGetUserData(genxWriter w)
 {
   return w->userData;
+}
+
+/*
+ * get/set pretty-printing
+ */
+genxStatus genxSetPrettyPrint(genxWriter w, int ind)
+{
+  if (w->sequence == SEQUENCE_NO_DOC)
+    w->ppIndent = ind;
+  else
+    w->status = GENX_SEQUENCE_ERROR;
+
+  return w->status;
+}
+
+int genxGetPrettyPrint(genxWriter w)
+{
+  return w->ppIndent;
 }
 
 /*
@@ -1142,6 +1167,13 @@ genxStatus genxStartDocFile(genxWriter w, FILE * file)
   w->sequence = SEQUENCE_PRE_DOC;
   w->file = file;
   w->sender = NULL;
+
+  if (w->ppIndent)
+  {
+    w->ppSimple = True;
+    w->ppDepth = 0;
+  }
+
   return GENX_SUCCESS;
 }
 
@@ -1153,7 +1185,29 @@ genxStatus genxStartDocSender(genxWriter w, genxSender * sender)
   w->sequence = SEQUENCE_PRE_DOC;
   w->file = NULL;
   w->sender = sender;
+
+  if (w->ppIndent)
+  {
+    w->ppSimple = True;
+    w->ppDepth = 0;
+  }
+
   return GENX_SUCCESS;
+}
+
+/*
+ * Output new line and indentation.
+ */
+static genxStatus writeIndentation(genxWriter w)
+{
+  int i, n;
+  SendCheck(w, "\n");
+  n = w->ppDepth * w->ppIndent;
+
+  for (i = 0; i < n; i++)
+    SendCheck(w, " ");
+
+  return w->status;
 }
 
 /*
@@ -1167,7 +1221,7 @@ genxStatus genxStartDocSender(genxWriter w, genxSender * sender)
  */
 static genxStatus writeStartTag(genxWriter w)
 {
-  int i;
+  int i, n;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
   genxElement e = w->nowStarting;
 
@@ -1180,6 +1234,16 @@ static genxStatus writeStartTag(genxWriter w)
   else
     unsetDefaultNamespace(w);
   w->status = GENX_SUCCESS;
+
+  if (w->ppIndent)
+  {
+    if (w->ppDepth)
+      if (writeIndentation (w) != GENX_SUCCESS)
+        return w->status;
+
+    w->ppDepth++;
+    w->ppSimple = True;
+  }
 
   SendCheck(w, "<");
   if (e->ns && (e->ns->declaration != w->xmlnsEquals))
@@ -1596,7 +1660,7 @@ genxStatus genxEndAttribute(genxWriter w)
 genxStatus genxEndElement(genxWriter w)
 {
   genxElement e;
-  int i;
+  int i, n;
 
   switch (w->sequence)
   {
@@ -1623,6 +1687,17 @@ genxStatus genxEndElement(genxWriter w)
   for (i = w->stack.count - 1; w->stack.pointers[i] != NULL; i -= 2)
     ;
   e = (genxElement) w->stack.pointers[--i];
+
+  if (w->ppIndent)
+  {
+    w->ppDepth--;
+
+    if (!w->ppSimple)
+      if (writeIndentation (w) != GENX_SUCCESS)
+        return w->status;
+
+    w->ppSimple = False;
+  }
 
   SendCheck(w, "</");
   if (e->ns && e->ns->declaration != w->xmlnsEquals)
@@ -2115,4 +2190,3 @@ char * genxGetVersion()
 {
   return GENX_VERSION;
 }
-

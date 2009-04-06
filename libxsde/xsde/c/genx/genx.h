@@ -1,4 +1,3 @@
-
 /*
  * genx - C-callable library for generating XML documents
  */
@@ -103,6 +102,13 @@ void genxDispose(genxWriter w);
  */
 void genxSetUserData(genxWriter w, void * userData);
 void * genxGetUserData(genxWriter w);
+
+/*
+ * Set/get pretty-printing. If indentation is set to 0, then no pretty-
+ * printing is performed.
+ */
+genxStatus genxSetPrettyPrint(genxWriter w, int indentation);
+int genxGetPrettyPrint(genxWriter w);
 
 /*
  * User-provided memory allocator, if desired.  For example, if you were
@@ -235,7 +241,7 @@ genxStatus genxEndAttribute(genxWriter w);
 /*
  * add a namespace declaration
  */
-genxStatus genxAddNamespaceLiteral(genxWriter w, 
+genxStatus genxAddNamespaceLiteral(genxWriter w,
                                    constUtf8 uri, constUtf8 prefix);
 
 /*

@@ -160,7 +160,7 @@ main (int argc, char* argv[])
     doc_s.add_schema ("http://www.codesynthesis.com/email", "email.xsd");
 
     message_s.pre (*reply);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     message_s.post ();
   }
   catch (const xml_schema::parser_exception& e)

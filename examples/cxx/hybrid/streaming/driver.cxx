@@ -58,7 +58,7 @@ main (int argc, char* argv[])
     obj.id (456);
 
     object_s.pre (obj);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     object_s.post ();
   }
   catch (const xml_schema::parser_exception& e)

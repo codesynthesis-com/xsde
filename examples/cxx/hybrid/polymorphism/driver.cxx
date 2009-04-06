@@ -115,7 +115,7 @@ main (int argc, char* argv[])
     doc_s.add_no_namespace_schema ("supermen.xsd");
 
     supermen_s.pre (*sm);
-    doc_s.serialize (cout);
+    doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
     supermen_s.post ();
   }
   catch (const xml_schema::parser_exception& e)

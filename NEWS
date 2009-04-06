@@ -52,6 +52,14 @@ Version 3.1.0
     sequences of fundamental types (e.g., int, float, etc.) is 
     implemented in terms of memcpy().
 
+ C++/Serializer
+
+  * Support for XML pretty-printing. The serialize() functions in the
+    xml_schema::document_simpl class now have the flags argument (defaults
+    to 0). Your can pass the xml_schema::document_simpl::pretty_print flag
+    for this argument to turn on pretty-printing. See the examples and 
+    documentation for details.
+
 Version 3.0.0
 
   * The new Embedded C++/Hybrid mapping provides a light-weight, tree-
