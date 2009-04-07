@@ -15,7 +15,7 @@ ifeq ($(libbackend_elements_installed),y)
 
 #-lbackend-elements
 
-$(call export,l: ,cpp_options: )
+$(call export,l: -lcult -lboost_regex,cpp_options: )
 
 else
 
