@@ -5,6 +5,9 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 
+c_tun := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
+c_tun += c/genx/genx.c c/genx/char-props.c
+
 cxx_tun := cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
 
 ifeq ($(xsde_stl),n)
@@ -456,9 +459,11 @@ cxx/serializer/non-validating/duration.cxx
 
 endif # validation
 
+c_o   := $(addprefix $(out_base)/,$(c_tun:.c=.o))
+c_d   := $(c_o:.o=.o.d)
 
-cxx_o   := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
-cxx_d   := $(cxx_o:.o=.o.d)
+cxx_o := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
+cxx_d := $(cxx_o:.o=.o.d)
 
 xsde.l             := $(out_base)/xsde.l
 xsde.l.cpp-options := $(out_base)/xsde.l.cpp-options
@@ -478,8 +483,12 @@ endif
 
 # Build.
 #
-$(xsde.l): $(cxx_o) -lexpat -lgenx
-$(cxx_o) $(cxx_d): $(xsde.l.cpp-options) $(out_base)/config.h
+$(xsde.l): $(c_o) $(cxx_o)
+$(c_o) $(cxx_o) $(c_d) $(cxx_d): $(xsde.l.cpp-options) $(out_base)/config.h
+
+ifeq ($(xsde_exceptions),y)
+$(c_o): c_exceptions := y
+endif
 
 ifeq ($(xsde_cdr),y)
 $(xsde.l): $(ace.l)
@@ -489,7 +498,7 @@ endif
 $(xsde.l.cpp-options): prefix := xsde/ $(out_root)/libxsde/
 $(xsde.l.cpp-options): value := -I$(out_root)/libxsde -I$(src_root)/libxsde
 
-$(call include-dep,$(cxx_d))
+$(call include-dep,$(c_d) $(cxx_d))
 
 # config.h
 #
@@ -597,6 +606,8 @@ $(dist-win): $(dist)
 
 $(clean): $(xsde.l).o.clean            \
   $(xsde.l.cpp-options).clean          \
+  $(addsuffix .c.clean,$(c_o))         \
+  $(addsuffix .c.clean,$(c_d))         \
   $(addsuffix .cxx.clean,$(cxx_o))     \
   $(addsuffix .cxx.clean,$(cxx_d))
 	$(call message,rm $$1,rm -f $$1,$(out_base)/config.h)
@@ -616,7 +627,9 @@ endif
 
 # How to.
 #
-$(call include,$(bld_root)/cxx/o-l.make)
+$(call include,$(bld_root)/c/c-o.make)
+$(call include,$(bld_root)/c/c-d.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)
+$(call include,$(bld_root)/cxx/o-l.make)
 $(call include,$(bld_root)/install.make)
