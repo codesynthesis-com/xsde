@@ -14,7 +14,7 @@ using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;
 
 int
-main (int argc, char* argv[])
+main ()
 {
   // Good.
   //

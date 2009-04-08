@@ -204,17 +204,20 @@ main (int argc, char* argv[])
 
     doc_s.add_no_namespace_schema ("people.xsd");
 
-    if (se = doc_s._error ())
+    se = doc_s._error ();
+    if (se)
       break;
 
     people_s.pre (*ppl);
 
-    if (se = people_s._error ())
+    se = people_s._error ();
+    if (se)
       break;
 
     doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
-    if (se = doc_s._error ())
+    se = doc_s._error ();
+    if (se)
       break;
 
     people_s.post ();

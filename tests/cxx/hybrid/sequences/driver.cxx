@@ -372,7 +372,7 @@ main ()
     s.push_back_copy ("bbb");
     s.push_back_copy ("ccc");
     delete[] s.detach (s.begin () + 1);
-    s.attach (s.begin () + 1, strdupc ("bbb"));
+    s.attach (s.begin () + 1, strdupx ("bbb"));
     assert (s[0] == string ("aaa") &&
             s[1] == string ("bbb") &&
             s[2] == string ("ccc"));

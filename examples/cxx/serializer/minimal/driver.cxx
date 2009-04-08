@@ -79,17 +79,20 @@ main ()
   {
     xml_schema::document_simpl doc_s (people_s, "people");
 
-    if (e = doc_s._error ())
+    e = doc_s._error ();
+    if (e)
       break;
 
     people_s.pre (p);
 
-    if (e = people_s._error ())
+    e = people_s._error ();
+    if (e)
       break;
 
     doc_s.serialize (w, xml_schema::document_simpl::pretty_print);
 
-    if (e = doc_s._error ())
+    e = doc_s._error ();
+    if (e)
       break;
 
     people_s.post ();

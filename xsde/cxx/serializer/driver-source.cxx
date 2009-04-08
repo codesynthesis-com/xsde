@@ -907,7 +907,8 @@ namespace CXX
            << endl;
 
       if (ctx.options.value<CLI::no_exceptions> ())
-        os << "if (e = doc_s._error ())" << endl
+        os << "e = doc_s._error ();"
+           << "if (e)" << endl
            << "break;"
            << endl;
 
@@ -920,7 +921,8 @@ namespace CXX
          << endl;
 
       if (ctx.options.value<CLI::no_exceptions> ())
-        os << "if (e = " << root_s << "._error ())" << endl
+        os << "e = " << root_s << "._error ();"
+           << "if (e)" << endl
            << "break;"
            << endl;
 
@@ -932,7 +934,8 @@ namespace CXX
            << endl;
 
       if (ctx.options.value<CLI::no_exceptions> ())
-        os << "if (e = doc_s._error ())" << endl
+        os << "e = doc_s._error ();"
+           << "if (e)" << endl
            << "break;"
            << endl;
 

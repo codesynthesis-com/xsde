@@ -7,7 +7,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
 tests := sequences
 
-ifeq ($(xsde_polymorphism),y)
+ifeq ($(xsde_polymorphic),y)
 tests += polymorphism
 endif
 
