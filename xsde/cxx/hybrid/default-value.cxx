@@ -94,6 +94,16 @@ namespace CXX
 
         s.resize (j);
       }
+
+      Void
+      make_float (String& s)
+      {
+        if (s.find ('.') == String::npos &&
+            s.find ('e') == String::npos &&
+            s.find ('E') == String::npos)
+          s += L".0";
+      }
+
     }
 
     //
@@ -259,6 +269,7 @@ namespace CXX
       else
       {
         strip_zeros (value_);
+        make_float (value_);
         literal_ = value_ + L"F";
       }
     }
@@ -283,6 +294,7 @@ namespace CXX
       else
       {
         strip_zeros (value_);
+        make_float (value_);
         literal_ = value_;
       }
     }
@@ -292,6 +304,7 @@ namespace CXX
     {
       collapse (value_);
       strip_zeros (value_);
+      make_float (value_);
       literal_ = value_;
     }
 
