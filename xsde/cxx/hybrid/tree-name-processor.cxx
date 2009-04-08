@@ -287,140 +287,6 @@ namespace CXX
       };
 
       //
-      //
-      struct List: Traversal::List, Context
-      {
-        List (Context& c, Boolean data_members)
-            : Context (c), data_members_ (data_members)
-        {
-        }
-
-        virtual Void
-        traverse (Type& l)
-        {
-          SemanticGraph::Context& lc (l.context ());
-
-          // In case of customization use name-base instead of name.
-          // If name is empty then we are not generating anything.
-          //
-          String const& name (lc.count ("name-base")
-                              ? lc.get<String> ("name-base")
-                              : lc.get<String> ("name"));
-          if (!name)
-            return;
-
-          if (!data_members_)
-          {
-            // Check if this type has custom data.
-            //
-            CustomDataMap::Iterator i (custom_data_map.find (l.name ()));
-
-            if (i != custom_data_map.end () &&
-                i->second->find (L"") != i->second->end ())
-            {
-              lc.set (member_set_key, NameSet ());
-              NameSet& set (lc.get<NameSet> (member_set_key));
-              set.insert (name);
-
-              {
-                String name (find_name ("custom_data", set));
-
-                lc.set ("cd-name", name);
-                lc.set ("cd-sequence", find_name (name + L"_sequence", set));
-                lc.set ("cd-iterator", find_name (name + L"_iterator", set));
-                lc.set ("cd-const-iterator",
-                        find_name (name + L"_const_iterator", set));
-              }
-            }
-          }
-          else
-          {
-            // Custom data.
-            //
-            if (lc.count ("cd-name"))
-            {
-              NameSet& set (lc.get<NameSet> (member_set_key));
-              String const& base (lc.get<String> ("cd-name"));
-              lc.set ("cd-member", find_name (base + L"_", set));
-            }
-          }
-        }
-
-      private:
-        Boolean data_members_;
-      };
-
-      //
-      //
-      struct Union: Traversal::Union, Context
-      {
-        Union (Context& c, Boolean data_members)
-            : Context (c), data_members_ (data_members)
-        {
-        }
-
-        virtual Void
-        traverse (Type& u)
-        {
-          SemanticGraph::Context& uc (u.context ());
-
-          // In case of customization use name-base instead of name.
-          // If name is empty then we are not generating anything.
-          //
-          String const& name (uc.count ("name-base")
-                              ? uc.get<String> ("name-base")
-                              : uc.get<String> ("name"));
-          if (!name)
-            return;
-
-          if (!data_members_)
-          {
-            uc.set (member_set_key, NameSet ());
-            NameSet& set (uc.get<NameSet> (member_set_key));
-            set.insert (name);
-
-            String v (find_name ("value", set));
-            uc.set ("value", v);
-
-            if (detach && !stl)
-              uc.set ("value-detach", find_name (v + L"_detach", set));
-
-            // Check if this type has custom data.
-            //
-            CustomDataMap::Iterator i (custom_data_map.find (u.name ()));
-
-            if (i != custom_data_map.end () &&
-                i->second->find (L"") != i->second->end ())
-            {
-              String name (find_name ("custom_data", set));
-
-              uc.set ("cd-name", name);
-              uc.set ("cd-sequence", find_name (name + L"_sequence", set));
-              uc.set ("cd-iterator", find_name (name + L"_iterator", set));
-              uc.set ("cd-const-iterator",
-                      find_name (name + L"_const_iterator", set));
-            }
-          }
-          else
-          {
-            NameSet& set (uc.get<NameSet> (member_set_key));
-            uc.set ("value-member", find_name ("value_", set));
-
-            // Custom data.
-            //
-            if (uc.count ("cd-name"))
-            {
-              String const& base (uc.get<String> ("cd-name"));
-              uc.set ("cd-member", find_name (base + L"_", set));
-            }
-          }
-        }
-
-      private:
-        Boolean data_members_;
-      };
-
-      //
       // Primary names.
       //
 
@@ -1274,15 +1140,126 @@ namespace CXX
 
       //
       //
-      struct Complex: Traversal::Complex, Context
+      struct GlobalTypeMembers: Traversal::List,
+                                Traversal::Union,
+                                Traversal::Complex,
+                                Context
       {
-        Complex (Context& c, Boolean data_members)
+        GlobalTypeMembers (Context& c, Boolean data_members)
             : Context (c), data_members_ (data_members)
         {
         }
 
         virtual Void
-        traverse (Type& c)
+        traverse (SemanticGraph::List& l)
+        {
+          SemanticGraph::Context& lc (l.context ());
+
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (lc.count ("name-base")
+                              ? lc.get<String> ("name-base")
+                              : lc.get<String> ("name"));
+          if (!name)
+            return;
+
+          if (!data_members_)
+          {
+            // Check if this type has custom data.
+            //
+            CustomDataMap::Iterator i (custom_data_map.find (l.name ()));
+
+            if (i != custom_data_map.end () &&
+                i->second->find (L"") != i->second->end ())
+            {
+              lc.set (member_set_key, NameSet ());
+              NameSet& set (lc.get<NameSet> (member_set_key));
+              set.insert (name);
+
+              {
+                String name (find_name ("custom_data", set));
+
+                lc.set ("cd-name", name);
+                lc.set ("cd-sequence", find_name (name + L"_sequence", set));
+                lc.set ("cd-iterator", find_name (name + L"_iterator", set));
+                lc.set ("cd-const-iterator",
+                        find_name (name + L"_const_iterator", set));
+              }
+            }
+          }
+          else
+          {
+            // Custom data.
+            //
+            if (lc.count ("cd-name"))
+            {
+              NameSet& set (lc.get<NameSet> (member_set_key));
+              String const& base (lc.get<String> ("cd-name"));
+              lc.set ("cd-member", find_name (base + L"_", set));
+            }
+          }
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Union& u)
+        {
+          SemanticGraph::Context& uc (u.context ());
+
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (uc.count ("name-base")
+                              ? uc.get<String> ("name-base")
+                              : uc.get<String> ("name"));
+          if (!name)
+            return;
+
+          if (!data_members_)
+          {
+            uc.set (member_set_key, NameSet ());
+            NameSet& set (uc.get<NameSet> (member_set_key));
+            set.insert (name);
+
+            String v (uc.get<String> ("value")); // Set by GlobalTypeName.
+            set.insert (v);
+
+            if (detach && !stl)
+              uc.set ("value-detach", find_name (v + L"_detach", set));
+
+            // Check if this type has custom data.
+            //
+            CustomDataMap::Iterator i (custom_data_map.find (u.name ()));
+
+            if (i != custom_data_map.end () &&
+                i->second->find (L"") != i->second->end ())
+            {
+              String name (find_name ("custom_data", set));
+
+              uc.set ("cd-name", name);
+              uc.set ("cd-sequence", find_name (name + L"_sequence", set));
+              uc.set ("cd-iterator", find_name (name + L"_iterator", set));
+              uc.set ("cd-const-iterator",
+                      find_name (name + L"_const_iterator", set));
+            }
+          }
+          else
+          {
+            NameSet& set (uc.get<NameSet> (member_set_key));
+            uc.set ("value-member", find_name ("value_", set));
+
+            // Custom data.
+            //
+            if (uc.count ("cd-name"))
+            {
+              String const& base (uc.get<String> ("cd-name"));
+              uc.set ("cd-member", find_name (base + L"_", set));
+            }
+          }
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
         {
           if (data_members_)
             assign_data (c);
@@ -1291,7 +1268,7 @@ namespace CXX
         }
 
         virtual Void
-        assign_names (Type& c)
+        assign_names (SemanticGraph::Complex& c)
         {
           SemanticGraph::Context& cc (c.context ());
 
@@ -1326,22 +1303,18 @@ namespace CXX
           if (c.inherits_p ())
           {
             SemanticGraph::Type& b (c.inherits ().base ());
+            SemanticGraph::Context& bc (b.context ());
 
-            if (b.is_a<SemanticGraph::Complex> ())
+            if (!bc.count (member_set_key))
+              dispatch (b);
+
+            // We may still not have the set if this type is being
+            // customized.
+            //
+            if (bc.count (member_set_key))
             {
-              SemanticGraph::Context& bc (b.context ());
-
-              if (!bc.count (member_set_key))
-                dispatch (b);
-
-              // We may still not have the set if this type is being
-              // customized.
-              //
-              if (bc.count (member_set_key))
-              {
-                NameSet const& bset (bc.get<NameSet> (member_set_key));
-                member_set.insert (bset.begin (), bset.end ());
-              }
+              NameSet const& bset (bc.get<NameSet> (member_set_key));
+              member_set.insert (bset.begin (), bset.end ());
             }
 
             // Inheritance by restriction from anyType is a special case.
@@ -1465,7 +1438,7 @@ namespace CXX
         }
 
         virtual Void
-        assign_data (Type& c)
+        assign_data (SemanticGraph::Complex& c)
         {
           SemanticGraph::Context& cc (c.context ());
 
@@ -1556,9 +1529,11 @@ namespace CXX
 
       //
       //
-      struct GlobalType: Traversal::Type, Context
+      struct GlobalTypeName: Traversal::Type,
+                             Traversal::Union,
+                             Context
       {
-        GlobalType (Context& c, NameSet& set)
+        GlobalTypeName (Context& c, NameSet& set)
             : Context (c), set_ (set)
         {
         }
@@ -1590,6 +1565,30 @@ namespace CXX
             if (i->second.include)
               tc.set ("name-include", i->second.include);
           }
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Union& u)
+        {
+          traverse (static_cast<SemanticGraph::Type&> (u));
+
+          // We need to assign the value accessor/modifier name for
+          // unions even in included/imported schemas since we may
+          // need this informtaion to initialize and compare the
+          // default value of this union type. We need to do this
+          // even if the type is completely customized.
+          //
+          SemanticGraph::Context& uc (u.context ());
+          String name (uc.count ("name-base")
+                       ? uc.get<String> ("name-base")
+                       : uc.get<String> ("name"));
+
+          if (!name)
+            name = uc.get<String> ("name");
+
+          NameSet set;
+          set.insert (name);
+          uc.set ("value", find_name ("value", set));
         }
 
       private:
@@ -1627,7 +1626,7 @@ namespace CXX
 
           NameSet& type_set (*global_type_names[name]);
 
-          GlobalType type (*this, type_set);
+          GlobalTypeName type (*this, type_set);
           Traversal::Names names (type);
 
           Traversal::Namespace::names (ns, names);
@@ -2149,16 +2148,9 @@ namespace CXX
             Traversal::Names schema_names;
             Traversal::Namespace ns;
             Traversal::Names ns_names;
+            GlobalTypeMembers type (ctx, false);
 
-            schema >> schema_names >> ns >> ns_names;
-
-            List list (ctx, false);
-            Union union_ (ctx, false);
-            Complex complex (ctx, false);
-
-            ns_names >> list;
-            ns_names >> union_;
-            ns_names >> complex;
+            schema >> schema_names >> ns >> ns_names >> type;
 
             schema.dispatch (tu);
           }
@@ -2175,16 +2167,9 @@ namespace CXX
             Traversal::Names schema_names;
             Traversal::Namespace ns;
             Traversal::Names ns_names;
+            GlobalTypeMembers type (ctx, true);
 
-            schema >> schema_names >> ns >> ns_names;
-
-            List list (ctx, true);
-            Union union_ (ctx, true);
-            Complex complex (ctx, true);
-
-            ns_names >> list;
-            ns_names >> union_;
-            ns_names >> complex;
+            schema >> schema_names >> ns >> ns_names >> type;
 
             schema.dispatch (tu);
           }
