@@ -1239,7 +1239,7 @@ namespace CXX
               os << "::_reset ();";
 
               os << "for (; !this->" << state << ".empty (); " <<
-                "this->" << state << ".pop ());";
+                "this->" << state << ".pop ()) ;"; // Space is for g++-4.3.
 
               os << "}";
             }

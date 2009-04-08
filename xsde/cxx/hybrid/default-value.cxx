@@ -64,7 +64,7 @@ namespace CXX
       {
         Size n (s.size ()), i (0);
 
-        if (n > 0 && s[i] == '-' || s[i] == '+')
+        if (n > 0 && (s[i] == '-' || s[i] == '+'))
           i++;
 
         Size j (i);
@@ -1200,7 +1200,7 @@ namespace CXX
     }
 
     Void CompareValue::
-    traverse (SemanticGraph::Type& t)
+    traverse (SemanticGraph::Type&)
     {
       // This is a fall-back case where we handle all other types.
       //

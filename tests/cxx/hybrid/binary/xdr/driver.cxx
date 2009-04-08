@@ -41,9 +41,10 @@ struct underflow_info
 };
 
 extern "C" int
-underflow (char* p, char* buf, int n)
+underflow (char* p, char* buf, int n_)
 {
   underflow_info* ui (reinterpret_cast<underflow_info*> (p));
+  size_t n (static_cast<size_t> (n_));
 
   size_t size (ui->buf->size () - ui->pos);
   n = size > n ? n : size;
