@@ -989,7 +989,7 @@ namespace CXX
             if (detach && !fl)
             {
               os << inl
-                 << type << "* " << scope << "::" << endl
+                 << scope << "::" << type << "* " << scope << "::" << endl
                  << edetach (a) << " ()"
                  << "{"
                  << type << "* r = this->" << member << ";"
@@ -1171,7 +1171,7 @@ namespace CXX
             if (detach && !fl)
             {
               os << inl
-                 << type << "* " << scope << "::" << endl
+                 << scope << "::" << type << "* " << scope << "::" << endl
                  << edetach (c) << " ()"
                  << "{"
                  << type << "* r = this->" << member << ";"
@@ -1339,7 +1339,7 @@ namespace CXX
             if (detach && !fl)
             {
               os << inl
-                 << type << "* " << scope << "::" << endl
+                 << scope << "::" << type << "* " << scope << "::" << endl
                  << edetach (s) << " ()"
                  << "{"
                  << type << "* r = this->" << member << ";"
@@ -1544,7 +1544,7 @@ namespace CXX
             if (detach && !fl)
             {
               os << inl
-                 << type << "* " << scope << "::" << endl
+                 << scope << "::" << type << "* " << scope << "::" << endl
                  << edetach (c) << " ()"
                  << "{"
                  << type << "* r = this->" << umember << "." << member << ";"
