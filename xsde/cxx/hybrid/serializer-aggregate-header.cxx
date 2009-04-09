@@ -575,8 +575,8 @@ namespace CXX
           Boolean poly (polymorphic (t));
           String const& name (tc.get<String> ("saggr"));
 
-          String pre;
-          String post;
+          String pre (unclash (name, "pre"));
+          String post (unclash (name, "post"));
           String root_serializer (unclash (name, "root_serializer"));
           String root_map;
           String error, reset;
@@ -584,6 +584,8 @@ namespace CXX
 
           InstanceSet set;
           set.insert (name);
+          set.insert (pre);
+          set.insert (post);
           set.insert (root_serializer);
 
           if (poly)
@@ -591,22 +593,14 @@ namespace CXX
             root_map = unclash (name, "root_map");
             set.insert (root_map);
           }
-          else
-          {
-            pre = unclash (name, "pre");
-            post = unclash (name, "post");
 
-            set.insert (pre);
-            set.insert (post);
-          }
-
-          if (!poly && !exceptions)
+          if (!exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (!poly && Context::reset)
+          if (Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
@@ -628,8 +622,13 @@ namespace CXX
           SerializerDef def (*this, map, tid_map, set);
           def.dispatch (t);
 
-          if (poly_code && !tid_map.empty ())
-            tc.set ("saggr-tid-map", tid_map);
+          if (poly_code)
+          {
+            if (!tid_map.empty ())
+              tc.set ("saggr-tid-map", tid_map);
+            else if (poly)
+              poly = false; // Polymorphic root without substitutions.
+          }
 
           String const& root_member (map.find (&t)->second);
 
@@ -685,14 +684,11 @@ namespace CXX
           {
             // root_map ()
             //
-            if (poly)
-            {
-              os << "const " << xs_ns_name () + L"::serializer_map&" << endl
-                 << root_map << " ()"
-                 << "{"
-                 << "return this->" << serializer_map << ";"
-                 << "}";
-            }
+            os << "const " << xs_ns_name () + L"::serializer_map&" << endl
+               << root_map << " ()"
+               << "{"
+               << "return this->" << serializer_map << ";"
+               << "}";
           }
 
           // _error ()
@@ -715,7 +711,7 @@ namespace CXX
                << "{"
                << "this->" << root_member << "._reset ();";
 
-            if (poly && tid_map.size () > 0)
+            if (poly)
               os << "this->" << serializer_map << ".reset ();";
 
             os << "}";
@@ -759,8 +755,8 @@ namespace CXX
           Boolean poly (polymorphic (t));
           String const& name (ec.get<String> ("saggr"));
 
-          String pre;
-          String post;
+          String pre (unclash (name, "pre"));
+          String post (unclash (name, "post"));
           String root_serializer (unclash (name, "root_serializer"));
           String root_map;
           String root_name (unclash (name, "root_name"));
@@ -770,6 +766,8 @@ namespace CXX
 
           InstanceSet set;
           set.insert (name);
+          set.insert (pre);
+          set.insert (post);
           set.insert (root_serializer);
 
           if (poly)
@@ -777,25 +775,17 @@ namespace CXX
             root_map = unclash (name, "root_map");
             set.insert (root_map);
           }
-          else
-          {
-            pre = unclash (name, "pre");
-            post = unclash (name, "post");
-
-            set.insert (pre);
-            set.insert (post);
-          }
 
           set.insert (root_name);
           set.insert (root_namespace);
 
-          if (!poly && !exceptions)
+          if (!exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (!poly && Context::reset)
+          if (Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
@@ -817,8 +807,13 @@ namespace CXX
           SerializerDef def (*this, map, tid_map, set);
           def.dispatch (t);
 
-          if (poly_code && !tid_map.empty ())
-            ec.set ("saggr-tid-map", tid_map);
+          if (poly_code)
+          {
+            if (!tid_map.empty ())
+              ec.set ("saggr-tid-map", tid_map);
+            else if (poly)
+              poly = false; // Polymorphic root without substitutions.
+          }
 
           String const& root_member (map.find (&t)->second);
 
@@ -874,14 +869,11 @@ namespace CXX
           {
             // root_map ()
             //
-            if (poly)
-            {
-              os << "const " << xs_ns_name () + L"::serializer_map&" << endl
-                 << root_map << " ()"
-                 << "{"
-                 << "return this->" << serializer_map << ";"
-                 << "}";
-            }
+            os << "const " << xs_ns_name () + L"::serializer_map&" << endl
+               << root_map << " ()"
+               << "{"
+               << "return this->" << serializer_map << ";"
+               << "}";
           }
 
           // root_name ()
@@ -916,7 +908,7 @@ namespace CXX
                << "{"
                << "this->" << root_member << "._reset ();";
 
-            if (poly && tid_map.size () > 0)
+            if (poly)
               os << "this->" << serializer_map << ".reset ();";
 
             os << "}";

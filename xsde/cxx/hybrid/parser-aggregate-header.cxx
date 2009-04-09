@@ -575,8 +575,8 @@ namespace CXX
           Boolean poly (polymorphic (t));
           String const& name (tc.get<String> ("paggr"));
 
-          String pre;
-          String post;
+          String pre (unclash (name, "pre"));
+          String post (unclash (name, "post"));
           String root_parser (unclash (name, "root_parser"));
           String root_map;
           String error, reset;
@@ -584,6 +584,8 @@ namespace CXX
 
           InstanceSet set;
           set.insert (name);
+          set.insert (pre);
+          set.insert (post);
           set.insert (root_parser);
 
           if (poly)
@@ -591,22 +593,14 @@ namespace CXX
             root_map = unclash (name, "root_map");
             set.insert (root_map);
           }
-          else
-          {
-            pre = unclash (name, "pre");
-            post = unclash (name, "post");
 
-            set.insert (pre);
-            set.insert (post);
-          }
-
-          if (!poly && !exceptions)
+          if (!exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (!poly && Context::reset)
+          if (Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
@@ -628,8 +622,13 @@ namespace CXX
           ParserDef def (*this, map, tid_map, set);
           def.dispatch (t);
 
-          if (poly_code && !tid_map.empty ())
-            tc.set ("paggr-tid-map", tid_map);
+          if (poly_code)
+          {
+            if (!tid_map.empty ())
+              tc.set ("paggr-tid-map", tid_map);
+            else if (poly)
+              poly = false; // Polymorphic root without substitutions.
+          }
 
           String const& root_member (map.find (&t)->second);
 
@@ -680,14 +679,11 @@ namespace CXX
           {
             // root_map ()
             //
-            if (poly)
-            {
-              os << "const " << xs_ns_name () + L"::parser_map&" << endl
-                 << root_map << " ()"
-                 << "{"
-                 << "return this->" << parser_map << ";"
-                 << "}";
-            }
+            os << "const " << xs_ns_name () + L"::parser_map&" << endl
+               << root_map << " ()"
+               << "{"
+               << "return this->" << parser_map << ";"
+               << "}";
           }
 
           // _error ()
@@ -710,7 +706,7 @@ namespace CXX
                << "{"
                << "this->" << root_member << "._reset ();";
 
-            if (poly && tid_map.size () > 0)
+            if (poly)
               os << "this->" << parser_map << ".reset ();";
 
             os << "}";
@@ -752,8 +748,8 @@ namespace CXX
           Boolean poly (polymorphic (t));
           String const& name (ec.get<String> ("paggr"));
 
-          String pre;
-          String post;
+          String pre (unclash (name, "pre"));
+          String post (unclash (name, "post"));
           String root_parser (unclash (name, "root_parser"));
           String root_map;
           String root_name (unclash (name, "root_name"));
@@ -763,6 +759,8 @@ namespace CXX
 
           InstanceSet set;
           set.insert (name);
+          set.insert (pre);
+          set.insert (post);
           set.insert (root_parser);
 
           if (poly)
@@ -770,25 +768,17 @@ namespace CXX
             root_map = unclash (name, "root_map");
             set.insert (root_map);
           }
-          else
-          {
-            pre = unclash (name, "pre");
-            post = unclash (name, "post");
-
-            set.insert (pre);
-            set.insert (post);
-          }
 
           set.insert (root_name);
           set.insert (root_namespace);
 
-          if (!poly && !exceptions)
+          if (!exceptions)
           {
             error = unclash (name, "_error");
             set.insert (error);
           }
 
-          if (!poly && Context::reset)
+          if (Context::reset)
           {
             reset = unclash (name, "reset");
             set.insert (reset);
@@ -810,8 +800,13 @@ namespace CXX
           ParserDef def (*this, map, tid_map, set);
           def.dispatch (t);
 
-          if (poly_code && !tid_map.empty ())
-            ec.set ("paggr-tid-map", tid_map);
+          if (poly_code)
+          {
+            if (!tid_map.empty ())
+              ec.set ("paggr-tid-map", tid_map);
+            else if (poly)
+              poly = false; // Polymorphic root without substitutions.
+          }
 
           String const& root_member (map.find (&t)->second);
 
@@ -862,14 +857,11 @@ namespace CXX
           {
             // root_map ()
             //
-            if (poly)
-            {
-              os << "const " << xs_ns_name () + L"::parser_map&" << endl
-                 << root_map << " ()"
-                 << "{"
-                 << "return this->" << parser_map << ";"
-                 << "}";
-            }
+            os << "const " << xs_ns_name () + L"::parser_map&" << endl
+               << root_map << " ()"
+               << "{"
+               << "return this->" << parser_map << ";"
+               << "}";
           }
 
           // root_name ()
@@ -904,7 +896,7 @@ namespace CXX
                << "{"
                << "this->" << root_member << "._reset ();";
 
-            if (poly && tid_map.size () > 0)
+            if (poly)
               os << "this->" << parser_map << ".reset ();";
 
             os << "}";
