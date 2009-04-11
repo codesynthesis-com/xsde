@@ -125,22 +125,73 @@ namespace CXX
       //
       //
       Void
+      sequence_next_call (SemanticGraph::Sequence* s, Context* ctx);
+
+      Void
       choice_arm_call (SemanticGraph::Particle* p,
                        SemanticGraph::Choice* c,
                        Context* ctx)
       {
         using SemanticGraph::Choice;
+        using SemanticGraph::Sequence;
 
         ctx->os << "this->" << Context::earm (*c) << " (" <<
           Context::etag (*p) << ");";
 
-        if ((c = dynamic_cast<Choice*> (p)))
+        if (Choice* pc = dynamic_cast<Choice*> (p))
         {
-          OptionalParticleTest test (p);
-          test.traverse (*c);
+          if (pc->min () != 0)
+          {
+            OptionalParticleTest test (p);
+            test.traverse (*pc);
 
-          if (p)
-            choice_arm_call (p, c, ctx);
+            if (p)
+              choice_arm_call (p, pc, ctx);
+          }
+        }
+        else if (Sequence* ps = dynamic_cast<Sequence*> (p))
+        {
+          // Effective min should be 0 otherwise we wouldn't be here.
+          //
+          if (ps->min () != 0 && ps->max () != 1)
+            sequence_next_call (ps, ctx);
+        }
+      }
+
+      Void
+      sequence_next_call (SemanticGraph::Sequence* s, Context* ctx)
+      {
+        using SemanticGraph::Choice;
+        using SemanticGraph::Sequence;
+
+        ctx->os << "this->" << Context::enext (*s) << " ();";
+
+        // See if we have any nested compositors that also need a
+        // next or arm call.
+        //
+        for (Sequence::ContainsIterator ci (s->contains_begin ());
+             ci != s->contains_end (); ++ci)
+        {
+          SemanticGraph::Particle* p (&ci->particle ());
+
+          if (Sequence* ps = dynamic_cast<Sequence*> (p))
+          {
+            // Effective min should be 0 otherwise we wouldn't be here.
+            //
+            if (ps->min () != 0 && ps->max () != 1)
+              sequence_next_call (ps, ctx);
+          }
+          else if (Choice* pc = dynamic_cast<Choice*> (p))
+          {
+            if (pc->min () != 0)
+            {
+              OptionalParticleTest test (p);
+              test.traverse (*pc);
+
+              if (p)
+                choice_arm_call (p, pc, ctx);
+            }
+          }
         }
       }
 
@@ -701,29 +752,49 @@ namespace CXX
             for (Compositor::ContainsIterator ci (c.contains_begin ());
                  ci != c.contains_end (); ++ci)
             {
-              Choice* pc = dynamic_cast<Choice*> (&ci->particle ());
+              SemanticGraph::Particle* p (&ci->particle ());
 
-              if (pc && pc->min () == 1 && pc->max () == 1 &&
-                  pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+              if (Choice* pc = dynamic_cast<Choice*> (p))
               {
-                // This is a required choice with effective-min == 0 (i.e.,
-                // it contains optional particle). We need to call the arm
-                // callback with that optional particle's tag.
+                if (pc->min () != 0 &&
+                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                {
+                  // This is a required choice with effective-min == 0 (i.e.,
+                  // it contains optional particle). We need to call the arm
+                  // callback with that optional particle's tag.
+                  //
+                  OptionalParticleTest test (p);
+                  test.traverse (*pc);
+
+                  if (p)
+                  {
+                    UnsignedLong state (
+                      pc->context ().get<UnsignedLong> ("p:state"));
+
+                    os << endl
+                       << "if (s > " << state << "UL)" << endl
+                       << "{";
+                    choice_arm_call (p, pc, this);
+                    os << "}";
+                  }
+                }
+              }
+              else if (Sequence* ps = dynamic_cast<Sequence*> (p))
+              {
+                // This is a required sequence with effective-min == 0 (i.e.,
+                // it contains optional particle) and maxOccurs > 1. We need
+                // to call the next callback.
                 //
-
-                SemanticGraph::Particle* p (0);
-                OptionalParticleTest test (p);
-                test.traverse (*pc);
-
-                if (p)
+                if (ps->min () != 0 && max != 1 &&
+                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
-                    pc->context ().get<UnsignedLong> ("p:state"));
+                    ps->context ().get<UnsignedLong> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
                      << "{";
-                  choice_arm_call (p, pc, this);
+                  sequence_next_call (ps, this);
                   os << "}";
                 }
               }
@@ -994,29 +1065,49 @@ namespace CXX
             for (Compositor::ContainsIterator ci (c.contains_begin ());
                  ci != c.contains_end (); ++ci)
             {
-              Choice* pc = dynamic_cast<Choice*> (&ci->particle ());
+              SemanticGraph::Particle* p (&ci->particle ());
 
-              if (pc && pc->min () == 1 && pc->max () == 1 &&
-                  pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+              if (Choice* pc = dynamic_cast<Choice*> (p))
               {
-                // This is a required choice with effective-min == 0 (i.e.,
-                // it contains optional particle). We need to call the arm
-                // callback with that optional particle's tag.
+                if (pc->min () != 0 &&
+                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                {
+                  // This is a required choice with effective-min == 0 (i.e.,
+                  // it contains optional particle). We need to call the arm
+                  // callback with that optional particle's tag.
+                  //
+                  OptionalParticleTest test (p);
+                  test.traverse (*pc);
+
+                  if (p)
+                  {
+                    UnsignedLong state (
+                      pc->context ().get<UnsignedLong> ("p:state"));
+
+                    os << endl
+                       << "if (s > " << state << "UL)" << endl
+                       << "{";
+                    choice_arm_call (p, pc, this);
+                    os << "}";
+                  }
+                }
+              }
+              else if (Sequence* ps = dynamic_cast<Sequence*> (p))
+              {
+                // This is a required sequence with effective-min == 0 (i.e.,
+                // it contains optional particle) and maxOccurs > 1. We need
+                // to call the next callback.
                 //
-
-                SemanticGraph::Particle* p (0);
-                OptionalParticleTest test (p);
-                test.traverse (*pc);
-
-                if (p)
+                if (ps->min () != 0 && max != 1 &&
+                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
-                    pc->context ().get<UnsignedLong> ("p:state"));
+                    ps->context ().get<UnsignedLong> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
                      << "{";
-                  choice_arm_call (p, pc, this);
+                  sequence_next_call (ps, this);
                   os << "}";
                 }
               }
@@ -1069,6 +1160,7 @@ namespace CXX
              << "vd.count = 0;"
              << endl;
 
+          Sequence* ps (0);
           Choice* pc = dynamic_cast<Choice*> (&c);
 
           if (pc)
@@ -1078,12 +1170,12 @@ namespace CXX
           }
           else
           {
-            Sequence& s (dynamic_cast<Sequence&> (c));
+            ps = &dynamic_cast<Sequence&> (c);
 
             if (max != 1)
-              os << "this->" << enext (s) << " ();";
+              os << "this->" << enext (*ps) << " ();";
             else if (c.min () == 0)
-              os << "this->" << epresent (s) << " ();";
+              os << "this->" << epresent (*ps) << " ();";
           }
 
           os << "this->" << func << n << " (vd.state, vd.count, ns, n, " <<
@@ -1098,18 +1190,48 @@ namespace CXX
              << "{"
              << "assert (start);"; // Assuming well-formed XML
 
-          if (pc && c.min () == 1 && min == 0 && max == 1)
+          if (pc)
           {
-            // This is a required choice with effective-min == 0 (i.e.,
-            // it contains optional particle). We need to call the arm
-            // callback with that optional particle's tag.
-            //
-            SemanticGraph::Particle* p (0);
-            OptionalParticleTest test (p);
-            test.traverse (*pc);
+            if (c.min () != 0 && min == 0)
+            {
+              // This is a required choice with effective-min == 0 (i.e.,
+              // it contains optional particle). We need to call the arm
+              // callback with that optional particle's tag.
+              //
+              SemanticGraph::Particle* p (0);
+              OptionalParticleTest test (p);
+              test.traverse (*pc);
 
-            if (p)
-              choice_arm_call (p, pc, this);
+              if (p)
+              {
+                // For a sequence only make the call if there were no
+                // elements.
+                //
+                if (max != 1)
+                  os << "if (count == 0)"
+                     << "{";
+                choice_arm_call (p, pc, this);
+                if (max != 1)
+                  os << "}";
+              }
+            }
+          }
+          else
+          {
+            if (ps->min () != 0 && min == 0 && max != 1)
+            {
+              // This is a required sequence with effective-min == 0 (i.e.,
+              // it contains optional particle) and maxOccurs > 1. We need
+              // to call the next callback.
+              //
+
+              // Make the call if there were no elements.
+              //
+              os << "if (count == 0)"
+                 << "{";
+              sequence_next_call (ps, this);
+              os << "}";
+            }
           }
 
           // Check if min cardinality requirements have been met. Since
@@ -1522,29 +1644,49 @@ namespace CXX
             for (Compositor::ContainsIterator ci (c.contains_begin ());
                  ci != c.contains_end (); ++ci)
             {
-              Choice* pc = dynamic_cast<Choice*> (&ci->particle ());
+              SemanticGraph::Particle* p (&ci->particle ());
 
-              if (pc && pc->min () == 1 && pc->max () == 1 &&
-                  pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+              if (Choice* pc = dynamic_cast<Choice*> (p))
               {
-                // This is a required choice with effective-min == 0 (i.e.,
-                // it contains optional particle). We need to call the arm
-                // callback with that optional particle's tag.
+                if (pc->min () != 0 &&
+                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                {
+                  // This is a required choice with effective-min == 0 (i.e.,
+                  // it contains optional particle). We need to call the arm
+                  // callback with that optional particle's tag.
+                  //
+                  OptionalParticleTest test (p);
+                  test.traverse (*pc);
+
+                  if (p)
+                  {
+                    UnsignedLong state (
+                      pc->context ().get<UnsignedLong> ("p:state"));
+
+                    os << endl
+                       << "if (s > " << state << "UL)" << endl
+                       << "{";
+                    choice_arm_call (p, pc, this);
+                    os << "}";
+                  }
+                }
+              }
+              else if (Sequence* ps = dynamic_cast<Sequence*> (p))
+              {
+                // This is a required sequence with effective-min == 0 (i.e.,
+                // it contains optional particle) and maxOccurs > 1. We need
+                // to call the next callback.
                 //
-
-                SemanticGraph::Particle* p (0);
-                OptionalParticleTest test (p);
-                test.traverse (*pc);
-
-                if (p)
+                if (ps->min () != 0 && max != 1 &&
+                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
-                    pc->context ().get<UnsignedLong> ("p:state"));
+                    ps->context ().get<UnsignedLong> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
                      << "{";
-                  choice_arm_call (p, pc, this);
+                  sequence_next_call (ps, this);
                   os << "}";
                 }
               }
@@ -1589,6 +1731,7 @@ namespace CXX
              << "vd->count = 0;"
              << endl;
 
+          Sequence* ps (0);
           Choice* pc (dynamic_cast<Choice*> (&c));
 
           if (pc)
@@ -1598,12 +1741,12 @@ namespace CXX
           }
           else
           {
-            Sequence& s (dynamic_cast<Sequence&> (c));
+            ps = &dynamic_cast<Sequence&> (c);
 
             if (max != 1)
-              os << "this->" << enext (s) << " ();";
+              os << "this->" << enext (*ps) << " ();";
             else if (c.min () == 0)
-              os << "this->" << epresent (s) << " ();";
+              os << "this->" << epresent (*ps) << " ();";
           }
 
           os << "this->" << func << n << " (vd->state, vd->count, ns, n, " <<
@@ -1616,18 +1759,48 @@ namespace CXX
           os << "else"
              << "{";
 
-          if (pc && c.min () == 1 && min == 0 && max == 1)
+          if (pc)
           {
-            // This is a required choice with effective-min == 0 (i.e.,
-            // it contains optional particle). We need to call the arm
-            // callback with that optional particle's tag.
-            //
-            SemanticGraph::Particle* p (0);
-            OptionalParticleTest test (p);
-            test.traverse (*pc);
+            if (c.min () != 0 && min == 0)
+            {
+              // This is a required choice with effective-min == 0 (i.e.,
+              // it contains optional particle). We need to call the arm
+              // callback with that optional particle's tag.
+              //
+              SemanticGraph::Particle* p (0);
+              OptionalParticleTest test (p);
+              test.traverse (*pc);
 
-            if (p)
-              choice_arm_call (p, pc, this);
+              if (p)
+              {
+                // For a sequence only make the call if there were no
+                // elements.
+                //
+                if (max != 1)
+                  os << "if (vd->count == 0)"
+                     << "{";
+                choice_arm_call (p, pc, this);
+                if (max != 1)
+                  os << "}";
+              }
+            }
+          }
+          else
+          {
+            if (ps->min () != 0 && min == 0 && max != 1)
+            {
+              // This is a required sequence with effective-min == 0 (i.e.,
+              // it contains optional particle) and maxOccurs > 1. We need
+              // to call the next callback.
+              //
+
+              // Make the call if there were no elements.
+              //
+              os << "if (vd->count == 0)"
+                 << "{";
+              sequence_next_call (ps, this);
+              os << "}";
+            }
           }
 
           // Check if min cardinality requirements have been met. Since
@@ -1752,6 +1925,7 @@ namespace CXX
         traverse (SemanticGraph::Compositor& c) // Choice and sequence.
         {
           using SemanticGraph::Choice;
+          using SemanticGraph::Sequence;
 
           UnsignedLong min (
             c.context ().get<UnsignedLong> ("p:effective-min"));
@@ -1780,24 +1954,43 @@ namespace CXX
              << "vd = vs.data + (--vs.size - 1);" // pop
              << "}";
 
-
-          Choice* pc (dynamic_cast<Choice*> (&c));
-
-          if (pc && c.min () == 1 && min == 0 && c.max () == 1)
+          if (Choice* pc = dynamic_cast<Choice*> (&c))
           {
-            // This is a required choice with effective-min == 0 (i.e.,
-            // it contains optional particle). We need to call the arm
-            // callback with that optional particle's tag.
-            //
-            SemanticGraph::Particle* p (0);
-            OptionalParticleTest test (p);
-            test.traverse (*pc);
-
-            if (p)
+            if (c.min () != 0 && min == 0)
             {
+              // This is a required choice with effective-min == 0 (i.e.,
+              // it contains optional particle). We need to call the arm
+              // callback with that optional particle's tag.
+              //
+              SemanticGraph::Particle* p (0);
+              OptionalParticleTest test (p);
+              test.traverse (*pc);
+
+              if (p)
+              {
+                os << "if (vd->count == 0)" << endl
+                   << "{";
+                choice_arm_call (p, pc, this);
+                os << "}";
+              }
+            }
+          }
+          else
+          {
+            Sequence* ps = &dynamic_cast<Sequence&> (c);
+
+            if (ps->min () != 0 && min == 0 && ps->max () != 1)
+            {
+              // This is a required sequence with effective-min == 0 (i.e.,
+              // it contains optional particle) and maxOccurs > 1. We need
+              // to call the next callback.
+              //
+
+              // Make the call if there were no elements.
+              //
               os << "if (vd->count == 0)" << endl
                  << "{";
-              choice_arm_call (p, pc, this);
+              sequence_next_call (ps, this);
               os << "}";
             }
           }
