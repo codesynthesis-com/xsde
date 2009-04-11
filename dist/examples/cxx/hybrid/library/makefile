@@ -38,7 +38,8 @@ library-simpl.o: library-simpl.cxx
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
 %-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
---generate-parser --generate-serializer --generate-aggregate $<
+--generate-parser --generate-serializer --generate-aggregate \
+--omit-default-attributes $<
 
 # Test.
 #

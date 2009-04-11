@@ -37,7 +37,8 @@ library-pskel.cxx library-pskel.hxx library-pimpl.cxx library-pimpl.hxx \
 library-sskel.cxx library-sskel.hxx library-simpl.cxx library-simpl.hxx \
 : library.xsd
 	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
---generate-parser --generate-serializer --generate-aggregate library.xsd
+--generate-parser --generate-serializer --generate-aggregate \
+--omit-default-attributes library.xsd
 
 # Test.
 #

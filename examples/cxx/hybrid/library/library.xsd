@@ -53,7 +53,7 @@ copyright : not copyrighted - public domain
       <xsd:element name="genre" type="lib:genre"/>
       <xsd:element name="author" type="lib:author" maxOccurs="unbounded"/>
     </xsd:sequence>
-    <xsd:attribute name="available" type="xsd:boolean" use="required"/>
+    <xsd:attribute name="available" type="xsd:boolean" default="true"/>
   </xsd:complexType>
 
 

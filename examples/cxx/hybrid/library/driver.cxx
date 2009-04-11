@@ -99,7 +99,6 @@ main (int argc, char* argv[])
     //
     {
       auto_ptr<book> b (new book);
-      b->available (true);
 
       isbn n;
       n.base_value (679776443);
