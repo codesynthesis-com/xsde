@@ -785,7 +785,7 @@ namespace CXX
                 // it contains optional particle) and maxOccurs > 1. We need
                 // to call the next callback.
                 //
-                if (ps->min () != 0 && max != 1 &&
+                if (ps->min () != 0 && ps->max () != 1 &&
                     ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
@@ -1098,7 +1098,7 @@ namespace CXX
                 // it contains optional particle) and maxOccurs > 1. We need
                 // to call the next callback.
                 //
-                if (ps->min () != 0 && max != 1 &&
+                if (ps->min () != 0 && ps->max () != 1 &&
                     ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
@@ -1677,7 +1677,7 @@ namespace CXX
                 // it contains optional particle) and maxOccurs > 1. We need
                 // to call the next callback.
                 //
-                if (ps->min () != 0 && max != 1 &&
+                if (ps->min () != 0 && ps->max () != 1 &&
                     ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
                 {
                   UnsignedLong state (
