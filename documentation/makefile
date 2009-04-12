@@ -26,8 +26,8 @@ $(dist-common):
 	$(call install-data,$(src_base)/xsde.xhtml,$(dist_prefix)/documentation/xsde.xhtml)
 	$(call install-data,$(src_base)/xsde.1,$(dist_prefix)/documentation/xsde.1)
 
-$(dist): $(dist-common) $(src_base)/cxx/.dist
-$(dist-win): $(dist-common) $(src_base)/cxx/.dist
+$(dist): $(dist-common) $(out_base)/cxx/.dist
+$(dist-win): $(dist-common) $(out_base)/cxx/.dist
 
 
 # Install.

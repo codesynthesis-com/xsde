@@ -51,7 +51,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 #
 $(out_base)/xml-schema%hxx       \
 $(out_base)/xml-schema-pskel%hxx \
-$(out_base)/xml-schema-sskel%hxx: $(out_root)/xsde/xsde
+$(out_base)/xml-schema-sskel%hxx: $(out_root)/xsde/xsde | $(out_base)/.
 	$(call message,xsde $(src_base)/xml-schema.xsd,\
 $(out_root)/xsde/xsde cxx-hybrid --output-dir $(out_base) \
 --generate-xml-schema --generate-parser --generate-serializer \

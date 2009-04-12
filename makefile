@@ -70,7 +70,7 @@ $(dist-win): $(dist-common)                      \
              $(out_base)/xsde/.dist-win          \
              $(out_base)/libxsde/.dist-win       \
              $(out_base)/examples/.dist-win      \
-             $(src_base)/documentation/.dist-win
+             $(out_base)/documentation/.dist-win
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2.txt)
 	$(call message,,unix2dos $(dist_prefix)/GPLv2.txt)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE.txt)

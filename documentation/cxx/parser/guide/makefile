@@ -20,10 +20,11 @@ $(default): $(out_base)/cxx-parser-e-guide.ps \
 
 $(out_base)/cxx-parser-e-guide.ps: $(src_base)/index.xhtml   \
                                    $(src_base)/figure-1.png  \
-                                   $(src_base)/guide.html2ps
+                                   $(src_base)/guide.html2ps \
+                                   | $(out_base)/.
 	$(call message,html2ps $<,html2ps -f $(src_base)/guide.html2ps -o $@ $<)
 
-$(out_base)/cxx-parser-e-guide.pdf: $(out_base)/cxx-parser-e-guide.ps
+$(out_base)/cxx-parser-e-guide.pdf: $(out_base)/cxx-parser-e-guide.ps | $(out_base)/.
 	$(call message,ps2pdf $<,ps2pdf14 $< $@)
 
 # Dist.
