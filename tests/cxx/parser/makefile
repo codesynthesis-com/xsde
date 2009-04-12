@@ -24,7 +24,9 @@ endif
 endif # exceptions
 
 ifeq ($(xsde_polymorphic),y)
+ifeq ($(xsde_reuse_style),tiein)
 tests += polymorphism
+endif
 endif
 
 tests += reset

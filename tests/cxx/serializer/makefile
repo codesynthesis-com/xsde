@@ -30,7 +30,9 @@ union
 endif
 
 ifeq ($(xsde_polymorphic),y)
+ifeq ($(xsde_reuse_style),tiein)
 tests += polymorphism
+endif
 endif
 
 endif # xsde_iostream
