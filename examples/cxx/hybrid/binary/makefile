@@ -11,7 +11,9 @@ build_examples :=
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
 
+ifeq ($(xsde_stl),y)
 build_examples += custom
+endif
 
 ifeq ($(xsde_cdr),y)
 build_examples += cdr

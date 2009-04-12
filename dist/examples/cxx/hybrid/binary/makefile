@@ -7,7 +7,9 @@ dirs :=
 ifeq ($(XSDE_IOSTREAM),y)
 ifeq ($(XSDE_EXCEPTIONS),y)
 
+ifeq ($(XSDE_STL),y)
 dirs += custom
+endif
 
 ifeq ($(XSDE_CDR),y)
 dirs += cdr
