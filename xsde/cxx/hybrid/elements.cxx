@@ -62,11 +62,14 @@ namespace CXX
 
       string_type = L"::xsde::cxx::ro_string";
 
-      pod_seq_ = xs_ns + L"::pod_sequence";
-      fix_seq_ = xs_ns + L"::fix_sequence";
-      var_seq_ = xs_ns + L"::var_sequence";
-      str_seq_ = xs_ns + L"::string_sequence";
-      data_seq_ = xs_ns + L"::data_sequence";
+      // Can't use names from the xml_schema namespace because of
+      // eVC++ 4.0.
+      //
+      pod_seq_ = L"::xsde::cxx::hybrid::pod_sequence";
+      fix_seq_ = L"::xsde::cxx::hybrid::fix_sequence";
+      var_seq_ = L"::xsde::cxx::hybrid::var_sequence";
+      str_seq_ = L"::xsde::cxx::string_sequence";
+      data_seq_ = L"::xsde::cxx::hybrid::data_sequence";
 
       if (!ostreams.empty ())
       {

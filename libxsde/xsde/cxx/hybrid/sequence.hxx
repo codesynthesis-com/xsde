@@ -830,12 +830,6 @@ namespace xsde
 #endif
       };
 
-
-      // String sequence.
-      //
-      using cxx::string_sequence;
-
-
       // Custom data sequence.
       //
       class data_sequence: public sequence_base

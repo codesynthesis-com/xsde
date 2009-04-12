@@ -17,6 +17,7 @@
 #include <xsde/cxx/hybrid/sequence.hxx>
 
 using std::string;
+using namespace xsde::cxx;
 using namespace xsde::cxx::hybrid;
 
 void data_destructor (void* p, size_t)

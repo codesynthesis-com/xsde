@@ -599,7 +599,7 @@ namespace CXX
              << "using ::xsde::cxx::hybrid::pod_sequence;"
              << "using ::xsde::cxx::hybrid::fix_sequence;"
              << "using ::xsde::cxx::hybrid::var_sequence;"
-             << "using ::xsde::cxx::hybrid::string_sequence;"
+             << "using ::xsde::cxx::string_sequence;"
              << "using ::xsde::cxx::hybrid::data_sequence;";
 
           // Data representation stream types.
