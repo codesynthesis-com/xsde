@@ -540,17 +540,20 @@ namespace CXX
         return c.context ().get<Boolean> ("fixed");
       }
 
-      Boolean
+      static Boolean
       recursive (SemanticGraph::Type& t)
       {
         return t.context ().count ("recursive");
       }
 
-      Boolean
+      static Boolean
       polymorphic (SemanticGraph::Type& t)
       {
         return t.context ().count ("polymorphic");
       }
+
+      static Boolean
+      recursive_base (SemanticGraph::Complex& c);
 
     public:
       String

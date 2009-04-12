@@ -435,6 +435,24 @@ namespace CXX
         : ename_custom (t);
     }
 
+    Boolean Context::
+    recursive_base (SemanticGraph::Complex& c)
+    {
+      using namespace SemanticGraph;
+
+      for (Complex* p (&c); p && p->inherits_p ();)
+      {
+        Type& t (p->inherits ().base ());
+
+        if (recursive (t))
+          return true;
+
+        p = dynamic_cast<Complex*> (&t);
+      }
+
+      return false;
+    }
+
     Void Context::
     close_ns ()
     {

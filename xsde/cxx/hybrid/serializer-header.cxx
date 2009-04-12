@@ -494,14 +494,21 @@ namespace CXX
               os << "virtual void" << endl
                  << "post ();"
                  << endl;
-
-              // reset
-              //
-              if (reset)
-                os << "virtual void" << endl
-                   << "_reset ();"
-                   << endl;
             }
+
+            // reset
+            //
+            if (reset && (rec || (mixin && recursive_base (c))))
+            {
+              // If we are using mixin and this type has a base with _reset(),
+              // then we need to provide _reset() in the whole hierarchy to
+              // resolve an ambiguity.
+              //
+              os << "virtual void" << endl
+                 << "_reset ();"
+                 << endl;
+            }
+
 
             if (tiein && hb)
               os << (tiein ? "public:" : "protected:") << endl

@@ -1222,28 +1222,28 @@ namespace CXX
             }
 
             os << "}";
+          }
 
-            // reset
-            //
-            if (reset)
-            {
-              os << "void " << name << "::" << endl
-                 << "_reset ()"
-                 << "{";
+          // reset
+          //
+          if (reset && (rec || (mixin && recursive_base (c))))
+          {
+            os << "void " << name << "::" << endl
+               << "_reset ()"
+               << "{";
 
-              if (mixin  && hb)
-                os << esimpl (c);
-              else
-                os << esskel (c);
+            if (mixin  && hb)
+              os << esimpl (c.inherits ().base ()) << "::_reset ();";
 
-              os << "::_reset ();";
+            os << esskel (c) << "::_reset ();";
 
+            if (rec)
               os << "for (; !this->" << state << ".empty (); " <<
                 "this->" << state << ".pop ()) ;"; // Space is for g++-4.3.
 
-              os << "}";
-            }
+            os << "}";
           }
+
         }
 
       private:

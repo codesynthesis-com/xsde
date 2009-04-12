@@ -1100,11 +1100,9 @@ namespace CXX
                  << "{";
 
               if (mixin  && hb)
-                os << epimpl (c); //@@ fq-name
-              else
-                os << epskel (c); //@@ fq-name
+                os << epimpl (c.inherits ().base ()) << "::_reset ();";
 
-              os << "::_reset ();"
+              os << epskel (c) << "::_reset ();"
                  << endl;
 
               if (!rec)
