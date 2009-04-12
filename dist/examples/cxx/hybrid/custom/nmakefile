@@ -7,7 +7,9 @@ dirs =
 !if "$(XSDE_IOSTREAM)" == "y"
 !if "$(XSDE_EXCEPTIONS)" == "y"
 
+!if "$(XSDE_STL)" == "y"
 dirs = $(dirs) wildcard
+!endif
 
 !endif
 !endif
