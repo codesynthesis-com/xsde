@@ -145,7 +145,14 @@ XSDE_SERIALIZER_IMAP_BUCKETS = 97
 
 # Options tuning depending on the features selected.
 #
+
 !if "$(XSDE_EXCEPTIONS)" == "y"
 CFLAGS   = $(CFLAGS) /EHs
 CXXFLAGS = $(CXXFLAGS) /EHs
+!endif
+
+# Some polymorphism examples use dynamic_cast.
+#
+!if "$(XSDE_POLYMORPHIC)" == "y"
+CXXFLAGS = $(CXXFLAGS) /GR
 !endif
