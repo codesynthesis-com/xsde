@@ -57,7 +57,7 @@ $(dist): $(dist-common)                  \
          $(out_base)/xsde/.dist          \
          $(out_base)/libxsde/.dist       \
          $(out_base)/examples/.dist      \
-         $(src_base)/documentation/.dist
+         $(out_base)/documentation/.dist
 	$(call install-dir,$(src_base)/dist/,$(dist_prefix))
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE)
