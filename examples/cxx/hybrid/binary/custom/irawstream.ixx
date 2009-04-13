@@ -11,7 +11,7 @@ irawstream (const xml_schema::buffer& buf, size_t start)
 inline void irawstream::
 operator>> (bool& x)
 {
-  x = *align (1, 1);
+  x = *align (1, 1) ? 1 : 0; // Suppress VC++ "forcing value" warning.
 }
 
 inline void irawstream::
