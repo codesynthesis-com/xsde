@@ -9,6 +9,12 @@ namespace xsde
   {
     namespace hybrid
     {
+      extern "C"
+      typedef  bool_t (*oxdr_longlong_p) (XDR*, long long*);
+
+      extern "C"
+      typedef  bool_t (*oxdr_u_longlong_p) (XDR*, unsigned long long*);
+
       inline oxdrstream::
       oxdrstream (XDR& xdr)
           : xdr_ (xdr)
@@ -35,9 +41,9 @@ namespace xsde
       inline void oxdrstream::
       operator<< (signed char x)
       {
-        int8_t v = static_cast<int8_t> (x);
+        char v = static_cast<char> (x);
 
-        if (!xdr_int8_t (&xdr_, &v))
+        if (!xdr_char (&xdr_, &v))
           throw xdr_exception ();
       }
 
@@ -45,63 +51,53 @@ namespace xsde
       inline void oxdrstream::
       operator<< (unsigned char x)
       {
-        uint8_t v = static_cast<uint8_t> (x);
-
-        if (!xdr_uint8_t (&xdr_, &v))
+        if (!xdr_u_char (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (short x)
       {
-        int16_t v = static_cast<int16_t> (x);
-
-        if (!xdr_int16_t (&xdr_, &v))
+        if (!xdr_short (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (unsigned short x)
       {
-        uint16_t v = static_cast<uint16_t> (x);
-
-        if (!xdr_uint16_t (&xdr_, &v))
+        if (!xdr_u_short (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (int x)
       {
-        int32_t v = static_cast<int32_t> (x);
-
-        if (!xdr_int32_t (&xdr_, &v))
+        if (!xdr_int (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (unsigned int x)
       {
-        uint32_t v = static_cast<uint32_t> (x);
-
-        if (!xdr_uint32_t (&xdr_, &v))
+        if (!xdr_u_int (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (long x)
       {
-        int32_t v = static_cast<int32_t> (x);
+        int v = static_cast<int> (x);
 
-        if (!xdr_int32_t (&xdr_, &v))
+        if (!xdr_int (&xdr_, &v))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (unsigned long x)
       {
-        uint32_t v = static_cast<uint32_t> (x);
+        unsigned int v = static_cast<unsigned int> (x);
 
-        if (!xdr_uint32_t (&xdr_, &v))
+        if (!xdr_u_int (&xdr_, &v))
           throw xdr_exception ();
       }
 
@@ -109,18 +105,20 @@ namespace xsde
       inline void oxdrstream::
       operator<< (long long x)
       {
-        int64_t v = static_cast<int64_t> (x);
+        oxdr_longlong_p f =
+          reinterpret_cast<oxdr_longlong_p> (::xdr_longlong_t);
 
-        if (!xdr_int64_t (&xdr_, &v))
+        if (!f (&xdr_, &x))
           throw xdr_exception ();
       }
 
       inline void oxdrstream::
       operator<< (unsigned long long x)
       {
-        uint64_t v = static_cast<uint64_t> (x);
+        oxdr_u_longlong_p f =
+          reinterpret_cast<oxdr_u_longlong_p> (::xdr_u_longlong_t);
 
-        if (!xdr_uint64_t (&xdr_, &v))
+        if (!f (&xdr_, &x))
           throw xdr_exception ();
       }
 #endif
@@ -130,9 +128,9 @@ namespace xsde
       {
         // Assume size is 32-bit.
         //
-        uint32_t v = static_cast<uint32_t> (x.s_);
+        unsigned int v = static_cast<unsigned int> (x.s_);
 
-        if (!xdr_uint32_t (&xdr_, &v))
+        if (!xdr_u_int (&xdr_, &v))
           throw xdr_exception ();
       }
 
@@ -172,73 +170,71 @@ namespace xsde
       inline bool oxdrstream::
       operator<< (signed char x)
       {
-        int8_t v = static_cast<int8_t> (x);
-        return xdr_int8_t (&xdr_, &v);
+        char v = static_cast<char> (x);
+        return xdr_char (&xdr_, &v);
       }
-
 
       inline bool oxdrstream::
       operator<< (unsigned char x)
       {
-        uint8_t v = static_cast<uint8_t> (x);
-        return xdr_uint8_t (&xdr_, &v);
+        return xdr_u_char (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (short x)
       {
-        int16_t v = static_cast<int16_t> (x);
-        return xdr_int16_t (&xdr_, &v);
+        return xdr_short (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (unsigned short x)
       {
-        uint16_t v = static_cast<uint16_t> (x);
-        return xdr_uint16_t (&xdr_, &v);
+        return xdr_u_short (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (int x)
       {
-        int32_t v = static_cast<int32_t> (x);
-        return xdr_int32_t (&xdr_, &v);
+        return xdr_int (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (unsigned int x)
       {
-        uint32_t v = static_cast<uint32_t> (x);
-        return xdr_uint32_t (&xdr_, &v);
+        return xdr_u_int (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (long x)
       {
-        int32_t v = static_cast<int32_t> (x);
-        return xdr_int32_t (&xdr_, &v);
+        int v = static_cast<int> (x);
+        return xdr_int (&xdr_, &v);
       }
 
       inline bool oxdrstream::
       operator<< (unsigned long x)
       {
-        uint32_t v = static_cast<uint32_t> (x);
-        return xdr_uint32_t (&xdr_, &v);
+        unsigned int v = static_cast<unsigned int> (x);
+        return xdr_u_int (&xdr_, &v);
       }
 
 #ifdef XSDE_LONGLONG
       inline bool oxdrstream::
       operator<< (long long x)
       {
-        int64_t v = static_cast<int64_t> (x);
-        return xdr_int64_t (&xdr_, &v);
+        oxdr_longlong_p f =
+          reinterpret_cast<oxdr_longlong_p> (::xdr_longlong_t);
+
+        return f (&xdr_, &x);
       }
 
       inline bool oxdrstream::
       operator<< (unsigned long long x)
       {
-        uint64_t v = static_cast<uint64_t> (x);
-        return xdr_uint64_t (&xdr_, &v);
+        oxdr_u_longlong_p f =
+          reinterpret_cast<oxdr_u_longlong_p> (::xdr_u_longlong_t);
+
+        return f (&xdr_, &x);
       }
 #endif
 
@@ -247,8 +243,8 @@ namespace xsde
       {
         // Assume size is 32-bit.
         //
-        uint32_t v = static_cast<uint32_t> (x.s_);
-        return xdr_uint32_t (&xdr_, &v);
+        unsigned int v = static_cast<unsigned int> (x.s_);
+        return xdr_u_int (&xdr_, &v);
       }
 
       inline bool oxdrstream::

@@ -2,8 +2,6 @@ root := ../../../../..
 
 include $(root)/build/cxx/rules.make
 
-override LIBS += -lnsl
-
 # Build.
 #
 EXTRA_CPPFLAGS := -I$(root)/libxsde
