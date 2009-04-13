@@ -5,11 +5,11 @@
 
 # Toolchain.
 #
-CC       := ntox86-gcc-2.95.3
+CC       := ntox86-gcc-3.3.5
 CFLAGS   := -W -Wall -O3
 CPPFLAGS :=
 
-CXX      := ntox86-g++-2.95.3
+CXX      := ntox86-g++-3.3.5
 CXXFLAGS := -W -Wall -O3
 
 LD       := $(CXX)
