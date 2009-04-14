@@ -107,8 +107,18 @@ XSDE_CDR = n
 # Set to 'y' if you want support for serialization of the C++/Hybrid
 # object model to the XDR (eXternal Data Representation) binary format.
 # This functionality requires the XDR API which is available out of the
-# box on most POSIX systems as part of Sun RPC. On other platforms you
-# may need to install a third-party library which provides the XDR API.
+# box on most POSIX systems as part of Sun RPC. On some systems (e.g.,
+# (Linux, Mac OS X, iPhone OS) this API is part of libc in which case
+# you don't need to link anything extra. On other platforms, the XDR
+# API may require linking to another library (which you can add to the
+# LIBS variable above), such as -lrpc (QNX, LynxOS) or -lnsl. On non-
+# POSIX platforms you may need to install a third-party library which
+# provides the XDR API. Also note that some older versions of the API
+# (e.g., those found on LynxOS) may not support serialization of the
+# long long type. In this case you will get a compilation error saying
+# that xdr_longlong_t and xdr_u_longlong_t are not declared. One way to
+# resolve this is to disable the use of the long long type in XSD/e (see
+# XSDE_LONGLONG above).
 #
 XSDE_XDR = n
 
