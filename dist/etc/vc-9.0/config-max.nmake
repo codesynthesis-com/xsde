@@ -109,7 +109,7 @@ XSDE_CDR = n
 # object model to the XDR (eXternal Data Representation) binary format.
 # This functionality requires the XDR API which is available out of the
 # box on most POSIX systems as part of Sun RPC. On some systems (e.g.,
-# (Linux, Mac OS X, iPhone OS) this API is part of libc in which case
+# (Linux, VxWorks, iPhone OS) this API is part of libc in which case
 # you don't need to link anything extra. On other platforms, the XDR
 # API may require linking to another library (which you can add to the
 # LIBS variable above), such as -lrpc (QNX, LynxOS) or -lnsl. On non-
