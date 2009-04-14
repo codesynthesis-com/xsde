@@ -7,7 +7,7 @@
 #
 CC       := ccpentium
 CFLAGS   := -W -Wall -O3
-CPPFLAGS :=
+CPPFLAGS := -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip
 
 CXX      := ccpentium
 CXXFLAGS := -W -Wall -O3

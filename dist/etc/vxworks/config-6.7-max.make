@@ -1,4 +1,4 @@
-# Sample configuration file for VxWorks 6.4 on Pentium using the
+# Sample configuration file for VxWorks 6.7 on Pentium using the
 # GNU toolchain. This configuration enables STL, iostream, and
 # C++ exceptions which can be disabled if not required.
 #
@@ -10,17 +10,17 @@
 # $ cd examples/cxx/hybrid/library/
 # $ make
 # $ mv driver partial-image.o
-# $ export WIND_BASE=.../vxworks-6.4
+# $ export WIND_BASE=.../vxworks-6.7
 # $ nmpentium *.o | tclsh $WIND_BASE/host/resource/hutils/tcl/munch.tcl -c pentium > ctdt.c
-# $ ccpentium -O3 -c -fdollars-in-identifiers -fno-zero-initialized-in-bss -I$WIND_BASE/target/h -I$WIND_BASE/target/h/wrn/coreip ctdt.c -o ctdt.o
-# $ ccpentium -O3 partial-image.o ctdt.o -o driver
+# $ ccpentium -O3 -c -fdollars-in-identifiers -fno-zero-initialized-in-bss -I$WIND_BASE/target/h -I$WIND_BASE/target/h/wrn/coreip -D_VSB_CONFIG_FILE=\"$WIND_BASE/target/lib/h/config/vsbConfig.h\" ctdt.c -o ctdt.o
+# $ ccpentium -O3 -r -nostdlib -T $WIND_BASE/target/h/tool/gnu/ldscripts/link.OUT partial-image.o ctdt.o -o driver
 #
 
 # Toolchain.
 #
 CC       := ccpentium
 CFLAGS   := -W -Wall -O3
-CPPFLAGS := -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip
+CPPFLAGS := -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip -D_VSB_CONFIG_FILE=\"$(WIND_BASE)/target/lib/h/config/vsbConfig.h\"
 
 CXX      := ccpentium
 CXXFLAGS := -W -Wall -O3

@@ -1,26 +1,13 @@
-# Sample configuration file for VxWorks 6.4 on Pentium using the
-# GNU toolchain. This configuration enables STL, iostream, and
-# C++ exceptions which can be disabled if not required.
-#
-# Note that iostream support requires static initialization so
-# you will need to 'munch' the examples (and your application)
-# before you can run them. Here are the sample step that are
-# needed to run the C++/Hybrid 'library' example:
-#
-# $ cd examples/cxx/hybrid/library/
-# $ make
-# $ mv driver partial-image.o
-# $ export WIND_BASE=.../vxworks-6.4
-# $ nmpentium *.o | tclsh $WIND_BASE/host/resource/hutils/tcl/munch.tcl -c pentium > ctdt.c
-# $ ccpentium -O3 -c -fdollars-in-identifiers -fno-zero-initialized-in-bss -I$WIND_BASE/target/h -I$WIND_BASE/target/h/wrn/coreip ctdt.c -o ctdt.o
-# $ ccpentium -O3 partial-image.o ctdt.o -o driver
+# Sample configuration file for VxWorks 6.7 on Pentium using the
+# GNU toolchain. This configuration disables STL, iostream, and
+# C++ exceptions which can be enabled if required.
 #
 
 # Toolchain.
 #
 CC       := ccpentium
 CFLAGS   := -W -Wall -O3
-CPPFLAGS := -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip
+CPPFLAGS := -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip -D_VSB_CONFIG_FILE=\"$(WIND_BASE)/target/lib/h/config/vsbConfig.h\"
 
 CXX      := ccpentium
 CXXFLAGS := -W -Wall -O3
@@ -64,18 +51,18 @@ XSDE_BYTEORDER  := l
 # Set to 'n' if you don't have STL (std::string, etc.). Also don't
 # forget to use the --no-stl option when compiling your schemas.
 #
-XSDE_STL        := y
+XSDE_STL        := n
 
 
 # Set to 'n' if you don't have iostream.
 #
-XSDE_IOSTREAM   := y
+XSDE_IOSTREAM   := n
 
 
 # Set to 'n' if you don't have C++ exceptions. Also don't forget to
 # use the --no-exceptions option when compiling your schemas.
 #
-XSDE_EXCEPTIONS := y
+XSDE_EXCEPTIONS := n
 
 
 # Set to 'n' if your platform doesn't have the "long long int" type or
