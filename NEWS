@@ -3,46 +3,47 @@ Version 3.1.0
  C++/Hybrid
 
   * Support for XML Schema polymorphism. The new --generate-polymorphic
-    option triggers generation of polymorphism-aware code. This option
+    option triggers the generation of polymorphism-aware code. This option
     should be used on XML vocabularies which use xsi:type and/or
     substitution groups. For more information see Section 3.7, "Support
     for Polymorphism" and Section 4.9, "Polymorphic Object Models" in
-    the Embedded C++/Parser Mapping Getting Started Guide we well as
+    the Embedded C++/Parser Mapping Getting Started Guide as well as
     the polymorphism and polyroot examples in the examples/cxx/hybrid/
     directory.
 
   * Support for saving the object model to and loading it from binary
     representations. The new --generate--insertion and --generate-extraction
-    options trigger generation of data representation stream insertion and
-    extraction operators, respectively. The XSD/e runtime provides support
-    for the ACE CDR streams and XDR API that is part of Sun RPC. Custom
-    representations can supported by implementing insertion and extraction
-    operators for the built-in XML Schema types and sequence templates. For
-    more information, see Chapter 7, "Binary Representation" in the Getting
-    Started Guide as well as examples in the examples/cxx/hybrid/binary/
-    directory.
+    options trigger the generation of data representation stream insertion
+    and extraction operators, respectively. The XSD/e runtime provides
+    support for the ACE CDR streams and XDR API that is part of Sun RPC.
+    Custom representations can be supported by implementing insertion and
+    extraction operators for the built-in XML Schema types and sequence
+    templates. For more information, see Chapter 7, "Binary Representation"
+    in the Getting Started Guide as well as examples in the 
+    examples/cxx/hybrid/binary/ directory.
 
   * Support for attributes with default and fixed values. For details see
     Section 4.3, "Attributes and Elements" in the Getting Started Guide.
     Use the new --omit-default-attributes option to omit the attributes
     with default and fixed values from serialized XML documents.
 
-  * New option, --custom-type, allows customization of the object model
+  * New option, --custom-type, allows the customization of the object model
     classes. You have the option of either basing your custom implementation
     on the generated version or providing your own implementation from
     scratch. For details see Section 4.8, "Customizing the Object Model"
     in the Getting Started Guide as well as examples in the 
     examples/cxx/hybrid/custom/ directory.
 
-  * New option, --generate-detach, triggers generation of detach functions
-    for elements and attributes of variable-length types. These functions,
-    for example, allow you to move sub-trees in the object model either 
-    within the same tree or between different trees. The sequence interfaces
-    for variable-length types now also provide the detach() function.
+  * New option, --generate-detach, triggers the generation of detach
+    functions for elements and attributes of variable-length types. These
+    functions, for example, allow you to move sub-trees in the object model
+    either within the same tree or between different trees. The sequence
+    interfaces for variable-length types now also provide the detach()
+    function.
 
   * The generated parser and serializer implementations are now capable
     of parsing/serializing recursive types. The XSD/e compiler detects
-    recursive types and generates stack-based implementations with
+    recursive types and generates stack-based implementations with the
     optimized non-recursive case (i.e., the first iteration still does
     not result in any heap allocations for the state maintenance).
 
@@ -56,7 +57,7 @@ Version 3.1.0
 
   * Support for XML pretty-printing. The serialize() functions in the
     xml_schema::document_simpl class now have the flags argument (defaults
-    to 0). Your can pass the xml_schema::document_simpl::pretty_print flag
+    to 0). You can pass the xml_schema::document_simpl::pretty_print flag
     for this argument to turn on pretty-printing. See the examples and 
     documentation for details.
 
