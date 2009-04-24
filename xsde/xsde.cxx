@@ -86,7 +86,8 @@ namespace CLI
   extern Key file_list_prologue    = "file-list-prologue";
   extern Key file_list_epilogue    = "file-list-epilogue";
   extern Key file_list_delim       = "file-list-delim";
-  extern Key disable_full_check    = "disable-full-check"; // Undocumented.
+  extern Key disable_multi_import  = "disable-multi-import"; // Undocumented.
+  extern Key disable_full_check    = "disable-full-check";   // Undocumented.
 
   typedef Cult::CLI::Options
   <
@@ -105,6 +106,7 @@ namespace CLI
     file_list_prologue,    NarrowString,
     file_list_epilogue,    NarrowString,
     file_list_delim,       NarrowString,
+    disable_multi_import,  Boolean,
     disable_full_check,    Boolean
   >
   CommonOptions;
@@ -601,6 +603,7 @@ main (Int argc, Char* argv[])
 
         XSDFrontend::Parser parser (
           true,
+          !common_ops.value<CLI::disable_multi_import> (),
           !common_ops.value<CLI::disable_full_check> (),
           loc_translator,
           disabled_w);
@@ -1018,6 +1021,7 @@ main (Int argc, Char* argv[])
 
       XSDFrontend::Parser parser (
         cmd != "cxx-hybrid",
+        !common_ops.value<CLI::disable_multi_import> (),
         !common_ops.value<CLI::disable_full_check> (),
         loc_translator,
         disabled_w);
