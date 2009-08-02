@@ -14,7 +14,7 @@ clean    := $(out_base)/.clean
 cleandoc := $(out_base)/.cleandoc
 
 
-.PHONY: $(default) $(test) $(install) $(dist) $(dist-win) $(clean)
+.PHONY: $(default) $(test) $(install) $(dist) $(dist-win) $(clean) $(cleandoc)
 
 # Build.
 #
