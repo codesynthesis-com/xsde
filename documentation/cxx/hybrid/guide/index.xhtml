@@ -780,9 +780,12 @@ main (int argc, char* argv[])
   </p>
 
   <pre class="terminal">
-$ c++ -I.../libxsde -c driver.cxx hello-pskel.cxx hello-pimpl.cxx
-$ c++ -o driver driver.o hello-pskel.o hello-pimpl.o \
+$ c++ -I.../libxsde -c driver.cxx hello.cxx hello-pskel.cxx \
+  hello-pimpl.cxx
+
+$ c++ -o driver driver.o hello.o hello-pskel.o hello-pimpl.o \
   .../libxsde/xsde/libxsde.a
+
 $ ./driver hello.xml
 Hello, sun!
 Hello, moon!
