@@ -13,7 +13,7 @@ cleandoc := $(out_base)/.cleandoc
 
 .PHONY: $(default) $(dist) $(dist-win) $(install) $(cleandoc)
 
-$(default): $(src_base)/cxx/
+$(default): $(out_base)/cxx/
 
 
 # Dist.

@@ -22,7 +22,7 @@ $(default): $(out_base)/xsde/         \
             $(out_base)/libxsde/      \
             $(out_base)/tests/        \
             $(out_base)/examples/     \
-            $(src_base)/documentation/
+            $(out_base)/documentation/
 
 # Test.
 #
@@ -91,7 +91,7 @@ $(clean): $(out_base)/xsde/.clean      \
           $(out_base)/tests/.clean     \
           $(out_base)/examples/.clean
 
-$(cleandoc): $(src_base)/documentation/.cleandoc
+$(cleandoc): $(out_base)/documentation/.cleandoc
 
 
 $(call include,$(bld_root)/install.make)
