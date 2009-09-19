@@ -7,6 +7,7 @@
 
 #include <backend-elements/regex.hxx>
 
+#include <cctype>    // std::toupper
 #include <sstream>
 #include <iostream>
 #include <algorithm>
