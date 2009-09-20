@@ -227,7 +227,7 @@ namespace CXX
           {
             std::wostringstream os;
             os << i;
-            name = Hybrid::Context::escape (n + os.str () + suffix);
+            name = escape (n + os.str () + suffix);
           }
 
           set.insert (name);
