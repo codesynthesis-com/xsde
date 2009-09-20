@@ -6,8 +6,6 @@
 #ifndef CXX_HYBRID_INSERTION_SOURCE_HXX
 #define CXX_HYBRID_INSERTION_SOURCE_HXX
 
-#include <xsd-frontend/semantic-graph/schema.hxx>
-
 #include <cxx/hybrid/elements.hxx>
 
 namespace CXX

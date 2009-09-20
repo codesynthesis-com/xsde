@@ -6,8 +6,6 @@
 #ifndef CXX_HYBRID_TREE_INLINE_HXX
 #define CXX_HYBRID_TREE_INLINE_HXX
 
-#include <xsd-frontend/semantic-graph/schema.hxx>
-
 #include <cxx/hybrid/elements.hxx>
 
 namespace CXX

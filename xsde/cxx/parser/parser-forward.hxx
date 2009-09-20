@@ -6,8 +6,6 @@
 #ifndef CXX_PARSER_PARSER_FORWARD_HXX
 #define CXX_PARSER_PARSER_FORWARD_HXX
 
-#include <xsd-frontend/semantic-graph/schema.hxx>
-
 #include <cxx/parser/elements.hxx>
 
 namespace CXX

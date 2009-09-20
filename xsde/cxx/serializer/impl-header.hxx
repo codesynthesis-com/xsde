@@ -6,8 +6,6 @@
 #ifndef CXX_SERIALIZER_IMPL_HEADER_HXX
 #define CXX_SERIALIZER_IMPL_HEADER_HXX
 
-#include <xsd-frontend/semantic-graph/schema.hxx>
-
 #include <cxx/serializer/elements.hxx>
 
 namespace CXX
