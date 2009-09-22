@@ -51,16 +51,12 @@ $(call include-dep,$(dep))
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(driver)
 
 
 # Dist.
 #
 dist-common := $(out_base)/.dist-common
-
-.PHONY: $(dist) $(dist-win) $(dist-common)
-
 $(dist) $(dist-win) $(dist-common): path := $(subst $(src_root)/,,$(src_base))
 
 $(dist-common):
@@ -82,8 +78,6 @@ $(dist-win): $(dist-common)
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \

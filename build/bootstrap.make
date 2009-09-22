@@ -17,11 +17,13 @@ $(call include,$(scf_root)/configuration.make)
 #
 ifdef %interactive%
 
-.PHONY: test $(out_base)/.test \
-        install $(out_base)/.install \
-        dist $(out_base)/.dist \
-	dist-win $(out_base)/.dist-win \
-        clean $(out_base)/.clean \
+.PHONY: $(out_base)/                   \
+        test $(out_base)/.test         \
+        install $(out_base)/.install   \
+        dist $(out_base)/.dist         \
+        dist-win $(out_base)/.dist-win \
+        $(out_base)/.dist-common       \
+        clean $(out_base)/.clean       \
         cleandoc $(out_base)/.cleandoc
 
 test: $(out_base)/.test

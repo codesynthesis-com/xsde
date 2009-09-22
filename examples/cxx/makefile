@@ -13,8 +13,6 @@ dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 clean    := $(out_base)/.clean
 
-.PHONY: $(default) $(test) $(dist) $(dist-win) $(clean)
-
 $(default): $(addprefix $(out_base)/,$(addsuffix /,$(mappings)))
 $(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(mappings)))
 $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(mappings)))

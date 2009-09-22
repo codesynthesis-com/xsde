@@ -28,14 +28,11 @@ $(call include-dep,$(dep))
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(driver)
 
 
 # Test.
 #
-.PHONY: $(test)
-
 $(test): driver := $(driver)
 $(test): $(driver)
 	$(call message,test $$1,$$1,$(driver))
@@ -43,8 +40,6 @@ $(test): $(driver)
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))

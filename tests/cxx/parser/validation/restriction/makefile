@@ -37,7 +37,6 @@ $(call include-dep,$(dep))
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(driver)
 
 
@@ -45,10 +44,7 @@ $(out_base)/: $(driver)
 #
 test_targets := $(addprefix $(out_base)/.test-,$(tests))
 
-.PHONY: $(test)
 $(test): $(test_targets)
-
-
 $(test_targets): driver := $(driver)
 
 .PHONY: $(out_base)/.test-%
@@ -58,8 +54,6 @@ $(out_base)/.test-%: $(driver) $(src_base)/test.xsd $(src_base)/test-%.xml $(src
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \

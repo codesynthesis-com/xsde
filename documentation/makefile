@@ -11,15 +11,11 @@ dist-win := $(out_base)/.dist-win
 install  := $(out_base)/.install
 cleandoc := $(out_base)/.cleandoc
 
-.PHONY: $(default) $(dist) $(dist-win) $(install) $(cleandoc)
-
 $(default): $(out_base)/cxx/
-
 
 # Dist.
 #
 dist-common := $(out_base)/.dist-common
-.PHONY: $(dist-common)
 
 $(dist-common):
 	$(call install-data,$(src_base)/default.css,$(dist_prefix)/documentation/default.css)

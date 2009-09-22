@@ -10,8 +10,6 @@ dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 cleandoc := $(out_base)/.cleandoc
 
-.PHONY: $(default) $(dist) $(dist-win) $(cleandoc)
-
 # Build.
 #
 $(default): $(out_base)/cxx-hybrid-e-guide.ps \

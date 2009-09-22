@@ -14,8 +14,6 @@ clean    := $(out_base)/.clean
 cleandoc := $(out_base)/.cleandoc
 
 
-.PHONY: $(default) $(test) $(install) $(dist) $(dist-win) $(clean) $(cleandoc)
-
 # Build.
 #
 $(default): $(out_base)/xsde/         \
@@ -41,8 +39,6 @@ $(install): $(out_base)/xsde/.install           \
 #
 dist-common := $(out_base)/.dist-common
 
-.PHONY: $(dist-common)
-
 $(dist-common):
 	$(call install-dir,$(src_base)/dist/build,$(dist_prefix)/build)
 	$(call install-dir,$(src_base)/dist/config,$(dist_prefix)/config)
@@ -58,7 +54,6 @@ $(dist): $(dist-common)                  \
          $(out_base)/libxsde/.dist       \
          $(out_base)/examples/.dist      \
          $(out_base)/documentation/.dist
-	$(call install-dir,$(src_base)/dist/,$(dist_prefix))
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE)
 	$(call install-data,$(src_base)/NEWS,$(dist_prefix)/NEWS)

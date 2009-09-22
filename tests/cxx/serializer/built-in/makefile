@@ -35,14 +35,11 @@ $(call include-dep,$(dep))
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(driver)
 
 
 # Test.
 #
-.PHONY: $(test)
-
 $(test): driver := $(driver)
 
 ifeq ($(xsde_longlong),y)
@@ -56,8 +53,6 @@ endif
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \

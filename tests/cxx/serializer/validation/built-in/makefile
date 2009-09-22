@@ -11,8 +11,6 @@ default   := $(out_base)/
 test      := $(out_base)/.test
 clean     := $(out_base)/.clean
 
-.PHONY: $(default) $(test) $(clean)
-
 $(default): $(addprefix $(out_base)/,$(addsuffix /,$(tests)))
 $(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(tests)))
 $(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(tests)))

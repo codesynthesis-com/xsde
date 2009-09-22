@@ -48,22 +48,17 @@ $(call include-dep,$(dep))
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(driver)
 
 
 # Test.
 #
-.PHONY: $(test)
-
 $(test): driver := $(driver)
 $(test): $(driver) $(src_base)/test.xml $(src_base)/output.xml
 	$(call message,test $$1,$$1 $(src_base)/test.xml | diff -ubB $(src_base)/output.xml -,$(driver))
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(driver).o.clean                                \
   $(addsuffix .cxx.clean,$(obj))                           \
   $(addsuffix .cxx.clean,$(dep))                           \

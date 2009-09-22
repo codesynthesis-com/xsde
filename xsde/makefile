@@ -139,13 +139,10 @@ $(call include-dep,$(cxx_od))
 
 # Alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(xsde)
 
 # Dist.
 #
-.PHONY: $(dist) $(dist-win)
-
 $(dist): $(xsde)
 	$(call install-exec,$<,$(dist_prefix)/bin/xsde)
 
@@ -154,15 +151,11 @@ $(dist-win): $(xsde)
 
 # Install.
 #
-.PHONY: $(install)
-
 $(install): $(xsde)
 	$(call install-exec,$<,$(install_bin_dir)/xsde)
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean):                            \
   $(xsde).o.clean                    \
   $(addsuffix .cxx.clean,$(cxx_obj)) \

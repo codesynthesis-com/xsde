@@ -10,8 +10,6 @@ dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 clean    := $(out_base)/.clean
 
-.PHONY: $(default) $(dist) $(dist-win) $(clean)
-
 $(default): $(out_base)/xsde/
 $(dist): $(out_base)/xsde/.dist
 $(dist-win): $(out_base)/xsde/.dist-win

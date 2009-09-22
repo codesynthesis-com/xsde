@@ -586,14 +586,11 @@ endif
 
 # Convenience alias for default target.
 #
-.PHONY: $(out_base)/
 $(out_base)/: $(xsde.l)
 
 
 # Dist.
 #
-.PHONY: $(dist) $(dist-win)
-
 $(dist):
 	$(call install-dir,$(src_base)/c,$(dist_prefix)/libxsde/xsde/c,\( -name '*.h' -o -name '*.c' -o -name COPYING \))
 	$(call install-dir,$(src_base)/cxx,$(dist_prefix)/libxsde/xsde/cxx,-name '*.?xx')
@@ -602,8 +599,6 @@ $(dist-win): $(dist)
 
 # Clean.
 #
-.PHONY: $(clean)
-
 $(clean): $(xsde.l).o.clean            \
   $(xsde.l.cpp-options).clean          \
   $(addsuffix .c.clean,$(c_o))         \
