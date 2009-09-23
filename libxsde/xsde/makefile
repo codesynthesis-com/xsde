@@ -493,6 +493,7 @@ endif
 ifeq ($(xsde_cdr),y)
 $(xsde.l): $(ace.l)
 $(cxx_o) $(cxx_d): $(ace.l.cpp-options)
+$(xsde.l.cpp-options): $(ace.l.cpp-options)
 endif
 
 $(xsde.l.cpp-options): prefix := xsde/ $(out_root)/libxsde/
