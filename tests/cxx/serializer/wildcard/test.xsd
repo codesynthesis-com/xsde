@@ -8,7 +8,7 @@
     <attribute name="x" type="int" use="required"/>
   </complexType>
 
-  <complexType name="root">
+  <complexType name="root-base">
     <sequence>
       <any namespace="##local" processContents="skip"/>
       <choice maxOccurs="unbounded">
@@ -17,7 +17,14 @@
       </choice>
     </sequence>
     <anyAttribute namespace="foo" processContents="skip"/>
-    <anyAttribute namespace="##local" processContents="skip"/>
+  </complexType>
+
+  <complexType name="root">
+    <complexContent>
+      <extension base="t:root-base">
+        <anyAttribute namespace="##local" processContents="skip"/>
+      </extension>
+    </complexContent>
   </complexType>
 
   <element name="root" type="t:root"/>

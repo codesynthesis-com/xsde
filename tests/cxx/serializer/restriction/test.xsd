@@ -127,8 +127,7 @@
             </choice>
           </sequence>
         </sequence>
-        <anyAttribute namespace="foo" processContents="skip"/>
-        <anyAttribute namespace="baz" processContents="skip"/>
+        <anyAttribute namespace="foo baz" processContents="skip"/>
       </restriction>
     </complexContent>
   </complexType>
