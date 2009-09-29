@@ -1,6 +1,6 @@
 # file      : build/import/libboost/filesystem/stub.make
 # author    : Boris Kolpackov <boris@kolpackov.net>
-# copyright : Copyright (c) 2005-2009 Boris Kolpackov
+# copyright : Copyright (c) 2005-2008 Boris Kolpackov
 # license   : GNU GPL v2; see accompanying LICENSE file
 
 $(call include-once,$(scf_root)/import/libboost/configuration-rules.make,$(dcf_root))
@@ -13,7 +13,7 @@ ifdef libboost_installed
 
 ifeq ($(libboost_installed),y)
 
-$(call export,l: -lboost_filesystem,cpp_options: )
+$(call export,l: -lboost_filesystem$(libboost_suffix),cpp_options: )
 
 else
 

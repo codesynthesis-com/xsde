@@ -107,8 +107,6 @@ $(call import,\
   $(scf_root)/import/libbackend-elements/stub.make,\
   l: be.l,cpp-options: be.l.cpp-options)
 
-# This is needed because libbe does not link properly to regex.
-#
 $(call import,\
   $(scf_root)/import/libboost/regex/stub.make,\
   l: re.l,cpp-options: re.l.cpp-options)
