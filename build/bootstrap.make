@@ -5,8 +5,16 @@
 
 project_name := XSD/e
 
-include build-0.3/bootstrap.make
+# First try to include the bundled bootstrap.make if it exist. If that
+# fails, let make search for the external bootstrap.make.
+#
+build := build-0.3
 
+-include $(dir $(lastword $(MAKEFILE_LIST)))../../$(build)/bootstrap.make
+
+ifeq ($(patsubst %build/bootstrap.make,,$(lastword $(MAKEFILE_LIST))),)
+include $(build)/bootstrap.make
+endif
 
 # Configuration
 #
