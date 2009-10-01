@@ -97,12 +97,17 @@ $(xsd_hybrid_pattern): xsde_options := $(ops)
 
 .PRECIOUS: $(xsd_hybrid_pattern)
 
-$(xsd_hybrid_pattern): $(out_base)/%.xsd | $$(dir $$@).
+ifeq ($(out_base),$(src_base))
+
+$(xsd_hybrid_pattern): $(src_base)/%.xsd
 	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
 
-ifneq ($(out_base),$(src_base))
+else
 
 $(xsd_hybrid_pattern): $(src_base)/%.xsd | $$(dir $$@).
+	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
+
+$(xsd_hybrid_pattern): $(out_base)/%.xsd | $$(dir $$@).
 	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
 
 endif

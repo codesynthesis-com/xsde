@@ -71,12 +71,17 @@ $(xsd_serializer_pattern): xsde_options := $(ops)
 
 .PRECIOUS: $(xsd_serializer_pattern)
 
-$(xsd_serializer_pattern): $(out_base)/%.xsd | $$(dir $$@).
+ifeq ($(out_base),$(src_base))
+
+$(xsd_serializer_pattern): $(src_base)/%.xsd
 	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
 
-ifneq ($(out_base),$(src_base))
+else
 
 $(xsd_serializer_pattern): $(src_base)/%.xsd | $$(dir $$@).
+	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
+
+$(xsd_serializer_pattern): $(out_base)/%.xsd | $$(dir $$@).
 	$(call message,xsde $<,$(xsde) $(xsde_command) $(xsde_options) --output-dir $(dir $@) $<)
 
 endif
