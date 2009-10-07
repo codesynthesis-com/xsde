@@ -11,6 +11,7 @@ $(call include-once,$(scf_root)/configuration-rules.make,$(dcf_root))
 xsde_arch_width                     :=
 xsde_byteorder                      :=
 xsde_stl                            :=
+xsde_stl_iterator                   :=
 xsde_iostream                       :=
 xsde_exceptions                     :=
 xsde_longlong                       :=
@@ -35,6 +36,7 @@ ifdef xsde_stl
 $(out_root)/%: xsde_arch_width                     := $(xsde_arch_width)
 $(out_root)/%: xsde_byteorder                      := $(xsde_byteorder)
 $(out_root)/%: xsde_stl                            := $(xsde_stl)
+$(out_root)/%: xsde_stl_iterator                   := $(xsde_stl_iterator)
 $(out_root)/%: xsde_iostream                       := $(xsde_iostream)
 $(out_root)/%: xsde_exceptions                     := $(xsde_exceptions)
 $(out_root)/%: xsde_longlong                       := $(xsde_longlong)

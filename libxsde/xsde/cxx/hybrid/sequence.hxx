@@ -6,9 +6,14 @@
 #ifndef XSDE_CXX_HYBRID_SEQUENCE_HXX
 #define XSDE_CXX_HYBRID_SEQUENCE_HXX
 
+#include <xsde/cxx/config.hxx>
+
 #include <stddef.h> // size_t, ptrdiff_t
 
-#include <xsde/cxx/config.hxx>
+#ifdef XSDE_STL_ITERATOR
+#  include <iterator>
+#endif
+
 #include <xsde/cxx/sequence-base.hxx>
 
 #ifdef XSDE_STL
@@ -270,6 +275,10 @@ namespace xsde
 
         typedef ptrdiff_t difference_type;
 
+#ifdef XSDE_STL_ITERATOR
+        typedef std::random_access_iterator_tag iterator_category;
+#endif
+
       public:
         var_iterator ()
             : i_ (0)
@@ -376,6 +385,10 @@ namespace xsde
         typedef const T* pointer;
 
         typedef ptrdiff_t difference_type;
+
+#ifdef XSDE_STL_ITERATOR
+        typedef std::random_access_iterator_tag iterator_category;
+#endif
 
       public:
         var_const_iterator ()

@@ -45,6 +45,13 @@ $echo
 stl=`read_y_n y`
 
 $echo
+$echo "Would you like the generated code and runtime to provide STL-"
+$echo "conforming iterators?"
+$echo
+
+stl_iter=`read_y_n y`
+
+$echo
 $echo "Would you like the generated code and runtime to use IO streams?"
 $echo
 
@@ -160,6 +167,7 @@ fi
 echo "xsde_arch_width                     := $arch_width"                     >$1
 echo "xsde_byteorder                      := $byteorder"                      >>$1
 echo "xsde_stl                            := $stl"                            >>$1
+echo "xsde_stl_iterator                   := $stl_iter"                       >>$1
 echo "xsde_iostream                       := $iostream"                       >>$1
 echo "xsde_exceptions                     := $exceptions"                     >>$1
 echo "xsde_longlong                       := $longlong"                       >>$1

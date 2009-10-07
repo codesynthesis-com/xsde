@@ -509,6 +509,9 @@ endif
 ifeq ($(XSDE_STL),y)
 	@echo $(h)define XSDE_STL                   >>$@
 endif
+ifeq ($(XSDE_STL_ITERATOR),y)
+	@echo $(h)define XSDE_STL_ITERATOR          >>$@
+endif
 ifeq ($(XSDE_IOSTREAM),y)
 	@echo $(h)define XSDE_IOSTREAM              >>$@
 endif

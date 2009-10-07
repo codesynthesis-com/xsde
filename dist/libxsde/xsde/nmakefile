@@ -504,6 +504,9 @@ config.h:
 !if "$(XSDE_STL)" == "y"
 	@echo #define XSDE_STL                    >>$@
 !endif
+!if "$(XSDE_STL_ITERATOR)" == "y"
+	@echo #define XSDE_STL_ITERATOR           >>$@
+!endif
 !if "$(XSDE_IOSTREAM)" == "y"
 	@echo #define XSDE_IOSTREAM               >>$@
 !endif

@@ -11,6 +11,12 @@ ifeq ($(xsde_polymorphic),y)
 tests += polymorphism
 endif
 
+ifeq ($(xsde_stl),y)
+ifeq ($(xsde_stl_iterator),y)
+tests += iterator
+endif
+endif
+
 ifeq ($(xsde_iostream),y)
 tests += built-in default list recursive test-template union
 
@@ -26,7 +32,7 @@ ifeq ($(xsde_parser_validation),y)
 tests += choice
 endif
 
-endif
+endif # xsde_iostream
 
 default   := $(out_base)/
 test      := $(out_base)/.test

@@ -522,6 +522,11 @@ ifeq ($(xsde_stl),y)
 else
 	@echo '#undef XSDE_STL'                                         >>$@
 endif
+ifeq ($(xsde_stl_iterator),y)
+	@echo '#define XSDE_STL_ITERATOR'                               >>$@
+else
+	@echo '#undef XSDE_STL_ITERATOR'                                >>$@
+endif
 ifeq ($(xsde_iostream),y)
 	@echo '#define XSDE_IOSTREAM'                                   >>$@
 else
