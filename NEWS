@@ -4,6 +4,13 @@ Version 3.2.0
     imports for the same namespace. Before, all subsequent imports for
     a namespace were ignored which caused error in some schemas.
 
+ C++/Hybrid
+
+  * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
+    provided by the mapping conform to the STL requirements. This 
+    feature requires working <iterator> header and allows you to use
+    the standard algorithms such as find_if, etc.
+
 Version 3.1.0
 
  C++/Hybrid
