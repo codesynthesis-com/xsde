@@ -10,7 +10,6 @@
 #include <cctype>    // std::toupper
 #include <sstream>
 #include <iostream>
-#include <algorithm>
 
 using std::wcerr;
 using std::endl;
@@ -24,6 +23,88 @@ namespace CXX
   {
     return std::toupper (c);
   }
+
+  namespace
+  {
+    WideChar const* keywords[] = {
+      L"NULL",
+      L"and",
+      L"asm",
+      L"auto",
+      L"bitand",
+      L"bitor",
+      L"bool",
+      L"break",
+      L"case",
+      L"catch",
+      L"char",
+      L"class",
+      L"compl",
+      L"const",
+      L"const_cast",
+      L"continue",
+      L"default",
+      L"delete",
+      L"do",
+      L"double",
+      L"dynamic_cast",
+      L"else",
+      L"end_eq",
+      L"enum",
+      L"explicit",
+      L"export",
+      L"extern",
+      L"false",
+      L"float",
+      L"for",
+      L"friend",
+      L"goto",
+      L"if",
+      L"inline",
+      L"int",
+      L"long",
+      L"mutable",
+      L"namespace",
+      L"new",
+      L"not",
+      L"not_eq",
+      L"operator",
+      L"or",
+      L"or_eq",
+      L"private",
+      L"protected",
+      L"public",
+      L"register",
+      L"reinterpret_cast",
+      L"return",
+      L"short",
+      L"signed",
+      L"sizeof",
+      L"static",
+      L"static_cast",
+      L"struct",
+      L"switch",
+      L"template",
+      L"this",
+      L"throw",
+      L"true",
+      L"try",
+      L"typedef",
+      L"typeid",
+      L"typename",
+      L"union",
+      L"unsigned",
+      L"using",
+      L"virtual",
+      L"void",
+      L"volatile",
+      L"wchar_t",
+      L"while",
+      L"xor",
+      L"xor_eq"
+    };
+  }
+
 
   // Context
   //
@@ -71,7 +152,8 @@ namespace CXX
         nsm_mapping (nsm_mapping_),
         include_mapping (include_mapping_),
         trace_include_regex (trace_include_regex_),
-        reserved_name_map (reserved_name_map_)
+        reserved_name_map (reserved_name_map_),
+        keyword_set (keyword_set_)
   {
     // Resolve and cache XML Schema namespace.
     //
@@ -170,6 +252,11 @@ namespace CXX
       else
         reserved_name_map_[String (s, 0, pos)] = String (s, pos + 1);
     }
+
+    // Populate the keyword set.
+    //
+    for (Size i (0); i < sizeof (keywords) / sizeof (char*); ++i)
+      keyword_set_.insert (keywords[i]);
   }
 
   String Context::
@@ -463,90 +550,6 @@ namespace CXX
     return 0;
   }
 
-
-  //
-  //
-  namespace
-  {
-    WideChar const* keywords[] = {
-      L"NULL",
-      L"and",
-      L"asm",
-      L"auto",
-      L"bitand",
-      L"bitor",
-      L"bool",
-      L"break",
-      L"case",
-      L"catch",
-      L"char",
-      L"class",
-      L"compl",
-      L"const",
-      L"const_cast",
-      L"continue",
-      L"default",
-      L"delete",
-      L"do",
-      L"double",
-      L"dynamic_cast",
-      L"else",
-      L"end_eq",
-      L"enum",
-      L"explicit",
-      L"export",
-      L"extern",
-      L"false",
-      L"float",
-      L"for",
-      L"friend",
-      L"goto",
-      L"if",
-      L"inline",
-      L"int",
-      L"long",
-      L"mutable",
-      L"namespace",
-      L"new",
-      L"not",
-      L"not_eq",
-      L"operator",
-      L"or",
-      L"or_eq",
-      L"private",
-      L"protected",
-      L"public",
-      L"register",
-      L"reinterpret_cast",
-      L"return",
-      L"short",
-      L"signed",
-      L"sizeof",
-      L"static",
-      L"static_cast",
-      L"struct",
-      L"switch",
-      L"template",
-      L"this",
-      L"throw",
-      L"true",
-      L"try",
-      L"typedef",
-      L"typeid",
-      L"typename",
-      L"union",
-      L"unsigned",
-      L"using",
-      L"virtual",
-      L"void",
-      L"volatile",
-      L"wchar_t",
-      L"while",
-      L"xor",
-      L"xor_eq"
-    };
-  }
-
   String Context::
   escape (String const& name) const
   {
@@ -597,9 +600,7 @@ namespace CXX
 
     // Keywords
     //
-    Size const size (sizeof (keywords) / sizeof (WideChar*));
-
-    if (std::binary_search (keywords, keywords + size, r))
+    if (keyword_set.find (r) != keyword_set.end ())
     {
       r += L'_';
 
