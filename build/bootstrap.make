@@ -23,16 +23,18 @@ $(call include,$(scf_root)/configuration.make)
 
 # Aliases
 #
+.PHONY: $(out_base)/               \
+        $(out_base)/.test          \
+        $(out_base)/.install       \
+        $(out_base)/.dist          \
+        $(out_base)/.dist-win      \
+        $(out_base)/.dist-common   \
+        $(out_base)/.clean         \
+        $(out_base)/.cleandoc
+
 ifdef %interactive%
 
-.PHONY: $(out_base)/                   \
-        test $(out_base)/.test         \
-        install $(out_base)/.install   \
-        dist $(out_base)/.dist         \
-        dist-win $(out_base)/.dist-win \
-        $(out_base)/.dist-common       \
-        clean $(out_base)/.clean       \
-        cleandoc $(out_base)/.cleandoc
+.PHONY: test install dist dist-win clean cleandoc
 
 test: $(out_base)/.test
 install: $(out_base)/.install
