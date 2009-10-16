@@ -7,7 +7,8 @@
 //
 
 #include <stdlib.h> // strtof, strtod
-#include <string.h> // memcpy
+#include <string.h> // memcpy, strlen, strcmp
+#include <fstream>
 #include <iostream>
 
 #include "test-sskel.hxx"
@@ -481,7 +482,7 @@ struct root_simpl: root_sskel
       }
     case 1:
       {
-        string_sequence* r = new string_sequence;    
+        string_sequence* r = new string_sequence;
         r->push_back ("one");
         r->push_back ("two");
         r->push_back ("three");
@@ -544,13 +545,13 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        string_sequence* r = new string_sequence;    
+        string_sequence* r = new string_sequence;
         r->push_back ("one");
         return r;
       }
     case 1:
       {
-        string_sequence* r = new string_sequence;            
+        string_sequence* r = new string_sequence;
         r->push_back ("two");
         r->push_back ("three");
         return r;
@@ -1190,8 +1191,38 @@ private:
 };
 
 int
-main ()
+main (int argc, char* argv[])
 {
+  if (argc != 2)
+  {
+    cerr << "usage: " << argv[0] << " <test-id>" << endl;
+    return 1;
+  }
+
+  // Ignore one of the tests depending on whether long long is available.
+  //
+  {
+    char* s = argv[1];
+    size_t n = strlen (s);
+
+    if (strcmp (s + n - 12,
+#ifdef XSDE_LONGLONG
+                "test-000.xml"
+#else
+                "test-001.xml"
+#endif
+        ) == 0)
+    {
+      s[n - 3] = 's';
+      s[n - 2] = 't';
+      s[n - 1] = 'd';
+
+      ifstream ifs (s);
+      cout << ifs.rdbuf ();
+      return 0;
+    }
+  }
+
   any_type_simpl any_type_s;
   any_simple_type_simpl any_simple_type_s;
 
@@ -1231,7 +1262,7 @@ main ()
 #ifdef XSDE_STL
   xml_schema::qname_simpl qname_s;
 #else
-  xml_schema::qname_simpl qname_s (true);  
+  xml_schema::qname_simpl qname_s (true);
 #endif
 
   xml_schema::idrefs_simpl idrefs_s (true);

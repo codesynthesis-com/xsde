@@ -8,6 +8,8 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 xsd := test.xsd
 cxx := driver.cxx
 
+tests := 000 001
+
 obj := $(addprefix $(out_base)/,$(cxx:.cxx=.o) $(xsd:.xsd=-sskel.o))
 dep := $(obj:.o=.o.d)
 
@@ -40,15 +42,17 @@ $(out_base)/: $(driver)
 
 # Test.
 #
-$(test): driver := $(driver)
+# Test. 000 - long, 001 - long long; the test driver ignores one. The
+# input files do not exist.
+#
+test_targets := $(addprefix $(out_base)/.test-,$(tests))
 
-ifeq ($(xsde_longlong),y)
-$(test): $(driver) $(src_base)/output-long-long
-	$(call message,test $$1,$$1 | diff -u $(src_base)/output-long-long -,$(driver))
-else
-$(test): $(driver) $(src_base)/output-long
-	$(call message,test $$1,$$1 | diff -u $(src_base)/output-long -,$(driver))
-endif
+$(test): $(test_targets)
+$(test_targets): driver := $(driver)
+
+.PHONY: $(out_base)/.test-%
+$(out_base)/.test-%: $(driver) $(src_base)/test.xsd $(src_base)/test-%.std
+	$(call message,test $(out_base)/$*,$(driver) $(src_base)/test-$*.xml | diff -u $(src_base)/test-$*.std -)
 
 
 # Clean.
