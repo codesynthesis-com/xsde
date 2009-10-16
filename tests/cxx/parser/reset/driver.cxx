@@ -7,14 +7,20 @@
 //
 
 #include <assert.h>
+#include <string.h> // strlen
 
 #include <string>
+#include <sstream>
 #include <iostream>
 
 #include "test-pskel.hxx"
 
 using namespace std;
 using namespace test;
+
+// Same as test-000.xml
+//
+const char* pass = "<t:root xmlns:t='test'><a><b>1</b></a></t:root>";
 
 bool fail = true;
 
@@ -156,20 +162,46 @@ private:
 int
 main (int argc, char* argv[])
 {
-  if (argc != 4)
+  if (argc != 2)
   {
-    cerr << "usage: " << argv[0] << " pass.xml fail-xml.xml fail-schema.xml"
-         << endl;
+    cerr << "usage: " << argv[0] << " test.xml" << endl;
     return 1;
   }
 
-  const char* pass = argv[1];
-  const char* fail_xml = argv[2];
-  const char* fail_schema = argv[3];
+  // Set the range depending on which test we are running.
+  //
+  unsigned long start, end;
+
+  switch (argv[1][strlen (argv[1]) - 5])
+  {
+  case '0':
+    {
+      start = 0;
+      end = 6;
+      break;
+    }
+  case '1':
+    {
+      start = 6;
+      end = 7;
+      break;
+    }
+  case '2':
+    {
+      start = 7;
+      end = 8;
+      break;
+    }
+  default:
+    {
+      cerr << "unsupported test" << endl;
+      return 1;
+    }
+  }
 
   try
   {
-    for (unsigned long i (0); i < 8; ++i)
+    for (unsigned long i = start; i < end; ++i)
     {
 #ifndef XSDE_PARSER_VALIDATION
       if (i == 7)
@@ -199,17 +231,23 @@ main (int argc, char* argv[])
         {
         case 6:
           {
-            doc_p.parse (fail_xml);
+            // Fail XML.
+            //
+            doc_p.parse (argv[1]);
             break;
           }
         case 7:
           {
-            doc_p.parse (fail_schema);
+            // Fail Schema.
+            //
+            doc_p.parse (argv[1]);
             break;
           }
         default:
           {
-            doc_p.parse (pass);
+            // Pass.
+            //
+            doc_p.parse (argv[1]);
             break;
           }
         }
@@ -227,8 +265,10 @@ main (int argc, char* argv[])
       fail = false;
       doc_p.reset ();
 
+      istringstream is (pass);
+
       type_p.pre ();
-      doc_p.parse (pass);
+      doc_p.parse (is);
       type_p.post_type ();
 #else
       do
@@ -244,17 +284,17 @@ main (int argc, char* argv[])
         {
         case 6:
           {
-            doc_p.parse (fail_xml);
+            doc_p.parse (argv[1]);
             break;
           }
         case 7:
           {
-            doc_p.parse (fail_schema);
+            doc_p.parse (argv[1]);
             break;
           }
         default:
           {
-            doc_p.parse (pass);
+            doc_p.parse (argv[1]);
             break;
           }
         }
@@ -274,10 +314,12 @@ main (int argc, char* argv[])
       fail = false;
       doc_p.reset ();
 
+      istringstream is (pass);
+
       type_p.pre ();
       assert (!type_p._error ());
 
-      doc_p.parse (pass);
+      doc_p.parse (is);
       assert (!doc_p._error ());
 
       type_p.post_type ();
