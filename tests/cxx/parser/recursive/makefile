@@ -41,8 +41,8 @@ $(out_base)/: $(driver)
 # Test.
 #
 $(test): driver := $(driver)
-$(test): $(driver) $(src_base)/test.xml $(src_base)/output
-	$(call message,test $$1,$$1 $(src_base)/test.xml | diff -u $(src_base)/output -,$(driver))
+$(test): $(driver) $(src_base)/test-000.xml $(src_base)/test-000.std
+	$(call message,test $$1,$$1 $(src_base)/test-000.xml | diff -u $(src_base)/test-000.std -,$(driver))
 
 
 # Clean.

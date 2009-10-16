@@ -17,7 +17,11 @@ using namespace test;
 struct test_1_simpl: virtual test_1_sskel
 {
   test_1_simpl (int state)
-      : state_ (state)
+      :
+#ifdef XSDE_REUSE_STYLE_TIEIN
+      test_1_sskel (0),
+#endif
+      state_ (state)
   {
   }
 

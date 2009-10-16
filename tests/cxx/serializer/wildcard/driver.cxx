@@ -31,6 +31,13 @@ struct content_simpl: virtual content_sskel
 
 struct root_simpl: virtual root_sskel
 {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+  root_simpl ()
+      : root_sskel (0)
+  {
+  }
+#endif
+
   virtual void
   pre ()
   {

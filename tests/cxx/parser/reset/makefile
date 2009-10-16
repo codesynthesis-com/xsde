@@ -42,10 +42,10 @@ $(out_base)/: $(driver)
 #
 $(test): driver := $(driver)
 $(test): $(driver) $(src_base)/pass.xml $(src_base)/fail-xml.xml \
-                   $(src_base)/fail-schema.xml $(src_base)/output
+                   $(src_base)/fail-schema.xml $(src_base)/test.std
 	$(call message,test $$1,$$1 $(src_base)/pass.xml \
 $(src_base)/fail-xml.xml $(src_base)/fail-schema.xml \
-| diff -u $(src_base)/output -,$(driver))
+| diff -u $(src_base)/test.std -,$(driver))
 
 # Clean.
 #

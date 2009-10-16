@@ -43,11 +43,11 @@ $(out_base)/: $(driver)
 $(test): driver := $(driver)
 
 ifeq ($(xsde_longlong),y)
-$(test): $(driver) $(src_base)/test-long-long.xml $(src_base)/output-long-long
-	$(call message,test $$1,$$1 $(src_base)/test-long-long.xml | diff -u $(src_base)/output-long-long -,$(driver))
+$(test): $(driver) $(src_base)/test-long-long-000.xml $(src_base)/test-long-long-000.std
+	$(call message,test $$1,$$1 $(src_base)/test-long-long-000.xml | diff -u $(src_base)/test-long-long-000.std -,$(driver))
 else
-$(test): $(driver) $(src_base)/test-long.xml $(src_base)/output-long
-	$(call message,test $$1,$$1 $(src_base)/test-long.xml | diff -u $(src_base)/output-long -,$(driver))
+$(test): $(driver) $(src_base)/test-long-000.xml $(src_base)/test-long-000.std
+	$(call message,test $$1,$$1 $(src_base)/test-long-000.xml | diff -u $(src_base)/test-long-000.std -,$(driver))
 endif
 
 # Clean.
