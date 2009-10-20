@@ -36,8 +36,8 @@ $(out_base)/: $(driver)
 # Test.
 #
 $(test): driver := $(driver)
-$(test): $(driver) $(src_base)/test-000.std
-	$(call message,test $$1,$$1 | diff -u $(src_base)/test-000.std -,$(driver))
+$(test): $(driver)
+	$(call message,test $$1,$$1,$(driver))
 
 
 # Dist.

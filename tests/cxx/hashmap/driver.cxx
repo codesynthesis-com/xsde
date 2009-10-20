@@ -89,10 +89,14 @@ main ()
 
     // Test iteration
     //
+    unsigned int n = 0;
+
     for (hashmap::const_iterator i = h.begin (); i != h.end (); ++i)
     {
       const void* p = *i;
-      cout << "'" << *static_cast<const char* const*> (p) << "'" << endl;
+      n += *static_cast<const char* const*> (p) [0];
     }
+
+    assert (n == '1' + '2' + '3' + '4' + '5' + '6' + '7' + '8' + '9');
   }
 }
