@@ -44,6 +44,7 @@ $(dist-common):
 	$(call install-dir,$(src_base)/dist/config,$(dist_prefix)/config)
 	$(call install-dir,$(src_base)/dist/etc,$(dist_prefix)/etc)
 	$(call install-dir,$(src_base)/dist/examples,$(dist_prefix)/examples)
+	$(call install-dir,$(src_base)/dist/tests,$(dist_prefix)/tests)
 	$(call install-dir,$(src_base)/dist/libxsde,$(dist_prefix)/libxsde)
 	$(call install-data,$(src_base)/dist/makefile,$(dist_prefix)/makefile)
 	$(call install-data,$(src_base)/dist/nmakefile,$(dist_prefix)/nmakefile)
@@ -51,6 +52,7 @@ $(dist-common):
 
 $(dist): $(dist-common)                  \
          $(out_base)/xsde/.dist          \
+         $(out_base)/tests/.dist         \
          $(out_base)/libxsde/.dist       \
          $(out_base)/examples/.dist      \
          $(out_base)/documentation/.dist
@@ -63,6 +65,7 @@ $(dist): $(dist-common)                  \
 
 $(dist-win): $(dist-common)                      \
              $(out_base)/xsde/.dist-win          \
+             $(out_base)/tests/.dist-win         \
              $(out_base)/libxsde/.dist-win       \
              $(out_base)/examples/.dist-win      \
              $(out_base)/documentation/.dist-win

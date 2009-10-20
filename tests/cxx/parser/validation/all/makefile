@@ -16,9 +16,11 @@ dep := $(obj:.o=.o.d)
 xsde.l             := $(out_root)/libxsde/xsde/xsde.l
 xsde.l.cpp-options := $(out_root)/libxsde/xsde/xsde.l.cpp-options
 
-driver := $(out_base)/driver
-test   := $(out_base)/.test
-clean  := $(out_base)/.clean
+driver   := $(out_base)/driver
+test     := $(out_base)/.test
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
 
 
 # Build.
@@ -32,6 +34,7 @@ skel  := $(addprefix $(out_base)/,$(skelf))
 
 $(skel): xsde := $(out_root)/xsde/xsde
 $(skel): $(out_root)/xsde/xsde
+$(skel) $(dist) $(dist-win): xsde_options +=
 
 $(call include-dep,$(dep))
 
@@ -51,6 +54,18 @@ $(test_targets): driver := $(driver)
 .PHONY: $(out_base)/.test-%
 $(out_base)/.test-%: $(driver) $(src_base)/test.xsd $(src_base)/test-%.xml $(src_base)/test-%.std
 	$(call message,test $(out_base)/$*,$(driver) $(src_base)/test-$*.xml | diff -u $(src_base)/test-$*.std -)
+
+
+# Dist.
+#
+$(dist) $(dist-win): opt := -src $(src_base) -cmd cxx-parser -xsd "$(xsd)" \
+-cxx "$(cxx)" -gen "$(skelf)" -opt "$(xsde_options)" -out $(dist_prefix)
+
+$(dist):
+	$(call message,install $(src_base),$(scf_root)/dist $(opt))
+
+$(dist-win):
+	$(call message,install $(src_base),$(scf_root)/dist -win $(opt))
 
 
 # Clean.

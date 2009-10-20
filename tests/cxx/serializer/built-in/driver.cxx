@@ -969,6 +969,8 @@ struct root_simpl: root_sskel
     case 2:
       return gday (15, 0, 0);
     }
+
+    return gday (0);
   }
 
   virtual bool
@@ -989,6 +991,8 @@ struct root_simpl: root_sskel
     case 1:
       return gmonth (12, 2, 30);
     }
+
+    return gmonth (0);
   }
 
   virtual bool
@@ -1009,6 +1013,8 @@ struct root_simpl: root_sskel
     case 1:
       return gyear (-2007, -2, -30);
     }
+
+    return gyear (0);
   }
 
   virtual bool
@@ -1029,6 +1035,8 @@ struct root_simpl: root_sskel
     case 1:
       return gmonth_day (12, 31, 2, 30);
     }
+
+    return gmonth_day (0, 0);
   }
 
   virtual bool
@@ -1049,6 +1057,8 @@ struct root_simpl: root_sskel
     case 1:
       return gyear_month (-2007, 12, -2, -30);
     }
+
+    return gyear_month (0, 0);
   }
 
   virtual bool
@@ -1069,6 +1079,8 @@ struct root_simpl: root_sskel
     case 1:
       return date (-2007, 12, 31, -2, -30);
     }
+
+    return date (0, 0, 0);
   }
 
   virtual bool
@@ -1089,6 +1101,8 @@ struct root_simpl: root_sskel
     case 1:
       return time (23, 59, 59.55, 2, 30);
     }
+
+    return time (0, 0, 0);
   }
 
   virtual bool
@@ -1109,6 +1123,8 @@ struct root_simpl: root_sskel
     case 1:
       return date_time (-2007, 12, 31, 23, 59, 59.55, -2, -30);
     }
+
+    return date_time (0, 0, 0, 0, 0, 0);
   }
 
   virtual bool
@@ -1139,6 +1155,8 @@ struct root_simpl: root_sskel
     case 6:
       return duration (false, 1, 2, 3, 4, 5, 6.7);
     }
+
+    return duration (false, 0, 0, 0, 0, 0, 0);
   }
 
 private:

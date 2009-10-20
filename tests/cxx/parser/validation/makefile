@@ -5,20 +5,33 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 
-tests := built-in
+# NOTE: remember to update dist/tests/cxx/parser/validation/{makefile,
+# nmakefile} if you change anything here.
+#
+
+all_tests := built-in all any attribute choice restriction sequence
+
+build_tests := built-in
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
-tests += all any attribute choice restriction sequence
+build_tests += all any attribute choice restriction sequence
 endif
 endif
 
 default   := $(out_base)/
 test      := $(out_base)/.test
+dist      := $(out_base)/.dist
+dist-win  := $(out_base)/.dist-win
 clean     := $(out_base)/.clean
 
-$(default): $(addprefix $(out_base)/,$(addsuffix /,$(tests)))
-$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(tests)))
-$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(tests)))
+$(default): $(addprefix $(out_base)/,$(addsuffix /,$(build_tests)))
+$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(build_tests)))
+$(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(all_tests)))
+$(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(all_tests)))
 
-$(foreach t,$(tests),$(call import,$(src_base)/$t/makefile))
+ifneq ($(filter $(MAKECMDGOALS),dist dist-win),)
+$(foreach t,$(all_tests),$(call import,$(src_base)/$t/makefile))
+else
+$(foreach t,$(build_tests),$(call import,$(src_base)/$t/makefile))
+endif

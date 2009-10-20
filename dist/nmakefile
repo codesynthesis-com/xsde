@@ -4,6 +4,10 @@ all:
 	@for %i in ( $(dirs) ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
 
-test clean:
-	@for %i in ( $(dirs) ) do \
+test:
+	@for %i in ( $(dirs) tests ) do \
+@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
+
+clean:
+	@for %i in ( $(dirs) tests ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"

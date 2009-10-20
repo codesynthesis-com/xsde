@@ -5,41 +5,55 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
-tests := sequences
+# NOTE: remember to update dist/tests/cxx/hybrid/{makefile,nmakefile} if
+# you change anything here.
+#
+
+all_tests := sequences polymorphism iterator built-in default list \
+recursive test-template union binary/cdr binary/xdr choice
+
+build_tests := sequences
 
 ifeq ($(xsde_polymorphic),y)
-tests += polymorphism
+build_tests += polymorphism
 endif
 
 ifeq ($(xsde_stl),y)
 ifeq ($(xsde_stl_iterator),y)
-tests += iterator
+build_tests += iterator
 endif
 endif
 
 ifeq ($(xsde_iostream),y)
-tests += built-in default list recursive test-template union
+build_tests += built-in default list recursive test-template union
 
 ifeq ($(xsde_cdr),y)
-tests += binary/cdr
+build_tests += binary/cdr
 endif
 
 ifeq ($(xsde_xdr),y)
-tests += binary/xdr
+build_tests += binary/xdr
 endif
 
 ifeq ($(xsde_parser_validation),y)
-tests += choice
+build_tests += choice
 endif
 
 endif # xsde_iostream
 
 default   := $(out_base)/
 test      := $(out_base)/.test
+dist      := $(out_base)/.dist
+dist-win  := $(out_base)/.dist-win
 clean     := $(out_base)/.clean
 
-$(default): $(addprefix $(out_base)/,$(addsuffix /,$(tests)))
-$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(tests)))
-$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(tests)))
+$(default): $(addprefix $(out_base)/,$(addsuffix /,$(build_tests)))
+$(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(build_tests)))
+$(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(all_tests)))
+$(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(all_tests)))
 
-$(foreach t,$(tests),$(call import,$(src_base)/$t/makefile))
+ifneq ($(filter $(MAKECMDGOALS),dist dist-win),)
+$(foreach t,$(all_tests),$(call import,$(src_base)/$t/makefile))
+else
+$(foreach t,$(build_tests),$(call import,$(src_base)/$t/makefile))
+endif

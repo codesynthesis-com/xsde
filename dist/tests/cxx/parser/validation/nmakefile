@@ -1,0 +1,19 @@
+root = ..\..\..\..
+
+!include $(root)\build\config.nmake
+
+dirs = built-in
+
+!if "$(XSDE_IOSTREAM)" == "y"
+!if "$(XSDE_EXCEPTIONS)" == "y"
+dirs = $(dirs) all any attribute choice restriction sequence
+!endif
+!endif
+
+all:
+	@for %i in ( $(dirs) ) do \
+@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
+
+test clean:
+	@for %i in ( $(dirs) ) do \
+@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"

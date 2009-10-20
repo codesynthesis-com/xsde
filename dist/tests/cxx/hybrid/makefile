@@ -1,0 +1,45 @@
+root := ../../..
+
+include $(root)/build/config.make
+
+dirs := sequences
+
+ifeq ($(XSDE_POLYMORPHIC),y)
+dirs += polymorphism/multischema
+endif
+
+ifeq ($(XSDE_STL),y)
+ifeq ($(XSDE_STL_ITERATOR),y)
+dirs += iterator
+endif
+endif
+
+ifeq ($(XSDE_IOSTREAM),y)
+dirs += built-in default list recursive test-template union
+
+ifeq ($(XSDE_CDR),y)
+dirs += binary/cdr
+endif
+
+ifeq ($(XSDE_XDR),y)
+dirs += binary/xdr
+endif
+
+ifeq ($(XSDE_PARSER_VALIDATION),y)
+dirs += choice
+endif
+
+endif # XSDE_IOSTREAM
+
+
+.PHONY: all $(dirs)
+
+all: $(dirs)
+
+$(dirs):
+	@$(MAKE) -C $@ $(MAKECMDGOALS)
+
+makefile: ;
+%.make:: ;
+
+%:: $(dirs) ;

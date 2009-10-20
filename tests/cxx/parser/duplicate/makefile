@@ -5,6 +5,7 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 
+cxx :=
 xsd := test.xsd
 
 obj := $(addprefix $(out_base)/,$(xsd:.xsd=-pskel.o) $(xsd:.xsd=-pimpl.o) $(xsd:.xsd=-pdriver.o))
@@ -13,9 +14,11 @@ dep := $(obj:.o=.o.d)
 xsde.l             := $(out_root)/libxsde/xsde/xsde.l
 xsde.l.cpp-options := $(out_root)/libxsde/xsde/xsde.l.cpp-options
 
-driver := $(out_base)/$(xsd:.xsd=-pdriver)
-test   := $(out_base)/.test
-clean  := $(out_base)/.clean
+driver   := $(out_base)/$(xsd:.xsd=-pdriver)
+test     := $(out_base)/.test
+dist     := $(out_base)/.dist
+dist-win := $(out_base)/.dist-win
+clean    := $(out_base)/.clean
 
 
 # Build.
@@ -30,8 +33,8 @@ genf := $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.ixx) $(xsd:.xsd=-pskel.cxx) \
 gen := $(addprefix $(out_base)/,$(genf))
 
 $(gen): xsde := $(out_root)/xsde/xsde
-$(gen): xsde_options += --generate-print-impl --generate-test-driver \
---force-overwrite
+$(gen) $(dist) $(dist-win): xsde_options += --generate-print-impl \
+--generate-test-driver --force-overwrite
 $(gen): $(out_root)/xsde/xsde
 
 $(call include-dep,$(dep))
@@ -46,6 +49,19 @@ $(out_base)/: $(driver)
 $(test): driver := $(driver)
 $(test): $(driver) $(src_base)/test-000.xml $(src_base)/test-000.std
 	$(call message,test $$1,$$1 $(src_base)/test-000.xml | diff -u $(src_base)/test-000.std -,$(driver))
+
+
+# Dist.
+#
+$(dist) $(dist-win): opt := -src $(src_base) -cmd cxx-parser -xsd "$(xsd)" \
+-cxx "$(cxx)" -gen "$(genf)" -opt "$(xsde_options)" -out $(dist_prefix)
+
+$(dist):
+	$(call message,install $(src_base),$(scf_root)/dist $(opt))
+
+$(dist-win):
+	$(call message,install $(src_base),$(scf_root)/dist -win $(opt))
+
 
 # Clean.
 #
