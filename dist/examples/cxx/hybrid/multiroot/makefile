@@ -39,6 +39,13 @@ protocol-pimpl.o: protocol-pimpl.cxx
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-aggregate --root-element-all $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: protocol.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -49,7 +56,9 @@ test: driver balance.xml withdraw.xml deposit.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f protocol-pimpl.?xx protocol-pskel.?xx protocol.?xx \
-protocol-pimpl.o protocol-pskel.o protocol.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f protocol-pimpl.o protocol-pskel.o protocol.o driver.o driver
+
+clean: cleanobj
+	rm -f protocol-pimpl.?xx protocol-pskel.?xx protocol.?xx

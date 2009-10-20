@@ -39,6 +39,13 @@ hello-pimpl.o: hello-pimpl.cxx
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-aggregate $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: hello.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -47,7 +54,9 @@ test: driver hello.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f hello-pimpl.?xx hello-pskel.?xx hello.?xx hello-pimpl.o \
-hello-pskel.o hello.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f hello-pimpl.o hello-pskel.o hello.o driver.o driver
+
+clean: cleanobj
+	rm -f hello-pimpl.?xx hello-pskel.?xx hello.?xx

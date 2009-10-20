@@ -49,6 +49,13 @@ object-simpl.o: object-simpl.cxx object-simpl.hxx position.hxx
 --custom-parser object=/object-pimpl.hxx \
 --custom-serializer object=/object-simpl.hxx $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: position.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -57,9 +64,12 @@ test: driver position.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f object-pimpl.o object-simpl.o position-pimpl.o position-pskel.o \
+position-simpl.o position-sskel.o position.o driver.o driver
+
+clean: cleanobj
 	rm -f position-pimpl.?xx position-pskel.?xx position-simpl.?xx \
-position-sskel.?xx position.?xx object-pimpl.o object-simpl.o \
-position-pimpl.o position-pskel.o position-simpl.o position-sskel.o \
-position.o driver.o driver
+position-sskel.?xx position.?xx
+

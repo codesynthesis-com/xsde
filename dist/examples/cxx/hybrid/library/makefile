@@ -41,6 +41,13 @@ library-simpl.o: library-simpl.cxx
 --generate-parser --generate-serializer --generate-aggregate \
 --omit-default-attributes $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: library.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -49,8 +56,11 @@ test: driver library.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f library-pimpl.o library-pskel.o library-simpl.o \
+library-sskel.o library.o driver.o driver
+
+clean: cleanobj
 	rm -f library-pimpl.?xx library-pskel.?xx library-simpl.?xx \
-library-sskel.?xx library.?xx library-pimpl.o library-pskel.o \
-library-simpl.o library-sskel.o library.o driver.o driver
+library-sskel.?xx library.?xx

@@ -27,6 +27,13 @@ email-pskel.o: email-pskel.cxx email-pskel.hxx
 %-pskel.hxx %-pskel.cxx: %.xsd
 	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: email-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -36,7 +43,9 @@ test: driver email.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f email-pskel.?xx email-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f email-pskel.o driver.o driver
 
+clean: cleanobj
+	rm -f email-pskel.?xx

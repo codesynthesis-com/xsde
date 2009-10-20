@@ -30,6 +30,12 @@ email-sskel.o: email-sskel.cxx email-sskel.hxx email.hxx
 --type-map $*.map $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: email-sskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -39,7 +45,10 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f email-sskel.?xx email-sskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f email-sskel.o driver.o driver
+
+clean: cleanobj
+	rm -f email-sskel.?xx
 

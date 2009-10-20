@@ -44,6 +44,13 @@ compositors.o: compositors.cxx compositors.hxx
 %.hxx %.cxx: %.xsd
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: compositors.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -52,6 +59,9 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f compositors.?xx compositors.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f compositors.o driver.o driver
+
+clean: cleanobj
+	rm -f compositors.?xx

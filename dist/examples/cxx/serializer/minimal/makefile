@@ -45,6 +45,13 @@ people-sskel.o: people-sskel.cxx people-sskel.hxx people.hxx
 	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: people-sskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -54,7 +61,9 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f people-sskel.?xx people-sskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f people-sskel.o driver.o driver
 
+clean: cleanobj
+	rm -f people-sskel.?xx

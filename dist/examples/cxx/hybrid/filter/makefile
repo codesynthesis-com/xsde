@@ -45,6 +45,13 @@ people-custom-simpl.o: people-custom-simpl.cxx people-custom-simpl.hxx people.hx
 --custom-parser people=people_base_pimpl/people-custom-pimpl.hxx \
 --custom-serializer people=people_base_simpl/people-custom-simpl.hxx $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: people.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -53,9 +60,11 @@ test: driver people.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f people-custom-pimpl.o people-custom-simpl.o people-pimpl.o \
+people-pskel.o people-simpl.o people-sskel.o people.o driver.o driver
+
+clean: cleanobj
 	rm -f people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
-people-sskel.?xx people.?xx people-custom-pimpl.o people-custom-simpl.o \
-people-pimpl.o people-pskel.o people-simpl.o people-sskel.o \
-people.o driver.o driver
+people-sskel.?xx people.?xx

@@ -41,6 +41,13 @@ library-pskel.o: library-pskel.cxx library-pskel.hxx library.hxx
 --type-map $*.map $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: library-pskel.hxx
+
+
+
 # Test.
 #
 .PHONY: test
@@ -50,6 +57,9 @@ test: driver library.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f library-pskel.?xx $(impl).o library-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f $(impl).o library-pskel.o driver.o driver
+
+clean: cleanobj
+	rm -f library-pskel.?xx

@@ -35,6 +35,13 @@ hello-pskel.o: hello-pskel.cxx hello-pskel.hxx
 %-pskel.hxx %-pskel.cxx: %.xsd
 	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: hello-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -44,7 +51,9 @@ test: driver hello.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f hello-pskel.?xx hello-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f hello-pskel.o driver.o driver
 
+clean: cleanobj
+	rm -f hello-pskel.?xx

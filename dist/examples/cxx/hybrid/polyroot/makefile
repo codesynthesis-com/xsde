@@ -41,6 +41,13 @@ supermen-simpl.o: supermen-simpl.cxx
 --generate-parser --generate-serializer --generate-aggregate \
 --generate-polymorphic --generate-typeinfo --root-element person $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: supermen.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -51,8 +58,11 @@ test: driver person.xml batman.xml superman.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f supermen-pimpl.o supermen-pskel.o supermen-simpl.o \
+supermen-sskel.o supermen.o driver.o driver
+
+clean: cleanobj
 	rm -f supermen-pimpl.?xx supermen-pskel.?xx supermen-simpl.?xx \
-supermen-sskel.?xx supermen.?xx supermen-pimpl.o supermen-pskel.o \
-supermen-simpl.o supermen-sskel.o supermen.o driver.o driver
+supermen-sskel.?xx supermen.?xx

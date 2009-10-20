@@ -46,6 +46,13 @@ people-simpl.o: people-simpl.cxx
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-serializer --generate-aggregate $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: people.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -54,8 +61,11 @@ test: driver people.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f people-pimpl.o people-pskel.o people-simpl.o people-sskel.o \
+people.o driver.o driver
+
+clean: cleanobj
 	rm -f people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
-people-sskel.?xx people.?xx people-pimpl.o people-pskel.o \
-people-simpl.o people-sskel.o people.o driver.o driver
+people-sskel.?xx people.?xx 

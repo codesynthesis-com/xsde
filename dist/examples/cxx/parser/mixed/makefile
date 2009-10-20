@@ -29,6 +29,13 @@ text-pskel.o: text-pskel.cxx text-pskel.hxx anchor.hxx
 	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: text-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -37,7 +44,10 @@ test: driver text.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f text-pskel.?xx text-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f text-pskel.o driver.o driver
+
+clean: cleanobj
+	rm -f text-pskel.?xx
 

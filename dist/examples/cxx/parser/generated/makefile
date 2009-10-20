@@ -54,6 +54,12 @@ library-pskel.o: library-pskel.cxx library-pskel.hxx
 	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: library-pdriver.cxx
+
+
 # Test.
 #
 .PHONY: test
@@ -63,7 +69,9 @@ test: library-pdriver library.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f library-pdriver.?xx library-pimpl.?xx library-pskel.?xx
+.PHONY: clean cleanobj
+cleanobj:
 	rm -f library-pdriver.o library-pimpl.o library-pskel.o library-pdriver
+
+clean: cleanobj
+	rm -f library-pdriver.?xx library-pimpl.?xx library-pskel.?xx

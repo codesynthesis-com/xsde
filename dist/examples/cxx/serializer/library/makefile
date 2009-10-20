@@ -41,6 +41,12 @@ library-sskel.o: library-sskel.cxx library-sskel.hxx library.hxx
 --type-map $*.map $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: library-sskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -50,7 +56,9 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f library-sskel.?xx $(impl).o library-sskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f $(impl).o library-sskel.o driver.o driver
 
+clean: cleanobj
+	rm -f library-sskel.?xx

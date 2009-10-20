@@ -45,6 +45,13 @@ people-pskel.o: people-pskel.cxx people-pskel.hxx gender.hxx
 	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: people-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -54,7 +61,9 @@ test: driver people.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f people-pskel.?xx people-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f people-pskel.o driver.o driver
 
+clean: cleanobj
+	rm -f people-pskel.?xx

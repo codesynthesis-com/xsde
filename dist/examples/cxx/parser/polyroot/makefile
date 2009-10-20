@@ -37,6 +37,12 @@ supermen-pskel.o: supermen-pskel.cxx supermen-pskel.hxx
 --generate-polymorphic $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: supermen-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -48,6 +54,9 @@ test: driver person.xml batman.xml superman.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f supermen-pskel.?xx $(impl).o supermen-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f $(impl).o supermen-pskel.o driver.o driver
+
+clean: cleanobj
+	rm -f supermen-pskel.?xx

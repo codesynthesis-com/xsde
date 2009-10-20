@@ -30,6 +30,6 @@ all:
 	@for %i in ( $(dirs) ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
 
-test clean:
+gen test clean cleanobj:
 	@for %i in ( $(dirs) ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"

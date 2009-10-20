@@ -44,6 +44,13 @@ envelope-simpl.o: envelope-simpl.cxx envelope-simpl.hxx email.hxx body.hxx
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --options-file options $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: email.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -52,9 +59,11 @@ test: driver email.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f email-pimpl.?xx email-pskel.?xx email-simpl.?xx \
-email-sskel.?xx email.?xx envelope-pimpl.o envelope-simpl.o \
-email-pimpl.o email-pskel.o email-simpl.o email-sskel.o \
-body.o email.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f envelope-pimpl.o envelope-simpl.o email-pimpl.o email-pskel.o \
+email-simpl.o email-sskel.o body.o email.o driver.o driver
+
+clean: cleanobj
+	rm -f email-pimpl.?xx email-pskel.?xx email-simpl.?xx email-sskel.?xx \
+email.?xx 

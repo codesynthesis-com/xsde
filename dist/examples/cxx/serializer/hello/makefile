@@ -35,6 +35,13 @@ hello-sskel.o: hello-sskel.cxx hello-sskel.hxx
 %-sskel.hxx %-sskel.cxx: %.xsd
 	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: hello-sskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -44,7 +51,9 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f hello-sskel.?xx hello-sskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f hello-sskel.o driver.o driver
 
+clean: cleanobj
+	rm -f hello-sskel.?xx

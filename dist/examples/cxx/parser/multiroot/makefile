@@ -42,6 +42,12 @@ protocol-pskel.o: protocol-pskel.cxx protocol-pskel.hxx protocol.hxx
 --type-map $*.map $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: protocol-pskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -50,9 +56,12 @@ test: driver balance.xml withdraw.xml deposit.xml
 	./driver withdraw.xml
 	./driver deposit.xml
 
+
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f protocol-pskel.?xx $(impl).o protocol-pskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f $(impl).o protocol-pskel.o driver.o driver
 
+clean: cleanobj
+	rm -f protocol-pskel.?xx

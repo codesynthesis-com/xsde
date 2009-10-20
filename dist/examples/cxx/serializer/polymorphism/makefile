@@ -37,6 +37,12 @@ supermen-sskel.o: supermen-sskel.cxx supermen-sskel.hxx supermen.hxx
 --generate-polymorphic --type-map $*.map $<
 
 
+# Generate.
+#
+.PHONY: gen
+gen: supermen-sskel.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -46,7 +52,9 @@ test: driver
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f supermen-sskel.?xx $(impl).o supermen-sskel.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f $(impl).o supermen-sskel.o driver.o driver
 
+clean: cleanobj
+	rm -f supermen-sskel.?xx

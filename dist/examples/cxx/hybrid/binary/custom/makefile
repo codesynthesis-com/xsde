@@ -58,6 +58,13 @@ xml-schema%hxx xml-schema-pskel%hxx xml-schema-sskel%hxx:
 	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --options-file options $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: xml-schema.hxx library.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -66,9 +73,12 @@ test: driver library.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f library-pimpl.o library-pskel.o library-simpl.o library-sskel.o \
+library.o irawstream.o orawstream.o exceptions.o driver.o driver
+
+clean: cleanobj
 	rm -f xml-schema.hxx xml-schema-pskel.hxx xml-schema-sskel.hxx \
 library-pimpl.?xx library-pskel.?xx library-simpl.?xx library-sskel.?xx \
-library.?xx library-pimpl.o library-pskel.o library-simpl.o library-sskel.o \
-library.o irawstream.o orawstream.o exceptions.o driver.o driver
+library.?xx

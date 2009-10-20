@@ -47,6 +47,13 @@ envelope-simpl.o: envelope-simpl.cxx envelope-simpl.hxx email.hxx body.hxx
 --custom-parser envelope=envelope_base_pimpl/envelope-pimpl.hxx \
 --custom-serializer envelope=envelope_base_simpl/envelope-simpl.hxx $<
 
+
+# Generate.
+#
+.PHONY: gen
+gen: email.hxx
+
+
 # Test.
 #
 .PHONY: test
@@ -55,9 +62,11 @@ test: driver email.xml
 
 # Clean.
 #
-.PHONY: clean
-clean:
-	rm -f email-pimpl.?xx email-pskel.?xx email-simpl.?xx \
-email-sskel.?xx email.?xx envelope-pimpl.o envelope-simpl.o \
-email-pimpl.o email-pskel.o email-simpl.o email-sskel.o \
-body.o email.o driver.o driver
+.PHONY: clean cleanobj
+cleanobj:
+	rm -f envelope-pimpl.o envelope-simpl.o email-pimpl.o email-pskel.o \
+email-simpl.o email-sskel.o body.o email.o driver.o driver
+
+clean: cleanobj
+	rm -f email-pimpl.?xx email-pskel.?xx email-simpl.?xx email-sskel.?xx \
+email.?xx
