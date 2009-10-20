@@ -259,6 +259,10 @@ gen '\t$(root)/bin/xsde' $cmd '$(XSDFLAGS) $(EXTRA_XSDFLAGS)' $opt '$<'
 gen
 fi
 
+gen '.PHONY: gen'
+gen "gen: $gen"
+gen
+
 gen '.PHONY: test'
 gen "test: $driver"
 if [ "$xml" = "" ]; then
@@ -288,7 +292,14 @@ fi
 
 gen
 
-gen '.PHONY: clean'
-gen 'clean:'
-gen "\trm -f $driver $obj $gen_cxx $gen_ixx $gen_hxx"
+gen '.PHONY: clean cleanobj'
+gen 'cleanobj:'
+gen "\trm -f $driver $obj"
+gen
+gen 'clean: cleanobj'
+
+if [ "$gen" != "" ]; then
+  gen "\trm -f $gen_cxx $gen_ixx $gen_hxx"
+fi
+
 gen
