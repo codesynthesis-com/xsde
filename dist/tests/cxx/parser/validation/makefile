@@ -10,9 +10,9 @@ dirs += all any attribute choice restriction sequence
 endif
 endif
 
-.PHONY: all $(dirs)
+.PHONY: _all $(dirs)
 
-all: $(dirs)
+_all: $(dirs)
 
 $(dirs):
 	@$(MAKE) -C $@ $(MAKECMDGOALS)
