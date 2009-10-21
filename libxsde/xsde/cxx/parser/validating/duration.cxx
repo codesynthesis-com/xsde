@@ -117,14 +117,21 @@ namespace xsde
           size_type t_pos = tmp.find ('T');
 
           char* p;
+          char c;
           unsigned long ul;
 
           if (s[pos] == 'S')
           {
             need_t = true;
-
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             seconds_ = strtod (s + pos + 1, &p);
@@ -139,9 +146,15 @@ namespace xsde
           if (s[pos] == 'M' && t_pos != ro_string::npos && t_pos < pos)
           {
             need_t = true;
-
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             ul = strtoul (s + pos + 1, &p, 10);
@@ -158,9 +171,15 @@ namespace xsde
           if (s[pos] == 'H')
           {
             need_t = true;
-
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             ul = strtoul (s + pos + 1, &p, 10);
@@ -197,6 +216,13 @@ namespace xsde
           {
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             ul = strtoul (s + pos + 1, &p, 10);
@@ -214,6 +240,13 @@ namespace xsde
           {
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             ul = strtoul (s + pos + 1, &p, 10);
@@ -231,6 +264,13 @@ namespace xsde
           {
             str_.truncate (pos);
             pos = rfind_delim (s, pos - 1);
+            c = s[pos + 1];
+
+            if (c < '0' || c > '9')
+            {
+              _schema_error (schema_error::invalid_duration_value);
+              return;
+            }
 
             set_errno (0);
             ul = strtoul (s + pos + 1, &p, 10);
