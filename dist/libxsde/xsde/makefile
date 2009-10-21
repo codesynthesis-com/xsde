@@ -562,6 +562,12 @@ endif
 	@echo $(h)endif                             >>$@
 
 
+# Generated.
+#
+.PHONY: gen
+gen:
+
+
 # Test.
 #
 .PHONY: test
@@ -570,6 +576,8 @@ test: libxsde.a
 
 # Clean.
 #
-.PHONY: clean
-clean:
+.PHONY: clean cleanobj
+cleanobj:
 	rm -f libxsde.a $(obj) config.h
+
+clean: cleanobj

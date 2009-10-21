@@ -557,6 +557,12 @@ config.h:
 !endif
 	@echo #endif                              >>$@
 
+
+# Generated.
+#
+gen:
+
+
 # Test.
 #
 test: xsde.lib
@@ -566,7 +572,7 @@ test: xsde.lib
 # Nmake that comes with eVC++ 4 cannot handle del $(obj)
 # because the resulting line is too long.
 #
-clean:
+cleanobj:
 	-del xsde.lib config.h
 	-del c\expat\*.obj
 	-del c\genx\*.obj
@@ -585,3 +591,5 @@ clean:
 !else
 	-del cxx\serializer\non-validating\*.obj
 !endif
+
+clean: cleanobj

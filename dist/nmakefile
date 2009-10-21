@@ -4,10 +4,7 @@ all:
 	@for %i in ( $(dirs) ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
 
-test:
+gen test clean cleanobj:
 	@for %i in ( $(dirs) tests ) do \
 @cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
 
-clean:
-	@for %i in ( $(dirs) tests ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
