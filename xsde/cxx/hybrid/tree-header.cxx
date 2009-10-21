@@ -56,7 +56,8 @@ namespace CXX
             // d-tor
             //
             if (poly)
-              os << "virtual ~" << name << " ();";
+              os << "virtual" << endl
+                 << "~" << name << " ();";
 
             os << endl;
 
@@ -182,7 +183,7 @@ namespace CXX
             // d-tor
             //
             if (!stl || poly)
-              os << (poly ? "virtual " : "") << "~" << name << " ();";
+              os << (poly ? "virtual\n" : "") << "~" << name << " ();";
 
             os << endl;
 
@@ -2419,7 +2420,7 @@ namespace CXX
             // d-tor
             //
             if (!restriction || poly)
-              os << (poly ? "virtual " : "") << "~" << name << " ();";
+              os << (poly ? "virtual\n" : "") << "~" << name << " ();";
 
             // copy c-tor & operator=
             //
