@@ -318,10 +318,10 @@ main ()
     p._pre_impl (c);
     p._characters (" \t\n ");
     p._characters ("200");
-    p._characters ("7-12-26T12:13:14.123+12:00  ");
+    p._characters ("7-12-26T12:13:23.456+12:00  ");
     p._post ();
     assert (p.post_date_time () ==
-            date_time (2007, 12, 26, 12, 13, 14.123, 12, 0));
+            date_time (2007, 12, 26, 12, 13, 23.456, 12, 0));
   }
 
   {
@@ -364,10 +364,10 @@ main ()
     p._pre_impl (c);
     p._characters (" \t\n ");
     p._characters ("-P200");
-    p._characters ("7Y13M32DT25H61M61.123S  ");
+    p._characters ("7Y13M32DT25H61M234.56S  ");
     p._post ();
     assert (p.post_duration () ==
-            duration (true, 2007, 13, 32, 25, 61, 61.123));
+            duration (true, 2007, 13, 32, 25, 61, 234.56));
   }
 
   {
