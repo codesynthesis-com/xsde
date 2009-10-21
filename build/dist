@@ -429,12 +429,12 @@ fi
 gen
 
 gen 'cleanobj:'
-gen "\t-del -f $driver $obj"
+gen "\t-del $driver $obj"
 gen
 gen 'clean: cleanobj'
 
 if [ "$gen" != "" ]; then
-  gen "\t-del -f $gen_cxx $gen_ixx $gen_hxx"
+  gen "\t-del $gen_cxx $gen_ixx $gen_hxx"
 fi
 
 gen
