@@ -1,6 +1,6 @@
 dirs := libxsde examples
 
-ifneq ($(filter $(MAKECMDGOALS),gen test clean cleanobj),)
+ifneq ($(filter $(MAKECMDGOALS),gen clean cleanobj),)
 dirs += tests
 endif
 
