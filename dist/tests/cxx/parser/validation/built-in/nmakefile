@@ -20,8 +20,12 @@ dirs = $(dirs) long
 
 all:
 	@for %i in ( $(dirs) ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile" || exit 1
 
-gen test clean cleanobj:
+gen test:
 	@for %i in ( $(dirs) ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile $@" || exit 1
+
+clean cleanobj:
+	@for %i in ( $(dirs) ) do \
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile $@"

@@ -2,12 +2,16 @@ dirs = libxsde examples
 
 all:
 	@for %i in ( $(dirs) ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile"
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile" || exit 1
 
 test:
 	@for %i in ( $(dirs) ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile $@" || exit 1
 
-gen clean cleanobj:
+gen:
 	@for %i in ( $(dirs) tests ) do \
-@cmd /c "cd %i & $(MAKE) /nologo /f nmakefile $@"
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile $@" || exit 1
+
+clean cleanobj:
+	@for %i in ( $(dirs) tests ) do \
+@cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile $@"
