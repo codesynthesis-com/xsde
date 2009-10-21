@@ -31,7 +31,7 @@ function error ()
 
 function gen ()
 {
-  echo -e "$*" >>$out/makefile
+  echo -e "$*" >>$makefile
 }
 
 type=gnu
@@ -188,9 +188,12 @@ for i in $std; do
   $install -p -m 644 $src/$i $out/$i
 done
 
-# Generate the makefile.
-#
-rm -f $out/makefile
+##
+## Generate the makefile.
+##
+
+makefile=$out/makefile
+rm -f $makefile
 
 gen "root := $root"
 gen
@@ -300,6 +303,138 @@ gen 'clean: cleanobj'
 
 if [ "$gen" != "" ]; then
   gen "\trm -f $gen_cxx $gen_ixx $gen_hxx"
+fi
+
+gen
+
+if [ "$type" != "win" ]; then
+  exit 0
+fi
+
+##
+## Generate nmakefile
+##
+makefile=$out/nmakefile
+rm -f $makefile
+
+# Adjust paths and file names.
+#
+root=`echo $root | sed -e 's%/%\\\\%g' -`
+obj=`echo $cxx $gen_cxx | sed -e 's%\.cxx%.obj%g' -`
+driver=$driver.exe
+
+gen "root = $root"
+gen
+gen '!include $(root)\\build\\cxx\\rules.nmake'
+gen
+gen 'EXTRA_CPPFLAGS = /I$(root)\\libxsde'
+gen
+
+if [ "$lib" != "" ]; then
+  s=`echo $lib | sed -e 's/\([^ ]*\)/\1.lib/g' -`
+  gen 'LIBS = $(LIBS)' "$s"
+  gen
+fi
+
+gen '!if "$(XSDE_STL)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-stl'
+gen '!endif'
+gen
+gen '!if "$(XSDE_IOSTREAM)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-iostream'
+gen '!endif'
+gen
+gen '!if "$(XSDE_EXCEPTIONS)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-exceptions'
+gen '!endif'
+gen
+gen '!if "$(XSDE_LONGLONG)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-long-long'
+gen '!endif'
+gen
+gen '!if "$(XSDE_PARSER_VALIDATION)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-parser-val'
+gen '!endif'
+gen
+gen '!if "$(XSDE_SERIALIZER_VALIDATION)" == "n"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-serializer-val'
+gen '!endif'
+gen
+gen '!if "$(XSDE_REUSE_STYLE)" == "mixin"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin'
+gen '!endif'
+gen
+gen '!if "$(XSDE_POLYMORPHIC)" == "y"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --runtime-polymorphic'
+gen '!endif'
+gen
+gen "$driver: $obj" '$(root)\\libxsde\\xsde\\xsde.lib'
+gen
+
+for i in $cxx; do
+  o=`echo $i | sed -e 's%\.cxx%.obj%' -`
+  gen "$o: $i $gen_hxx"
+done
+
+for i in $gen_cxx; do
+  o=`echo $i | sed -e 's%\.cxx%.obj%' -`
+  gen "$o: $i"
+done
+
+gen
+
+for i in $xsd; do
+  stem=`echo $i | sed -e 's%\.xsd%%' -`
+  pat=`echo $gen | sed -e "s/ /\n/g" | sed -e "s/\($stem.*\)/\1/" -e t -e d -`
+  pat=`echo $pat` # Get rid of newlines.
+
+  gen "$pat: $i"
+  gen '\t$(root)\\bin\\xsde.exe' $cmd '$(XSDFLAGS) $(EXTRA_XSDFLAGS)' $opt $i
+  gen
+done
+
+gen "gen: $gen"
+gen
+
+gen "test: $driver"
+if [ "$xml" = "" ]; then
+  if [ "$std" = "" ]; then
+    # Simple return value test.
+    #
+    gen "\t.\\$driver"
+  else
+    # Test with result comparison.
+    #
+    gen "\t.\\$driver >tmp"
+    gen "\tfc $std tmp"
+    gen "\tdel tmp"
+  fi
+else
+  for i in $xml; do
+    if [ "$std" = "" ]; then
+      # Return value test with argument.
+      #
+      gen "\t.\\$driver $i"
+    else
+      # Test with argument and result comparison.
+      #
+      s=`echo $i | sed -e 's%\.xml%.std%' -`
+      gen "\t.\\$driver $i >tmp"
+      gen "\tfc $s tmp"
+      gen "\tdel tmp"
+    fi
+  done
+fi
+
+gen
+
+gen 'cleanobj:'
+gen "\t-del -f $driver $obj"
+gen
+gen 'clean: cleanobj'
+
+if [ "$gen" != "" ]; then
+  gen "\t-del -f $gen_cxx $gen_ixx $gen_hxx"
 fi
 
 gen
