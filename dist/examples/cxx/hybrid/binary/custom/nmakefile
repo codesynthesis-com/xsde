@@ -57,16 +57,26 @@ library-sskel.cxx library-sskel.hxx library-simpl.cxx library-simpl.hxx \
 	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --options-file options library.xsd
 
+
+# Generate.
+#
+gen: xml-schema.hxx library.hxx
+
+
 # Test.
 #
 test: driver.exe library.xml
 	.\driver.exe library.xml
 
+
 # Clean.
 #
-clean:
-	-del xml-schema.hxx xml-schema-pskel.hxx xml-schema-sskel.hxx \
-library-pimpl.?xx library-pskel.?xx library-simpl.?xx library-sskel.?xx \
-library.?xx library-pimpl.obj library-pskel.obj library-simpl.obj \
+cleanobj:
+	-del library-pimpl.obj library-pskel.obj library-simpl.obj \
 library-sskel.obj library.obj irawstream.obj orawstream.obj exceptions.obj \
 driver.obj driver.exe
+
+clean: cleanobj
+	-del xml-schema.hxx xml-schema-pskel.hxx xml-schema-sskel.hxx \
+library-pimpl.?xx library-pskel.?xx library-simpl.?xx library-sskel.?xx \
+library.?xx

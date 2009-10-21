@@ -48,15 +48,25 @@ position-sskel.cxx position-sskel.hxx position-simpl.cxx position-simpl.hxx \
 --custom-parser object=/object-pimpl.hxx \
 --custom-serializer object=/object-simpl.hxx position.xsd
 
+
+# Generate.
+#
+gen: position.hxx
+
+
 # Test.
 #
 test: driver.exe position.xml
 	.\driver.exe position.xml
 
+
 # Clean.
 #
-clean:
+cleanobj:
+	-del object-pimpl.obj object-simpl.obj position-pimpl.obj \
+position-pskel.obj position-simpl.obj position-sskel.obj position.obj \
+driver.obj driver.exe
+
+clean: cleanobj
 	-del position-pimpl.?xx position-pskel.?xx position-simpl.?xx \
-position-sskel.?xx position.?xx object-pimpl.obj object-simpl.obj \
-position-pimpl.obj position-pskel.obj position-simpl.obj position-sskel.obj \
-position.obj driver.obj driver.exe
+position-sskel.?xx position.?xx

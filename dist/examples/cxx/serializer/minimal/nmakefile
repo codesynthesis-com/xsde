@@ -43,6 +43,12 @@ people-sskel.cxx people-sskel.hxx: people.xsd people.map
 	$(root)\bin\xsde.exe cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map people.map people.xsd
 
+
+# Generate.
+#
+gen: people-sskel.hxx
+
+
 # Test.
 #
 test: driver.exe
@@ -51,5 +57,8 @@ test: driver.exe
 
 # Clean.
 #
-clean:
-	-del people-sskel.?xx people-sskel.obj driver.obj driver.exe
+cleanobj:
+	-del people-sskel.obj driver.obj driver.exe
+
+clean: cleanobj
+	-del people-sskel.?xx

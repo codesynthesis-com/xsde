@@ -36,6 +36,11 @@ supermen-sskel.hxx supermen-sskel.cxx: supermen.xsd supermen.map
 --generate-polymorphic --type-map supermen.map supermen.xsd
 
 
+# Generate.
+#
+gen: supermen-sskel.hxx
+
+
 # Test.
 #
 test: driver.exe
@@ -44,6 +49,8 @@ test: driver.exe
 
 # Clean.
 #
-clean:
-	-del supermen-sskel.?xx $(impl).obj supermen-sskel.obj driver.obj driver.exe
+cleanobj:
+	-del $(impl).obj supermen-sskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del supermen-sskel.?xx

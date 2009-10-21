@@ -34,6 +34,12 @@ hello-sskel.obj: hello-sskel.cxx hello-sskel.hxx
 hello-sskel.cxx hello-sskel.hxx: hello.xsd
 	$(root)\bin\xsde.exe cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) hello.xsd
 
+
+# Generate.
+#
+gen: hello-sskel.hxx
+
+
 # Test.
 #
 test: driver.exe
@@ -42,6 +48,8 @@ test: driver.exe
 
 # Clean.
 #
-clean:
-	-del hello-sskel.?xx hello-sskel.obj driver.obj driver.exe
+cleanobj:
+	-del hello-sskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del hello-sskel.?xx

@@ -43,6 +43,12 @@ people-pskel.cxx people-pskel.hxx: people.xsd people.map
 	$(root)\bin\xsde.exe cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map people.map people.xsd
 
+
+# Generate.
+#
+gen: people-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe people.xml
@@ -51,6 +57,9 @@ test: driver.exe people.xml
 
 # Clean.
 #
-clean:
-	-del people-pskel.?xx people-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del people-pskel.obj driver.obj driver.exe
+
+clean: cleanobj
+	-del people-pskel.?xx
 

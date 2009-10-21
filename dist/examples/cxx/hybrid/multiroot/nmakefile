@@ -39,6 +39,12 @@ protocol-pimpl.cxx protocol-pimpl.hxx: protocol.xsd
 	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-aggregate --root-element-all protocol.xsd
 
+
+# Generate.
+#
+gen: protocol.hxx
+
+
 # Test.
 #
 test: driver.exe balance.xml withdraw.xml deposit.xml
@@ -46,8 +52,12 @@ test: driver.exe balance.xml withdraw.xml deposit.xml
 	.\driver withdraw.xml
 	.\driver deposit.xml
 
+
 # Clean.
 #
-clean:
-	-del protocol-pimpl.?xx protocol-pskel.?xx protocol.?xx \
-protocol-pimpl.obj protocol-pskel.obj protocol.obj driver.obj driver.exe
+cleanobj:
+	-del protocol-pimpl.obj protocol-pskel.obj protocol.obj \
+driver.obj driver.exe
+
+clean: cleanobj
+	-del protocol-pimpl.?xx protocol-pskel.?xx protocol.?xx

@@ -42,12 +42,22 @@ compositors.obj: compositors.cxx
 compositors.cxx compositors.hxx: compositors.xsd
 	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) compositors.xsd
 
+
+# Generate.
+#
+gen: compositors.hxx
+
+
 # Test.
 #
 test: driver.exe
 	.\driver.exe
 
+
 # Clean.
 #
-clean:
-	-del compositors.?xx compositors.obj driver.obj driver.exe
+cleanobj:
+	-del compositors.obj driver.obj driver.exe
+
+clean: cleanobj
+	-del compositors.?xx

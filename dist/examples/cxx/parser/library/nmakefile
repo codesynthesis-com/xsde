@@ -40,6 +40,11 @@ library-pskel.hxx library-pskel.cxx: library.xsd library.map
 --type-map library.map library.xsd
 
 
+# Generate.
+#
+gen: library-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe library.xml
@@ -48,6 +53,8 @@ test: driver.exe library.xml
 
 # Clean.
 #
-clean:
-	-del library-pskel.?xx $(impl).obj library-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del $(impl).obj library-pskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del library-pskel.?xx

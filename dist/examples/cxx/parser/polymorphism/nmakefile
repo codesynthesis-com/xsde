@@ -36,6 +36,11 @@ supermen-pskel.hxx supermen-pskel.cxx: supermen.xsd
 --generate-polymorphic supermen.xsd
 
 
+# Generate.
+#
+gen: supermen-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe supermen.xml
@@ -44,6 +49,8 @@ test: driver.exe supermen.xml
 
 # Clean.
 #
-clean:
-	-del supermen-pskel.?xx $(impl).obj supermen-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del $(impl).obj supermen-pskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del supermen-pskel.?xx

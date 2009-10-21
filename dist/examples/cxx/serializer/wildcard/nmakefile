@@ -29,6 +29,11 @@ email-sskel.hxx email-sskel.cxx: email.xsd email.map
 --type-map email.map email.xsd
 
 
+# Generate.
+#
+gen: email-sskel.hxx
+
+
 # Test.
 #
 test: driver.exe
@@ -37,6 +42,8 @@ test: driver.exe
 
 # Clean.
 #
-clean:
-	-del email-sskel.?xx email-sskel.obj driver.obj driver.exe
+cleanobj:
+	-del email-sskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del email-sskel.?xx

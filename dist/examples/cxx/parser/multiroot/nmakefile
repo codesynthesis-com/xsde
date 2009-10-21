@@ -41,6 +41,11 @@ protocol-pskel.hxx protocol-pskel.cxx: protocol.xsd protocol.map
 --type-map protocol.map protocol.xsd
 
 
+# Generate.
+#
+gen: protocol-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe balance.xml withdraw.xml deposit.xml
@@ -50,5 +55,8 @@ test: driver.exe balance.xml withdraw.xml deposit.xml
 
 # Clean.
 #
-clean:
-	-del protocol-pskel.?xx $(impl).obj protocol-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del $(impl).obj protocol-pskel.obj driver.obj driver.exe
+
+clean: cleanobj
+	-del protocol-pskel.?xx

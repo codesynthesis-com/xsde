@@ -46,6 +46,12 @@ library-sskel.cxx library-sskel.hxx library-simpl.cxx library-simpl.hxx \
 --generate-parser --generate-serializer --generate-aggregate \
 --generate-insertion CDR --generate-extraction CDR library.xsd
 
+
+# Generate.
+#
+gen: library.hxx
+
+
 # Test.
 #
 test: driver.exe library.xml
@@ -53,7 +59,10 @@ test: driver.exe library.xml
 
 # Clean.
 #
-clean:
+cleanobj:
+	-del library-pimpl.obj library-pskel.obj library-simpl.obj \
+library-sskel.obj library.obj driver.obj driver.exe
+
+clean: cleanobj
 	-del library-pimpl.?xx library-pskel.?xx library-simpl.?xx \
-library-sskel.?xx library.?xx library-pimpl.obj library-pskel.obj \
-library-simpl.obj library-sskel.obj library.obj driver.obj driver.exe
+library-sskel.?xx library.?xx

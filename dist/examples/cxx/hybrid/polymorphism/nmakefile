@@ -40,6 +40,12 @@ supermen-sskel.cxx supermen-sskel.hxx supermen-simpl.cxx supermen-simpl.hxx \
 --generate-parser --generate-serializer --generate-aggregate \
 --generate-polymorphic --generate-typeinfo --root-element supermen supermen.xsd
 
+
+# Generate.
+#
+gen: supermen.hxx
+
+
 # Test.
 #
 test: driver.exe supermen.xml
@@ -47,7 +53,10 @@ test: driver.exe supermen.xml
 
 # Clean.
 #
-clean:
+cleanobj:
+	-del supermen-pimpl.obj supermen-pskel.obj supermen-simpl.obj \
+supermen-sskel.obj supermen.obj driver.obj driver.exe
+
+clean: cleanobj
 	-del supermen-pimpl.?xx supermen-pskel.?xx supermen-simpl.?xx \
-supermen-sskel.?xx supermen.?xx supermen-pimpl.obj supermen-pskel.obj \
-supermen-simpl.obj supermen-sskel.obj supermen.obj driver.obj driver.exe
+supermen-sskel.?xx supermen.?xx

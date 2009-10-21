@@ -26,6 +26,12 @@ email-pskel.obj: email-pskel.cxx email-pskel.hxx
 email-pskel.cxx email-pskel.hxx: email.xsd
 	$(root)\bin\xsde.exe cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) email.xsd
 
+
+# Generate.
+#
+gen: email-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe email.xml
@@ -34,6 +40,8 @@ test: driver.exe email.xml
 
 # Clean.
 #
-clean:
-	-del email-pskel.?xx email-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del email-pskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del email-pskel.?xx

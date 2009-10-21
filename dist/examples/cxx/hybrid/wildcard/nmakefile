@@ -46,15 +46,25 @@ email-sskel.cxx email-sskel.hxx email-simpl.cxx email-simpl.hxx \
 --custom-parser envelope=envelope_base_pimpl/envelope-pimpl.hxx \
 --custom-serializer envelope=envelope_base_simpl/envelope-simpl.hxx email.xsd
 
+
+# Generate.
+#
+gen: email.hxx
+
+
 # Test.
 #
 test: driver.exe email.xml
 	.\driver.exe email.xml
 
+
 # Clean.
 #
-clean:
+cleanobj:
+	-del envelope-pimpl.obj envelope-simpl.obj email-pimpl.obj \
+email-pskel.obj email-simpl.obj email-sskel.obj body.obj email.obj \
+driver.obj driver.exe
+
+clean: cleanobj
 	-del email-pimpl.?xx email-pskel.?xx email-simpl.?xx \
-email-sskel.?xx email.?xx envelope-pimpl.obj envelope-simpl.obj \
-email-pimpl.obj email-pskel.obj email-simpl.obj email-sskel.obj \
-body.obj email.obj driver.obj driver.exe
+email-sskel.?xx email.?xx

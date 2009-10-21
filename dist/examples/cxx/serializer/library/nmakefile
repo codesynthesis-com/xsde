@@ -40,6 +40,11 @@ library-sskel.hxx library-sskel.cxx: library.xsd library.map
 --type-map library.map library.xsd
 
 
+# Generate.
+#
+gen: library-sskel.hxx
+
+
 # Test.
 #
 test: driver.exe
@@ -48,6 +53,8 @@ test: driver.exe
 
 # Clean.
 #
-clean:
-	-del library-sskel.?xx $(impl).obj library-sskel.obj driver.obj driver.exe
+cleanobj:
+	-del $(impl).obj library-sskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del library-sskel.?xx

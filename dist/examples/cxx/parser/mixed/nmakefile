@@ -27,6 +27,12 @@ text-pskel.hxx text-pskel.cxx: text.xsd text.map
 	$(root)\bin\xsde.exe cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map text.map text.xsd
 
+
+# Generate.
+#
+gen: text-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe text.xml
@@ -35,6 +41,8 @@ test: driver.exe text.xml
 
 # Clean.
 #
-clean:
-	-del text-pskel.?xx text-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del text-pskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del text-pskel.?xx

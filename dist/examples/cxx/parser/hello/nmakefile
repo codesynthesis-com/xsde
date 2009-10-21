@@ -34,6 +34,12 @@ hello-pskel.obj: hello-pskel.cxx hello-pskel.hxx
 hello-pskel.cxx hello-pskel.hxx: hello.xsd
 	$(root)\bin\xsde.exe cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) hello.xsd
 
+
+# Generate.
+#
+gen: hello-pskel.hxx
+
+
 # Test.
 #
 test: driver.exe hello.xml
@@ -42,6 +48,8 @@ test: driver.exe hello.xml
 
 # Clean.
 #
-clean:
-	-del hello-pskel.?xx hello-pskel.obj driver.obj driver.exe
+cleanobj:
+	-del hello-pskel.obj driver.obj driver.exe
 
+clean: cleanobj
+	-del hello-pskel.?xx

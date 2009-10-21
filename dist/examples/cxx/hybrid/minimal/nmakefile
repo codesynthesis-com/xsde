@@ -45,6 +45,12 @@ people-sskel.cxx people-sskel.hxx people-simpl.cxx people-simpl.hxx \
 	$(root)\bin\xsde.exe cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-serializer --generate-aggregate people.xsd
 
+
+# Generate.
+#
+gen: people.hxx
+
+
 # Test.
 #
 test: driver.exe people.xml
@@ -52,7 +58,10 @@ test: driver.exe people.xml
 
 # Clean.
 #
-clean:
+cleanobj:
+	-del people-pimpl.obj people-pskel.obj people-simpl.obj \
+people-sskel.obj people.obj driver.obj driver.exe
+
+clean: cleanobj
 	-del people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
-people-sskel.?xx people.?xx people-pimpl.obj people-pskel.obj \
-people-simpl.obj people-sskel.obj people.obj driver.obj driver.exe
+people-sskel.?xx people.?xx

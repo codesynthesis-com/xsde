@@ -55,6 +55,11 @@ library-pdriver.cxx: library.xsd
 	$(root)\bin\xsde.exe cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) library.xsd
 
 
+# Generate.
+#
+gen: library-pdriver.cxx
+
+
 # Test.
 #
 test: library-pdriver.exe library.xml
@@ -63,6 +68,8 @@ test: library-pdriver.exe library.xml
 
 # Clean.
 #
-clean:
-	-del library-pdriver.?xx library-pimpl.?xx library-pskel.?xx
+cleanobj:
 	-del library-pdriver.obj library-pimpl.obj library-pskel.obj library-pdriver.exe
+
+clean: cleanobj
+	-del library-pdriver.?xx library-pimpl.?xx library-pskel.?xx

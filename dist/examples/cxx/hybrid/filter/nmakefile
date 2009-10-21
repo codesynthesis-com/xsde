@@ -44,6 +44,12 @@ people-sskel.cxx people-sskel.hxx people-simpl.cxx people-simpl.hxx \
 --custom-parser people=people_base_pimpl/people-custom-pimpl.hxx \
 --custom-serializer people=people_base_simpl/people-custom-simpl.hxx people.xsd
 
+
+# Generate.
+#
+gen: people.hxx
+
+
 # Test.
 #
 test: driver.exe people.xml
@@ -51,8 +57,11 @@ test: driver.exe people.xml
 
 # Clean.
 #
-clean:
-	-del people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
-people-sskel.?xx people.?xx people-custom-pimpl.obj people-custom-simpl.obj \
+cleanobj:
+	-del people-custom-pimpl.obj people-custom-simpl.obj \
 people-pimpl.obj people-pskel.obj people-simpl.obj people-sskel.obj \
 people.obj driver.obj driver.exe
+
+clean: cleanobj
+	-del people-pimpl.?xx people-pskel.?xx people-simpl.?xx \
+people-sskel.?xx people.?xx
