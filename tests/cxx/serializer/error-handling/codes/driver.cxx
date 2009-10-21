@@ -242,6 +242,7 @@ print (xml_schema::serializer_error e)
   default:
     {
       cout << "no error" << endl;
+      break;
     }
   }
 }

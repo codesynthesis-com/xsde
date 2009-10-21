@@ -259,6 +259,11 @@ main (int argc, char* argv[])
                << e.app_code () << endl;
           break;
         }
+      default:
+        {
+          cout << "no error" << endl;
+          break;
+        }
       }
 
       continue;
