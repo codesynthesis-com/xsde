@@ -241,13 +241,11 @@ main (int argc, char* argv[])
       cout << "xml:" << e.line () << ":" << e.column () << ": "
            << e.code () << ": " << e.text () << endl;
     }
-#ifdef XSDE_PARSER_VALIDATION
     catch (xml_schema::parser_schema const& e)
     {
       cout << "schema:" << e.line () << ":" << e.column () << ": "
            << e.code () << ": " << e.text () << endl;
     }
-#endif
     catch (app const& e)
     {
       cout << "app: " << e.code () << endl;

@@ -245,14 +245,12 @@ main (int argc, char* argv[])
                << e.xml_code () << ": " << e.xml_text () << endl;
           break;
         }
-#ifdef XSDE_PARSER_VALIDATION
       case error::schema:
         {
           cout << "schema:" << e.line () << ":" << e.column () << ": "
                << e.schema_code () << ": " << e.schema_text () << endl;
           break;
         }
-#endif
       case error::app:
         {
           cout << "app:" << e.line () << ":" << e.column () << ": "
