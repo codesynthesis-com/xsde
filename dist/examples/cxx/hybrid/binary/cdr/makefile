@@ -17,7 +17,11 @@ EXTRA_XSDFLAGS += --no-long-long
 endif
 
 ifeq ($(XSDE_PARSER_VALIDATION),n)
-EXTRA_XSDFLAGS += --suppress-validation
+EXTRA_XSDFLAGS += --suppress-parser-val
+endif
+
+ifeq ($(XSDE_SERIALIZER_VALIDATION),n)
+EXTRA_XSDFLAGS += --suppress-serializer-val
 endif
 
 ifeq ($(XSDE_REUSE_STYLE),mixin)

@@ -22,10 +22,6 @@ ifeq ($(XSDE_LONGLONG),n)
 EXTRA_XSDFLAGS += --no-long-long
 endif
 
-ifeq ($(XSDE_PARSER_VALIDATION),n)
-EXTRA_XSDFLAGS += --suppress-validation
-endif
-
 ifeq ($(XSDE_REUSE_STYLE),mixin)
 EXTRA_XSDFLAGS += --reuse-style-mixin
 endif

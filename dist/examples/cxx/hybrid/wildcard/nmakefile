@@ -11,7 +11,11 @@ EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-long-long
 !endif
 
 !if "$(XSDE_PARSER_VALIDATION)" == "n"
-EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-parser-val
+!endif
+
+!if "$(XSDE_SERIALIZER_VALIDATION)" == "n"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-serializer-val
 !endif
 
 !if "$(XSDE_REUSE_STYLE)" == "mixin"
