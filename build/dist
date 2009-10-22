@@ -224,13 +224,34 @@ gen 'ifeq ($(XSDE_LONGLONG),n)'
 gen 'EXTRA_XSDFLAGS += --no-long-long'
 gen 'endif'
 gen
-gen 'ifeq ($(XSDE_PARSER_VALIDATION),n)'
-gen 'EXTRA_XSDFLAGS += --suppress-parser-val'
-gen 'endif'
-gen
-gen 'ifeq ($(XSDE_SERIALIZER_VALIDATION),n)'
-gen 'EXTRA_XSDFLAGS += --suppress-serializer-val'
-gen 'endif'
+
+if [ "$cmd" = "cxx-hybrid" ]; then
+
+  gen 'ifeq ($(XSDE_PARSER_VALIDATION),n)'
+  gen 'EXTRA_XSDFLAGS += --suppress-parser-val'
+  gen 'endif'
+  gen
+  gen 'ifeq ($(XSDE_SERIALIZER_VALIDATION),n)'
+  gen 'EXTRA_XSDFLAGS += --suppress-serializer-val'
+  gen 'endif'
+
+elif [ "$cmd" = "cxx-parser" ]; then
+
+  gen 'ifeq ($(XSDE_PARSER_VALIDATION),n)'
+  gen 'EXTRA_XSDFLAGS += --suppress-validation'
+  gen 'endif'
+
+elif [ "$cmd" = "cxx-serializer" ]; then
+
+  gen 'ifeq ($(XSDE_SERIALIZER_VALIDATION),n)'
+  gen 'EXTRA_XSDFLAGS += --suppress-validation'
+  gen 'endif'
+
+elif [ "$cmd" != "" ]; then
+  error "unknown compiler command"
+  exit 1
+fi
+
 gen
 gen 'ifeq ($(XSDE_REUSE_STYLE),mixin)'
 gen 'EXTRA_XSDFLAGS += --reuse-style-mixin'
@@ -352,13 +373,34 @@ gen '!if "$(XSDE_LONGLONG)" == "n"'
 gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-long-long'
 gen '!endif'
 gen
-gen '!if "$(XSDE_PARSER_VALIDATION)" == "n"'
-gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-parser-val'
-gen '!endif'
-gen
-gen '!if "$(XSDE_SERIALIZER_VALIDATION)" == "n"'
-gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-serializer-val'
-gen '!endif'
+
+if [ "$cmd" = "cxx-hybrid" ]; then
+
+  gen '!if "$(XSDE_PARSER_VALIDATION)" == "n"'
+  gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-parser-val'
+  gen '!endif'
+  gen
+  gen '!if "$(XSDE_SERIALIZER_VALIDATION)" == "n"'
+  gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-serializer-val'
+  gen '!endif'
+
+elif [ "$cmd" = "cxx-parser" ]; then
+
+  gen '!if "$(XSDE_PARSER_VALIDATION)" == "n"'
+  gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation'
+  gen '!endif'
+
+elif [ "$cmd" = "cxx-serializer" ]; then
+
+  gen '!if "$(XSDE_SERIALIZER_VALIDATION)" == "n"'
+  gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --suppress-validation'
+  gen '!endif'
+
+elif [ "$cmd" != "" ]; then
+  error "unknown compiler command"
+  exit 1
+fi
+
 gen
 gen '!if "$(XSDE_REUSE_STYLE)" == "mixin"'
 gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin'
