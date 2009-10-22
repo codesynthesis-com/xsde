@@ -25,7 +25,7 @@ endif
 endif
 
 ifeq ($(xsde_iostream),y)
-build_tests += built-in default list recursive test-template union
+build_tests += built-in default list test-template union
 
 ifeq ($(xsde_cdr),y)
 build_tests += binary/cdr
@@ -36,7 +36,7 @@ build_tests += binary/xdr
 endif
 
 ifeq ($(xsde_parser_validation),y)
-build_tests += choice
+build_tests += choice recursive
 endif
 
 endif # xsde_iostream

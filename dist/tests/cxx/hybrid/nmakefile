@@ -15,7 +15,7 @@ dirs = $(dirs) iterator
 !endif
 
 !if "$(XSDE_IOSTREAM)" == "y"
-dirs = $(dirs) built-in default list recursive test-template union
+dirs = $(dirs) built-in default list test-template union
 
 !if "$(XSDE_CDR)" == "y"
 dirs = $(dirs) binary/cdr
@@ -26,7 +26,7 @@ dirs = $(dirs) binary/xdr
 !endif
 
 !if "$(XSDE_PARSER_VALIDATION)" == "y"
-dirs = $(dirs) choice
+dirs = $(dirs) choice recursive
 !endif
 
 !endif # XSDE_IOSTREAM

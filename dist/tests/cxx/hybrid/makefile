@@ -15,7 +15,7 @@ endif
 endif
 
 ifeq ($(XSDE_IOSTREAM),y)
-dirs += built-in default list recursive test-template union
+dirs += built-in default list test-template union
 
 ifeq ($(XSDE_CDR),y)
 dirs += binary/cdr
@@ -26,7 +26,7 @@ dirs += binary/xdr
 endif
 
 ifeq ($(XSDE_PARSER_VALIDATION),y)
-dirs += choice
+dirs += choice recursive
 endif
 
 endif # XSDE_IOSTREAM
