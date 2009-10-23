@@ -580,6 +580,7 @@ namespace CXX
           String root_serializer (unclash (name, "root_serializer"));
           String root_map;
           String error, reset;
+          String poly_name;
           String serializer_map, serializer_map_entries;
 
           InstanceSet set;
@@ -604,6 +605,12 @@ namespace CXX
           {
             reset = unclash (name, "reset");
             set.insert (reset);
+          }
+
+          if (poly_runtime)
+          {
+            poly_name = unclash (name, "polymorphic");
+            set.insert (poly_name);
           }
 
           if (poly_code)
@@ -717,6 +724,17 @@ namespace CXX
             os << "}";
           }
 
+          // polymorphic ()
+          //
+          if (poly_runtime)
+          {
+            os << "static bool" << endl
+               << poly_name << " ()"
+               << "{"
+               << "return " << (tid_map.size () > 0 ? "true" : "false") << ";"
+               << "}";
+          }
+
           os << "public:" << endl;
 
           for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
@@ -762,6 +780,7 @@ namespace CXX
           String root_name (unclash (name, "root_name"));
           String root_namespace (unclash (name, "root_namespace"));
           String error, reset;
+          String poly_name;
           String serializer_map, serializer_map_entries;
 
           InstanceSet set;
@@ -789,6 +808,12 @@ namespace CXX
           {
             reset = unclash (name, "reset");
             set.insert (reset);
+          }
+
+          if (poly_runtime)
+          {
+            poly_name = unclash (name, "polymorphic");
+            set.insert (poly_name);
           }
 
           if (poly_code)
@@ -912,6 +937,17 @@ namespace CXX
               os << "this->" << serializer_map << ".reset ();";
 
             os << "}";
+          }
+
+          // polymorphic ()
+          //
+          if (poly_runtime)
+          {
+            os << "static bool" << endl
+               << poly_name << " ()"
+               << "{"
+               << "return " << (tid_map.size () > 0 ? "true" : "false") << ";"
+               << "}";
           }
 
           os << "public:" << endl;

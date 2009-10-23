@@ -8,8 +8,17 @@ Version 3.2.0
 
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
     provided by the mapping conform to the STL requirements. This 
-    feature requires working <iterator> header and allows you to use
-    the standard algorithms such as find_if, etc.
+    feature requires working <iterator> header and allows you to use the
+    standard algorithms such as find_if, etc.
+
+  * When the code is generated with the --generate-polymorphic or
+    --runtime-polymorphic option, the resulting parser and serializer
+    aggregate classes provide the static polymorphic() function which 
+    returns true if the object model corresponding to the root element 
+    or root type is polymorphic and false otherwise. This can be used 
+    together with the XSDE_POLYMORPHIC macro to implement generic parsing
+    and serialization code that works with both polymorphic and non-
+    polymorphic object models.
 
 Version 3.1.0
 

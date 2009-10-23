@@ -42,6 +42,7 @@ namespace CXX
             exceptions (c.exceptions),
             stl (c.stl),
             poly_code (c.poly_code),
+            poly_runtime (c.poly_runtime),
             reset (c.reset),
             detach (c.detach),
             typeinfo (c.typeinfo),
@@ -71,6 +72,7 @@ namespace CXX
             exceptions (c.exceptions),
             stl (c.stl),
             poly_code (c.poly_code),
+            poly_runtime (c.poly_runtime),
             reset (c.reset),
             detach (c.detach),
             typeinfo (c.typeinfo),
@@ -580,6 +582,7 @@ namespace CXX
       Boolean exceptions;
       Boolean stl;
       Boolean poly_code;
+      Boolean poly_runtime;
       Boolean reset;
       Boolean detach;
       Boolean typeinfo;
