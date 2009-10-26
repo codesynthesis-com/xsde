@@ -26,6 +26,7 @@ dist-win  := $(out_base)/.dist-win
 clean     := $(out_base)/.clean
 
 $(default): $(addprefix $(out_base)/,$(addsuffix /,$(build_tests)))
+$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(build_tests)))
 $(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(build_tests)))
 $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(all_tests)))
 $(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(all_tests)))

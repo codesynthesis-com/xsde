@@ -9,8 +9,8 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 # you change anything here.
 #
 
-all_tests := sequences polymorphism iterator built-in default list \
-recursive test-template union binary/cdr binary/xdr choice
+all_tests := sequences polymorphism iterator built-in default enumeration \
+list recursive test-template union binary/cdr binary/xdr choice
 
 build_tests := sequences
 
@@ -25,7 +25,7 @@ endif
 endif
 
 ifeq ($(xsde_iostream),y)
-build_tests += built-in default list test-template union
+build_tests += built-in default enumeration list test-template union
 
 ifeq ($(xsde_cdr),y)
 build_tests += binary/cdr
@@ -48,6 +48,7 @@ dist-win  := $(out_base)/.dist-win
 clean     := $(out_base)/.clean
 
 $(default): $(addprefix $(out_base)/,$(addsuffix /,$(build_tests)))
+$(test): $(addprefix $(out_base)/,$(addsuffix /.test,$(build_tests)))
 $(clean): $(addprefix $(out_base)/,$(addsuffix /.clean,$(build_tests)))
 $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(all_tests)))
 $(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(all_tests)))
