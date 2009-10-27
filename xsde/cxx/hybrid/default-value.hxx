@@ -163,6 +163,7 @@ namespace CXX
     struct InitValue: Traversal::List,
                       Traversal::Union,
                       Traversal::Complex,
+                      Traversal::Enumeration,
                       Traversal::Type,
 
                       Traversal::AnySimpleType,
@@ -215,6 +216,9 @@ namespace CXX
 
       virtual Void
       traverse (SemanticGraph::Complex&);
+
+      virtual Void
+      traverse (SemanticGraph::Enumeration&);
 
       virtual Void
       traverse (SemanticGraph::Type& t);
@@ -337,6 +341,7 @@ namespace CXX
 
     struct CompareValue: Traversal::Union,
                          Traversal::Complex,
+                         Traversal::Enumeration,
                          Traversal::Type,
                          Context
     {
@@ -352,6 +357,9 @@ namespace CXX
 
       virtual Void
       traverse (SemanticGraph::Complex&);
+
+      virtual Void
+      traverse (SemanticGraph::Enumeration&);
 
       virtual Void
       traverse (SemanticGraph::Type& t);

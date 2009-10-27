@@ -14,6 +14,194 @@ namespace CXX
   {
     namespace
     {
+      //
+      //
+      struct PostOverride: Traversal::Complex, Context
+      {
+        PostOverride (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              os << "virtual " << pret_type (b) << endl
+                 << post_name (b) << " ();"
+                 << endl;
+            }
+          }
+        }
+      };
+
+      //
+      //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex), post_override_ (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (epimpl_custom (e));
+
+          // We may not need to generate the class if this parser is
+          // being customized.
+          //
+          if (name)
+          {
+            Boolean fl (fixed_length (e));
+            SemanticGraph::Type& b (e.inherits ().base ());
+
+            os << "class " << name << ": public " <<
+              (mixin ? "virtual " : "") << epskel (e);
+
+            // Derive from base pimpl even if base_enum == 0. This is done
+            // so that we have implementations for all the (otherwise pure
+            // virtual) post_*() functions.
+            //
+            if (mixin)
+              os << "," << endl
+                 << "  public " << fq_name (b, "p:impl");
+
+            os << "{"
+               << "public:" << endl;
+
+            // c-tor
+            //
+            if (!fl || tiein)
+              os << name << " (" << (fl ? "" : "bool = false") << ");"
+                 << endl;
+
+            if (!fl)
+            {
+              // d-tor
+              //
+              os << "~" << name << " ();"
+                 << endl;
+
+              // reset
+              //
+              if (reset)
+                os << "virtual void" << endl
+                   << "_reset ();"
+                   << endl;
+            }
+
+            // pre
+            //
+            os << "virtual void" << endl
+               << "pre ();"
+               << endl;
+
+            // _characters
+            //
+            if (!base_enum)
+              os << "virtual void" << endl
+                 << "_characters (const " << string_type << "&);"
+                 << endl;
+
+            // post
+            //
+            String const& ret (pret_type (e));
+
+            if (polymorphic (e))
+              post_override_.dispatch (e);
+
+            os << "virtual " << ret << endl
+               << post_name (e) << " ();"
+               << endl;
+
+            String const& type (fq_name (e));
+
+            // pre_impl
+            //
+            if (!fl)
+              os << (tiein ? "public:" : "protected:") << endl
+                 << "void" << endl
+                 << pre_impl_name (e) <<  " (" << type << "*);"
+                 << endl;
+
+            // Base implementation.
+            //
+            if (tiein && base_enum)
+              os << (tiein ? "public:" : "protected:") << endl
+                 << fq_name (b, "p:impl") << " base_impl_;"
+                 << endl;
+
+            // State.
+            //
+            if (!fl || !base_enum)
+            {
+              String const& state_type (epstate_type (e));
+
+              os << (tiein ? "public:" : "protected:") << endl
+                 << "struct " << state_type
+                 << "{";
+
+              if (!fl)
+                os << type << "* " << "x_;";
+
+              if (!base_enum)
+              {
+                if (stl)
+                  os << "::std::string str_;";
+                else
+                  os << "::xsde::cxx::string str_;";
+              }
+
+              os << "};"
+                 << state_type << " " << epstate (e) << ";";
+            }
+
+            if (!fl)
+              os << "bool " << epstate_base (e) << ";";
+
+            os << "};";
+          }
+
+          // Generate include for custom parser.
+          //
+          if (e.context ().count ("p:impl-include"))
+          {
+            close_ns ();
+
+            os << "#include " << process_include_path (
+              e.context ().get<String> ("p:impl-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        PostOverride post_override_;
+      };
+
       struct List: Traversal::List, Context
       {
         List (Context& c)
@@ -352,35 +540,6 @@ namespace CXX
 
       //
       //
-      struct PostOverride: Traversal::Complex, Context
-      {
-        PostOverride (Context& c)
-            : Context (c)
-        {
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Complex& c)
-        {
-          if (c.inherits_p ())
-          {
-            SemanticGraph::Type& b (c.inherits ().base ());
-
-            if (polymorphic (b))
-            {
-              if (tiein)
-                dispatch (b);
-
-              os << "virtual " << pret_type (b) << endl
-                 << post_name (b) << " ();"
-                 << endl;
-            }
-          }
-        }
-      };
-
-      //
-      //
       struct Complex : Traversal::Complex, Context
       {
         Complex (Context& c)
@@ -624,10 +783,12 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

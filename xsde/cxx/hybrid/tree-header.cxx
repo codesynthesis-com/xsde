@@ -14,6 +14,229 @@ namespace CXX
   {
     namespace
     {
+      struct Enumerator: Traversal::Enumerator, Context
+      {
+        Enumerator (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          os << ename (e);
+        }
+      };
+
+      struct Enumeration : Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c),
+              complex_ (complex),
+              base_name_ (c, TypeName::base),
+              enumerator_ (c)
+        {
+          names_ >> enumerator_;
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          SemanticGraph::Context& ec (e.context ());
+          String const& name (ename_custom (e));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (name)
+          {
+            Boolean fl (fixed_length (e));
+            Boolean cd (ec.count ("cd-name"));
+            Boolean poly (polymorphic (e));
+            String const& vt (ec.get<String> ("value-type"));
+
+            os << "// " << comment (e.name ()) << " (" <<
+              (fl ? "fixed-length" : "variable-length") << ")" << endl
+               << "//" << endl;
+
+            os << "class " << name;
+
+            if (base_enum)
+            {
+              os << ": public ";
+              base_name_.dispatch (e.inherits ().base ());
+            }
+
+            os << "{";
+
+            if (!fl)
+              os << "private:" << endl
+                 << name << " (const " << name << "&);"
+                 << name << "& operator= (const " << name << "&);"
+                 << endl;
+
+            os << "public:" << endl;
+
+            // value_type
+            //
+            if (base_enum)
+            {
+              os << "typedef ";
+              base_name_.dispatch (*base_enum);
+              os << "::" << base_enum->context ().get<String> ("value-type") <<
+                " " << vt << ";"
+                 << endl;
+            }
+            else
+            {
+              os << "enum " << vt
+                 << "{";
+              names<Enumeration> (e, names_, 0, 0, 0, &Enumeration::comma);
+              os << "};";
+            }
+
+            // c-tors
+            //
+            os << name << " ();"
+               << name << " (" << vt << ");"
+               << endl;
+
+            // value (value_type)
+            //
+            if (!base_enum)
+              os << "void" << endl
+                 << ec.get<String> ("value") << " (" << vt << ");"
+                 << endl;
+
+            // d-tor
+            //
+            if (poly)
+              os << "virtual" << endl
+                 << "~" << name << " ();"
+                 << endl;
+
+            if (!base_enum)
+            {
+              // operator value()
+              //
+              // Name lookup differences in various compilers make generation
+              // of this operator outside of the class a really hard task. So
+              // we are going to make it always inline.
+              //
+              os << "operator " << vt << " () const"
+                 << "{"
+                 << "return " << ec.get<String> ("value-member") << ";"
+                 << "}";
+
+              // string()
+              //
+              os << "const char*" << endl
+                 << ec.get<String> ("string") << " () const;"
+                 << endl;
+            }
+
+            // Custom data.
+            //
+            if (cd)
+            {
+              String const& name (ecd_name (e));
+              String const& sequence (ecd_sequence (e));
+              String const& iterator (ecd_iterator (e));
+              String const& const_iterator (ecd_const_iterator (e));
+
+              os << "// Custom data." << endl
+                 << "//" << endl;
+
+              // sequence & iterators
+              //
+              os << "typedef " << data_seq << " " << sequence << ";"
+                 << "typedef " << sequence << "::iterator " << iterator << ";"
+                 << "typedef " << sequence << "::const_iterator " <<
+                const_iterator << ";"
+                 << endl;
+
+              // const seq&
+              // name () const
+              //
+              os << "const " << sequence << "&" << endl
+                 << name << " () const;"
+                 << endl;
+
+              // seq&
+              // name ()
+              //
+              os << sequence << "&" << endl
+                 << name << " ();"
+                 << endl;
+            }
+
+            if (poly && typeinfo)
+            {
+              os << "// Type information." << endl
+                 << "//" << endl;
+
+              os << "static const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_static_type ();"
+                 << endl;
+
+              os << "virtual const " <<
+                (stl ? "::std::string&" : "char*") << endl
+                 << "_dynamic_type () const;"
+                 << endl;
+            }
+
+            if (!base_enum || cd)
+              os << "private:" << endl;
+
+            if (!base_enum)
+              os << vt << " " << ec.get<String> ("value-member") << ";";
+
+            if (cd)
+              os << ecd_sequence (e) << " " << ecd_member (e) << ";";
+
+            os << "};";
+          }
+
+          // Generate include for custom type.
+          //
+          if (ec.count ("name-include"))
+          {
+            close_ns ();
+
+            os << "#include " << process_include_path (
+              ec.get<String> ("name-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
+        }
+
+        virtual Void
+        comma (Type&)
+        {
+          os << "," << endl;
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        TypeName base_name_;
+
+        Traversal::Names names_;
+        Enumerator enumerator_;
+      };
+
       struct List : Traversal::List, Context
       {
         List (Context& c)
@@ -2412,6 +2635,14 @@ namespace CXX
 
             os << "{";
 
+            // copy c-tor & operator= (private)
+            //
+            if (!fl)
+              os << "private:" << endl
+                 << name << " (const " << name << "&);"
+                 << name << "& operator= (const " << name << "&);"
+                 << endl;
+
             // c-tor
             //
             os << "public:" << endl
@@ -2422,19 +2653,13 @@ namespace CXX
             if (!restriction || poly)
               os << (poly ? "virtual\n" : "") << "~" << name << " ();";
 
-            // copy c-tor & operator=
+            // copy c-tor & operator= (public)
             //
-            if (!fl)
-              os << endl
-                 << "private:" << endl;
-
-            if (!fl || !restriction)
+            if (fl && !restriction)
               os << name << " (const " << name << "&);"
-                 << name << "& operator= (const " << name << "&);"
-                 << endl;
+                 << name << "& operator= (const " << name << "&);";
 
-            if ((!restriction && !fl) || cd)
-              os << "public:" << endl;
+            os << endl;
 
             if (!restriction)
             {
@@ -2614,7 +2839,7 @@ namespace CXX
         List list (ctx);
         Union union_ (ctx);
         Complex complex (ctx);
-        //Enumeration enumeration (ctx);
+        Enumeration enumeration (ctx, complex);
 
         schema >> sources >> schema;
         schema >> names_ns >> ns >> names;
@@ -2622,7 +2847,7 @@ namespace CXX
         names >> list;
         names >> union_;
         names >> complex;
-        //names >> enumeration;
+        names >> enumeration;
 
         schema.dispatch (ctx.schema_root);
       }

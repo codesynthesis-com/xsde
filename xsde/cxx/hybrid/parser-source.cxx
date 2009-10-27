@@ -14,6 +14,423 @@ namespace CXX
   {
     namespace
     {
+      //
+      //
+      struct PostOverride: Traversal::Complex, Context
+      {
+        PostOverride (Context& c)
+            : Context (c), scope_ (0)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          Boolean clear (false);
+
+          if (scope_ == 0)
+          {
+            scope_ = &c;
+            clear = true;
+          }
+
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              String const& scope (epimpl_custom (*scope_));
+
+              os << pret_type (b) << " " << scope << "::" << endl
+                 << post_name (b) << " ()"
+                 << "{"
+                 << "return this->" << post_name (c) << " ();"
+                 << "}";
+            }
+          }
+
+          if (clear)
+            scope_ = 0;
+        }
+
+      private:
+        SemanticGraph::Complex* scope_;
+      };
+
+      //
+      //
+      struct Enumerator: Traversal::Enumerator, Context
+      {
+        Enumerator (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          using SemanticGraph::Enumeration;
+
+          Enumeration& s (dynamic_cast<Enumeration&> (e.scope ()));
+
+          os << "if (strcmp (s, " <<
+            strlit (e.name ()) << ") == 0)" << endl
+             << "v = " << fq_name (s) << "::" << ename (e) << ";";
+        }
+      };
+
+      //
+      //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c),
+              complex_ (complex),
+              post_override_ (c),
+              enumerator_ (c)
+        {
+          names_ >> enumerator_;
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (epimpl_custom (e));
+
+          if (!name)
+            return;
+
+          os << "// " << name << endl
+             << "//" << endl
+             << endl;
+
+          Boolean fl (fixed_length (e));
+
+          SemanticGraph::Context& ec (e.context ());
+          SemanticGraph::Type& b (e.inherits ().base ());
+
+          String const& type (fq_name (e));
+          String state;
+
+          if (!fl || !base_enum)
+            state = epstate (e);
+
+          // c-tor
+          //
+          if (!fl || tiein)
+          {
+            os << name << "::" << endl
+               << name << " (" << (fl ? "" : "bool b") << ")";
+
+            if (tiein)
+              os << endl
+                 << ": " << epskel (e) << " (" <<
+                (base_enum ? "&base_impl_" : "0") << ")";
+
+            if (base_enum && !fixed_length (b))
+            {
+              if (tiein)
+                os << "," << endl
+                   << "  base_impl_" << " (true)";
+              else
+                os << endl
+                   << ": " << fq_name (b, "p:impl") << " (true)";
+            }
+
+            os << "{";
+
+            if (!fl)
+            {
+              os << "this->" << epstate_base (e) << " = b;"
+                 << "this->" << state << ".x_ = 0;";
+            }
+
+            os << "}";
+          }
+
+          if (!fl)
+          {
+            // d-tor
+            //
+            os << name << "::" << endl
+               << "~" << name << " ()"
+               << "{"
+               << "if (!this->" << epstate_base (e) << ")" << endl
+               << "delete this->" << state << ".x_;"
+               << "}";
+
+            // reset
+            //
+            if (reset)
+            {
+              os << "void " << name << "::" << endl
+                 << "_reset ()"
+                 << "{";
+
+              if (mixin  && base_enum)
+                os << epimpl (b) << "::_reset ();";
+
+              os << epskel (e) << "::_reset ();"
+                 << endl;
+
+              os << "if (!this->" << epstate_base (e) << ")"
+                 << "{"
+                 << "delete this->" << state << ".x_;"
+                 << "this->" << state << ".x_ = 0;"
+                 << "}"
+                 << "}";
+            }
+          }
+
+          // pre_impl
+          //
+          if (!fl)
+          {
+            os << "void " << name << "::" << endl
+               << pre_impl_name (e) << " (" << type << "* x)"
+               << "{"
+               << "this->" << state << ".x_ = x;";
+
+            // Call base pre_impl (var-length) or pre (fix-length).
+            //
+            if (base_enum)
+            {
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << epimpl (b) << "::"; //@@ fq-name.
+
+              if (fixed_length (b))
+                os << "pre ();";
+              else
+                os << pre_impl_name (b) << " (x);";
+            }
+
+            // Clear the string buffer.
+            //
+            if (!base_enum)
+            {
+              if (stl)
+                os << "this->" << state << ".str_.clear ();";
+              else
+              {
+                if (exceptions)
+                  os << "this->" << state << ".str_.assign (\"\", 0);";
+                else
+                {
+                  os << endl
+                     << "if (this->" << state << ".str_.assign (\"\", 0))" << endl
+                     << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+                }
+              }
+            }
+
+            os << "}";
+          }
+
+          // pre
+          //
+          os << "void " << name << "::" << endl
+             << "pre ()"
+             << "{";
+
+          if (fl)
+          {
+            if (base_enum)
+            {
+              // Our base is also fixed-length so call its pre()
+              //
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << epimpl (b) << "::"; //@@ fq-name.
+
+              os << "pre ();";
+            }
+
+            // Clear the string buffer.
+            //
+            if (!base_enum)
+            {
+              if (stl)
+                os << "this->" << state << ".str_.clear ();";
+              else
+              {
+                if (exceptions)
+                  os << "this->" << state << ".str_.assign (\"\", 0);";
+                else
+                {
+                  os << endl
+                     << "if (this->" << state << ".str_.assign (\"\", 0))" << endl
+                     << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+                }
+              }
+            }
+          }
+          else
+          {
+            if (exceptions)
+              os << "this->" << pre_impl_name (e) << " (new " << type << ");";
+            else
+              os << type << "* x = new " << type << ";"
+                 << "if (x)" << endl
+                 << "this->" << pre_impl_name (e) << " (x);"
+                 << "else" << endl
+                 << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+          }
+
+          os << "}";
+
+          // _characters
+          //
+          if (!base_enum)
+          {
+            os << "void " << name << "::" << endl
+               << "_characters (const " << string_type << "& s)"
+               << "{";
+
+            if (stl)
+              os << "this->" << state << ".str_.append (s.data (), s.size ());";
+            else
+            {
+              if (exceptions)
+                os << "this->" << state << ".str_.append (s.data (), s.size ());";
+              else
+              {
+                os << "if (this->" << state << ".str_.append (" <<
+                  "s.data (), s.size ()))" << endl
+                   << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+              }
+            }
+
+            os << "}";
+          }
+
+          // post
+          //
+          String const& ret (pret_type (e));
+
+          if (polymorphic (e))
+            post_override_.dispatch (e);
+
+          os << ret << " " << name << "::" << endl
+             << post_name (e) << " ()"
+             << "{";
+
+          if (base_enum)
+          {
+            if (fl)
+            {
+              os << type << " r;"
+                 << "static_cast< " << fq_name (b) << "& > (r) = ";
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << epimpl (b) << "::"; //@@ fq-name.
+
+              os << post_name (b) << " ();";
+            }
+            else
+            {
+              os << type << "* r = this->" << state << ".x_;"
+                 << "this->" << state << ".x_ = 0;";
+
+              Boolean flb (fixed_length (b));
+
+              // Copy the value if our base is fixed-length.
+              //
+              if (flb)
+                os << "r->" << base_enum->context ().get<String> ("value") <<
+                  " (";
+
+              if (tiein)
+                os << "this->base_impl_.";
+              else
+                os << epimpl (b) << "::"; //@@ fq-name.
+
+              os << post_name (b) << " ()";
+
+              if (flb)
+                os << ")";
+
+              os << ";";
+            }
+
+            //
+            // @@ TODO: check enumerators (switch)
+            //
+          }
+          else
+          {
+            String const& vt (ec.get<String> ("value-type"));
+
+            os << type << "::" << vt << " v = static_cast< " << type <<
+              "::" << vt << " > (0);"
+               << "const char* s = this->" << state << ".str_." <<
+              (stl ? "c_str" : "data") <<  " ();"
+               << endl;
+
+            names<Enumeration> (e, names_, 0, 0, 0, &Enumeration::comma);
+
+
+            /*
+            // @@ Cannot do error checking in post.
+
+            if (!options.value<CLI::suppress_validation> () &&
+                !options.value<CLI::suppress_parser_val> ())
+            {
+              os << "else" << endl
+                 << "this->_schema_error (" <<
+                "::xsde::cxx::schema_error::invalid_enumeration_value);";
+            }
+            */
+
+            os << endl;
+
+            if (fl)
+              os << type << " r (v);";
+            else
+              os << type << "* r = this->" << state << ".x_;"
+                 << "this->" << state << ".x_ = 0;"
+                 << "r->" << ec.get<String> ("value") << " (v);";
+          }
+
+          os << "return r;"
+             << "}";
+        }
+
+        virtual Void
+        comma (Type&)
+        {
+          os << "else ";
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        PostOverride post_override_;
+
+        Traversal::Names names_;
+        Enumerator enumerator_;
+      };
+
+      //
+      //
       struct List: Traversal::List, Context
       {
         List (Context& c)
@@ -907,53 +1324,6 @@ namespace CXX
 
       //
       //
-      struct PostOverride: Traversal::Complex, Context
-      {
-        PostOverride (Context& c)
-            : Context (c), scope_ (0)
-        {
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Complex& c)
-        {
-          Boolean clear (false);
-
-          if (scope_ == 0)
-          {
-            scope_ = &c;
-            clear = true;
-          }
-
-          if (c.inherits_p ())
-          {
-            SemanticGraph::Type& b (c.inherits ().base ());
-
-            if (polymorphic (b))
-            {
-              if (tiein)
-                dispatch (b);
-
-              String const& scope (epimpl_custom (*scope_));
-
-              os << pret_type (b) << " " << scope << "::" << endl
-                 << post_name (b) << " ()"
-                 << "{"
-                 << "return this->" << post_name (c) << " ();"
-                 << "}";
-            }
-          }
-
-          if (clear)
-            scope_ = 0;
-        }
-
-      private:
-        SemanticGraph::Complex* scope_;
-      };
-
-      //
-      //
       struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
@@ -1444,10 +1814,12 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

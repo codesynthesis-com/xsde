@@ -5,7 +5,7 @@ include $(root)/build/config.make
 dirs := sequences
 
 ifeq ($(XSDE_POLYMORPHIC),y)
-dirs += polymorphism/multischema
+dirs += polymorphism/enumeration polymorphism/multischema
 endif
 
 ifeq ($(XSDE_STL),y)
@@ -15,7 +15,7 @@ endif
 endif
 
 ifeq ($(XSDE_IOSTREAM),y)
-dirs += built-in default list test-template union
+dirs += built-in default enumeration list test-template union
 
 ifeq ($(XSDE_CDR),y)
 dirs += binary/cdr

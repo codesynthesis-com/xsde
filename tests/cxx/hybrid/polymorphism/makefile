@@ -5,12 +5,15 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 
-all_tests := multischema
+# NOTE: remember to update dist/tests/cxx/hybrid/polymorphis/{makefile,
+# nmakefile} if you change anything here.
+#
+all_tests := enumeration multischema
 
 build_tests :=
 
 ifeq ($(xsde_iostream),y)
-build_tests += multischema
+build_tests += enumeration multischema
 endif
 
 default   := $(out_base)/

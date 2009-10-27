@@ -39,6 +39,7 @@ namespace CXX
           detach (ops.value<CLI::generate_detach> ()),
           mixin (ops.value<CLI::reuse_style_mixin> ()),
           tiein (!mixin),
+          enum_ (!ops.value<CLI::suppress_enum> ()),
           fwd_expr (fe),
           hxx_expr (he),
           ixx_expr (ie),
@@ -493,6 +494,34 @@ namespace CXX
         return oxdrstream;
       else
         return os;
+    }
+
+    Boolean Context::
+    enum_mapping (SemanticGraph::Enumeration& e,
+                  SemanticGraph::Enumeration** base)
+    {
+      Boolean gen (false);
+      StringBasedType t (gen);
+      t.dispatch (e);
+
+      if (gen)
+      {
+        // The first enumeration in the inheritance hierarchy breaks
+        // inheritance. If its base is polymorphic then generating
+        // the enum mapping will most likely break things.
+        //
+        SemanticGraph::Enumeration* b (0);
+        EnumBasedType t (b);
+        t.dispatch (e);
+
+        SemanticGraph::Enumeration& first (b ? *b : e);
+        gen = !polymorphic (first.inherits ().base ());
+
+        if (gen && base)
+          *base = b;
+      }
+
+      return gen;
     }
 
     // Namespace

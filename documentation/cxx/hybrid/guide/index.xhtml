@@ -241,13 +241,14 @@
         <table class="toc">
           <tr><th>4.1</th><td><a href="#4.1">Namespaces</a></td></tr>
           <tr><th>4.2</th><td><a href="#4.2">Memory Management</a></td></tr>
-          <tr><th>4.3</th><td><a href="#4.3">Attributes and Elements</a></td></tr>
-          <tr><th>4.4</th><td><a href="#4.4">Compositors</a></td></tr>
-          <tr><th>4.5</th><td><a href="#4.5">Accessing the Object Model</a></td></tr>
-          <tr><th>4.6</th><td><a href="#4.6">Modifying the Object Model</a></td></tr>
-          <tr><th>4.7</th><td><a href="#4.7">Creating the Object Model from Scratch</a></td></tr>
-	  <tr><th>4.8</th><td><a href="#4.8">Customizing the Object Model</a></td></tr>
-	  <tr><th>4.9</th><td><a href="#4.9">Polymorphic Object Models</a></td></tr>
+	  <tr><th>4.3</th><td><a href="#4.3">Enumerations</a></td></tr>
+          <tr><th>4.4</th><td><a href="#4.4">Attributes and Elements</a></td></tr>
+          <tr><th>4.5</th><td><a href="#4.5">Compositors</a></td></tr>
+          <tr><th>4.6</th><td><a href="#4.6">Accessing the Object Model</a></td></tr>
+          <tr><th>4.7</th><td><a href="#4.7">Modifying the Object Model</a></td></tr>
+          <tr><th>4.8</th><td><a href="#4.8">Creating the Object Model from Scratch</a></td></tr>
+	  <tr><th>4.9</th><td><a href="#4.9">Customizing the Object Model</a></td></tr>
+	  <tr><th>4.10</th><td><a href="#4.10">Polymorphic Object Models</a></td></tr>
         </table>
       </td>
     </tr>
@@ -1542,7 +1543,7 @@ $ xsde cxx-hybrid --generate-parser --generate-serializer \
   </pre>
 
   <p>For information on how to use object models with polymorphic types,
-     refer to <a href="#4.9">Section 4.9, "Polymorphic Object Models"</a>.</p>
+     refer to <a href="#4.10">Section 4.10, "Polymorphic Object Models"</a>.</p>
 
 
   <!-- Chapater 4 -->
@@ -1626,12 +1627,30 @@ $ xsde cxx-hybrid --generate-parser --generate-serializer \
   <pre class="c++">
 // gender (fixed-length)
 //
-class gender: public std::string
+class gender
 {
 public:
+  enum value_type
+  {
+    male,
+    female
+  };
+
   gender ();
+  gender (value_type);
   gender (const gender&amp;);
   gender&amp; operator= (const gender&amp;);
+
+  void
+  value (value_type);
+
+  operator value_type () const;
+
+  const char*
+  string () const;
+
+private:
+  ...
 };
 
 // person (fixed-length)
@@ -1807,7 +1826,7 @@ private:
     <li>it is recursive (that is, one of its elements contains
         a reference, directly or indirectly, to the type itself)</li>
 
-    <li>it is polymorphic (see <a href="#4.9">Section 4.9, "Polymorphic
+    <li>it is polymorphic (see <a href="#4.10">Section 4.10, "Polymorphic
         Object Models"</a> for details)</li>
   </ol>
 
@@ -1827,10 +1846,9 @@ private:
      variable-length because it contains a sequence of <code>person</code>
      elements (<code>maxOccurs="unbounded"</code>). If we recompile
      the <code>people.xsd</code> schema with the <code>--no-stl</code>
-     option, the first two types will also become variable-length
-     since <code>gender</code> inherits from and <code>person</code>
-     contains elements of the <code>string</code> built-in type. And
-     when STL is disabled, <code>string</code> is variable-length.</p>
+     option, the <code>person</code> type will also become variable-length
+     since it contains elements of the <code>string</code> built-in type.
+     And when STL is disabled, <code>string</code> is variable-length.</p>
 
   <p>The object model uses different methods for storing and passing
      around fixed-length and variable-length types. Instances of
@@ -1932,7 +1950,81 @@ s->permanent (per) // Assumes ownership or per.
 s->contract (con)  // Assumes ownership or con.
   </pre>
 
-  <h2><a name="4.3">4.3 Attributes and Elements</a></h2>
+  <h2><a name="4.3">4.3 Enumerations</a></h2>
+
+  <p>By default, string-based types that use XML Schema restriction by
+     enumeration are mapped to C++ classes with semantics similar to
+     C++ enum (you can suppress this mapping and instead get the plain
+     inheritance by specifying the <code>--suppress-enum</code> compiler
+     option). The following code fragment again shows the C++ class that
+     was generated for the <code>gender</code> XML Schema type presented
+     at the beginning of this chapter:</p>
+
+  <pre class="c++">
+// gender (fixed-length)
+//
+class gender
+{
+public:
+  enum value_type
+  {
+    male,
+    female
+  };
+
+  gender ();
+  gender (value_type);
+  gender (const gender&amp;);
+  gender&amp; operator= (const gender&amp;);
+
+  void
+  value (value_type);
+
+  operator value_type () const;
+
+  const char*
+  string () const;
+
+private:
+  value_type v_;
+};
+</pre>
+
+  <p>The <code>gender</code> class defines the underlying C++ enum type
+     (<code>value_type</code>) with enumerators corresponding to the
+     <code>enumeration</code> elements in XML Schema. The class also
+     defines the default constructor, copy constructor, constructor
+     with the underlying enum type as its argument, and the assignment
+     operator. The <code>gender</code> class also supports the implicit
+     conversion to the underlying enum type and the explicit conversion
+     to string via the <code>string()</code> function. Finally, it
+     provides the <code>value()</code> modifier function which allows you
+     to set the underlying enum value explicitly. Note also that such an
+     enumeration class is always fixed-length since it only contains the
+     C++ enum value. The following example shows how we can use the
+     <code>gender</code> class:</p>
+
+  <pre class="c++">
+gender g = gender::male;
+g = gender::female;
+g.value (gender::female); // Same as above.
+
+cerr &lt;&lt; g.string () &lt;&lt; endl;
+
+if (g != gender::male)
+  ...
+
+switch (g)
+{
+case gender::male:
+  ...
+case gender::female:
+  ...
+}
+  </pre>
+
+
+  <h2><a name="4.4">4.4 Attributes and Elements</a></h2>
 
   <p>As we have seen before, XSD/e generates a different
      set of member functions for elements with different cardinalities.
@@ -1945,7 +2037,7 @@ s->contract (con)  // Assumes ownership or con.
      example, the <code>first-name</code>, <code>last-name</code>,
      <code>gender</code>, and <code>age</code> elements as well as
      the <code>id</code> attribute belong to this cardinality class.
-     The following code fragment shows again the accessor and modifier
+     The following code fragment again shows the accessor and modifier
      functions that are generated for the <code>first-name</code> element
      in the <code>person</code> class:</p>
 
@@ -1975,7 +2067,7 @@ class person
   <p>The <em>optional</em> cardinality class covers all elements that
      can occur zero or one time as well as optional attributes. In our
      example, the <code>middle-name</code> element belongs to this
-     cardinality class. The following code fragment shows again the
+     cardinality class. The following code fragment again shows the
      accessor and modifier functions that are generated for this element
      in the <code>person</code> class:</p>
 
@@ -2664,13 +2756,13 @@ namespace xml_schema
 }
   </pre>
 
-  <h2><a name="4.4">4.4 Compositors</a></h2>
+  <h2><a name="4.5">4.5 Compositors</a></h2>
 
   <p>The XML Schema language provides three compositor constructs that
      are used to group elements: <code>all</code>, <code>sequence</code>,
      and <code>choice</code>. If a compositor has an <em>optional</em>
-     or <em>sequence</em> cardinality class (see <a href="#4.3">Section
-     4.3, "Attributes and Elements"</a>) or if a compositor is
+     or <em>sequence</em> cardinality class (see <a href="#4.4">Section
+     4.4, "Attributes and Elements"</a>) or if a compositor is
      inside <code>choice</code>, then the C++/Hybrid mapping generates
      a nested class for such a compositor as well as a set of accessor
      and modifier functions similar to the ones defined for elements
@@ -3082,7 +3174,7 @@ private:
 };
   </pre>
 
-  <h2><a name="4.5">4.5 Accessing the Object Model</a></h2>
+  <h2><a name="4.6">4.6 Accessing the Object Model</a></h2>
 
   <p>In this section we will examine how to get to the information
      stored in the object model for the person records vocabulary
@@ -3131,7 +3223,7 @@ main ()
 
     // Print gender, age, and id which are all required.
     //
-    cout &lt;&lt; "gender: " &lt;&lt; p.gender () &lt;&lt; endl
+    cout &lt;&lt; "gender: " &lt;&lt; p.gender ().string () &lt;&lt; endl
          &lt;&lt; "age:    " &lt;&lt; p.age () &lt;&lt; endl
          &lt;&lt; "id:     " &lt;&lt; p.id () &lt;&lt; endl
          &lt;&lt; endl;
@@ -3174,7 +3266,7 @@ id:     2
   </pre>
 
 
-  <h2><a name="4.6">4.6 Modifying the Object Model</a></h2>
+  <h2><a name="4.7">4.7 Modifying the Object Model</a></h2>
 
   <p>In this section we will examine how to modify the information
      stored in the object model for our person records vocabulary.
@@ -3284,7 +3376,7 @@ main ()
 &lt;/people>
   </pre>
 
-  <h2><a name="4.7">4.7 Creating the Object Model from Scratch</a></h2>
+  <h2><a name="4.8">4.8 Creating the Object Model from Scratch</a></h2>
 
   <p>In this section we will examine how to create a new object model
      for our person records vocabulary. The following application
@@ -3311,12 +3403,9 @@ main ()
     person p;
     p.first_name ("John");
     p.last_name ("Doe");
+    p.gender (gender::male);
     p.age (32);
     p.id (1);
-
-    gender g;
-    g.assign ("male");
-    p.gender (g);
 
     ps.push_back (p);
   }
@@ -3328,12 +3417,9 @@ main ()
     p.first_name ("Jane");
     p.middle_name ("Mary");
     p.last_name ("Doe");
+    p.gender (gender::female);
     p.age (28);
     p.id (2);
-
-    gender g;
-    g.assign ("male");
-    p.gender (g);
 
     ps.push_back (p);
   }
@@ -3385,7 +3471,7 @@ main ()
 &lt;/people>
   </pre>
 
-  <h2><a name="4.8">4.8 Customizing the Object Model</a></h2>
+  <h2><a name="4.9">4.9 Customizing the Object Model</a></h2>
 
   <p>Sometimes it is desirable to add extra, application-specific
      data or functionality to some object model classes or
@@ -3809,7 +3895,7 @@ for (people::person_iterator i = ps.begin (); i != ps.end (); ++i)
   </pre>
 
 
-  <h2><a name="4.9">4.9 Polymorphic Object Models</a></h2>
+  <h2><a name="4.10">4.10 Polymorphic Object Models</a></h2>
 
   <p>When generating polymorphism-aware code (see <a href="#3.7">Section
      3.7, "Support for Polymorphism"</a>), some objects
@@ -4673,7 +4759,7 @@ namespace xml_schema
 
   <p>The <code>NMTOKENS</code> and <code>IDREFS</code> built-in
      XML Schema types are mapped to the string sequence type which
-     is discussed in <a href="#4.3">Section 4.3, "Attributes and
+     is discussed in <a href="#4.4">Section 4.4, "Attributes and
      Elements"</a>.</p>
 
   <h2><a name="5.3">5.3 Mapping for <code>base64Binary</code> and <code>hexBinary</code></a></h2>
@@ -5783,7 +5869,7 @@ main (int argc, char* argv[])
   {
     cerr &lt;&lt; "first:  " &lt;&lt; i->first_name () &lt;&lt; endl
          &lt;&lt; "last:   " &lt;&lt; i->last_name () &lt;&lt; endl
-         &lt;&lt; "gender: " &lt;&lt; i->gender () &lt;&lt; endl
+         &lt;&lt; "gender: " &lt;&lt; i->gender ().string () &lt;&lt; endl
          &lt;&lt; "age:    " &lt;&lt; i->age () &lt;&lt; endl
          &lt;&lt; endl;
   }
@@ -5795,9 +5881,7 @@ main (int argc, char* argv[])
 
   // Initialize the filter.
   //
-  gender g;
-  g.assign ("female");
-  root_s.gender_filter (g);
+  root_s.gender_filter (gender::female);
 
   xml_schema::document_simpl doc_s (root_s, people_s.root_name ());
 

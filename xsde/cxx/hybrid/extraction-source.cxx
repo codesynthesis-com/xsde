@@ -14,6 +14,60 @@ namespace CXX
   {
     namespace
     {
+      struct Enumeration : Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          if (!enum_ || !enum_mapping (e))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (ename_custom (e));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          for (Streams::ConstIterator i (istreams.begin ());
+               i != istreams.end (); ++i)
+          {
+            os << (exceptions ? "void" : "bool") << endl
+               << "operator>> (" << istream (*i) << "& s," << endl
+               << name << "& x)"
+               << "{"
+               << "unsigned int i;";
+
+            if (exceptions)
+              os << "s >> i;";
+            else
+              os << "if (!(s >> i))" << endl
+                 << "return false;";
+
+            os << "x = static_cast< " << name << "::" <<
+              e.context ().get<String> ("value-type") << " > (i);"
+               << (exceptions ? "" : "return true;")
+               << "}"
+               << endl;
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+      };
+
       struct List : Traversal::List, Context
       {
         List (Context& c)
@@ -1102,6 +1156,7 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       schema >> sources >> schema;
       schema >> names_ns >> ns >> names;
@@ -1109,6 +1164,7 @@ namespace CXX
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

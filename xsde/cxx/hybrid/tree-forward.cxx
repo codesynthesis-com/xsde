@@ -14,6 +14,50 @@ namespace CXX
   {
     namespace
     {
+      struct Enumeration : Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          if (!enum_ || !enum_mapping (e))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          SemanticGraph::Context& ctx (e.context ());
+
+          // Forward-declare the base.
+          //
+          if (ctx.count ("name-base"))
+          {
+            if (String base = ctx.get<String> ("name-base"))
+              os << "class " << base << ";";
+          }
+
+          // Typedef or forward-declare the type.
+          //
+          if (ctx.count ("name-typedef"))
+          {
+            os << "typedef " << ctx.get<String> ("name-typedef") << " " <<
+              ename (e) << ";";
+          }
+          else
+            os << "class " << ename (e) << ";";
+        }
+
+      private:
+        Traversal::Complex& complex_;
+      };
+
       struct List : Traversal::List, Context
       {
         List (Context& c)
@@ -752,7 +796,7 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
-      //Enumeration enumeration (ctx);
+      Enumeration enumeration (ctx, complex);
 
       schema >> sources >> schema;
       schema >> names_ns >> ns >> names;
@@ -760,7 +804,7 @@ namespace CXX
       names >> list;
       names >> union_;
       names >> complex;
-      //names >> enumeration;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
 

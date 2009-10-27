@@ -160,7 +160,7 @@ main (int argc, char* argv[])
     printf ("first: %s\n" "last: %s\n" "gender: %s\n" "age: %hu\n\n",
             i->first_name (),
             i->last_name (),
-            i->gender ().base_value (),
+            i->gender ().string (),
             i->age ());
   }
 
@@ -181,10 +181,7 @@ main (int argc, char* argv[])
     p->first_name (strdupx ("Joe"));
     p->last_name (strdupx ("Dirt"));
     p->age (36);
-
-    gender* g = new gender;
-    g->base_value (strdupx ("male"));
-    p->gender (g);
+    p->gender (gender::male);
 
     ps.insert (ps.begin (), p);
   }

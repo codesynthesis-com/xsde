@@ -14,6 +14,141 @@ namespace CXX
   {
     namespace
     {
+      //
+      //
+      struct PreOverride: Traversal::Complex, Context
+      {
+        PreOverride (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              os << "virtual void" << endl
+                 << "pre (" << sarg_type (b) << ");"
+                 << endl;
+            }
+          }
+        }
+      };
+
+      //
+      //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex), pre_override_ (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (esimpl_custom (e));
+
+          // We may not need to generate the class if this serializer is
+          // being customized.
+          //
+          if (name)
+          {
+            String const& arg (sarg_type (e));
+            SemanticGraph::Type& b (e.inherits ().base ());
+
+            os << "class " << name << ": public " <<
+              (mixin ? "virtual " : "") << esskel (e);
+
+            // Derive from base simpl even if base_enum == 0. This is done
+            // so that we have implementations for all the (otherwise pure
+            // virtual) pre() functions.
+            //
+            if (mixin)
+              os << "," << endl
+                 << "  public " << fq_name (b, "s:impl");
+
+            os << "{"
+               << "public:" << endl;
+
+            // c-tor
+            //
+            if (tiein)
+              os << name << " ();"
+                 << endl;
+
+            // pre
+            //
+            if (polymorphic (e))
+              pre_override_.dispatch (e);
+
+            os << "virtual void" << endl
+               << "pre (" << arg << ");"
+               << endl;
+
+            // _serialize_content
+            //
+            if (!base_enum)
+              os << "virtual void" << endl
+                 << "_serialize_content ();"
+                 << endl;
+
+            // State.
+            //
+            if (!base_enum)
+            {
+              os << (tiein ? "public:" : "protected:") << endl
+                 << "const " << fq_name (e) << "* " << esstate (e) << ";";
+            }
+            else if (tiein)
+            {
+              os << "public:" << endl
+                 << fq_name (b, "s:impl") << " base_impl_;";
+            }
+
+            os << "};";
+          }
+
+          // Generate include for custom serializer.
+          //
+          if (e.context ().count ("s:impl-include"))
+          {
+            close_ns ();
+
+            os << "#include " << process_include_path (
+              e.context ().get<String> ("s:impl-include")) << endl
+               << endl;
+
+            open_ns ();
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        PreOverride pre_override_;
+      };
+
+      //
+      //
       struct List: Traversal::List, Context
       {
         List (Context& c)
@@ -343,35 +478,6 @@ namespace CXX
 
       //
       //
-      struct PreOverride: Traversal::Complex, Context
-      {
-        PreOverride (Context& c)
-            : Context (c)
-        {
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Complex& c)
-        {
-          if (c.inherits_p ())
-          {
-            SemanticGraph::Type& b (c.inherits ().base ());
-
-            if (polymorphic (b))
-            {
-              if (tiein)
-                dispatch (b);
-
-              os << "virtual void" << endl
-                 << "pre (" << sarg_type (b) << ");"
-                 << endl;
-            }
-          }
-        }
-      };
-
-      //
-      //
       struct Complex : Traversal::Complex, Context
       {
         Complex (Context& c)
@@ -511,7 +617,7 @@ namespace CXX
 
 
             if (tiein && hb)
-              os << (tiein ? "public:" : "protected:") << endl
+              os << "public:" << endl
                  << fq_name (c.inherits ().base (), "s:impl") << " base_impl_;"
                  << endl;
 
@@ -605,10 +711,12 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

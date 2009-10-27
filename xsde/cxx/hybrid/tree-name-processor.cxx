@@ -4,6 +4,8 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/elements.hxx>
+
+#include <cxx/hybrid/elements.hxx>
 #include <cxx/hybrid/tree-name-processor.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
@@ -51,6 +53,7 @@ namespace CXX
               schema_path (schema_path_),
               stl (!ops.value<CLI::no_stl> ()),
               detach (ops.value<CLI::generate_detach> ()),
+              enum_ (!ops.value<CLI::suppress_enum> ()),
               custom_data_map (custom_data_map_),
               custom_type_map (custom_type_map_),
               global_type_names (global_type_names_)
@@ -179,6 +182,7 @@ namespace CXX
               schema_path (c.schema_path),
               stl (c.stl),
               detach (c.detach),
+              enum_ (c.enum_),
               custom_data_map (c.custom_data_map),
               custom_type_map (c.custom_type_map),
               global_type_names (c.global_type_names)
@@ -279,6 +283,7 @@ namespace CXX
 
         Boolean stl;
         Boolean detach;
+        Boolean enum_;
 
         CustomDataMap& custom_data_map;
         CustomTypeMap& custom_type_map;
@@ -1140,14 +1145,110 @@ namespace CXX
 
       //
       //
+      struct Enumerator: Traversal::Enumerator, Context
+      {
+        Enumerator (Context& c, NameSet& set)
+            : Context (c), set_ (set)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          e.context ().set ("name", find_name (e.name (), set_));
+        }
+
+      private:
+        NameSet& set_;
+      };
+
+      //
+      //
       struct GlobalTypeMembers: Traversal::List,
                                 Traversal::Union,
                                 Traversal::Complex,
+                                Traversal::Enumeration,
                                 Context
       {
         GlobalTypeMembers (Context& c, Boolean data_members)
             : Context (c), data_members_ (data_members)
         {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Enumeration& e)
+        {
+          // First see if we should delegate this one to Complex.
+          //
+          SemanticGraph::Enumeration* base_enum (0);
+
+          if (!enum_ || !Hybrid::Context::enum_mapping (e, &base_enum))
+          {
+            traverse (static_cast<SemanticGraph::Complex&> (e));
+            return;
+          }
+
+          SemanticGraph::Context& ec (e.context ());
+
+          // In case of customization use name-base instead of name.
+          // If name is empty then we are not generating anything.
+          //
+          String const& name (ec.count ("name-base")
+                              ? ec.get<String> ("name-base")
+                              : ec.get<String> ("name"));
+          if (!name)
+            return;
+
+          if (!data_members_)
+          {
+            ec.set (member_set_key, NameSet ());
+            NameSet& set (ec.get<NameSet> (member_set_key));
+            set.insert (name);
+
+            String v (ec.get<String> ("value-type")); // Set by GlobalTypeName.
+            set.insert (v);
+
+            Enumerator enumerator (*this, set);
+            Traversal::Names names (enumerator);
+            Enumeration::names (e, names);
+
+            if (!base_enum)
+            {
+              ec.set ("value", find_name ("value", set));
+              ec.set ("string", find_name ("string", set));
+            }
+
+            // Check if this type has custom data.
+            //
+            CustomDataMap::Iterator i (custom_data_map.find (e.name ()));
+
+            if (i != custom_data_map.end () &&
+                i->second->find (L"") != i->second->end ())
+            {
+              String name (find_name ("custom_data", set));
+
+              ec.set ("cd-name", name);
+              ec.set ("cd-sequence", find_name (name + L"_sequence", set));
+              ec.set ("cd-iterator", find_name (name + L"_iterator", set));
+              ec.set ("cd-const-iterator",
+                      find_name (name + L"_const_iterator", set));
+            }
+          }
+          else
+          {
+            NameSet& set (ec.get<NameSet> (member_set_key));
+
+            if (!base_enum)
+              ec.set ("value-member", find_name ("value_", set));
+
+            // Custom data.
+            //
+            if (ec.count ("cd-name"))
+            {
+              String const& base (ec.get<String> ("cd-name"));
+              ec.set ("cd-member", find_name (base + L"_", set));
+            }
+          }
         }
 
         virtual Void
@@ -1531,6 +1632,7 @@ namespace CXX
       //
       struct GlobalTypeName: Traversal::Type,
                              Traversal::Union,
+                             Traversal::Enumeration,
                              Context
       {
         GlobalTypeName (Context& c, NameSet& set)
@@ -1589,6 +1691,32 @@ namespace CXX
           NameSet set;
           set.insert (name);
           uc.set ("value", find_name ("value", set));
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Enumeration& e)
+        {
+          traverse (static_cast<SemanticGraph::Type&> (e));
+
+          if (enum_ && Hybrid::Context::enum_mapping (e))
+          {
+            // We need to assign the value type name for enumerations
+            // even in included/imported schemas since we may need this
+            // information when generating derived enums. We need to do
+            // this even if the type is completely customized.
+            //
+            SemanticGraph::Context& ec (e.context ());
+            String name (ec.count ("name-base")
+                         ? ec.get<String> ("name-base")
+                         : ec.get<String> ("name"));
+
+            if (!name)
+              name = ec.get<String> ("name");
+
+            NameSet set;
+            set.insert (name);
+            ec.set ("value-type", find_name ("value_type", set));
+          }
         }
 
       private:

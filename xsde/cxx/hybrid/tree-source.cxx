@@ -15,6 +15,135 @@ namespace CXX
   {
     namespace
     {
+      struct Enumerator: Traversal::Enumerator, Context
+      {
+        Enumerator (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          os << strlit (e.name ());
+        }
+      };
+
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex), enumerator_ (c)
+        {
+          names_ >> enumerator_;
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (ename_custom (e));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          SemanticGraph::Context& ec (e.context ());
+
+          os << "// " << comment (e.name ()) << endl
+             << "//" << endl
+             << endl;
+
+          if (!base_enum)
+          {
+            os << "static const char* _xsde_" << name << "_enumerators_[] = {";
+            names<Enumeration> (e, names_, 0, 0, 0, &Enumeration::comma);
+            os << "};";
+
+            // string()
+            //
+            os << "const char* " << name << "::" << endl
+               << ec.get<String> ("string") << " () const"
+               << "{"
+               << "return _xsde_" << name << "_enumerators_[" <<
+              ec.get<String> ("value-member") << "];"
+               << "}";
+          }
+
+          if (polymorphic (e))
+          {
+            // d-tor
+            //
+            os << name << "::" << endl
+               << "~" << name << " ()"
+               << "{"
+               << "}";
+
+            if (typeinfo)
+            {
+              String id (e.name ());
+
+              if (String ns = xml_ns_name (e))
+              {
+                id += L' ';
+                id += ns;
+              }
+
+              if (stl)
+              {
+                os << "static const ::std::string _xsde_" << name <<
+                  "_static_type_ = " << strlit (id) << ";"
+                   << endl;
+
+                os << "const ::std::string& " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return _xsde_" << name << "_static_type_;"
+                   << "}";
+              }
+              else
+              {
+                os << "const char* " << name << "::" << endl
+                   << "_static_type ()"
+                   << "{"
+                   << "return " << strlit (id) << ";"
+                   << "}";
+              }
+
+              os << "const " << (stl ? "::std::string& " : "char* ") <<
+                name << "::" << endl
+                 << "_dynamic_type () const"
+                 << "{"
+                 << "return _static_type ();"
+                 << "}";
+            }
+          }
+        }
+
+        virtual Void
+        comma (Type&)
+        {
+          os << "," << endl;
+        }
+
+      private:
+        Traversal::Complex& complex_;
+
+        Traversal::Names names_;
+        Enumerator enumerator_;
+      };
+
       struct List : Traversal::List, Context
       {
         List (Context& c)
@@ -1968,6 +2097,7 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       schema >> sources >> schema;
       schema >> names_ns >> ns >> names;
@@ -1975,6 +2105,7 @@ namespace CXX
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

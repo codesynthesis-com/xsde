@@ -48,6 +48,7 @@ namespace CXX
             typeinfo (c.typeinfo),
             mixin (c.mixin),
             tiein (c.tiein),
+            enum_ (c.enum_),
             fwd_expr (c.fwd_expr),
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
@@ -78,6 +79,7 @@ namespace CXX
             typeinfo (c.typeinfo),
             mixin (c.mixin),
             tiein (c.tiein),
+            enum_ (c.enum_),
             fwd_expr (c.fwd_expr),
             hxx_expr (c.hxx_expr),
             ixx_expr (c.ixx_expr),
@@ -572,6 +574,13 @@ namespace CXX
       open_ns ();
 
     public:
+      // Determine whether we are generating the enum mapping for this
+      // enumeration. Also optionally return the base enum.
+      //
+      static Boolean
+      enum_mapping (SemanticGraph::Enumeration& e,
+                    SemanticGraph::Enumeration** base = 0);
+    public:
       typedef
       Cult::Containers::Deque<String>
       NamespaceStack;
@@ -588,6 +597,7 @@ namespace CXX
       Boolean typeinfo;
       Boolean mixin;
       Boolean tiein;
+      Boolean enum_;
 
       Regex const* fwd_expr;
       Regex const* hxx_expr;
@@ -869,6 +879,124 @@ namespace CXX
 
     private:
       Boolean& r_;
+    };
+
+    // Check whether this is a string-based type (excluding ID, IDFER,
+    // anyURI, and ENTITY).
+    //
+    struct StringBasedType: Traversal::Complex,
+                            Traversal::Fundamental::String,
+                            Traversal::Fundamental::NormalizedString,
+                            Traversal::Fundamental::Token,
+                            Traversal::Fundamental::Name,
+                            Traversal::Fundamental::NameToken,
+                            Traversal::Fundamental::NCName,
+                            Traversal::Fundamental::Language
+    {
+      StringBasedType (Boolean& r)
+          : r_ (r)
+      {
+        *this >> inherits_ >> *this;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Complex& c)
+      {
+        inherits (c, inherits_);
+      }
+
+      // Strings.
+      //
+      virtual Void
+      traverse (SemanticGraph::Fundamental::String&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NormalizedString&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Token&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NameToken&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Name&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NCName&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Language&)
+      {
+        r_ = true;
+      }
+
+    private:
+      Boolean& r_;
+      Traversal::Inherits inherits_;
+    };
+
+
+    // Check whether this is a enumeration-based type.
+    //
+    struct EnumBasedType: Traversal::Complex
+    {
+      EnumBasedType (SemanticGraph::Enumeration*& e)
+          : enum_ (e)
+      {
+        *this >> inherits_;
+
+        inherits_ >> *this;
+        inherits_ >> enum_;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Complex& c)
+      {
+        inherits (c, inherits_);
+      }
+
+    private:
+      struct Enumeration: Traversal::Enumeration
+      {
+        Enumeration (SemanticGraph::Enumeration*& e)
+            : e_ (e)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          if (e_ == 0)
+            e_ = &e;
+        }
+
+      private:
+        SemanticGraph::Enumeration*& e_;
+      };
+
+
+    private:
+      Enumeration enum_;
+      Traversal::Inherits inherits_;
     };
 
 

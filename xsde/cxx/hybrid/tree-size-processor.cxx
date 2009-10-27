@@ -237,20 +237,23 @@ namespace CXX
       //
       struct Type: Traversal::List,
                    Traversal::Union,
-                   Traversal::Complex
+                   Traversal::Complex,
+                   Traversal::Enumeration
       {
         Type (Boolean& valid,
               TypeSet& custom_data,
               CustomTypeMap& custom_type_map,
               TypeSet& poly_types,
               Boolean stl_,
-              Boolean poly_)
+              Boolean poly_,
+              Boolean enum_mapping)
             : valid_ (valid),
               custom_data_ (custom_data),
               custom_type_map_ (custom_type_map),
               poly_types_ (poly_types),
               stl (stl_),
-              poly (poly_)
+              poly (poly_),
+              enum_ (enum_mapping)
         {
         }
 
@@ -277,6 +280,44 @@ namespace CXX
             }
 
             set (u, fixed);
+          }
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Enumeration& e)
+        {
+          if (!test (e))
+          {
+            // First process our base since enum_mapping() needs the
+            // polymorphic property determined.
+            //
+            SemanticGraph::Type& b (e.inherits ().base ());
+
+            if (!test (b))
+              dispatch (b);
+
+            SemanticGraph::Enumeration* base_enum (0);
+
+            if (!enum_ || !Context::enum_mapping (e, &base_enum))
+            {
+              traverse (static_cast<SemanticGraph::Complex&> (e));
+              return;
+            }
+
+            Boolean fixed (true);
+
+            if (base_enum && !get (b))
+              fixed = false;
+
+            // Check for custom data.
+            //
+            if (fixed)
+            {
+              if (custom_data_.find (e.name ()) != custom_data_.end ())
+                fixed = false;
+            }
+
+            set (e, fixed);
           }
         }
 
@@ -428,6 +469,7 @@ namespace CXX
         TypeSet& poly_types_;
         Boolean stl;
         Boolean poly;
+        Boolean enum_;
 
         typedef Containers::Vector<SemanticGraph::Complex*> Path;
         Path path_;
@@ -1184,7 +1226,8 @@ namespace CXX
                          custom_type_map,
                          poly_types,
                          stl,
-                         poly);
+                         poly,
+                         !ops.value<CLI::suppress_enum> ());
 
               schema >> schema_names >> ns >> ns_names >> type;
 

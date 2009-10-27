@@ -54,7 +54,7 @@ main (int argc, char* argv[])
     {
       cerr << "first:  " << i->first_name () << endl
            << "last:   " << i->last_name () << endl
-           << "gender: " << i->gender () << endl
+           << "gender: " << i->gender ().string () << endl
            << "age:    " << i->age () << endl
            << endl;
     }
@@ -66,9 +66,7 @@ main (int argc, char* argv[])
 
     // Initialize the filter.
     //
-    gender g;
-    g.assign ("female");
-    root_s.gender_filter (g);
+    root_s.gender_filter (gender::female);
 
     xml_schema::document_simpl doc_s (root_s, people_s.root_name ());
 

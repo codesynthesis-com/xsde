@@ -56,7 +56,7 @@ main (int argc, char* argv[])
     {
       cerr << "ISBN         : " << i->isbn () << endl
            << "Title        : " << i->title () << endl
-           << "Genre        : " << i->genre () << endl;
+           << "Genre        : " << i->genre ().string () << endl;
 
       for (book::author_const_iterator j = i->author ().begin ();
            j != i->author ().end ();
@@ -108,9 +108,7 @@ main (int argc, char* argv[])
       t.assign ("Dead Souls");
       b->title (t);
 
-      genre g;
-      g.assign ("philosophy");
-      b->genre (g);
+      b->genre (genre::philosophy);
 
       author a;
       a.name ("Nikolai Gogol");

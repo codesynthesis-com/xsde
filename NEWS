@@ -1,15 +1,20 @@
 Version 3.2.0
 
-  * When built with Xerces-C++ 3-series, enable handling of multiple
-    imports for the same namespace. Before, all subsequent imports for
-    a namespace were ignored which caused error in some schemas.
+  * When built with Xerces-C++ 3-series, enable handling of multiple imports
+    for the same namespace. Before, all subsequent imports for a namespace
+    were ignored which caused error in some schemas.
 
  C++/Hybrid
 
+  * String-based types that use XML Schema restriction by enumeration are 
+    now mapped to C++ classes with semantics similar to C++ enum. You can 
+    suppress this new mapping and instead get the old behavior (plain 
+    inheritance) by specifying the --suppress-enum compiler option.
+
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
-    provided by the mapping conform to the STL requirements. This 
-    feature requires working <iterator> header and allows you to use the
-    standard algorithms such as find_if, etc.
+    provided by the mapping conform to the STL requirements. This feature
+    requires working <iterator> header and allows you to use the standard
+    algorithms such as find_if, etc.
 
   * When the code is generated with the --generate-polymorphic or
     --runtime-polymorphic option, the resulting parser and serializer

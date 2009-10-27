@@ -15,6 +15,115 @@ namespace CXX
   {
     namespace
     {
+      struct Enumeration : Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c),
+              complex_ (complex),
+              base_name_ (c, TypeName::base)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (ename_custom (e));
+
+          // We may not need to generate the class if this type is
+          // being customized.
+          //
+          if (!name)
+            return;
+
+          SemanticGraph::Context& ec (e.context ());
+          String const& vt (ec.get<String> ("value-type"));
+
+          os << "// " << comment (e.name ()) << endl
+             << "//" << endl
+             << endl;
+
+          // c-tors
+          //
+          os << inl
+             << name << "::" << endl
+             << name << " ()"
+             << "{"
+             << "}";
+
+          os << inl
+             << name << "::" << endl
+             << name << " (" << vt << " v)"
+             << "{";
+
+          if (base_enum)
+          {
+            os << "this->" << base_enum->context ().get<String> ("value") <<
+              " (v);";
+          }
+          else
+            os << ec.get<String> ("value-member") << " = v;";
+
+          os << "}";
+
+          // value (value_type)
+          //
+          if (!base_enum)
+          {
+            os << inl
+               << "void " << name << "::" << endl
+               << ec.get<String> ("value") << " (" << vt << " v)"
+               << "{"
+               << ec.get<String> ("value-member") << " = v;"
+               << "}";
+          }
+
+          // Custom data.
+          //
+          if (ec.count ("cd-name"))
+          {
+            String const& cd_name (ecd_name (e));
+            String const& member (ecd_member (e));
+            String const& sequence (ecd_sequence (e));
+
+            // const seq&
+            // name () const
+            //
+            os << inl
+               << "const " << name << "::" << sequence << "& " <<
+              name << "::" << endl
+               << cd_name << " () const"
+               << "{"
+               << "return this->" << member << ";"
+               << "}";
+
+            // seq&
+            // name ()
+            //
+            os << inl
+               << name << "::" << sequence << "& " << name << "::" << endl
+               << cd_name << " ()"
+               << "{"
+               << "return this->" << member << ";"
+               << "}";
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        TypeName base_name_;
+      };
+
       struct List : Traversal::List, Context
       {
         List (Context& c)
@@ -2029,7 +2138,7 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
-      //Enumeration enumeration (ctx);
+      Enumeration enumeration (ctx, complex);
 
       schema >> sources >> schema;
       schema >> names_ns >> ns >> names;
@@ -2037,7 +2146,7 @@ namespace CXX
       names >> list;
       names >> union_;
       names >> complex;
-      //names >> enumeration;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

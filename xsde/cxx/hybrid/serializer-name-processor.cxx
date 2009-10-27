@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/elements.hxx>
+#include <cxx/hybrid/elements.hxx>
 #include <cxx/hybrid/serializer-name-processor.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
@@ -244,6 +245,54 @@ namespace CXX
 
       //
       //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (options.value<CLI::suppress_enum> () ||
+              !Hybrid::Context::enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          SemanticGraph::Context& ec (e.context ());
+
+          // In case of customization use s:impl-base instead of s:impl.
+          // If the name is empty then we are not generating anything.
+          //
+          String const& name (ec.count ("s:impl-base")
+                              ? ec.get<String> ("s:impl-base")
+                              : ec.get<String> ("s:impl"));
+          if (!name)
+            return;
+
+          if (!base_enum)
+          {
+            NameSet set;
+            set.insert (name);
+
+            ec.set ("sstate", find_name (name + L"_state", "_",  set));
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+      };
+
+      //
+      //
       struct List: Traversal::List, Context
       {
         List (Context& c)
@@ -288,9 +337,9 @@ namespace CXX
         }
 
         virtual Void
-        traverse (Type& l)
+        traverse (Type& u)
         {
-          SemanticGraph::Context& uc (l.context ());
+          SemanticGraph::Context& uc (u.context ());
 
           // In case of customization use s:impl-base instead of s:impl.
           // If the name is empty then we are not generating anything.
@@ -723,10 +772,12 @@ namespace CXX
           List list (ctx);
           Union union_ (ctx);
           Complex complex (ctx);
+          Enumeration enumeration (ctx, complex);
 
           ns_names >> list;
           ns_names >> union_;
           ns_names >> complex;
+          ns_names >> enumeration;
 
           schema.dispatch (tu);
         }

@@ -70,6 +70,155 @@ namespace CXX
 
       //
       //
+      struct PreOverride: Traversal::Complex, Context
+      {
+        PreOverride (Context& c)
+            : Context (c), scope_ (0)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          Boolean clear (false);
+
+          if (scope_ == 0)
+          {
+            scope_ = &c;
+            clear = true;
+          }
+
+          if (c.inherits_p ())
+          {
+            SemanticGraph::Type& b (c.inherits ().base ());
+
+            if (polymorphic (b))
+            {
+              if (tiein)
+                dispatch (b);
+
+              String const& scope (esimpl_custom (*scope_));
+
+              os << "void " << scope << "::" << endl
+                 << "pre (" << sarg_type (b) << " x)"
+                 << "{"
+                 << "this->pre (static_cast< " << sarg_type (c) << " > (x));"
+                 << "}";
+            }
+          }
+
+          if (clear)
+            scope_ = 0;
+        }
+
+      private:
+        SemanticGraph::Complex* scope_;
+      };
+
+      //
+      //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c),
+              complex_ (complex),
+              pre_override_ (c),
+              type_pass_(c)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (!enum_ || !enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          String const& name (esimpl_custom (e));
+
+          if (!name)
+            return;
+
+          String state;
+
+          if (!base_enum)
+            state = esstate (e);
+
+          os << "// " << name << endl
+             << "//" << endl
+             << endl;
+
+          // c-tor
+          //
+          if (tiein)
+          {
+            os << name << "::" << endl
+               << name << " ()" << endl
+               << ": " << esskel (e) << " (" <<
+              (base_enum ? "&base_impl_" : "0") << ")"
+               << "{"
+               << "}";
+          }
+
+          // pre
+          //
+          String const& arg (sarg_type (e));
+
+          if (polymorphic (e))
+            pre_override_.dispatch (e);
+
+          os << "void " << name << "::" << endl
+             << "pre (" << arg << " x)"
+             << "{";
+
+          if (base_enum)
+          {
+            SemanticGraph::Type& b (e.inherits ().base ());
+
+            if (tiein)
+              os << "this->base_impl_.pre (";
+            else
+              os << esimpl (b) << "::pre (";
+
+            type_pass_.dispatch (b);
+
+            os << "x);";
+          }
+          else
+            os << "this->" << state << " = &x;";
+
+          os << "}";
+
+          // _serialize_content
+          //
+          if (!base_enum)
+          {
+            String const& string (e.context ().get<String> ("string"));
+
+            os << "void " << name << "::" << endl
+               << "_serialize_content ()"
+               << "{"
+               << "this->_characters (this->" << state << "->" <<
+              string << " ());"
+               << "}";
+          }
+        }
+
+      private:
+        Traversal::Complex& complex_;
+        PreOverride pre_override_;
+        TypePass type_pass_;
+      };
+
+      //
+      //
       struct List: Traversal::List, Context
       {
         List (Context& c)
@@ -931,53 +1080,6 @@ namespace CXX
 
       //
       //
-      struct PreOverride: Traversal::Complex, Context
-      {
-        PreOverride (Context& c)
-            : Context (c), scope_ (0)
-        {
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Complex& c)
-        {
-          Boolean clear (false);
-
-          if (scope_ == 0)
-          {
-            scope_ = &c;
-            clear = true;
-          }
-
-          if (c.inherits_p ())
-          {
-            SemanticGraph::Type& b (c.inherits ().base ());
-
-            if (polymorphic (b))
-            {
-              if (tiein)
-                dispatch (b);
-
-              String const& scope (esimpl_custom (*scope_));
-
-              os << "void " << scope << "::" << endl
-                 << "pre (" << sarg_type (b) << " x)"
-                 << "{"
-                 << "this->pre (static_cast< " << sarg_type (c) << " > (x));"
-                 << "}";
-            }
-          }
-
-          if (clear)
-            scope_ = 0;
-        }
-
-      private:
-        SemanticGraph::Complex* scope_;
-      };
-
-      //
-      //
       struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
@@ -1125,7 +1227,6 @@ namespace CXX
             if (!b.is_a<SemanticGraph::AnyType> () &&
                 !b.is_a<SemanticGraph::AnySimpleType> ())
             {
-
               if (tiein)
                 os << "this->base_impl_.pre (";
               else
@@ -1290,10 +1391,12 @@ namespace CXX
       List list (ctx);
       Union union_ (ctx);
       Complex complex (ctx);
+      Enumeration enumeration (ctx, complex);
 
       names >> list;
       names >> union_;
       names >> complex;
+      names >> enumeration;
 
       schema.dispatch (ctx.schema_root);
     }

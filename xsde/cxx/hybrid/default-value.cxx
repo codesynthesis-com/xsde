@@ -578,6 +578,38 @@ namespace CXX
     }
 
     Void InitValue::
+    traverse (SemanticGraph::Enumeration& e)
+    {
+      using SemanticGraph::Enumerator;
+      using SemanticGraph::Enumeration;
+
+      // First see if we should delegate this one to the Complex
+      // generator.
+      //
+      Enumeration* base_enum (0);
+
+      if (!enum_ || !enum_mapping (e, &base_enum))
+      {
+        traverse (static_cast<SemanticGraph::Complex&> (e));
+        return;
+      }
+
+      Enumeration& x (base_enum ? *base_enum : e);
+
+      os << member_ << x.context ().get<String> ("value") << "(";
+
+      Enumeration::NamesIteratorPair ip (x.find (value_));
+
+      if (ip.first != ip.second)
+      {
+        Enumerator& er (dynamic_cast<Enumerator&> (ip.first->named ()));
+        os << fq_name (e) << "::" << ename (er);
+      }
+
+      os << ");";
+    }
+
+    Void InitValue::
     traverse (SemanticGraph::Type& t)
     {
       // This is a fall-back case where we handle all other (literal)
@@ -1210,6 +1242,21 @@ namespace CXX
     traverse (SemanticGraph::Complex& c)
     {
       Traversal::NodeBase::dispatch (ultimate_base (c));
+    }
+
+    Void CompareValue::
+    traverse (SemanticGraph::Enumeration& e)
+    {
+      // First see if we should delegate this one to the Complex
+      // generator.
+      //
+      if (!enum_ || !enum_mapping (e))
+      {
+        traverse (static_cast<SemanticGraph::Complex&> (e));
+        return;
+      }
+
+      os << *lhs_ << " == " << *rhs_;
     }
 
     Void CompareValue::

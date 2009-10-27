@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/elements.hxx>
+#include <cxx/hybrid/elements.hxx>
 #include <cxx/hybrid/parser-name-processor.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
@@ -247,6 +248,61 @@ namespace CXX
         CustomParserMap const& custom_parser_map;
 
         Cult::Containers::Map<String, NameSet*>& global_type_names;
+      };
+
+      //
+      //
+      struct Enumeration: Traversal::Enumeration, Context
+      {
+        Enumeration (Context& c, Traversal::Complex& complex)
+            : Context (c), complex_ (complex)
+        {
+        }
+
+        virtual Void
+        traverse (Type& e)
+        {
+          // First see if we should delegate this one to the Complex
+          // generator.
+          //
+          Type* base_enum (0);
+
+          if (options.value<CLI::suppress_enum> () ||
+              !Hybrid::Context::enum_mapping (e, &base_enum))
+          {
+            complex_.traverse (e);
+            return;
+          }
+
+          SemanticGraph::Context& ec (e.context ());
+
+          // In case of customization use p:impl-base instead of p:impl.
+          // If the name is empty then we are not generating anything.
+          //
+          String const& name (ec.count ("p:impl-base")
+                              ? ec.get<String> ("p:impl-base")
+                              : ec.get<String> ("p:impl"));
+          if (!name)
+            return;
+
+          Boolean fl (fixed_length (e));
+
+          NameSet set;
+          set.insert (name);
+
+          if (!fl || !base_enum)
+          {
+            String state_type (find_name (name + L"_state", set));
+            ec.set ("pstate-type", state_type);
+            ec.set ("pstate", find_name (state_type, "_", set));
+          }
+
+          if (!fl)
+            ec.set ("pstate-base", find_name (name + L"_base", "_",  set));
+        }
+
+      private:
+        Traversal::Complex& complex_;
       };
 
       //
@@ -708,10 +764,12 @@ namespace CXX
           List list (ctx);
           Union union_ (ctx);
           Complex complex (ctx);
+          Enumeration enumeration (ctx, complex);
 
           ns_names >> list;
           ns_names >> union_;
           ns_names >> complex;
+          ns_names >> enumeration;
 
           schema.dispatch (tu);
         }
