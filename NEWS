@@ -9,7 +9,9 @@ Version 3.2.0
   * String-based types that use XML Schema restriction by enumeration are 
     now mapped to C++ classes with semantics similar to C++ enum. You can 
     suppress this new mapping and instead get the old behavior (plain 
-    inheritance) by specifying the --suppress-enum compiler option.
+    inheritance) by specifying the --suppress-enum compiler option. See
+    Section 4.3, "Enumerations" in the Getting Started Guide for more
+    information.
 
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
     provided by the mapping conform to the STL requirements. This feature
