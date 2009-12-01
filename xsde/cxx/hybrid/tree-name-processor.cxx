@@ -1155,7 +1155,8 @@ namespace CXX
         virtual Void
         traverse (Type& e)
         {
-          e.context ().set ("name", find_name (e.name (), set_));
+          String const& n (e.name ());
+          e.context ().set ("name", find_name ((n ? n : L"empty"), set_));
         }
 
       private:
