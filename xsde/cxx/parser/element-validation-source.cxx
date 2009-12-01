@@ -363,7 +363,7 @@ namespace CXX
 
       // Common base for the ParticleIn{All, Choice, Sequence} treversers.
       //
-      struct ParticleInCompositor: protected Context
+      struct ParticleInCompositor: Context
       {
       protected:
         ParticleInCompositor (Context& c, SemanticGraph::Complex& type)

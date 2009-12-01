@@ -1398,7 +1398,7 @@ namespace CXX
         TypeName arg_;
       };
 
-      struct Element: Traversal::Element, virtual Context
+      struct Element: Traversal::Element, Context
       {
         Element (Context& c)
             : Context (c),
