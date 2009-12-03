@@ -148,6 +148,8 @@ namespace CXX
         cxx_id_expr_ (L"^(::)?([a-zA-Z_]\\w*)(::[a-zA-Z_]\\w*)*$"),
         cxx_id_expr (cxx_id_expr_),
         trace_namespace_regex (trace_namespace_regex_),
+        urn_mapping_ (L"#^urn.*:([a-zA-Z_].*)$#$1#"),
+        urn_mapping (urn_mapping_),
         nsr_mapping (nsr_mapping_),
         nsm_mapping (nsm_mapping_),
         include_mapping (include_mapping_),
@@ -356,22 +358,37 @@ namespace CXX
 
         if (!found)
         {
+          String const& n (ns.name ());
+
           // Check if the name is valid by itself.
           //
-          if (ns.name ().empty ())
+          if (n.empty ())
           {
             // Empty name denotes a no-namespace case.
             //
-            tmp = ns.name ();
+            tmp = n;
           }
           else
           {
-            tmp = colon.merge (ns.name ()); // replace `/' with `::'
+            tmp = colon.merge (n); // replace `/' with `::'
 
             if (!cxx_id_expr.match (tmp))
             {
-              throw NoNamespaceMapping (
-                ns.file (), ns.line (), ns.column (), ns.name ());
+              // See if this is a urn-style namespace.
+              //
+              if (urn_mapping.match (n))
+              {
+                Regex filter (L"#[.:-]#_#");
+                tmp = urn_mapping.merge (n);
+                tmp = filter.merge (tmp);
+
+                if (!cxx_id_expr.match (tmp))
+                  throw NoNamespaceMapping (
+                    ns.file (), ns.line (), ns.column (), ns.name ());
+              }
+              else
+                throw NoNamespaceMapping (
+                  ns.file (), ns.line (), ns.column (), ns.name ());
             }
           }
         }

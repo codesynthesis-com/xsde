@@ -4,6 +4,9 @@ Version 3.2.0
     for the same namespace. Before, all subsequent imports for a namespace
     were ignored which caused error in some schemas.
 
+  * Automatic mapping for the urn-style XML namespaces. The last component
+    in the urn name is used to derive the C++ namespace name.
+
  C++/Hybrid
 
   * String-based types that use XML Schema restriction by enumeration are 

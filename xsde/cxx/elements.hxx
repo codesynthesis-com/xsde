@@ -152,6 +152,7 @@ namespace CXX
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
           trace_namespace_regex (c.trace_namespace_regex),
+          urn_mapping (c.urn_mapping),
           nsr_mapping (c.nsr_mapping),
           nsm_mapping (c.nsm_mapping),
           include_mapping (c.include_mapping),
@@ -177,6 +178,7 @@ namespace CXX
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
           trace_namespace_regex (c.trace_namespace_regex),
+          urn_mapping (c.urn_mapping),
           nsr_mapping (c.nsr_mapping),
           nsm_mapping (c.nsm_mapping),
           include_mapping (c.include_mapping),
@@ -327,8 +329,10 @@ namespace CXX
     RegexPat const cxx_id_expr_;
     RegexPat const& cxx_id_expr;
     Boolean trace_namespace_regex;
+    Regex urn_mapping_;
     RegexMapping nsr_mapping_;
     MapMapping nsm_mapping_;
+    Regex const& urn_mapping;
     RegexMapping const& nsr_mapping;
     MapMapping const& nsm_mapping;
     MappingCache ns_mapping_cache_;
