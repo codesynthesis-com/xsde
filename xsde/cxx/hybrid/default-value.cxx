@@ -836,6 +836,7 @@ namespace CXX
       strip_zeros (hours);
       strip_zeros (minutes);
       strip_zeros (seconds);
+      make_float (seconds);
 
       os << member_ << "year (" << year << ");"
          << member_ << "month (" << month << ");"
@@ -942,6 +943,7 @@ namespace CXX
       {
         String v (value_, b, e - b);
         strip_zeros (v);
+        make_float (v);
         os << member_ << "seconds (" << v << ");";
 
         b = e + 1;
@@ -1067,6 +1069,7 @@ namespace CXX
       strip_zeros (hours);
       strip_zeros (minutes);
       strip_zeros (seconds);
+      make_float (seconds);
 
       os << member_ << "hours (" << hours << ");"
          << member_ << "minutes (" << minutes << ");"
