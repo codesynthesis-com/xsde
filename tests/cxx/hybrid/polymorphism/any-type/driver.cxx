@@ -1,6 +1,6 @@
 // file      : tests/cxx/hybrid/polymorphism/any-type/driver.cxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2006-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2006-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test polymorphic parsing and serialization of anyType-based hierarchy.

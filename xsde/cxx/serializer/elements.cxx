@@ -1,6 +1,6 @@
 // file      : xsde/cxx/serializer/elements.cxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/serializer/elements.hxx>

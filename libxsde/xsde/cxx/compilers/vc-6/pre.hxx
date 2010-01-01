@@ -1,6 +1,6 @@
 // file      : xsde/cxx/compilers/vc-6/pre.hxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/config.h>

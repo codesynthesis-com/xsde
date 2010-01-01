@@ -1,6 +1,6 @@
 // file      : xsde/cxx/serializer/validating/idref.cxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <string.h> // strlen

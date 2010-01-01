@@ -1,6 +1,6 @@
 // file      : xsde/cxx/parser/impl-header.hxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef CXX_PARSER_IMPL_HEADER_HXX

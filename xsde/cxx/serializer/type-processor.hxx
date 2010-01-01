@@ -1,6 +1,6 @@
 // file      : xsde/cxx/serializer/type-processor.hxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2006-2009 Code Synthesis Tools CC
+// copyright : Copyright (c) 2006-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef CXX_SERIALIZER_TYPE_PROCESSOR_HXX
