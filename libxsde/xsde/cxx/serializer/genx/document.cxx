@@ -490,12 +490,20 @@ namespace xsde
         void document_simpl::
         serialize (genxWriter s)
         {
+          context ctx (s);
+
 #ifndef XSDE_POLYMORPHIC
-          genxStatus e = genxStartElementLiteral (
-            s,
-            reinterpret_cast<constUtf8> (root_ns_.data ()),
-            reinterpret_cast<constUtf8> (root_name_.data ()));
+
+#ifdef XSDE_EXCEPTIONS
+          ctx.start_element (root_ns_.data (), root_name_.data ());
 #else
+          if (!ctx.start_element (root_ns_.data (), root_name_.data ()))
+          {
+            error_ = error (ctx.xml_error ());
+            return;
+          }
+#endif
+#else // XSDE_POLYMORPHIC
           const char* ns = root_ns_.data ();
           const char* n = root_name_.data ();
           const char* dt = 0;
@@ -511,59 +519,58 @@ namespace xsde
               dt = 0;
           }
 
-          genxStatus e = genxStartElementLiteral (
-            s,
-            reinterpret_cast<constUtf8> (ns),
-            reinterpret_cast<constUtf8> (n));
-
-#endif // XSDE_POLYMORPHIC
-
-          if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+          ctx.start_element (ns, n);
+#else
+          if (!ctx.start_element (ns, n))
           {
-            filter_xml_error (e);
+            error_ = error (ctx.xml_error ());
             return;
           }
+#endif
+#endif // XSDE_POLYMORPHIC
 
           // Add namespace prefixes.
           //
           for (size_t i = 0; i < prefixes_.size (); ++i)
           {
 #ifdef XSDE_STL
-            e = genxAddNamespaceLiteral (
-              s,
-              reinterpret_cast<constUtf8> (prefix_namespaces_[i].c_str ()),
-              reinterpret_cast<constUtf8> (prefixes_[i].c_str ()));
+            const char* p = prefixes_[i].c_str ();
+            const char* ns = prefix_namespaces_[i].c_str ();
 #else
-            e = genxAddNamespaceLiteral (
-              s,
-              reinterpret_cast<constUtf8> (prefix_namespaces_[i]),
-              reinterpret_cast<constUtf8> (prefixes_[i]));
+            const char* p = prefixes_[i];
+            const char* ns = prefix_namespaces_[i];
 #endif
-            if (e != GENX_SUCCESS)
+
+#ifdef XSDE_EXCEPTIONS
+            ctx.declare_namespace (ns, p);
+#else
+            if (!ctx.declare_namespace (ns, p))
               break;
+#endif
           }
 
-          if (e != GENX_SUCCESS)
+#ifndef XSDE_EXCEPTIONS
+          if (ctx.error_type ())
           {
-            filter_xml_error (e);
+            error_ = error (ctx.xml_error ());
             return;
           }
+#endif
 
           // Add the schema location attributes.
           //
           if (schemas_.size () != 0)
           {
-            e = genxAddNamespaceLiteral (
-              s,
-              reinterpret_cast<constUtf8> (xsi),
-              reinterpret_cast<constUtf8> ("xsi"));
-
-            if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+            ctx.declare_namespace (xsi, "xsi");
+#else
+            if (!ctx.declare_namespace (xsi, "xsi"))
             {
-              filter_xml_error (e);
+              error_ = error (ctx.xml_error ());
               return;
             }
-
+#endif
             // First add the xsi:schemaLocation attribute.
             //
             bool start = false;
@@ -581,56 +588,56 @@ namespace xsde
               {
                 if (!start)
                 {
-                  e = genxStartAttributeLiteral (
-                    s,
-                    reinterpret_cast<constUtf8> (xsi),
-                    reinterpret_cast<constUtf8> ("schemaLocation"));
-
-                  if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                  ctx.start_attribute (xsi, "schemaLocation");
+#else
+                  if (!ctx.start_attribute (xsi, "schemaLocation"))
                     break;
-
+#endif
                   start = true;
                 }
                 else
                 {
-                  e = genxAddCharacter (s, ' ');
-
-                  if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                  ctx.characters (" ", 1);
+#else
+                  if (!ctx.characters (" ", 1))
                     break;
+#endif
                 }
 
-                e = genxAddText (s, reinterpret_cast<constUtf8> (ns));
-
-                if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                ctx.characters (ns);
+                ctx.characters (" ", 1);
+                ctx.characters (l);
+#else
+                if (!ctx.characters (ns) ||
+                    !ctx.characters (" ", 1) ||
+                    !ctx.characters (l))
                   break;
-
-                e = genxAddCharacter (s, ' ');
-
-                if (e != GENX_SUCCESS)
-                  break;
-
-                e = genxAddText (s, reinterpret_cast<constUtf8> (l));
-
-                if (e != GENX_SUCCESS)
-                  break;
+#endif
               }
             }
 
-            if (e != GENX_SUCCESS)
+#ifndef XSDE_EXCEPTIONS
+            if (ctx.error_type ())
             {
-              filter_xml_error (e);
+              error_ = error (ctx.xml_error ());
               return;
             }
+#endif
 
             if (start)
             {
-              e = genxEndAttribute (s);
-
-              if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+              ctx.end_attribute ();
+#else
+              if (!ctx.end_attribute ())
               {
-                filter_xml_error (e);
+                error_ = error (ctx.xml_error ());
                 return;
               }
+#endif
             }
 
             // Now add the xsi:noNamespaceSchemaLocation attribute.
@@ -650,52 +657,57 @@ namespace xsde
               {
                 if (!start)
                 {
-                  e = genxStartAttributeLiteral (
-                    s,
-                    reinterpret_cast<constUtf8> (xsi),
-                    reinterpret_cast<constUtf8> ("noNamespaceSchemaLocation"));
-
-                  if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                  ctx.start_attribute (xsi, "noNamespaceSchemaLocation");
+#else
+                  if (!ctx.start_attribute (xsi, "noNamespaceSchemaLocation"))
                     break;
-
+#endif
                   start = true;
                 }
                 else
                 {
-                  e = genxAddCharacter (s, ' ');
-
-                  if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                  ctx.characters (" ", 1);
+#else
+                  if (!ctx.characters (" ", 1))
                     break;
+#endif
                 }
 
-                e = genxAddText (s, reinterpret_cast<constUtf8> (l));
-
-                if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+                ctx.characters (l);
+#else
+                if (!ctx.characters (l))
                   break;
+#endif
               }
             }
 
-            if (e != GENX_SUCCESS)
+#ifndef XSDE_EXCEPTIONS
+            if (ctx.error_type ())
             {
-              filter_xml_error (e);
+              error_ = error (ctx.xml_error ());
               return;
             }
+#endif
 
             if (start)
             {
-              e = genxEndAttribute (s);
-
-              if (e != GENX_SUCCESS)
+#ifdef XSDE_EXCEPTIONS
+              ctx.end_attribute ();
+#else
+              if (!ctx.end_attribute ())
               {
-                filter_xml_error (e);
+                error_ = error (ctx.xml_error ());
                 return;
               }
+#endif
             }
           }
 
           // Call the root type serializer to serialize the content.
           //
-          context ctx (s);
 
 #if !defined (XSDE_SERIALIZER_VALIDATION) && defined (XSDE_EXCEPTIONS)
 
@@ -776,10 +788,15 @@ namespace xsde
 #endif // !XSDE_SERIALIZER_VALIDATION && XSDE_EXCEPTIONS
 
 
-          e = genxEndElement (s);
-
-          if (e != GENX_SUCCESS)
-            filter_xml_error (e);
+#ifdef XSDE_EXCEPTIONS
+          ctx.end_element ();
+#else
+          if (!ctx.end_element ())
+          {
+            error_ = error (ctx.xml_error ());
+            return;
+          }
+#endif
         }
 
         void document_simpl::
