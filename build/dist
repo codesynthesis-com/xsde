@@ -208,6 +208,8 @@ if [ "$lib" != "" ]; then
   gen
 fi
 
+gen 'EXTRA_XSDFLAGS += --char-encoding $(XSDE_ENCODING)'
+gen
 gen 'ifeq ($(XSDE_STL),n)'
 gen 'EXTRA_XSDFLAGS += --no-stl'
 gen 'endif'
@@ -357,6 +359,8 @@ if [ "$lib" != "" ]; then
   gen
 fi
 
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --char-encoding $(XSDE_ENCODING)'
+gen
 gen '!if "$(XSDE_STL)" == "n"'
 gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --no-stl'
 gen '!endif'

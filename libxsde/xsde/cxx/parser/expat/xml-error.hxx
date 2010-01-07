@@ -8,6 +8,11 @@
 
 #include <xsde/c/expat/expat.h>
 
+enum XML_Error_Ex
+{
+  XML_ERROR_UNREPRESENTABLE = 0x10000
+};
+
 namespace xsde
 {
   namespace cxx
@@ -16,7 +21,10 @@ namespace xsde
     {
       namespace expat
       {
-        typedef XML_Error xml_error;
+        // The xml_error type can hold values from XML_Error and
+        // XML_Error_Ex enums.
+        //
+        typedef unsigned int xml_error;
 
         const char*
         xml_error_text (xml_error);

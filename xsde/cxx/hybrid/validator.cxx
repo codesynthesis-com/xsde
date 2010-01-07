@@ -489,6 +489,18 @@ namespace CXX
       Boolean valid (true);
       ValidationContext ctx (root, options, disabled_warnings, valid);
 
+      //
+      //
+      NarrowString enc (options.value<CLI::char_encoding> ());
+
+      if (enc != "utf8" && enc != "iso8859-1")
+      {
+        wcerr << "error: unknown encoding '" << enc.c_str () << "'" << endl;
+        return false;
+      }
+
+      //
+      //
       Boolean par (options.value<CLI::generate_parser> ());
       Boolean ser (options.value<CLI::generate_serializer> ());
       Boolean agg (options.value<CLI::generate_aggregate> ());

@@ -8,6 +8,10 @@ EXTRA_CPPFLAGS += -I$(root)/libxsde
 
 EXTRA_XSDFLAGS := --no-stl --no-exceptions
 
+ifeq ($(XSDE_ENCODING),iso8859-1)
+EXTRA_XSDFLAGS += --char-encoding iso8859-1
+endif
+
 ifeq ($(XSDE_IOSTREAM),n)
 EXTRA_XSDFLAGS += --no-iostream
 endif

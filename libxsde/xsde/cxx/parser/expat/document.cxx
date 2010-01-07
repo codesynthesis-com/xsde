@@ -17,6 +17,10 @@
 #  include <fstream>
 #endif
 
+#ifdef XSDE_ENCODING_ISO8859_1
+#  include <xsde/cxx/iso8859-1.hxx>
+#endif
+
 #ifdef XSDE_EXCEPTIONS
 #  include <xsde/cxx/parser/exceptions.hxx>
 #endif
@@ -58,6 +62,9 @@ namespace xsde
 #endif
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
 #ifdef XSDE_POLYMORPHIC
           polymorphic_ = poly;
 #endif
@@ -77,6 +84,9 @@ namespace xsde
 #endif
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
 #ifdef XSDE_POLYMORPHIC
           polymorphic_ = poly;
 #endif
@@ -93,6 +103,9 @@ namespace xsde
 #endif
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
 #ifdef XSDE_POLYMORPHIC
           polymorphic_ = poly;
 #endif
@@ -110,6 +123,9 @@ namespace xsde
 #endif
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
 #ifdef XSDE_POLYMORPHIC
           polymorphic_ = poly;
 #endif
@@ -120,6 +136,9 @@ namespace xsde
         document_pimpl ()
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (0)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
 #ifdef XSDE_POLYMORPHIC
           polymorphic_ = false;
 #endif
@@ -131,6 +150,9 @@ namespace xsde
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
               polymorphic_ (true)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
           init_root_name (0, n);
         }
 
@@ -139,6 +161,9 @@ namespace xsde
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
               polymorphic_ (true)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
           init_root_name (ns, n);
         }
 
@@ -148,6 +173,9 @@ namespace xsde
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
               polymorphic_ (true)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
           init_root_name (0, n.c_str ());
         }
 
@@ -156,6 +184,9 @@ namespace xsde
             : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
               polymorphic_ (true)
         {
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
+#endif
           init_root_name (ns.c_str (), n.c_str ());
         }
 #endif // XSDE_STL
@@ -207,6 +238,10 @@ namespace xsde
         {
 #ifndef XSDE_EXCEPTIONS
           error_ = error ();
+#endif
+
+#ifdef XSDE_ENCODING_ISO8859_1
+          xml_error_ = 0;
 #endif
           first_ = true;
 
@@ -405,6 +440,18 @@ namespace xsde
             //
             if (e == XML_ERROR_ABORTED)
             {
+#ifdef XSDE_ENCODING_ISO8859_1
+              if (xml_error_ != 0)
+              {
+#ifdef XSDE_EXCEPTIONS
+                throw xml (xml_error_, l, c);
+#else
+                error_ = error (xml_error_, l, c);
+                return;
+#endif
+              }
+#endif
+
               // Got to be either a system, schema, or application
               // level error.
               //
@@ -584,11 +631,35 @@ namespace xsde
               return;
           }
 
+          // Convert to application encoding.
+          //
+#ifdef XSDE_ENCODING_UTF8
+          const char* ans_name = ns_name;
+#elif defined(XSDE_ENCODING_ISO8859_1)
+          const char* ans_name;
+          size_t an;
+          string buf;
+
+          if (iso8859_1::ascii_utf (ns_name, an))
+            ans_name = ns_name;
+          else
+          {
+            ans_name = conv_name (ns_name, an, buf);
+
+            if (ans_name == 0)
+            {
+              XML_StopParser (xml_parser_, false);
+              return;
+            }
+          }
+
+#endif // XSDE_ENCODING_*
+
           const char* ns_p;
           const char* name_p;
           size_t ns_s, name_s;
 
-          bits::split_name (ns_name, ns_p, ns_s, name_p, name_s);
+          bits::split_name (ans_name, ns_p, ns_s, name_p, name_s);
 
           parser_state& cur = context_.current_;
 
@@ -602,7 +673,10 @@ namespace xsde
 
             if (polymorphic_)
             {
-              // Search for the xsi:type attribute.
+              // Search for the xsi:type attribute. The name and
+              // namespace of the attribute that we are looking for
+              // are ASCII strings so we don't need to convert it to
+              // the application encoding.
               //
               const XML_Char** p = atts; // VC8 can't handle p (atts)
               for (; *p != 0; p += 2)
@@ -622,9 +696,34 @@ namespace xsde
 
                 // @@ Need proper QName validation.
                 //
+
+                // Convert the type name to the application encoding.
+                //
+#ifdef XSDE_ENCODING_UTF8
+                const char* av = *(p + 1);
+#elif defined(XSDE_ENCODING_ISO8859_1)
+                const char* av;
+                size_t an;
+                string buf;
+
+                if (iso8859_1::ascii_utf (*(p + 1), an))
+                  av = *(p + 1);
+                else
+                {
+                  av = conv_data (*(p + 1), an, buf);
+
+                  if (av == 0)
+                  {
+                    XML_StopParser (xml_parser_, false);
+                    return;
+                  }
+                }
+
+#endif // XSDE_ENCODING_*
+
                 // Get the qualified type name and try to resolve it.
                 //
-                ro_string qn (*(p + 1));
+                ro_string qn (av);
 
                 ro_string tp, tn;
                 size_t pos = qn.find (':');
@@ -834,10 +933,53 @@ namespace xsde
           {
             for (; *atts != 0; atts += 2)
             {
-              bits::split_name (*atts, ns_p, ns_s, name_p, name_s);
+              // Convert the type name to the application encoding.
+              //
+#ifdef XSDE_ENCODING_UTF8
+              const char* aname = *atts;
+              const char* avalue = *(atts + 1);
+#elif defined(XSDE_ENCODING_ISO8859_1)
+              const char* aname;
+              const char* avalue;
+              size_t an;
+              string nbuf, vbuf;
+
+              // Name.
+              //
+              if (iso8859_1::ascii_utf (*atts, an))
+                aname = *atts;
+              else
+              {
+                aname = conv_name (*atts, an, nbuf);
+
+                if (aname == 0)
+                {
+                  XML_StopParser (xml_parser_, false);
+                  return;
+                }
+              }
+
+              // Value.
+              //
+              if (iso8859_1::ascii_utf (*(atts + 1), an))
+                avalue = *(atts + 1);
+              else
+              {
+                avalue = conv_data (*(atts + 1), an, vbuf);
+
+                if (avalue == 0)
+                {
+                  XML_StopParser (xml_parser_, false);
+                  return;
+                }
+              }
+
+#endif // XSDE_ENCODING_*
+
+              bits::split_name (aname, ns_p, ns_s, name_p, name_s);
 
               const ro_string ns (ns_p, ns_s), name (name_p, name_s);
-              const ro_string value (*(atts + 1));
+              const ro_string value (avalue);
 
               if (!cur.any_)
                 cur.parser_->_attribute (ns, name, value);
@@ -867,19 +1009,41 @@ namespace xsde
               return;
           }
 
+          // Convert to application encoding.
+          //
+#ifdef XSDE_ENCODING_UTF8
+          const char* ans_name = ns_name;
+#elif defined(XSDE_ENCODING_ISO8859_1)
+          const char* ans_name;
+          size_t an;
+          string buf;
+
+          if (iso8859_1::ascii_utf (ns_name, an))
+            ans_name = ns_name;
+          else
+          {
+            ans_name = conv_name (ns_name, an, buf);
+
+            if (ans_name == 0)
+            {
+              XML_StopParser (xml_parser_, false);
+              return;
+            }
+          }
+
+#endif // XSDE_ENCODING_*
+
           const char* ns_p;
           const char* name_p;
           size_t ns_s, name_s;
 
-          bits::split_name (ns_name, ns_p, ns_s, name_p, name_s);
+          bits::split_name (ans_name, ns_p, ns_s, name_p, name_s);
 
           const ro_string ns (ns_p, ns_s);
           const ro_string name (name_p, name_s);
 
           parser_state& cur = context_.current_;
 
-          // @@ Error propagation.
-          //
           if (cur.depth_ == 0)
           {
             // The "normal" case: call _post to pop the parser and then
@@ -980,7 +1144,37 @@ namespace xsde
 
           if (n != 0 && (cur.depth_ == 0 || cur.any_))
           {
-            const ro_string str (s, n);
+            // Convert to application encoding.
+            //
+#ifdef XSDE_ENCODING_UTF8
+            const char* as = s;
+            size_t an = n;
+#elif defined(XSDE_ENCODING_ISO8859_1)
+            const char* as;
+            size_t an;
+            string buf;
+
+            if (iso8859_1::ascii_utf (s, n, an))
+            {
+              as = s;
+              an = n;
+            }
+            else
+            {
+              as = conv_data (s, n, an, buf);
+
+              if (as == 0)
+              {
+                XML_StopParser (xml_parser_, false);
+                return;
+              }
+
+              --an; // Discount trailing zero.
+            }
+
+#endif // XSDE_ENCODING_*
+
+            const ro_string str (as, an);
 
             if (!cur.any_)
               cur.parser_->_characters (str);
@@ -1003,21 +1197,65 @@ namespace xsde
           //
           if (polymorphic_)
           {
-#if defined (XSDE_STL)
-            prefixes_.push_back (p ? p : "");
-            prefix_namespaces_.push_back (ns ? ns : "");
+            // Convert the type name to the application encoding.
+            //
+#ifdef XSDE_ENCODING_UTF8
+            const char* ap = p;
+            const char* ans = ns;
+#elif defined(XSDE_ENCODING_ISO8859_1)
+            const char* ap;
+            const char* ans;
+            size_t an;
+            string pbuf, nsbuf;
+
+            // Prefix.
+            //
+            if (p == 0)
+              ap = 0;
+            else if (iso8859_1::ascii_utf (p, an))
+              ap = p;
+            else
+            {
+              ap = conv_name (p, an, pbuf);
+
+              if (ap == 0)
+              {
+                XML_StopParser (xml_parser_, false);
+                return;
+              }
+            }
+
+            // Namespace.
+            //
+            if (ns == 0)
+              ans = 0;
+            else if (iso8859_1::ascii_utf (ns, an))
+              ans = ns;
+            else
+            {
+              ans = conv_data (ns, an, nsbuf);
+
+              if (ans == 0)
+              {
+                XML_StopParser (xml_parser_, false);
+                return;
+              }
+            }
+#endif // XSDE_ENCODING_*
+
+#ifdef XSDE_STL
+            prefixes_.push_back (ap ? ap : "");
+            prefix_namespaces_.push_back (ans ? ans : "");
+#elif defined (XSDE_EXCEPTIONS)
+            prefixes_.push_back_copy (ap ? ap : "");
+            prefix_namespaces_.push_back_copy (ans ? ans : "");
 #else
-#if defined (XSDE_EXCEPTIONS)
-            prefixes_.push_back_copy (p ? p : "");
-            prefix_namespaces_.push_back_copy (ns ? ns : "");
-#else
-            if (prefixes_.push_back_copy (p ? p : "" ) ||
-                prefix_namespaces_.push_back_copy (ns ? ns : ""))
+            if (prefixes_.push_back_copy (ap ? ap : "" ) ||
+                prefix_namespaces_.push_back_copy (ans ? ans : ""))
             {
               context_.sys_error (sys_error::no_memory);
               XML_StopParser (xml_parser_, false);
             }
-#endif
 #endif
           }
         }
@@ -1038,6 +1276,105 @@ namespace xsde
           }
         }
 #endif // XSDE_POLYMORPHIC
+
+        //
+        // Support for ISO-8859-1 conversion.
+        //
+
+#ifdef XSDE_ENCODING_ISO8859_1
+        const char* document_pimpl::
+        conv_data (const XML_Char* utf_s, size_t iso_n, string& var)
+        {
+          char* buf;
+
+          if (iso_n <= sizeof (data_buf_))
+            buf = data_buf_;
+          else
+          {
+            buf = new char[iso_n];
+
+#ifndef XSDE_EXCEPTIONS
+            if (buf == 0)
+            {
+              context_.sys_error (sys_error::no_memory);
+              return 0;
+            }
+#endif
+            var.attach (buf, iso_n - 1);
+          }
+
+          if (!iso8859_1::to (utf_s, buf))
+          {
+            xml_error_ = XML_ERROR_UNREPRESENTABLE;
+            return 0;
+          }
+
+          return buf;
+        }
+
+        const char* document_pimpl::
+        conv_data (const XML_Char* utf_s,
+                   size_t utf_n,
+                   size_t iso_n,
+                   string& var)
+        {
+          char* buf;
+
+          if (iso_n <= sizeof (data_buf_))
+            buf = data_buf_;
+          else
+          {
+            buf = new char[iso_n];
+
+#ifndef XSDE_EXCEPTIONS
+            if (buf == 0)
+            {
+              context_.sys_error (sys_error::no_memory);
+              return 0;
+            }
+#endif
+            var.attach (buf, iso_n - 1);
+          }
+
+          if (!iso8859_1::to (utf_s, utf_n, buf))
+          {
+            xml_error_ = XML_ERROR_UNREPRESENTABLE;
+            return 0;
+          }
+
+          return buf;
+        }
+
+        const char* document_pimpl::
+        conv_name (const XML_Char* utf_s, size_t iso_n, string& var)
+        {
+          char* buf;
+
+          if (iso_n <= sizeof (name_buf_))
+            buf = name_buf_;
+          else
+          {
+            buf = new char[iso_n];
+
+#ifndef XSDE_EXCEPTIONS
+            if (buf == 0)
+            {
+              context_.sys_error (sys_error::no_memory);
+              return 0;
+            }
+#endif
+            var.attach (buf, iso_n - 1);
+          }
+
+          if (!iso8859_1::to (utf_s, buf))
+          {
+            xml_error_ = XML_ERROR_UNREPRESENTABLE;
+            return 0;
+          }
+
+          return buf;
+        }
+#endif // XSDE_ENCODING_ISO8859_1
       }
     }
   }

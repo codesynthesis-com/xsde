@@ -113,6 +113,7 @@ namespace CXX
     namespace CLI
     {
       extern Key type_map                 = "type-map";
+      extern Key char_encoding            = "char-encoding";
       extern Key no_stl                   = "no-stl";
       extern Key no_iostream              = "no-iostream";
       extern Key no_exceptions            = "no-exceptions";
@@ -186,6 +187,12 @@ namespace CXX
       << " from <mapfile>. Repeat this option to specify\n"
       << " several type maps. Type maps are considered in\n"
       << " order of appearance and the first match is used."
+      << endl;
+
+    e << "--char-encoding <enc>" << endl
+      << " Specify the character encoding that should be\n"
+      << " used for the extracted text data. Valid values\n"
+      << " are 'utf8' (default) and 'iso8859-1'."
       << endl;
 
     e << "--no-stl" << endl
@@ -513,6 +520,8 @@ namespace CXX
   options_spec ()
   {
     CLI::OptionsSpec spec;
+
+    spec.option<CLI::char_encoding> ().default_value ("utf8");
 
     spec.option<CLI::skel_file_suffix> ().default_value ("-pskel");
     spec.option<CLI::skel_type_suffix> ().default_value ("_pskel");
@@ -1207,6 +1216,25 @@ namespace CXX
           hxx << "#include <xsde/cxx/config.hxx>" << endl
               << endl;
 
+          if (ops.value<CLI::char_encoding> () == "iso8859-1")
+          {
+            hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
+                << "#error the generated code uses the ISO-8859-1 encoding" <<
+              "while the XSD/e runtime does not (reconfigure the runtime " <<
+              "or change the --char-encoding value)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+          else
+          {
+            hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
+                << "#error the generated code uses the UTF-8 encoding" <<
+              "while the XSD/e runtime does not (reconfigure the runtime " <<
+              "or change the --char-encoding value)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+
           if (ops.value<CLI::no_stl> ())
           {
             hxx << "#ifdef XSDE_STL" << endl
@@ -1584,6 +1612,14 @@ namespace CXX
       }
 
       return sloc;
+    }
+    catch (UnrepresentableCharacter const& e)
+    {
+      wcerr << "error: character at position " << e.position () << " "
+            << "in string '" << e.string () << "' is unrepresentable in "
+            << "the target encoding" << endl;
+
+      throw Failed ();
     }
     catch (NoNamespaceMapping const& e)
     {

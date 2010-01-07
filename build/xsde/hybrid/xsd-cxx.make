@@ -56,6 +56,7 @@ ops :=                                  \
 --sskel-file-suffix $(xsd_sskel_suffix) \
 --simpl-file-suffix $(xsd_simpl_suffix)
 
+ops += --char-encoding $(xsde_encoding)
 
 ifeq ($(xsde_stl),n)
 ops += --no-stl

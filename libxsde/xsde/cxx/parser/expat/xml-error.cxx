@@ -13,13 +13,19 @@ namespace xsde
     {
       namespace expat
       {
+        static const char* const text_[] =
+        {
+          "character unrepresentable in application encoding"
+        };
+
         const char*
         xml_error_text (xml_error e)
         {
-          return XML_ErrorString (e);
+          return e < 0x10000
+            ? XML_ErrorString (static_cast<XML_Error> (e))
+            : text_[e & 0xFFFF];
         }
       }
     }
   }
 }
-

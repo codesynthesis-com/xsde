@@ -34,6 +34,8 @@ ifneq ($(xsd_pimpl_suffix),)
 ops += --impl-file-suffix $(xsd_simpl_suffix)
 endif
 
+ops += --char-encoding $(xsde_encoding)
+
 ifeq ($(xsde_stl),n)
 ops += --no-stl
 endif

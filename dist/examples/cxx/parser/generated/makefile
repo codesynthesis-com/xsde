@@ -14,6 +14,10 @@ EXTRA_XSDFLAGS := --generate-print-impl --generate-test-driver
 #
 EXTRA_XSDFLAGS += --force-overwrite
 
+ifeq ($(XSDE_ENCODING),iso8859-1)
+EXTRA_XSDFLAGS += --char-encoding iso8859-1
+endif
+
 ifeq ($(XSDE_STL),n)
 EXTRA_XSDFLAGS += --no-stl
 endif

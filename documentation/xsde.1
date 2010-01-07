@@ -175,6 +175,19 @@ Write generated files to
 .I dir
 instead of the current directory.
 
+.IP "\fB\--char-encoding \fIenc\fR"
+Specify the application character encoding. Valid values are
+.B utf8
+(default) and
+.BR iso8859-1 .
+Note that this encoding is not the same as the XML document encoding
+that is being parsed or serialized. Rather, it is the encoding that
+is used inside the application. When an XML document is parsed, the
+character data is automatically converted to the application encoding.
+Similarly, when an XML document is serialized, the data in the
+application encoding is automatically converted to the resulting
+document encoding.
+
 .IP "\fB\--no-stl\fR"
 Generate code that does not use the Standard Template Library (STL).
 

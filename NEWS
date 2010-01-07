@@ -7,6 +7,17 @@ Version 3.2.0
   * Automatic mapping for the urn-style XML namespaces. The last component
     in the urn name is used to derive the C++ namespace name.
 
+  * Support for ISO-8859-1 in addition to UTF-8 as application encoding.
+    Note that this encoding is not the same as the XML document encoding 
+    that is being parsed or serialized. Rather, it is the encoding that 
+    is used inside the application. When an XML document is parsed the
+    character data is automatically converted to the application encoding.
+    Similarly, when an XML document is serialized, the data in the
+    application encoding is automatically converted to the resulting
+    document encoding. To select a particular encoding, configure the 
+    XSD/e runtime library accordingly and pass the --char-encoding option
+    to the XSD/e compiler when translating your schemas.    
+
  C++/Hybrid
 
   * String-based types that use XML Schema restriction by enumeration are 

@@ -34,6 +34,7 @@ namespace CXX
                             root,
                             "s:name",
                             "char",
+                            ops.value<CLI::char_encoding> (),
                             ops.value<CLI::include_with_brackets> (),
                             ops.value<CLI::include_prefix> (),
                             "", // export symbol

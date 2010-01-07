@@ -1634,6 +1634,14 @@ namespace CXX
              << "typedef xsde::cxx::parser::context parser_context;"
              << endl;
 
+          if (char_encoding == L"iso8859-1")
+          {
+            os << "// ISO-8859-1 transcoder." << endl
+               << "//" << endl
+               << "using xsde::cxx::iso8859_1;"
+               << endl;
+          }
+
           post (ns);
         }
       };
@@ -1675,8 +1683,12 @@ namespace CXX
       else
       {
         ctx.os << "#include <xsde/config.h>" << endl
-               << "#include <xsde/cxx/ro-string.hxx>" << endl
-               << endl;
+               << "#include <xsde/cxx/ro-string.hxx>" << endl;
+
+        if (ctx.char_encoding == L"iso8859-1")
+          ctx.os << "#include <xsde/cxx/iso8859-1.hxx>" << endl;
+
+        ctx.os << endl;
 
         // Data types.
         //

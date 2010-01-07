@@ -13,6 +13,10 @@ src = $(src) c\genx\genx.c c\genx\char-props.c
 
 src = $(src) cxx\string.cxx cxx\ro-string.cxx cxx\stack.cxx
 
+!if "$(XSDE_ENCODING)" == "iso8859-1"
+src = $(src) cxx\iso8859-1.cxx
+!endif
+
 !if "$(XSDE_STL)" == "n"
 src = $(src) cxx\strdupx.cxx
 !endif
@@ -500,6 +504,20 @@ config.h:
 !endif
 !if "$(XSDE_BYTEORDER)" == "b"
 	@echo #define XSDE_BYTEORDER 4321         >>$@
+!endif
+!if "$(XSDE_ENCODING)" == "utf8"
+	@echo #define XSDE_ENCODING_UTF8          >>$@
+!else
+!if "$(XSDE_ENCODING)" == ""
+	@echo #define XSDE_ENCODING_UTF8          >>$@
+!else
+	@echo #undef XSDE_ENCODING_UTF8           >>$@
+!endif
+!endif
+!if "$(XSDE_ENCODING)" == "iso8859-1"
+	@echo #define XSDE_ENCODING_ISO8859_1     >>$@
+!else
+	@echo #undef XSDE_ENCODING_ISO8859_1      >>$@
 !endif
 !if "$(XSDE_STL)" == "y"
 	@echo #define XSDE_STL                    >>$@

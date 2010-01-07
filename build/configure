@@ -39,6 +39,15 @@ else
 fi
 
 $echo
+$echo "Please select the application character encoding:"
+$echo
+$echo "(1) UTF-8"
+$echo "(2) ISO-8859-1"
+$echo
+
+encoding=`read_option "utf8 iso8859-1" "utf8"`
+
+$echo
 $echo "Would you like the generated code and runtime to use STL?"
 $echo
 
@@ -166,6 +175,7 @@ fi
 
 echo "xsde_arch_width                     := $arch_width"                     >$1
 echo "xsde_byteorder                      := $byteorder"                      >>$1
+echo "xsde_encoding                       := $encoding"                       >>$1
 echo "xsde_stl                            := $stl"                            >>$1
 echo "xsde_stl_iterator                   := $stl_iter"                       >>$1
 echo "xsde_iostream                       := $iostream"                       >>$1

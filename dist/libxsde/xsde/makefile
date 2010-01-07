@@ -11,6 +11,10 @@ src += c/genx/genx.c c/genx/char-props.c
 
 src += cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
 
+ifeq ($(XSDE_ENCODING),iso8859-1)
+src += cxx/iso8859-1.cxx
+endif
+
 ifeq ($(XSDE_STL),n)
 src += cxx/strdupx.cxx
 endif
@@ -505,6 +509,20 @@ ifeq ($(XSDE_BYTEORDER),l)
 endif
 ifeq ($(XSDE_BYTEORDER),b)
 	@echo $(h)define XSDE_BYTEORDER 4321        >>$@
+endif
+ifeq ($(XSDE_ENCODING),utf8)
+	@echo $(h)define XSDE_ENCODING_UTF8         >>$@
+else
+ifeq ($(XSDE_ENCODING),)
+	@echo $(h)define XSDE_ENCODING_UTF8         >>$@
+else
+	@echo $(h)undef XSDE_ENCODING_UTF8          >>$@
+endif
+endif
+ifeq ($(XSDE_ENCODING),iso8859-1)
+	@echo $(h)define XSDE_ENCODING_ISO8859_1    >>$@
+else
+	@echo $(h)undef XSDE_ENCODING_ISO8859_1     >>$@
 endif
 ifeq ($(XSDE_STL),y)
 	@echo $(h)define XSDE_STL                   >>$@

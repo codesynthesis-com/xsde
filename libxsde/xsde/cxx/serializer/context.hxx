@@ -11,6 +11,7 @@
 #include <stddef.h> // size_t
 
 #include <xsde/c/genx/genx.h>
+#include <xsde/cxx/string.hxx>
 
 #ifndef XSDE_EXCEPTIONS
 #  include <xsde/cxx/sys-error.hxx>
@@ -251,6 +252,23 @@ namespace xsde
         const void* type_id_;
 #endif
 
+        // Support for ISO-8859-1 conversion.
+        //
+#ifdef XSDE_ENCODING_ISO8859_1
+      protected:
+        const char*
+        conv_data (const char* iso_s, size_t utf_n, string& var);
+
+        const char*
+        conv_data (const char* iso_s, size_t iso_n, size_t utf_n, string& var);
+
+        const char*
+        conv_name (const char* iso_s, size_t utf_n, char* fix, string& var);
+
+        char data_buf_[256];
+        char name_buf1_[128];
+        char name_buf2_[128]; // Keep buf1 and buf2 sizes the same.
+#endif
       };
     }
   }

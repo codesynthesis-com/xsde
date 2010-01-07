@@ -24,6 +24,7 @@ namespace CXX
       typedef Char const Key[];
 
       extern Key type_map;
+      extern Key char_encoding;
       extern Key no_stl;
       extern Key no_iostream;
       extern Key no_exceptions;
@@ -86,6 +87,7 @@ namespace CXX
 
       typedef Cult::CLI::Options<
         type_map,                 Cult::Containers::Vector<NarrowString>,
+        char_encoding,            NarrowString,
         no_stl,                   Boolean,
         no_iostream,              Boolean,
         no_exceptions,            Boolean,

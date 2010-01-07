@@ -410,6 +410,16 @@ namespace CXX
 
       //
       //
+      NarrowString enc (options.value<CLI::char_encoding> ());
+
+      if (enc != "utf8" && enc != "iso8859-1")
+      {
+        wcerr << "error: unknown encoding '" << enc.c_str () << "'" << endl;
+        return false;
+      }
+
+      //
+      //
       {
         Boolean ref (options.value<CLI::root_element_first> ());
         Boolean rel (options.value<CLI::root_element_last> ());

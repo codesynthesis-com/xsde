@@ -2609,10 +2609,13 @@ private:
   </p>
 
   <p>The Embedded C++/Serializer mapping always expects character data
-     supplied by the application to be in the UTF-8 encoding. The
-     underlying XML serializer used by the Embedded C++/Serializer
-     mapping produces the resulting XML in the UTF-8 encoding as
-     well.</p>
+     supplied by the application to be in the same encoding. The
+     application encoding can either be UTF-8 (default) or ISO-8859-1.
+     To select a particular encoding, configure the XSD/e runtime library
+     accordingly and pass the <code>--char-encoding</code> option to the
+     XSD/e compiler when translating your schemas. The underlying XML
+     serializer used by the Embedded C++/Serializer mapping produces
+     the resulting XML documents in the UTF-8 encoding.</p>
 
   <h2><a name="6.1">6.1 Standard Template Library</a></h2>
 

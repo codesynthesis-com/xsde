@@ -8,6 +8,10 @@ override LIBS += -lACE
 #
 EXTRA_CPPFLAGS := -I$(root)/libxsde
 
+ifeq ($(XSDE_ENCODING),iso8859-1)
+EXTRA_XSDFLAGS += --char-encoding iso8859-1
+endif
+
 ifeq ($(XSDE_STL),n)
 EXTRA_XSDFLAGS += --no-stl
 endif

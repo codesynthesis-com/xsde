@@ -166,6 +166,17 @@
     <dd>Write generated files to <code><i>dir</i></code> instead of
       the current directory.</dd>
 
+    <dt><code><b>--char-encoding</b> <i>enc</i></code></dt>
+    <dd>Specify the application character encoding. Valid values are
+        <code><b>utf8</b></code> (default) and <code><b>iso8859-1</b></code>.
+        Note that this encoding is not the same as the XML document encoding
+        that is being parsed or serialized. Rather, it is the encoding that
+        is used inside the application. When an XML document is parsed, the
+        character data is automatically converted to the application encoding.
+        Similarly, when an XML document is serialized, the data in the
+        application encoding is automatically converted to the resulting
+        document encoding.</dd>
+
     <dt><code><b>--no-stl</b></code></dt>
     <dd>Generate code that does not use the Standard Template Library
         (STL).</dd>

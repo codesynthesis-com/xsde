@@ -35,6 +35,30 @@ namespace CXX
   // Exceptions.
   //
 
+  struct UnrepresentableCharacter
+  {
+    UnrepresentableCharacter (String const& str, Size pos)
+        : str_ (str), pos_ (pos)
+    {
+    }
+
+    String const&
+    string () const
+    {
+      return str_;
+    }
+
+    Size
+    position () const
+    {
+      return pos_;
+    }
+
+  private:
+    String str_;
+    Size pos_;
+  };
+
   struct NoNamespaceMapping
   {
     NoNamespaceMapping (SemanticGraph::Path const& file,
@@ -124,6 +148,7 @@ namespace CXX
              SemanticGraph::Schema& root,
              Char const* name_key,
              NarrowString const& char_type__,
+             NarrowString const& char_encoding__,
              Boolean include_with_brackets__,
              NarrowString const& include_prefix__,
              NarrowString const& esymbol,
@@ -141,6 +166,7 @@ namespace CXX
           schema_root (c.schema_root),
           ename_key (c.ename_key),
           char_type (c.char_type),
+          char_encoding (c.char_encoding),
           L (c.L),
           string_type (c.string_type),
           include_with_brackets (c.include_with_brackets),
@@ -167,6 +193,7 @@ namespace CXX
           schema_root (c.schema_root),
           ename_key (c.ename_key),
           char_type (c.char_type),
+          char_encoding (c.char_encoding),
           L (c.L),
           string_type (c.string_type),
           include_with_brackets (c.include_with_brackets),
@@ -296,6 +323,7 @@ namespace CXX
     NarrowString const& ename_key;
 
     String& char_type;
+    String& char_encoding;
     String& L;                  // string literal prefix
     String& string_type;
 
@@ -315,6 +343,7 @@ namespace CXX
     NarrowString const ename_key_;
 
     String char_type_;
+    String char_encoding_;
     String L_;
     String string_type_;
 

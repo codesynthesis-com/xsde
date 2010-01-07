@@ -111,6 +111,7 @@ namespace CXX
   {
     namespace CLI
     {
+      extern Key char_encoding            = "char-encoding";
       extern Key no_stl                   = "no-stl";
       extern Key no_iostream              = "no-iostream";
       extern Key no_exceptions            = "no-exceptions";
@@ -206,6 +207,12 @@ namespace CXX
   {
     std::wostream& e (wcerr);
     ::CLI::Indent::Clip< ::CLI::OptionsUsage, WideChar> clip (e);
+
+    e << "--char-encoding <enc>" << endl
+      << " Specify the character encoding that should be\n"
+      << " used in the object model. Valid values are 'utf8'\n"
+      << " (default) and 'iso8859-1'."
+      << endl;
 
     e << "--no-stl" << endl
       << " Generate code that does not use STL."
@@ -704,6 +711,8 @@ namespace CXX
   {
     CLI::OptionsSpec spec;
 
+    spec.option<CLI::char_encoding> ().default_value ("utf8");
+
     spec.option<CLI::pskel_file_suffix> ().default_value ("-pskel");
     spec.option<CLI::sskel_file_suffix> ().default_value ("-sskel");
     spec.option<CLI::pskel_type_suffix> ().default_value ("_pskel");
@@ -814,6 +823,7 @@ namespace CXX
 
     Evptr<P::Options> r (new P::Options);
 
+    r->value<P::char_encoding> ()         = h.value<H::char_encoding> ();
     r->value<P::no_stl> ()                = h.value<H::no_stl> ();
     r->value<P::no_iostream> ()           = h.value<H::no_iostream> ();
     r->value<P::no_exceptions> ()         = h.value<H::no_exceptions> ();
@@ -895,6 +905,7 @@ namespace CXX
 
     Evptr<S::Options> r (new S::Options);
 
+    r->value<S::char_encoding> ()         = h.value<H::char_encoding> ();
     r->value<S::no_stl> ()                = h.value<H::no_stl> ();
     r->value<S::no_iostream> ()           = h.value<H::no_iostream> ();
     r->value<S::no_exceptions> ()         = h.value<H::no_exceptions> ();
@@ -1526,6 +1537,25 @@ namespace CXX
 
           hxx << "#include <xsde/cxx/config.hxx>" << endl
               << endl;
+
+          if (ops.value<CLI::char_encoding> () == "iso8859-1")
+          {
+            hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
+                << "#error the generated code uses the ISO-8859-1 encoding" <<
+              "while the XSD/e runtime does not (reconfigure the runtime " <<
+              "or change the --char-encoding value)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+          else
+          {
+            hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
+                << "#error the generated code uses the UTF-8 encoding" <<
+              "while the XSD/e runtime does not (reconfigure the runtime " <<
+              "or change the --char-encoding value)" << endl
+                << "#endif" << endl
+                << endl;
+          }
 
           if (ops.value<CLI::no_stl> ())
           {
@@ -2612,6 +2642,14 @@ namespace CXX
       }
 
       return sloc;
+    }
+    catch (UnrepresentableCharacter const& e)
+    {
+      wcerr << "error: character at position " << e.position () << " "
+            << "in string '" << e.string () << "' is unrepresentable in "
+            << "the target encoding" << endl;
+
+      throw Failed ();
     }
     catch (NoNamespaceMapping const& e)
     {

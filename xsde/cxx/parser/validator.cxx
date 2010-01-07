@@ -601,6 +601,16 @@ namespace CXX
 
       //
       //
+      NarrowString enc (options.value<CLI::char_encoding> ());
+
+      if (enc != "utf8" && enc != "iso8859-1")
+      {
+        wcerr << "error: unknown encoding '" << enc.c_str () << "'" << endl;
+        return false;
+      }
+
+      //
+      //
       if (options.value<CLI::generate_noop_impl> () &&
           options.value<CLI::generate_print_impl> ())
       {

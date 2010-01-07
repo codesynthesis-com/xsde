@@ -17,6 +17,10 @@ endif
 ifeq ($(XSDE_IOSTREAM),y)
 dirs += built-in default enumeration list test-template union
 
+ifeq ($(XSDE_ENCODING),iso8859-1)
+dirs += iso8859-1
+endif
+
 ifeq ($(XSDE_CDR),y)
 dirs += binary/cdr
 endif

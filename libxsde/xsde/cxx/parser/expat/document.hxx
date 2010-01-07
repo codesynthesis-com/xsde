@@ -323,6 +323,27 @@ namespace xsde
           error error_;
 #endif
 
+          // Support for ISO-8859-1 conversion.
+          //
+#ifdef XSDE_ENCODING_ISO8859_1
+        protected:
+          const char*
+          conv_data (const XML_Char* utf_s, size_t iso_n, string& var);
+
+          const char*
+          conv_data (const XML_Char* utf_s,
+                     size_t utf_n,
+                     size_t iso_n,
+                     string& var);
+
+          const char*
+          conv_name (const XML_Char* utf_s, size_t iso_n, string& var);
+
+          xml_error xml_error_;
+
+          char data_buf_[256];
+          char name_buf_[128];
+#endif
         private:
           void
           init_root_name (const char* ns, const char* name);

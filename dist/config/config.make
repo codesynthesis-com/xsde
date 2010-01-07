@@ -37,10 +37,24 @@ XSDE_PLATFORM     := posix
 XSDE_ARCH_WIDTH   := 32
 
 
-# Platform byte order. Valid values are 'b' for big-endian
-# and 'l' for little-endian.
+# Platform byte order. Valid values are 'b' for big-endian and 'l'
+# for little-endian.
 #
 XSDE_BYTEORDER    := l
+
+
+# Application character encoding. Valid values are 'utf8' for UTF-8
+# and 'iso8859-1' for ISO-8859-1. Note that this encoding is not
+# the same as the XML document encoding that is being parsed or
+# serialized. Rather, it is the encoding that is used inside the
+# application. When an XML document is parsed, the character data
+# is automatically converted to the application encoding. Similarly,
+# when an XML document is serialized, the data in the application
+# encoding is automatically converted to the resulting document
+# encoding. Also don't forget to use the --char-encoding option
+# when compiling your schemas if using an encoding other than UTF-8.
+#
+XSDE_ENCODING     := utf8
 
 
 # Set to 'n' if you don't have STL (std::string, etc.). Also don't

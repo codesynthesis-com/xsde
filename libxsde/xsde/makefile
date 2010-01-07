@@ -10,6 +10,10 @@ c_tun += c/genx/genx.c c/genx/char-props.c
 
 cxx_tun := cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
 
+ifeq ($(xsde_encoding),iso8859-1)
+cxx_tun += cxx/iso8859-1.cxx
+endif
+
 ifeq ($(xsde_stl),n)
 cxx_tun += cxx/strdupx.cxx
 endif
@@ -516,6 +520,16 @@ ifeq ($(xsde_byteorder),l)
 	@echo '#define XSDE_BYTEORDER 1234'                             >>$@
 else
 	@echo '#define XSDE_BYTEORDER 4321'                             >>$@
+endif
+ifeq ($(xsde_encoding),utf8)
+	@echo '#define XSDE_ENCODING_UTF8'                              >>$@
+else
+	@echo '#undef XSDE_ENCODING_UTF8'                               >>$@
+endif
+ifeq ($(xsde_encoding),iso8859-1)
+	@echo '#define XSDE_ENCODING_ISO8859_1'                         >>$@
+else
+	@echo '#undef XSDE_ENCODING_ISO8859_1'                          >>$@
 endif
 ifeq ($(xsde_stl),y)
 	@echo '#define XSDE_STL'                                        >>$@

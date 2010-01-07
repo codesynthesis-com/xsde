@@ -114,6 +114,7 @@ namespace CXX
            SemanticGraph::Schema& root,
            Char const* name_key,
            NarrowString const& char_type__,
+           NarrowString const& char_encoding__,
            Boolean include_with_brackets__,
            NarrowString const& include_prefix__,
            NarrowString const& esymbol,
@@ -128,6 +129,7 @@ namespace CXX
         schema_root (root),
         ename_key (ename_key_),
         char_type (char_type_),
+        char_encoding (char_encoding_),
         L (L_),
         string_type (string_type_),
         include_with_brackets (include_with_brackets_),
@@ -139,6 +141,7 @@ namespace CXX
         xs_ns_ (0),
         ename_key_ (name_key),
         char_type_ (char_type__),
+        char_encoding_ (char_encoding__),
         L_ (char_type == L"wchar_t" ? L"L" : L""),
         include_with_brackets_ (include_with_brackets__),
         include_prefix_ (include_prefix__),
@@ -819,6 +822,126 @@ namespace CXX
   }
 
   String
+  strlit_iso8859_1 (String const& str)
+  {
+    String r;
+    Size n (str.size ());
+
+    // In most common cases we will have that many chars.
+    //
+    r.reserve (n + 2);
+
+    r += '"';
+
+    Boolean escape (false);
+
+    for (Size i (0); i < n; ++i)
+    {
+      UnsignedLong u (Context::unicode_char (str, i)); // May advance i.
+
+      // [256 -    ]  - unrepresentable
+      // [127 - 255]  - \xXX
+      // [32  - 126]  - as is
+      // [0   - 31]   - \X or \xXX
+      //
+
+      if (u < 32)
+      {
+        switch (u)
+        {
+        case L'\n':
+          {
+            r += L"\\n";
+            break;
+          }
+        case L'\t':
+          {
+            r += L"\\t";
+            break;
+          }
+        case L'\v':
+          {
+            r += L"\\v";
+            break;
+          }
+        case L'\b':
+          {
+            r += L"\\b";
+            break;
+          }
+        case L'\r':
+          {
+            r += L"\\r";
+            break;
+          }
+        case L'\f':
+          {
+            r += L"\\f";
+            break;
+          }
+        case L'\a':
+          {
+            r += L"\\a";
+            break;
+          }
+        default:
+          {
+            r += charlit (u);
+            escape = true;
+            break;
+          }
+        }
+      }
+      else if (u < 127)
+      {
+        if (escape)
+        {
+          // Close and open the string so there are no clashes.
+          //
+          r += '"';
+          r += '"';
+
+          escape = false;
+        }
+
+        switch (u)
+        {
+        case L'"':
+          {
+            r += L"\\\"";
+            break;
+          }
+        case L'\\':
+          {
+            r += L"\\\\";
+            break;
+          }
+        default:
+          {
+            r += static_cast<WideChar> (u);
+            break;
+          }
+        }
+      }
+      else if (u < 256)
+      {
+        r += charlit (u);
+        escape = true;
+      }
+      else
+      {
+        // Unrepresentable character.
+        //
+        throw UnrepresentableCharacter (str, i + 1);
+      }
+    }
+
+    r += '"';
+
+    return r;
+  }
+
+  String
   strlit_utf32 (String const& str)
   {
     String r;
@@ -936,7 +1059,12 @@ namespace CXX
   strlit (String const& str)
   {
     if (char_type == L"char")
-      return strlit_utf8 (str);
+    {
+      if (char_encoding == L"iso8859-1")
+        return strlit_iso8859_1 (str);
+      else
+        return strlit_utf8 (str);
+    }
     else
       return strlit_utf32 (str);
   }

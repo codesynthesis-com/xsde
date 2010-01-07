@@ -1265,15 +1265,34 @@ main (int argc, char* argv[])
      Compiler Command Line Manual</a>.
   </p>
 
-  <p>While the XML documents can use various encodings, the Embedded
-     C++/Hybrid mapping always delivers character data to the application
-     in the UTF-8 encoding. The underlying XML parser used by the mapping
-     includes built-in support for XML documents encoded in UTF-8, UTF-16,
-     ISO-8859-1, and US-ASCII. Other encodings can be supported by providing
-     application-specific decoder functions. C++/Hybrid also expects character
-     data supplied by the application to be in the UTF-8 encoding. The
-     underlying XML serializer used by the mapping produces the resulting
-     XML in the UTF-8 encoding as well.</p>
+  <p>While the XML documents can use various encodings, the C++/Hybrid
+     object model always stores character data in the same encoding,
+     called application encoding. The application encoding can either be
+     UTF-8 (default) or ISO-8859-1. To select a particular encoding, configure
+     the XSD/e runtime library accordingly and pass the <code>--char-encoding</code>
+     option to the XSD/e compiler when translating your schemas.</p>
+
+  <p>When using ISO-8859-1 as the application encoding, XML documents
+     being parsed may contain characters with Unicode values greater
+     than 0xFF which are unrepresentable in the ISO-8859-1 encoding.
+     By default, in such situations parsing will terminate with
+     an error. However, you can suppress the error by providing a
+     replacement character that should be used instead of
+     unrepresentable characters, for example:</p>
+
+  <pre class="c++">
+xml_schema::iso8859_1::unrep_char ('?');
+  </pre>
+
+  <p>To revert to the default behavior, set the replacement character
+     to <code>'\0'</code>.</p>
+
+  <p>The underlying XML parser used by the mapping includes built-in
+     support for XML documents encoded in UTF-8, UTF-16, ISO-8859-1,
+     and US-ASCII. Other encodings can be supported by providing
+     application-specific decoder functions. The underlying XML
+     serializer used by C++/Hybrid produces the resulting
+     XML documents in the UTF-8 encoding.</p>
 
   <h2><a name="3.1">3.1 Standard Template Library</a></h2>
 

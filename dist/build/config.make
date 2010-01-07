@@ -14,6 +14,7 @@ include $(root)/config/config.make
 XSDE_PLATFORM := $(strip $(XSDE_PLATFORM))
 XSDE_ARCH_WIDTH := $(strip $(XSDE_ARCH_WIDTH))
 XSDE_BYTEORDER := $(strip $(XSDE_BYTEORDER))
+XSDE_ENCODING := $(strip $(XSDE_ENCODING))
 XSDE_STL := $(strip $(XSDE_STL))
 XSDE_IOSTREAM := $(strip $(XSDE_IOSTREAM))
 XSDE_EXCEPTIONS := $(strip $(XSDE_EXCEPTIONS))
