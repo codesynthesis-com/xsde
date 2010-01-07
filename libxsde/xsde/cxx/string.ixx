@@ -34,11 +34,17 @@ namespace xsde
     inline void string::
     attach (char* s)
     {
+      attach (s, s != 0 ? strlen (s) : 0);
+    }
+
+    inline void string::
+    attach (char* s, size_t n)
+    {
       delete[] data_;
 
       data_ = s;
-      size_ = (s != 0 ? strlen (s) : 0);
-      capacity_ = (s != 0 ? size_ + 1 : 0);
+      size_ = n;
+      capacity_ = n + 1;
     }
 
     inline string::error string::
@@ -146,4 +152,3 @@ namespace xsde
     }
   }
 }
-

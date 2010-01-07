@@ -77,6 +77,9 @@ namespace xsde
       void
       attach (char*);
 
+      void
+      attach (char*, size_t);
+
     private:
       string (const string&);
 
