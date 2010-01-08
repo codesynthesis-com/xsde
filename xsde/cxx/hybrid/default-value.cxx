@@ -681,10 +681,17 @@ namespace CXX
     Void InitValue::
     traverse (SemanticGraph::Fundamental::QName&)
     {
+      // Newer version of the XSD frontend provide resolved values
+      // in the form <namespace>#<qname>.
+      //
+      Size p (value_.rfind ('#'));
+      if (p != String::npos)
+        value_ = String (value_, p + 1, value_.size () - p - 1);
+
       collapse (value_);
 
       String prefix, name;
-      Size p (value_.find (':'));
+      p = value_.find (':');
 
       if (p != String::npos)
       {
