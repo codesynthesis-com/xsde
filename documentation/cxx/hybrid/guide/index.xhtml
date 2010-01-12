@@ -955,13 +955,11 @@ main (int argc, char* argv[])
                                       hello_s.root_name ());
     ostringstream ostr;
 
-    hello_s.pre (*h);
+    hello_s.pre (h);
     doc_s.serialize (ostr, xml_schema::document_simpl::pretty_print);
     hello_s.post ();
 
-    delete h;
-
-    cout &lt;&lt; ostr.c_str () &lt;&lt; endl;
+    cout &lt;&lt; ostr.str () &lt;&lt; endl;
   }
   catch (const xml_schema::serializer_exception&amp; e)
   {
