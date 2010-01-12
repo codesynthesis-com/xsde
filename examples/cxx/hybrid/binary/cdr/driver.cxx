@@ -98,7 +98,7 @@ main (int argc, char* argv[])
     doc_s.add_prefix ("lib", "http://www.codesynthesis.com/library");
     doc_s.add_schema ("http://www.codesynthesis.com/library", "library.xsd");
 
-    catalog_s.pre (*c);
+    catalog_s.pre (*copy);
     doc_s.serialize (std::cout, xml_schema::document_simpl::pretty_print);
     catalog_s.post ();
   }
