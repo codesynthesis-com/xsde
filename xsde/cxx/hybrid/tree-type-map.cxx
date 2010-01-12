@@ -22,9 +22,12 @@ namespace CXX
       class Context: public CXX::Context
       {
       public:
-        Context (CLI::Options const& ops, SemanticGraph::Schema& root)
+        Context (CLI::Options const& ops,
+                 SemanticGraph::Schema& root,
+                 SemanticGraph::Path const& path)
             : CXX::Context (std::wcerr,
                             root,
+                            path,
                             "name",
                             "char",
                             ops.value<CLI::char_encoding> (),
@@ -202,6 +205,7 @@ namespace CXX
     Void
     generate_tree_type_map (CLI::Options const& ops,
                             XSDFrontend::SemanticGraph::Schema& tu,
+                            XSDFrontend::SemanticGraph::Path const& path,
                             String const& hxx_name,
                             TypeMap::Namespaces& parser_map,
                             TypeMap::Namespaces& serializer_map)
@@ -209,7 +213,7 @@ namespace CXX
       if (tu.names_begin ()->named ().name () !=
           L"http://www.w3.org/2001/XMLSchema")
       {
-        Context ctx (ops, tu);
+        Context ctx (ops, tu, path);
 
         // We don't want include in the included/imported/sources
         // schema so split the traversal into two part.

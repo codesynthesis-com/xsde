@@ -23,6 +23,7 @@ namespace CXX
     Void
     generate_tree_type_map (CLI::Options const& options,
                             XSDFrontend::SemanticGraph::Schema&,
+                            XSDFrontend::SemanticGraph::Path const&,
                             String const& hxx_name,
                             TypeMap::Namespaces& parser_type_map,
                             TypeMap::Namespaces& serializer_type_map);

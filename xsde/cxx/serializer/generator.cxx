@@ -685,7 +685,7 @@ namespace CXX
         //
         String xns;
         {
-          Context ctx (std::wcerr, schema, ops, 0, 0, 0);
+          Context ctx (std::wcerr, schema, file_path, ops, 0, 0, 0);
           xns = ctx.xs_ns_name ();
         }
 
@@ -1161,7 +1161,8 @@ namespace CXX
       // HXX
       //
       {
-        Context ctx (hxx, schema, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
+        Context ctx (
+          hxx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
 
@@ -1419,7 +1420,8 @@ namespace CXX
       //
       if (inline_)
       {
-        Context ctx (ixx, schema, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
+        Context ctx (
+          ixx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> ixx_sloc (ixx);
 
@@ -1475,7 +1477,8 @@ namespace CXX
       //
       if (source)
       {
-        Context ctx (cxx, schema, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
+        Context ctx (
+          cxx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 
@@ -1538,7 +1541,8 @@ namespace CXX
       //
       if (impl)
       {
-        Context ctx (hxx_impl, schema, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
+        Context ctx (hxx_impl, schema, file_path, ops,
+                     &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         String guard (guard_expr.merge (guard_prefix + hxx_impl_name));
         guard = ctx.escape (guard); // Make it a C++ id.
@@ -1566,7 +1570,7 @@ namespace CXX
       //
       if (impl)
       {
-        Context ctx (cxx_impl, schema, ops,
+        Context ctx (cxx_impl, schema, file_path, ops,
                      &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         // Set auto-indentation.
@@ -1583,7 +1587,7 @@ namespace CXX
       //
       if (driver)
       {
-        Context ctx (cxx_driver, schema, ops,
+        Context ctx (cxx_driver, schema, file_path, ops,
                      &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
         // Set auto-indentation.

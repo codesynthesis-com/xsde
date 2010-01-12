@@ -255,23 +255,19 @@ expressions are applied to a string in the form
 
 .I filename namespace
 
-For example,
-
-.B XMLSchema.xsd http://www.w3.org/2001/XMLSchema
-
-The
-.I filename
-for the current translation unit is empty. For example, if you have file
+For example, if you have file
 .B hello.xsd
 with namespace
 .B http://example.com/hello
 and you run
-.B xsde
-on this file, then the string in question would be:
+.B xsd
+on this file, then the string in question will be:
 
-.B \ http://example.com/hello
+.B hello.xsd. http://example.com/hello
 
-Note the leading space.
+For the built-in XML Schema namespace the string is:
+
+.B XMLSchema.xsd http://www.w3.org/2001/XMLSchema
 
 The following three steps are performed for each regular expression until
 the match is found:
@@ -763,25 +759,11 @@ in the form
 
 .I filename namespace xpath
 
-For example,
+For instance:
 
 .B hello.xsd http://example.com/hello element
 
 .B hello.xsd http://example.com/hello type/element
-
-The
-.I filename
-for the current translation unit is empty. For example, if you have file
-.B hello.xsd
-with namespace
-.B http://example.com/hello
-and you run
-.B xsde
-on this file, then the string in question would be:
-
-.B \ http://example.com/hello element
-
-Note the leading space.
 
 As an example, the following expression makes all the derived
 names start with capital letters. This could be useful when

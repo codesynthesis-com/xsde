@@ -18,6 +18,10 @@ Version 3.2.0
     XSD/e runtime library accordingly and pass the --char-encoding option
     to the XSD/e compiler when translating your schemas.    
 
+  * Strings used to match regular expression supplied with the
+    --namespace-regex and --anonymous-regex options now include the file 
+    component for the schema being compiled.
+
  C++/Hybrid
 
   * String-based types that use XML Schema restriction by enumeration are 

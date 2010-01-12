@@ -12,12 +12,14 @@ namespace CXX
     Context::
     Context (std::wostream& o,
              SemanticGraph::Schema& root,
+             SemanticGraph::Path const& path,
              CLI::Options const& ops,
              Regex const* fe,
              Regex const* he,
              Regex const* ie)
         : CXX::Context (o,
                         root,
+                        path,
                         "name",
                         "char",
                         ops.value<CLI::char_encoding> (),

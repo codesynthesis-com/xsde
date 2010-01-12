@@ -30,9 +30,10 @@ namespace CXX
       public:
         Context (CLI::Options const& ops,
                  SemanticGraph::Schema& root,
-                 SemanticGraph::Path const& file)
+                 SemanticGraph::Path const& path)
             : CXX::Context (std::wcerr,
                             root,
+                            path,
                             "name",
                             "char",
                             ops.value<CLI::char_encoding> (),
@@ -46,12 +47,9 @@ namespace CXX
                             ops.value<CLI::include_regex_trace> (),
                             ops.value<CLI::generate_inline> (),
                             ops.value<CLI::reserved_name> ()),
-              schema_path_ (file),
               impl_suffix_ (ops.value<CLI::simpl_type_suffix> ()),
               aggr_suffix_ (ops.value<CLI::saggr_type_suffix> ()),
               options (ops),
-              schema (root),
-              schema_path (schema_path_),
               aggregate (ops.value<CLI::generate_aggregate> ()),
               impl_suffix (impl_suffix_),
               aggr_suffix (aggr_suffix_),
@@ -110,8 +108,6 @@ namespace CXX
         Context (Context& c)
             : CXX::Context (c),
               options (c.options),
-              schema (c.schema),
-              schema_path (c.schema_path),
               aggregate (c.aggregate),
               impl_suffix (c.impl_suffix),
               aggr_suffix (c.aggr_suffix),
@@ -225,7 +221,6 @@ namespace CXX
         CustomSerializerMap;
 
       private:
-        SemanticGraph::Path const schema_path_;
         String const impl_suffix_;
         String const aggr_suffix_;
         CustomSerializerMap custom_serializer_map_;
@@ -234,8 +229,6 @@ namespace CXX
 
       public:
         CLI::Options const& options;
-        SemanticGraph::Schema& schema;
-        SemanticGraph::Path const& schema_path;
         Boolean aggregate;
         String const& impl_suffix;
         String const& aggr_suffix;

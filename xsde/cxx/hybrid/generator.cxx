@@ -1409,7 +1409,8 @@ namespace CXX
       //
       if (forward)
       {
-        Context ctx (fwd, schema, ops, &fwd_expr, &hxx_expr, &ixx_expr);
+        Context ctx (
+          fwd, schema, file_path, ops, &fwd_expr, &hxx_expr, &ixx_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> fwd_sloc (fwd);
 
@@ -1493,7 +1494,8 @@ namespace CXX
       // HXX
       //
       {
-        Context ctx (hxx, schema, ops, &fwd_expr, &hxx_expr, &ixx_expr);
+        Context ctx (
+          hxx, schema, file_path, ops, &fwd_expr, &hxx_expr, &ixx_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
 
@@ -1690,7 +1692,8 @@ namespace CXX
       //
       if (inline_)
       {
-        Context ctx (ixx, schema, ops, &fwd_expr, &hxx_expr, &ixx_expr);
+        Context ctx (
+          ixx, schema, file_path, ops, &fwd_expr, &hxx_expr, &ixx_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> ixx_sloc (ixx);
         // Guard
@@ -1763,7 +1766,8 @@ namespace CXX
       //
       if (source)
       {
-        Context ctx (cxx, schema, ops, &fwd_expr, &hxx_expr, &ixx_expr);
+        Context ctx (
+          cxx, schema, file_path, ops, &fwd_expr, &hxx_expr, &ixx_expr);
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 
@@ -1842,8 +1846,8 @@ namespace CXX
       if (ops.value<CLI::generate_parser> () ||
           ops.value<CLI::generate_serializer> ())
       {
-        generate_tree_type_map (
-          ops, schema, hxx_name, parser_type_map, serializer_type_map);
+        generate_tree_type_map (ops, schema, file_path, hxx_name,
+                                parser_type_map, serializer_type_map);
       }
 
       return sloc;
@@ -2086,7 +2090,7 @@ namespace CXX
       // HXX
       //
       {
-        Context ctx (hxx, schema, ops, 0, &hxx_expr, 0);
+        Context ctx (hxx, schema, file_path, ops, 0, &hxx_expr, 0);
 
         Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
 
@@ -2189,7 +2193,7 @@ namespace CXX
       // CXX
       //
       {
-        Context ctx (cxx, schema, ops, 0, &hxx_obj_expr, 0);
+        Context ctx (cxx, schema, file_path, ops, 0, &hxx_obj_expr, 0);
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 
@@ -2477,7 +2481,7 @@ namespace CXX
       // HXX
       //
       {
-        Context ctx (hxx, schema, ops, 0, &hxx_expr, 0);
+        Context ctx (hxx, schema, file_path, ops, 0, &hxx_expr, 0);
 
         Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
 
@@ -2580,7 +2584,7 @@ namespace CXX
       // CXX
       //
       {
-        Context ctx (cxx, schema, ops, 0, &hxx_expr, 0);
+        Context ctx (cxx, schema, file_path, ops, 0, &hxx_expr, 0);
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 

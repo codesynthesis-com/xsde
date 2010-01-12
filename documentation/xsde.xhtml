@@ -227,19 +227,16 @@
 
       <p><code><i>filename</i> <i>namespace</i></code></p>
 
-      <p>For example,</p>
+      <p>For example, if you have file <code><b>hello.xsd</b></code>
+        with namespace <code><b>http://example.com/hello</b></code> and you run
+        <code><b>xsd</b></code> on this file, then the string in question
+        will be:</p>
+
+      <p><code><b>hello.xsd. http://example.com/hello</b></code></p>
+
+      <p>For the built-in XML Schema namespace the string is:</p>
 
       <p><code><b>XMLSchema.xsd http://www.w3.org/2001/XMLSchema</b></code></p>
-
-      <p>The <code><i>filename</i></code> for the current translation unit
-        is empty. For example, if you have file <code><b>hello.xsd</b></code>
-        with namespace <code><b>http://example.com/hello</b></code> and you run
-        <code><b>xsde</b></code> on this file, then the string in question
-        would be:</p>
-
-      <p><code>&nbsp;<b>http://example.com/hello</b></code></p>
-
-      <p>Note the leading space.</p>
 
       <p>The following three steps are performed for each regular expression
         until the match is found:</p>
@@ -656,20 +653,10 @@
 
       <p><code><i>filename</i> <i>namespace</i> <i>xpath</i></code></p>
 
-      <p>For example,</p>
+      <p>For instance:</p>
 
       <p><code><b>hello.xsd http://example.com/hello element</b></code></p>
       <p><code><b>hello.xsd http://example.com/hello type/element</b></code></p>
-
-      <p>The <code><i>filename</i></code> for the current translation unit
-        is empty. For example, if you have file <code><b>hello.xsd</b></code>
-        with namespace <code><b>http://example.com/hello</b></code> and you run
-        <code><b>xsde</b></code> on this file, then the string in question
-        would be:</p>
-
-      <p><code>&nbsp;<b>http://example.com/hello element</b></code></p>
-
-      <p>Note the leading space.</p>
 
       <p>As an example, the following expression makes all the derived
          names start with capital letters. This could be useful when

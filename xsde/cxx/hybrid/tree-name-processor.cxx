@@ -33,9 +33,10 @@ namespace CXX
       public:
         Context (CLI::Options const& ops,
                  SemanticGraph::Schema& root,
-                 SemanticGraph::Path const& file)
+                 SemanticGraph::Path const& path)
             : CXX::Context (std::wcerr,
                             root,
+                            path,
                             "name",
                             "char",
                             ops.value<CLI::char_encoding> (),
@@ -49,9 +50,6 @@ namespace CXX
                             ops.value<CLI::include_regex_trace> (),
                             ops.value<CLI::generate_inline> (),
                             ops.value<CLI::reserved_name> ()),
-              schema_path_ (file),
-              schema (root),
-              schema_path (schema_path_),
               stl (!ops.value<CLI::no_stl> ()),
               detach (ops.value<CLI::generate_detach> ()),
               enum_ (!ops.value<CLI::suppress_enum> ()),
@@ -179,8 +177,6 @@ namespace CXX
       protected:
         Context (Context& c)
             : CXX::Context (c),
-              schema (c.schema),
-              schema_path (c.schema_path),
               stl (c.stl),
               detach (c.detach),
               enum_ (c.enum_),
@@ -271,17 +267,12 @@ namespace CXX
         CustomTypeMap;
 
       private:
-        SemanticGraph::Path const schema_path_;
-
         CustomDataMap custom_data_map_;
         CustomTypeMap custom_type_map_;
 
         Cult::Containers::Map<String, NameSet*> global_type_names_;
 
       public:
-        SemanticGraph::Schema& schema;
-        SemanticGraph::Path const& schema_path;
-
         Boolean stl;
         Boolean detach;
         Boolean enum_;
