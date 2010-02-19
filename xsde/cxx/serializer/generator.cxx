@@ -606,6 +606,7 @@ namespace CXX
   generate (Serializer::CLI::Options const& ops,
             Schema& schema,
             Path const& file_path,
+            Boolean fpt,
             TypeMap::Namespaces& type_map,
             Boolean gen_driver,
             const WarningSet& disabled_warnings,
@@ -935,28 +936,44 @@ namespace CXX
         cxx_driver_path = Path (cxx_driver_name, boost::filesystem::native);
       }
 
-      if (NarrowString dir  = ops.value<CLI::output_dir> ())
+      Path out_dir;
+
+      if (NarrowString dir = ops.value<CLI::output_dir> ())
       {
         try
         {
-          Path path (dir, boost::filesystem::native);
-
-          hxx_path = path / hxx_path;
-          ixx_path = path / ixx_path;
-          cxx_path = path / cxx_path;
-
-          if (impl || driver)
-          {
-            hxx_impl_path = path / hxx_impl_path;
-            cxx_impl_path = path / cxx_impl_path;
-            cxx_driver_path = path /cxx_driver_path;
-          }
-
+          out_dir = Path (dir, boost::filesystem::native);
         }
         catch (InvalidPath const&)
         {
           wcerr << dir.c_str () << ": error: invalid path" << endl;
           throw Failed ();
+        }
+      }
+
+      if (fpt && !generate_xml_schema)
+      {
+        // In the file-per-type mode the schema files are always local
+        // unless the user added the directory so that we propagate this
+        // to the output files.
+        //
+        Path fpt_dir (file_path.branch_path ());
+
+        if (!fpt_dir.empty ())
+          out_dir /= fpt_dir;
+      }
+
+      if (!out_dir.empty ())
+      {
+        hxx_path = out_dir / hxx_path;
+        ixx_path = out_dir / ixx_path;
+        cxx_path = out_dir / cxx_path;
+
+        if (impl || driver)
+        {
+          hxx_impl_path = out_dir / hxx_impl_path;
+          cxx_impl_path = out_dir / cxx_impl_path;
+          cxx_driver_path = out_dir /cxx_driver_path;
         }
       }
 

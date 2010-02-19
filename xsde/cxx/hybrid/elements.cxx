@@ -580,6 +580,7 @@ namespace CXX
       // compilation model.
       //
       Type t (type_);
+      SemanticGraph::Schema& s (u.schema ());
       Boolean weak (u.context ().count ("weak"));
 
       if (weak && (t == header || t == impl_header))
@@ -594,7 +595,7 @@ namespace CXX
           t = forward;
         else
         {
-          schema_.dispatch (u.schema ());
+          schema_.dispatch (s);
           return;
         }
       }
@@ -602,7 +603,10 @@ namespace CXX
       if (t == source && !weak)
         return;
 
-      SemanticGraph::Path path (u.path ());
+      SemanticGraph::Path path (
+        s.context ().count ("renamed")
+        ? s.context ().get<SemanticGraph::Path> ("renamed")
+        : u.path ());
 
       // Try to use the portable representation of the path. If that
       // fails, fall back to the native representation.

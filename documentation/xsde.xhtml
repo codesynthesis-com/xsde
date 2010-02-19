@@ -220,7 +220,7 @@
       Escaping of the delimiter character in <code><i>pattern</i></code> or
       <code><i>replacement</i></code> is not supported.
 
-      <p>All regular expressions are pushed into a stack with the last
+      <p>All the regular expressions are pushed into a stack with the last
         specified expression considered first. The first match that
         succeeds is used. Regular expressions are applied to a string
         in the form</p>
@@ -276,7 +276,7 @@
     <dd>Add <code><i>name</i></code> to the list of names that should not
         be used as identifiers. The name can optionally be followed by
         <code><b>=</b></code> and the replacement name that should be
-        used instead. All C++ keywords are already in this list.
+        used instead. All the C++ keywords are already in this list.
     </dd>
 
     <dt><code><b>--include-with-brackets</b></code></dt>
@@ -308,7 +308,7 @@
       Escaping of the delimiter character in <code><i>pattern</i></code> or
       <code><i>replacement</i></code> is not supported.
 
-      <p>All regular expressions are pushed into a stack with the last
+      <p>All the regular expressions are pushed into a stack with the last
         specified expression considered first. The first match that
         succeeds is used.</p>
 
@@ -588,7 +588,7 @@
 
     <dt><code><b>--disable-warning</b> <i>warn</i></code></dt>
     <dd>Disable printing warning with id <i>warn</i>. If <code><b>all</b></code>
-        is specified for the warning id then all warnings are disabled.
+        is specified for the warning id then all the warnings are disabled.
     </dd>
 
     <!-- misc options -->
@@ -646,7 +646,7 @@
       Escaping of the delimiter character in <code><i>pattern</i></code> or
       <code><i>replacement</i></code> is not supported.
 
-      <p>All regular expressions are pushed into a stack with the last
+      <p>All the regular expressions are pushed into a stack with the last
         specified expression considered first. The first match that
         succeeds is used. Regular expressions are applied to a string
         in the form</p>
@@ -696,7 +696,7 @@
       <code><b>/</b><i>pattern</i><b>/</b><i>replacement</i><b>/</b></code>.
       Any character can be used as a delimiter instead of <code><b>/</b></code>.
       Escaping of the delimiter character in <code><i>pattern</i></code> or
-      <code><i>replacement</i></code> is not supported. All regular
+      <code><i>replacement</i></code> is not supported. All the regular
       expressions are pushed into a stack with the last specified
       expression considered first. The first match that succeeds is used.
 
@@ -724,19 +724,23 @@
         schema(s) and the code will be generated for all included and
         imported schemas. This compilation mode is primarily useful when
         some of your schemas cannot be compiled separately or have cyclic
-        dependencies which involve type inheritance.
+        dependencies which involve type inheritance. Other options related
+        to this mode are:
+        <code><b>--type-file-regex</b></code>,
+        <code><b>--schema-file-regex</b></code>, and
+	<code><b>--file-list</b></code>.
     </dd>
 
 
     <dt><code><b>--type-file-regex</b> <i>regex</i></code></dt>
     <dd>Add <code><i>regex</i></code> to the list of regular expressions
       used to translate type names to file names when the
-      <code><b>--type-per-file</b></code> option is specified.
+      <code><b>--file-per-type</b></code> option is specified.
       <code><i>regex</i></code> is a perl-like regular expression in the form
       <code><b>/</b><i>pattern</i><b>/</b><i>replacement</i><b>/</b></code>.
       Any character can be used as a delimiter instead of <code><b>/</b></code>.
       Escaping of the delimiter character in <code><i>pattern</i></code> or
-      <code><i>replacement</i></code> is not supported. All regular
+      <code><i>replacement</i></code> is not supported. All the regular
       expressions are pushed into a stack with the last specified
       expression considered first. The first match that succeeds is used.
       Regular expressions are applied to a string in the form
@@ -755,6 +759,45 @@
     <dt><code><b>--type-file-regex-trace</b></code></dt>
     <dd>Trace the process of applying regular expressions specified with
         the <code><b>--type-file-regex</b></code> option. Use this option
+        to find out why your regular expressions don't do what you expected
+        them to do.
+    </dd>
+
+    <dt><code><b>--schema-file-regex</b> <i>regex</i></code></dt>
+    <dd>Add <code><i>regex</i></code> to the list of regular expressions
+      used to translate schema file names when the
+      <code><b>--file-per-type</b></code> option is specified.
+      <code><i>regex</i></code> is a perl-like regular expression in the form
+      <code><b>/</b><i>pattern</i><b>/</b><i>replacement</i><b>/</b></code>.
+      Any character can be used as a delimiter instead of <code><b>/</b></code>.
+      Escaping of the delimiter character in <code><i>pattern</i></code> or
+      <code><i>replacement</i></code> is not supported. All the regular
+      expressions are pushed into a stack with the last specified
+      expression considered first. The first match that succeeds is used.
+      Regular expressions are applied to the absolute filesystem path
+      of a schema file and the result, including the directory part,
+      if any, is used to derive the <code><b>#include</b></code> directive
+      paths as well as the generated C++ file paths. This option, along
+      with <code><b>--type-file-regex</b></code> are primarily used to
+      place the generated files into subdirectories or to resolve file
+      name conflicts.
+
+      <p>For example, the following expression maps schema files in the
+         <code><b>foo/1.0.0/</b></code> subdirectory to the files in
+         the <code><b>foo/</b></code> subdirectory. As a result, the
+         <code><b>#include</b></code> directive paths for such schemas
+         will be in the <code><b>foo/schema.hxx</b></code> form and
+         the generated C++ files will be placed into the
+         <code><b>foo/</b></code> subdirectory:</p>
+
+      <p><code><b>%.*/foo/1.0.0/(.+)%foo/$1%</b></code></p>
+
+      <p>See also the REGEX AND SHELL QUOTING section below.</p>
+    </dd>
+
+    <dt><code><b>--schema-file-regex-trace</b></code></dt>
+    <dd>Trace the process of applying regular expressions specified with
+        the <code><b>--schema-file-regex</b></code> option. Use this option
         to find out why your regular expressions don't do what you expected
         them to do.
     </dd>
@@ -1398,7 +1441,7 @@ namespace http://www.example.com/xmlns/my
   <p>The compiler has a number of predefined mapping rules
      for the built-in XML Schema types that vary depending on
      the mapping used. They are described in the following
-     subsections. The last predefined rule for all mappings
+     subsections. The last predefined rule for all the mappings
      maps anything that wasn't mapped by previous rules to
      <code><b>void</b></code>:</p>
 

@@ -226,6 +226,7 @@ namespace CXX
       // Support for weak (forward) inclusion used in the file-per-type
       // compilation model.
       //
+      SemanticGraph::Schema& s (u.schema ());
       Boolean weak (u.context ().count ("weak"));
 
       if (weak && (type_ == header || type_ == impl_header))
@@ -234,7 +235,7 @@ namespace CXX
         // in the impl files.
         //
         if (type_ == header)
-          schema_.dispatch (u.schema ());
+          schema_.dispatch (s);
 
         return;
       }
@@ -242,7 +243,10 @@ namespace CXX
       if (type_ == source && !weak)
         return;
 
-      SemanticGraph::Path path (u.path ());
+      SemanticGraph::Path path (
+        s.context ().count ("renamed")
+        ? s.context ().get<SemanticGraph::Path> ("renamed")
+        : u.path ());
 
       // Try to use the portable representation of the path. If that
       // fails, fall back to the native representation.

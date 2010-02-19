@@ -1140,6 +1140,7 @@ namespace CXX
   generate_tree (Hybrid::CLI::Options const& ops,
                  Schema& schema,
                  Path const& file_path,
+                 Boolean fpt,
                  const WarningSet& disabled_warnings,
                  TypeMap::Namespaces& parser_type_map,
                  TypeMap::Namespaces& serializer_type_map,
@@ -1267,22 +1268,39 @@ namespace CXX
       Path cxx_path (cxx_name, boost::filesystem::native);
       Path fwd_path (fwd_name, boost::filesystem::native);
 
-      if (NarrowString dir  = ops.value<CLI::output_dir> ())
+      Path out_dir;
+
+      if (NarrowString dir = ops.value<CLI::output_dir> ())
       {
         try
         {
-          Path path (dir, boost::filesystem::native);
-
-          hxx_path = path / hxx_path;
-          ixx_path = path / ixx_path;
-          cxx_path = path / cxx_path;
-          fwd_path = path / fwd_path;
+          out_dir = Path (dir, boost::filesystem::native);
         }
         catch (InvalidPath const&)
         {
           wcerr << dir.c_str () << ": error: invalid path" << endl;
           throw Failed ();
         }
+      }
+
+      if (fpt && !generate_xml_schema)
+      {
+        // In the file-per-type mode the schema files are always local
+        // unless the user added the directory so that we propagate this
+        // to the output files.
+        //
+        Path fpt_dir (file_path.branch_path ());
+
+        if (!fpt_dir.empty ())
+          out_dir /= fpt_dir;
+      }
+
+      if (!out_dir.empty ())
+      {
+        hxx_path = out_dir / hxx_path;
+        ixx_path = out_dir / ixx_path;
+        cxx_path = out_dir / cxx_path;
+        fwd_path = out_dir / fwd_path;
       }
 
       // Open the tree files.
@@ -1892,6 +1910,7 @@ namespace CXX
   generate_parser (Hybrid::CLI::Options const& ops,
                    Schema& schema,
                    Path const& file_path,
+                   Boolean fpt,
                    const WarningSet&,
                    FileList& file_list,
                    AutoUnlinks& unlinks)
@@ -1998,20 +2017,37 @@ namespace CXX
       Path hxx_path (hxx_name, boost::filesystem::native);
       Path cxx_path (cxx_name, boost::filesystem::native);
 
-      if (NarrowString dir  = ops.value<CLI::output_dir> ())
+      Path out_dir;
+
+      if (NarrowString dir = ops.value<CLI::output_dir> ())
       {
         try
         {
-          Path path (dir, boost::filesystem::native);
-
-          hxx_path = path / hxx_path;
-          cxx_path = path / cxx_path;
+          out_dir = Path (dir, boost::filesystem::native);
         }
         catch (InvalidPath const&)
         {
           wcerr << dir.c_str () << ": error: invalid path" << endl;
           throw Failed ();
         }
+      }
+
+      if (fpt)
+      {
+        // In the file-per-type mode the schema files are always local
+        // unless the user added the directory so that we propagate this
+        // to the output files.
+        //
+        Path fpt_dir (file_path.branch_path ());
+
+        if (!fpt_dir.empty ())
+          out_dir /= fpt_dir;
+      }
+
+      if (!out_dir.empty ())
+      {
+        hxx_path = out_dir / hxx_path;
+        cxx_path = out_dir / cxx_path;
       }
 
       WideOutputFileStream hxx (hxx_path, ios_base::out);
@@ -2296,6 +2332,7 @@ namespace CXX
   generate_serializer (Hybrid::CLI::Options const& ops,
                        Schema& schema,
                        Path const& file_path,
+                       Boolean fpt,
                        const WarningSet&,
                        FileList& file_list,
                        AutoUnlinks& unlinks)
@@ -2390,20 +2427,37 @@ namespace CXX
       Path hxx_path (hxx_name, boost::filesystem::native);
       Path cxx_path (cxx_name, boost::filesystem::native);
 
-      if (NarrowString dir  = ops.value<CLI::output_dir> ())
+      Path out_dir;
+
+      if (NarrowString dir = ops.value<CLI::output_dir> ())
       {
         try
         {
-          Path path (dir, boost::filesystem::native);
-
-          hxx_path = path / hxx_path;
-          cxx_path = path / cxx_path;
+          out_dir = Path (dir, boost::filesystem::native);
         }
         catch (InvalidPath const&)
         {
           wcerr << dir.c_str () << ": error: invalid path" << endl;
           throw Failed ();
         }
+      }
+
+      if (fpt)
+      {
+        // In the file-per-type mode the schema files are always local
+        // unless the user added the directory so that we propagate this
+        // to the output files.
+        //
+        Path fpt_dir (file_path.branch_path ());
+
+        if (!fpt_dir.empty ())
+          out_dir /= fpt_dir;
+      }
+
+      if (!out_dir.empty ())
+      {
+        hxx_path = out_dir / hxx_path;
+        cxx_path = out_dir / cxx_path;
       }
 
       WideOutputFileStream hxx (hxx_path, ios_base::out);

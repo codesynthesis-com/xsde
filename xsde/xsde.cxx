@@ -71,43 +71,47 @@ namespace CLI
   struct HelpOptionsSpec: Cult::CLI::OptionsSpec<HelpOptions> {};
 
 
-  extern Key disable_warning       = "disable-warning";
-  extern Key sloc_limit            = "sloc-limit";
-  extern Key preserve_anonymous    = "preserve-anonymous";
-  extern Key anonymous_regex       = "anonymous-regex";
-  extern Key anonymous_regex_trace = "anonymous-regex-trace";
-  extern Key location_map          = "location-map";
-  extern Key location_regex        = "location-regex";
-  extern Key location_regex_trace  = "location-regex-trace";
-  extern Key file_per_type         = "file-per-type";
-  extern Key type_file_regex       = "type-file-regex";
-  extern Key type_file_regex_trace = "type-file-regex-trace";
-  extern Key file_list             = "file-list";
-  extern Key file_list_prologue    = "file-list-prologue";
-  extern Key file_list_epilogue    = "file-list-epilogue";
-  extern Key file_list_delim       = "file-list-delim";
-  extern Key disable_multi_import  = "disable-multi-import"; // Undocumented.
-  extern Key disable_full_check    = "disable-full-check";   // Undocumented.
+  extern Key disable_warning         = "disable-warning";
+  extern Key sloc_limit              = "sloc-limit";
+  extern Key preserve_anonymous      = "preserve-anonymous";
+  extern Key anonymous_regex         = "anonymous-regex";
+  extern Key anonymous_regex_trace   = "anonymous-regex-trace";
+  extern Key location_map            = "location-map";
+  extern Key location_regex          = "location-regex";
+  extern Key location_regex_trace    = "location-regex-trace";
+  extern Key file_per_type           = "file-per-type";
+  extern Key type_file_regex         = "type-file-regex";
+  extern Key type_file_regex_trace   = "type-file-regex-trace";
+  extern Key schema_file_regex       = "schema-file-regex";
+  extern Key schema_file_regex_trace = "schema-file-regex-trace";
+  extern Key file_list               = "file-list";
+  extern Key file_list_prologue      = "file-list-prologue";
+  extern Key file_list_epilogue      = "file-list-epilogue";
+  extern Key file_list_delim         = "file-list-delim";
+  extern Key disable_multi_import    = "disable-multi-import"; // Undocumented.
+  extern Key disable_full_check      = "disable-full-check";   // Undocumented.
 
   typedef Cult::CLI::Options
   <
-    disable_warning,       Cult::Containers::Vector<NarrowString>,
-    sloc_limit,            UnsignedLong,
-    preserve_anonymous,    Boolean,
-    anonymous_regex,       NarrowStrings,
-    anonymous_regex_trace, Boolean,
-    location_map,          NarrowStrings,
-    location_regex,        NarrowStrings,
-    location_regex_trace,  Boolean,
-    file_per_type,         Boolean,
-    type_file_regex,       NarrowStrings,
-    type_file_regex_trace, Boolean,
-    file_list,             NarrowString,
-    file_list_prologue,    NarrowString,
-    file_list_epilogue,    NarrowString,
-    file_list_delim,       NarrowString,
-    disable_multi_import,  Boolean,
-    disable_full_check,    Boolean
+    disable_warning,         Cult::Containers::Vector<NarrowString>,
+    sloc_limit,              UnsignedLong,
+    preserve_anonymous,      Boolean,
+    anonymous_regex,         NarrowStrings,
+    anonymous_regex_trace,   Boolean,
+    location_map,            NarrowStrings,
+    location_regex,          NarrowStrings,
+    location_regex_trace,    Boolean,
+    file_per_type,           Boolean,
+    type_file_regex,         NarrowStrings,
+    type_file_regex_trace,   Boolean,
+    schema_file_regex,       NarrowStrings,
+    schema_file_regex_trace, Boolean,
+    file_list,               NarrowString,
+    file_list_prologue,      NarrowString,
+    file_list_epilogue,      NarrowString,
+    file_list_delim,         NarrowString,
+    disable_multi_import,    Boolean,
+    disable_full_check,      Boolean
   >
   CommonOptions;
 
@@ -168,22 +172,35 @@ private:
 
 //
 //
-struct TypeSchemaTranslator: Transformations::TypeSchemaTranslator
+struct SchemaPerTypeTranslator: Transformations::SchemaPerTypeTranslator
 {
   struct Failed {};
 
-  TypeSchemaTranslator (NarrowStrings const& regex, Boolean trace);
+  SchemaPerTypeTranslator (NarrowStrings const& type_regex,
+                           Boolean type_trace,
+                           NarrowStrings const& schema_regex,
+                           Boolean schema_trace);
 
   virtual WideString
-  translate (WideString const& ns, WideString const& name);
+  translate_type (WideString const& ns, WideString const& name);
+
+  virtual NarrowString
+  translate_schema (NarrowString const& file);
 
 private:
-  typedef BackendElements::Regex::Expression<WideChar> Regex;
-  typedef BackendElements::Regex::Format<WideChar> RegexFormat;
-  typedef Cult::Containers::Vector<Regex> RegexVector;
+  typedef BackendElements::Regex::Expression<WideChar> TypeRegex;
+  typedef BackendElements::Regex::Format<WideChar> TypeRegexFormat;
+  typedef Cult::Containers::Vector<TypeRegex> TypeRegexVector;
 
-  RegexVector regex_;
-  Boolean trace_;
+  TypeRegexVector type_regex_;
+  Boolean type_trace_;
+
+  typedef BackendElements::Regex::Expression<Char> SchemaRegex;
+  typedef BackendElements::Regex::Format<Char> SchemaRegexFormat;
+  typedef Cult::Containers::Vector<SchemaRegex> SchemaRegexVector;
+
+  SchemaRegexVector schema_regex_;
+  Boolean schema_trace_;
 };
 
 // Expand the \n escape sequence.
@@ -344,13 +361,25 @@ main (Int argc, Char* argv[])
         e << "--type-file-regex <regex>" << endl
           << " Add the provided regular expression to the list of\n"
           << " regular expressions used to translate type names\n"
-          << " to file names when the --type-per-file option is\n"
+          << " to file names when the --file-per-type option is\n"
           << " specified."
           << endl;
 
         e << "--type-file-regex-trace" << endl
           << " Trace the process of applying regular expressions\n"
           << " specified with the --type-file-regex option."
+          << endl;
+
+        e << "--schema-file-regex <regex>" << endl
+          << " Add the provided regular expression to the list\n"
+          << " of regular expressions used to translate schema\n"
+          << " file names when the --file-per-type option is\n"
+          << " specified."
+          << endl;
+
+        e << "--schema-file-regex-trace" << endl
+          << " Trace the process of applying regular expressions\n"
+          << " specified with the --schema-file-regex option."
           << endl;
 
         // File list options.
@@ -885,6 +914,7 @@ main (Int argc, Char* argv[])
               *h_ops,
               *root,
               tu,
+              false,
               disabled_w,
               parser_type_map,
               serializer_type_map,
@@ -907,6 +937,7 @@ main (Int argc, Char* argv[])
               *p_ops,
               *root,
               tu,
+              false,
               parser_type_map,
               true,
               disabled_w,
@@ -929,6 +960,7 @@ main (Int argc, Char* argv[])
               *s_ops,
               *root,
               tu,
+              false,
               serializer_type_map,
               true,
               disabled_w,
@@ -953,6 +985,7 @@ main (Int argc, Char* argv[])
                 *h_ops,
                 *root,
                 tu,
+                false,
                 disabled_w,
                 file_list,
                 unlinks);
@@ -973,6 +1006,7 @@ main (Int argc, Char* argv[])
                 *h_ops,
                 *root,
                 tu,
+                false,
                 disabled_w,
                 file_list,
                 unlinks);
@@ -1085,9 +1119,11 @@ main (Int argc, Char* argv[])
       //
       typedef Cult::Containers::Vector<SemanticGraph::Schema*> Schemas;
 
-      TypeSchemaTranslator type_translator (
+      SchemaPerTypeTranslator type_translator (
         common_ops.value<CLI::type_file_regex> (),
-        common_ops.value<CLI::type_file_regex_trace> ());
+        common_ops.value<CLI::type_file_regex_trace> (),
+        common_ops.value<CLI::schema_file_regex> (),
+        common_ops.value<CLI::schema_file_regex_trace> ());
 
       Transformations::SchemaPerType trans (
         type_translator, gen_hybrid ? "fixed" : 0);
@@ -1099,7 +1135,10 @@ main (Int argc, Char* argv[])
            i != e; ++i)
       {
         SemanticGraph::Schema& s (**i);
-        SemanticGraph::Path path (s.used_begin ()->path ());
+        SemanticGraph::Path path (
+          s.context ().count ("renamed")
+          ? s.context ().get<SemanticGraph::Path> ("renamed")
+          : s.used_begin ()->path ());
 
         TypeMap::Namespaces parser_type_map, serializer_type_map;
 
@@ -1111,6 +1150,7 @@ main (Int argc, Char* argv[])
               *h_ops,
               s,
               path,
+              true,
               disabled_w,
               parser_type_map,
               serializer_type_map,
@@ -1135,6 +1175,7 @@ main (Int argc, Char* argv[])
               *p_ops,
               s,
               path,
+              true,
               parser_type_map,
               i == b,
               disabled_w,
@@ -1159,6 +1200,7 @@ main (Int argc, Char* argv[])
               *s_ops,
               s,
               path,
+              true,
               serializer_type_map,
               i == b,
               disabled_w,
@@ -1183,6 +1225,7 @@ main (Int argc, Char* argv[])
                 *h_ops,
                 s,
                 path,
+                true,
                 disabled_w,
                 file_list,
                 unlinks);
@@ -1203,6 +1246,7 @@ main (Int argc, Char* argv[])
                 *h_ops,
                 s,
                 path,
+                true,
                 disabled_w,
                 file_list,
                 unlinks);
@@ -1295,7 +1339,7 @@ main (Int argc, Char* argv[])
   {
     // Diagnostic has already been issued.
   }
-  catch (TypeSchemaTranslator::Failed const&)
+  catch (SchemaPerTypeTranslator::Failed const&)
   {
     // Diagnostic has already been issued.
   }
@@ -1493,20 +1537,24 @@ translate (WideString const& file,
   return name;
 }
 
-// TypeSchemaTranslator
+// SchemaPerTypeTranslator
 //
 
-TypeSchemaTranslator::
-TypeSchemaTranslator (NarrowStrings const& regex, Boolean trace)
-    : trace_ (trace)
+SchemaPerTypeTranslator::
+SchemaPerTypeTranslator (NarrowStrings const& type_regex,
+                         Boolean type_trace,
+                         NarrowStrings const& schema_regex,
+                         Boolean schema_trace)
+    : type_trace_ (type_trace), schema_trace_ (schema_trace)
 {
-  for (NarrowStrings::ConstIterator i (regex.begin ()); i != regex.end (); ++i)
+  for (NarrowStrings::ConstIterator i (type_regex.begin ());
+       i != type_regex.end (); ++i)
   {
     try
     {
-      regex_.push_back (Regex (*i));
+      type_regex_.push_back (TypeRegex (*i));
     }
-    catch (RegexFormat const& e)
+    catch (TypeRegexFormat const& e)
     {
       wcerr << "error: invalid type file regex: '" <<
         e.expression () << "': " << e.description () << endl;
@@ -1514,42 +1562,86 @@ TypeSchemaTranslator (NarrowStrings const& regex, Boolean trace)
       throw Failed ();
     }
   }
+
+  for (NarrowStrings::ConstIterator i (schema_regex.begin ());
+       i != schema_regex.end (); ++i)
+  {
+    try
+    {
+      schema_regex_.push_back (SchemaRegex (*i));
+    }
+    catch (SchemaRegexFormat const& e)
+    {
+      wcerr << "error: invalid type file regex: '" <<
+        e.expression ().c_str () << "': " << e.description ().c_str () << endl;
+
+      throw Failed ();
+    }
+  }
 }
 
-WideString TypeSchemaTranslator::
-translate (WideString const& ns, WideString const& name)
+WideString SchemaPerTypeTranslator::
+translate_type (WideString const& ns, WideString const& name)
 {
-  if (regex_.empty ())
-    return name;
-
   WideString s (ns + L' ' + name);
 
-  if (trace_)
+  if (type_trace_)
     wcerr << "type: '" << s << "'" << endl;
 
-  for (RegexVector::ReverseIterator i (regex_.rbegin ());
-       i != regex_.rend (); ++i)
+  for (TypeRegexVector::ReverseIterator i (type_regex_.rbegin ());
+       i != type_regex_.rend (); ++i)
   {
-    if (trace_)
+    if (type_trace_)
       wcerr << "try: '" << i->pattern () << "' : ";
 
     if (i->match (s))
     {
       WideString r (i->merge (s));
 
-      if (trace_)
+      if (type_trace_)
         wcerr << "'" << r << "' : +" << endl;
 
       return r;
     }
 
-    if (trace_)
+    if (type_trace_)
       wcerr << '-' << endl;
   }
 
-  // No match - return the type name.
+  // No match - return empty string.
   //
-  return name;
+  return L"";
+}
+
+NarrowString SchemaPerTypeTranslator::
+translate_schema (NarrowString const& file)
+{
+  if (schema_trace_)
+    wcerr << "schema: '" << file.c_str () << "'" << endl;
+
+  for (SchemaRegexVector::ReverseIterator i (schema_regex_.rbegin ());
+       i != schema_regex_.rend (); ++i)
+  {
+    if (schema_trace_)
+      wcerr << "try: '" << i->pattern () << "' : ";
+
+    if (i->match (file))
+    {
+      NarrowString r (i->merge (file));
+
+      if (schema_trace_)
+        wcerr << "'" << r.c_str () << "' : +" << endl;
+
+      return r;
+    }
+
+    if (schema_trace_)
+      wcerr << '-' << endl;
+  }
+
+  // No match - return empty string.
+  //
+  return "";
 }
 
 //

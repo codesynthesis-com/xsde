@@ -1,12 +1,5 @@
 Version 3.2.0
 
-  * When built with Xerces-C++ 3-series, enable handling of multiple imports
-    for the same namespace. Before, all subsequent imports for a namespace
-    were ignored which caused error in some schemas.
-
-  * Automatic mapping for the urn-style XML namespaces. The last component
-    in the urn name is used to derive the C++ namespace name.
-
   * Support for ISO-8859-1 in addition to UTF-8 as application encoding.
     Note that this encoding is not the same as the XML document encoding 
     that is being parsed or serialized. Rather, it is the encoding that 
@@ -16,7 +9,19 @@ Version 3.2.0
     application encoding is automatically converted to the resulting
     document encoding. To select a particular encoding, configure the 
     XSD/e runtime library accordingly and pass the --char-encoding option
-    to the XSD/e compiler when translating your schemas.    
+    to the XSD/e compiler when translating your schemas.
+
+  * When built with Xerces-C++ 3-series, enable handling of multiple imports
+    for the same namespace. Before, all subsequent imports for a namespace
+    were ignored which caused error in some schemas.
+
+  * Automatic mapping for the urn-style XML namespaces. The last component
+    in the urn name is used to derive the C++ namespace name.
+
+  * New option, --schema-file-regex, in combination with the existing
+    --type-file-regex, can be used to place the generated files into 
+    subdirectories or to resolve file name conflicts in the file-per-
+    type mode (--file-per-type).
 
   * Strings used to match regular expression supplied with the
     --namespace-regex and --anonymous-regex options now include the file 

@@ -50,6 +50,7 @@ namespace CXX
       generate (CLI::Options const&,
                 XSDFrontend::SemanticGraph::Schema&,
                 XSDFrontend::SemanticGraph::Path const&,
+                Boolean file_per_type,
                 TypeMap::Namespaces& type_map,
                 Boolean gen_driver,
                 const WarningSet& disabled_warnings,

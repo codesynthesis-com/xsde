@@ -82,6 +82,7 @@ namespace CXX
         CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
+        Boolean file_per_type,
         WarningSet const& disabled_warnings,
         TypeMap::Namespaces& parser_type_map,
         TypeMap::Namespaces& serializer_type_map,
@@ -93,6 +94,7 @@ namespace CXX
         CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
+        Boolean file_per_type,
         WarningSet const& disabled_warnings,
         FileList&,
         AutoUnlinks&);
@@ -102,6 +104,7 @@ namespace CXX
         CLI::Options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
+        Boolean file_per_type,
         WarningSet const& disabled_warnings,
         FileList&,
         AutoUnlinks&);
