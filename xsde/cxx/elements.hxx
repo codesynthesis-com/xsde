@@ -607,38 +607,6 @@ namespace CXX
       fundamental_template (t);
     }
   };
-
-  //
-  //
-  struct Includes : Traversal::Imports,
-                    Traversal::Includes
-  {
-    typedef BackendElements::Regex::Expression<Char> Regex;
-
-    Includes (Context& c, Regex const& expr)
-        : ctx_ (c), expr_ (expr)
-    {
-    }
-
-    virtual Void
-    traverse (SemanticGraph::Imports& i)
-    {
-      traverse (i.path ());
-    }
-
-    virtual Void
-    traverse (SemanticGraph::Includes& i)
-    {
-      traverse (i.path ());
-    }
-
-    Void
-    traverse (SemanticGraph::Path const&);
-
-  private:
-    Context& ctx_;
-    Regex expr_;
-  };
 }
 
 #endif  // CXX_TREE_ELEMENTS_HXX

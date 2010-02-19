@@ -1221,28 +1221,4 @@ namespace CXX
     if (st_)
       st_->leave ();
   }
-
-  // Include
-  //
-  Void Includes::
-  traverse (SemanticGraph::Path const& path)
-  {
-    // Try to use the portable representation of the path. If that
-    // fails, fall back to the native representation.
-    //
-    NarrowString path_str;
-    try
-    {
-      path_str = path.string ();
-    }
-    catch (SemanticGraph::InvalidPath const&)
-    {
-      path_str = path.native_file_string ();
-    }
-
-    String hxx_path (expr_.merge (path_str));
-
-    ctx_.os << "#include " << ctx_.process_include_path (hxx_path) << endl
-            << endl;
-  }
 }
