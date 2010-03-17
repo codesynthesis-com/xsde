@@ -59,6 +59,11 @@ namespace xsde
         invalid_time_value,
         invalid_date_time_value,
         invalid_duration_value,
+        value_greater_than_max,
+        value_less_than_min,
+        length_greater_than_max,
+        length_less_than_min,
+        length_not_equal_prescribed,
         invalid_xsi_type,
         not_derived
       };

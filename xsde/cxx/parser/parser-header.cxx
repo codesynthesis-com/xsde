@@ -724,6 +724,35 @@ namespace CXX
             names (c, names_test);
           }
 
+          Boolean facets (false); // Defines facets.
+          if (validation && restriction)
+          {
+            SemanticGraph::Type& ub (ultimate_base (c));
+
+            if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
+                ub.is_a<SemanticGraph::Fundamental::String> ())
+            {
+              using SemanticGraph::Restricts;
+              Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
+
+              if (!r.facet_empty ())
+              {
+                Restricts::FacetIterator end (r.facet_end ());
+                facets =
+                  r.facet_find (L"length") != end ||
+                  r.facet_find (L"minLength") != end ||
+                  r.facet_find (L"maxLength") != end ||
+                  r.facet_find (L"minInclusive") != end ||
+                  r.facet_find (L"minExclusive") != end ||
+                  r.facet_find (L"maxInclusive") != end ||
+                  r.facet_find (L"maxExclusive") != end;
+              }
+            }
+          }
+
           //
           //
           os << "class " << name << ": public ";
@@ -824,7 +853,7 @@ namespace CXX
 
           // Default c-tor.
           //
-          if (tiein ||
+          if (tiein || facets ||
               (!restriction && (he || ha)) ||
               (validation && (he || hae || hra)))
           {

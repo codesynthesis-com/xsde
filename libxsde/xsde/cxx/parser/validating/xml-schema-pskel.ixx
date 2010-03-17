@@ -77,51 +77,149 @@ namespace xsde
 
         // unsigned_byte_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_byte_pskel::
         unsigned_byte_pskel ()
-            : unsigned_byte_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          unsigned_byte_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_byte_pskel::
         unsigned_byte_pskel (unsigned_byte_pskel* impl, void*)
             : simple_content (impl, 0), unsigned_byte_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
 
-        // short_pskel
-        //
-#ifdef XSDE_REUSE_STYLE_TIEIN
-        inline short_pskel::
-        short_pskel ()
-            : short_impl_ (0)
+        inline void unsigned_byte_pskel::
+        _max_facet (unsigned char v, bool inc)
         {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
         }
 
+        inline void unsigned_byte_pskel::
+        _min_facet (unsigned char v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const unsigned_byte_pskel::facets& unsigned_byte_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const unsigned_byte_pskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
+
+        // short_pskel
+        //
+        inline short_pskel::
+        short_pskel ()
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          short_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
+        }
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline short_pskel::
         short_pskel (short_pskel* impl, void*)
             : simple_content (impl, 0), short_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
 
-        // unsigned_short_pskel
-        //
-#ifdef XSDE_REUSE_STYLE_TIEIN
-        inline unsigned_short_pskel::
-        unsigned_short_pskel ()
-            : unsigned_short_impl_ (0)
+        inline void short_pskel::
+        _max_facet (short v, bool inc)
         {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
         }
 
+        inline void short_pskel::
+        _min_facet (short v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const short_pskel::facets& short_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const short_pskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
+
+        // unsigned_short_pskel
+        //
+        inline unsigned_short_pskel::
+        unsigned_short_pskel ()
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          unsigned_short_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
+        }
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_short_pskel::
         unsigned_short_pskel (unsigned_short_pskel* impl, void*)
             : simple_content (impl, 0), unsigned_short_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void unsigned_short_pskel::
+        _max_facet (unsigned short v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void unsigned_short_pskel::
+        _min_facet (unsigned short v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const unsigned_short_pskel::facets& unsigned_short_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const unsigned_short_pskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // int_pskel
         //
@@ -141,19 +239,52 @@ namespace xsde
 
         // unsigned_int_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_int_pskel::
         unsigned_int_pskel ()
-            : unsigned_int_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          unsigned_int_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_int_pskel::
         unsigned_int_pskel (unsigned_int_pskel* impl, void*)
             : simple_content (impl, 0), unsigned_int_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+
+        inline void unsigned_int_pskel::
+        _max_facet (unsigned int v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void unsigned_int_pskel::
+        _min_facet (unsigned int v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const unsigned_int_pskel::facets& unsigned_int_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const unsigned_int_pskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // long_pskel
         //
@@ -317,19 +448,59 @@ namespace xsde
 
         // string_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline string_pskel::
         string_pskel ()
-            : string_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          string_impl_ = 0;
+#endif
+          facets_.length_set_ = 0;
+          facets_.min_length_set_ = 0;
+          facets_.max_length_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline string_pskel::
         string_pskel (string_pskel* impl, void*)
             : simple_content (impl, 0), string_impl_ (impl)
         {
+          facets_.length_set_ = 0;
+          facets_.min_length_set_ = 0;
+          facets_.max_length_set_ = 0;
         }
 #endif
+
+        inline void string_pskel::
+        _length_facet (size_t v)
+        {
+          facets_.length_ = v;
+          facets_.length_set_ = 1;
+        }
+
+        inline void string_pskel::
+        _max_length_facet (size_t v)
+        {
+          facets_.max_length_ = v;
+          facets_.max_length_set_ = 1;
+        }
+
+        inline void string_pskel::
+        _min_length_facet (size_t v)
+        {
+          facets_.min_length_ = v;
+          facets_.min_length_set_ = 1;
+        }
+
+        inline const string_pskel::facets& string_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const string_pskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // normalized_string_pskel
         //

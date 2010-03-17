@@ -431,7 +431,36 @@ namespace CXX
 
           Boolean restriction (restriction_p (c));
 
-          if (!(tiein ||
+          Boolean facets (false); // Defines facets.
+          if (validation && restriction)
+          {
+            SemanticGraph::Type& ub (ultimate_base (c));
+
+            if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
+                ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
+                ub.is_a<SemanticGraph::Fundamental::String> ())
+            {
+              using SemanticGraph::Restricts;
+              Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
+
+              if (!r.facet_empty ())
+              {
+                Restricts::FacetIterator end (r.facet_end ());
+                facets =
+                  r.facet_find (L"length") != end ||
+                  r.facet_find (L"minLength") != end ||
+                  r.facet_find (L"maxLength") != end ||
+                  r.facet_find (L"minInclusive") != end ||
+                  r.facet_find (L"minExclusive") != end ||
+                  r.facet_find (L"maxInclusive") != end ||
+                  r.facet_find (L"maxExclusive") != end;
+              }
+            }
+          }
+
+          if (!(tiein || facets ||
                 (!restriction && (he || ha)) ||
                 (validation && (he || hae || hra))))
             return;
@@ -498,7 +527,10 @@ namespace CXX
           else
             os << name << " ()" << endl;
 
-          os << ": ";
+          if (tiein ||
+              (!restriction && (he || ha)) ||
+              (validation && (he || hae || hra)))
+            os << ": ";
 
           Boolean comma (false);
 
@@ -570,8 +602,12 @@ namespace CXX
               "&v_state_attr_first_)";
           }
 
-          os << "{"
-             << "}";
+          os << "{";
+
+          if (facets)
+            facet_calls (c);
+
+          os << "}";
 
           // Tiein c-tor.
           //
@@ -644,8 +680,53 @@ namespace CXX
                 "&v_state_attr_first_)";
             }
 
-            os << "{"
-               << "}";
+            os << "{";
+
+            if (facets)
+              facet_calls (c);
+
+            os << "}";
+          }
+        }
+
+      private:
+        Void
+        facet_calls (Type& c)
+        {
+          using SemanticGraph::Restricts;
+          Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
+
+          for (Restricts::FacetIterator i (r.facet_begin ());
+               i != r.facet_end (); ++i)
+          {
+            if (i->first == L"length")
+            {
+              os << "this->_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"minLength")
+            {
+              os << "this->_min_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"maxLength")
+            {
+              os << "this->_max_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"minInclusive")
+            {
+              os << "this->_min_facet (" << i->second << ", true);";
+            }
+            else if (i->first == L"minExclusive")
+            {
+              os << "this->_min_facet (" << i->second << ", false);";
+            }
+            else if (i->first == L"maxInclusive")
+            {
+              os << "this->_max_facet (" << i->second << ", true);";
+            }
+            else if (i->first == L"maxExclusive")
+            {
+              os << "this->_max_facet (" << i->second << ", false);";
+            }
           }
         }
 

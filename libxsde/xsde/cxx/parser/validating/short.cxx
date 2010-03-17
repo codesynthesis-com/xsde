@@ -49,11 +49,32 @@ namespace xsde
             bool neg = (sign_ == minus);
 
             if (*p != '\0' || (neg && ul > 32768) || (!neg && ul > 32767))
+            {
               _schema_error (schema_error::invalid_short_value);
+              return;
+            }
 
             value_ = neg
               ? static_cast<short> (-static_cast<int> (ul))
               : static_cast<short> (ul);
+
+            // Check facets.
+            //
+            const facets& f = _facets ();
+
+            if (f.min_set_ &&
+                (value_ < f.min_ || (!f.min_inc_ && value_ == f.min_)))
+            {
+              _schema_error (schema_error::value_less_than_min);
+              return;
+            }
+
+            if (f.max_set_ &&
+                (value_ > f.max_ || (!f.max_inc_ && value_ == f.max_)))
+            {
+              _schema_error (schema_error::value_greater_than_max);
+              return;
+            }
           }
           else
             _schema_error (schema_error::invalid_short_value);

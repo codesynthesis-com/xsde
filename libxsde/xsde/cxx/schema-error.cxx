@@ -56,6 +56,11 @@ namespace xsde
       "invalid time value",
       "invalid dateTime value",
       "invalid duration value",
+      "value is greater than maximum allowed",
+      "value is less than minimum allowed",
+      "length is greater than maximum allowed",
+      "length is less than minimum allowed",
+      "length is not equal to prescribed length",
       "invalid xsi:type attribute",
       "dynamic and static types are not related by inheritance"
     };

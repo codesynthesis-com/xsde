@@ -149,13 +149,40 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_byte_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_byte_sskel (unsigned_byte_sskel* impl, void*);
 
         protected:
           unsigned_byte_sskel* unsigned_byte_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned char, bool inclusive);
+
+          void
+          _min_facet (unsigned char, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned char min_;
+            unsigned char max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 
@@ -175,13 +202,40 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           short_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           short_sskel (short_sskel* impl, void*);
 
         protected:
           short_sskel* short_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (short, bool inclusive);
+
+          void
+          _min_facet (short, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            short min_;
+            short max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct unsigned_short_sskel: simple_content
@@ -197,13 +251,40 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_short_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_short_sskel (unsigned_short_sskel* impl, void*);
 
         protected:
           unsigned_short_sskel* unsigned_short_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned short, bool inclusive);
+
+          void
+          _min_facet (unsigned short, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned short min_;
+            unsigned short max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         // 32-bit
@@ -244,13 +325,40 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_int_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           unsigned_int_sskel (unsigned_int_sskel* impl, void*);
 
         protected:
           unsigned_int_sskel* unsigned_int_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned int, bool inclusive);
+
+          void
+          _min_facet (unsigned int, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned int min_;
+            unsigned int max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         // 64-bit
@@ -545,13 +653,43 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           string_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           string_sskel (string_sskel* impl, void*);
 
         protected:
           string_sskel* string_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _length_facet (size_t);
+
+          void
+          _max_length_facet (size_t);
+
+          void
+          _min_length_facet (size_t);
+
+        protected:
+          struct facets
+          {
+            size_t length_;
+            size_t min_length_;
+            size_t max_length_;
+
+            unsigned int length_set_ : 1;
+            unsigned int min_length_set_ : 1;
+            unsigned int max_length_set_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 #ifdef XSDE_REUSE_STYLE_MIXIN
@@ -841,13 +979,43 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-#ifdef XSDE_REUSE_STYLE_TIEIN
           string_sskel ();
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
           string_sskel (string_sskel* impl, void*);
 
         protected:
           string_sskel* string_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _length_facet (size_t);
+
+          void
+          _max_length_facet (size_t);
+
+          void
+          _min_length_facet (size_t);
+
+        protected:
+          struct facets
+          {
+            size_t length_;
+            size_t min_length_;
+            size_t max_length_;
+
+            unsigned int length_set_ : 1;
+            unsigned int min_length_set_ : 1;
+            unsigned int max_length_set_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 #ifdef XSDE_REUSE_STYLE_MIXIN

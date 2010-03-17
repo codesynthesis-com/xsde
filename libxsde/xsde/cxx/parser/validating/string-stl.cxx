@@ -25,6 +25,32 @@ namespace xsde
           str_ += s;
         }
 
+        void string_pimpl::
+        _post ()
+        {
+          // Check facets.
+          //
+          const facets& f = _facets ();
+
+          if (f.length_set_ && str_.size () != f.length_)
+          {
+            _schema_error (schema_error::length_not_equal_prescribed);
+            return;
+          }
+
+          if (f.min_length_set_ && str_.size () < f.min_length_)
+          {
+            _schema_error (schema_error::length_less_than_min);
+            return;
+          }
+
+          if (f.max_length_set_ && str_.size () > f.max_length_)
+          {
+            _schema_error (schema_error::length_greater_than_max);
+            return;
+          }
+        }
+
         std::string string_pimpl::
         post_string ()
         {
