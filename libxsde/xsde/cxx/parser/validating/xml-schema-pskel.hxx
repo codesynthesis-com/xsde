@@ -653,10 +653,47 @@ namespace xsde
         };
 
 
+        //
         // String-based types. If STL is disabled you are getting a C
         // string that you have to delete with delete[].
         //
-        struct string_pskel: simple_content
+
+        struct string_facets
+        {
+          string_facets ();
+
+          void
+          _length_facet (size_t);
+
+          void
+          _max_length_facet (size_t);
+
+          void
+          _min_length_facet (size_t);
+
+          void
+          _enumeration_facet (const char* const*, size_t count);
+
+        public:
+          struct facets
+          {
+            size_t length_;
+            size_t min_length_;
+            size_t max_length_;
+
+            const char* const* enum_;
+            size_t enum_count_;
+
+            unsigned int length_set_ : 1;
+            unsigned int min_length_set_ : 1;
+            unsigned int max_length_set_ : 1;
+          };
+
+        protected:
+          facets facets_;
+        };
+
+        struct string_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -673,9 +710,8 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-          string_pskel ();
-
 #ifdef XSDE_REUSE_STYLE_TIEIN
+          string_pskel ();
           string_pskel (string_pskel* impl, void*);
 
         protected:
@@ -683,33 +719,8 @@ namespace xsde
 #endif
           // Facets.
           //
-        public:
-          void
-          _length_facet (size_t);
-
-          void
-          _max_length_facet (size_t);
-
-          void
-          _min_length_facet (size_t);
-
-        protected:
-          struct facets
-          {
-            size_t length_;
-            size_t min_length_;
-            size_t max_length_;
-
-            unsigned int length_set_ : 1;
-            unsigned int min_length_set_ : 1;
-            unsigned int max_length_set_ : 1;
-          };
-
           const facets&
           _facets () const;
-
-        private:
-          facets facets_;
         };
 
         struct normalized_string_pskel: simple_content

@@ -5,6 +5,8 @@
 
 #include <cxx/serializer/serializer-source.hxx>
 
+#include <cult/containers/set.hxx>
+
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
@@ -382,6 +384,13 @@ namespace CXX
           String const& arg (arg_type (e));
           SemanticGraph::Type& base (e.inherits ().base ());
 
+          Boolean facets (false); // Whether we need to set facets.
+          if (validation)
+          {
+            StringBasedType t (facets);
+            t.dispatch (e);
+          }
+
           os << "// " << name << endl
              << "//" << endl
              << endl;
@@ -469,6 +478,26 @@ namespace CXX
             //
             BaseOverride t (*this, name);
             t.dispatch (base);
+          }
+
+          if (facets)
+          {
+            typedef Cult::Containers::Set<String> Enums;
+            Enums enums;
+
+            for (Type::NamesIterator i (e.names_begin ()),
+                   end (e.names_end ()); i != end; ++i)
+              enums.insert (i->name ());
+
+            os << "const char* const " << name << "::" << "_xsde_" << name <<
+              "_enums_[" << enums.size () << "UL] = "
+               << "{";
+
+            for (Enums::Iterator b (enums.begin ()), i (b), end (enums.end ());
+                 i != end; ++i)
+              os << (i != b ? ",\n" : "") << strlit (*i);
+
+            os << "};";
           }
         }
       };

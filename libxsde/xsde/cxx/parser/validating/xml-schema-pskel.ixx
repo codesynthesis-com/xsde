@@ -446,50 +446,62 @@ namespace xsde
         }
 #endif
 
-        // string_pskel
+        // string_facets
         //
-        inline string_pskel::
-        string_pskel ()
-        {
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          string_impl_ = 0;
-#endif
-          facets_.length_set_ = 0;
-          facets_.min_length_set_ = 0;
-          facets_.max_length_set_ = 0;
-        }
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-        inline string_pskel::
-        string_pskel (string_pskel* impl, void*)
-            : simple_content (impl, 0), string_impl_ (impl)
+        inline string_facets::
+        string_facets ()
         {
           facets_.length_set_ = 0;
           facets_.min_length_set_ = 0;
           facets_.max_length_set_ = 0;
-        }
-#endif
 
-        inline void string_pskel::
+          facets_.enum_ = 0;
+          facets_.enum_count_ = 0;
+        }
+
+        inline void string_facets::
         _length_facet (size_t v)
         {
           facets_.length_ = v;
           facets_.length_set_ = 1;
         }
 
-        inline void string_pskel::
+        inline void string_facets::
         _max_length_facet (size_t v)
         {
           facets_.max_length_ = v;
           facets_.max_length_set_ = 1;
         }
 
-        inline void string_pskel::
+        inline void string_facets::
         _min_length_facet (size_t v)
         {
           facets_.min_length_ = v;
           facets_.min_length_set_ = 1;
         }
+
+        inline void string_facets::
+        _enumeration_facet (const char* const* e, size_t count)
+        {
+          facets_.enum_ = e;
+          facets_.enum_count_ = count;
+        }
+
+        // string_pskel
+        //
+#ifdef XSDE_REUSE_STYLE_TIEIN
+        inline string_pskel::
+        string_pskel ()
+            : string_impl_ (0)
+        {
+        }
+
+        inline string_pskel::
+        string_pskel (string_pskel* impl, void*)
+            : simple_content (impl, 0), string_impl_ (impl)
+        {
+        }
+#endif
 
         inline const string_pskel::facets& string_pskel::
         _facets () const
@@ -499,7 +511,7 @@ namespace xsde
             return static_cast<const string_pskel&> (*parent_).facets_;
           else
 #endif
-            return facets_;
+          return facets_;
         }
 
         // normalized_string_pskel

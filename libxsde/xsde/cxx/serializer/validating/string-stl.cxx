@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/serializer/validating/string-stl.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -22,27 +23,8 @@ namespace xsde
         void string_simpl::
         _serialize_content ()
         {
-          // Check facets.
-          //
-          const facets& f = _facets ();
-
-          if (f.length_set_ && value_.size () != f.length_)
-          {
-            _schema_error (schema_error::length_not_equal_prescribed);
-            return;
-          }
-
-          if (f.min_length_set_ && value_.size () < f.min_length_)
-          {
-            _schema_error (schema_error::length_less_than_min);
-            return;
-          }
-
-          if (f.max_length_set_ && value_.size () > f.max_length_)
-          {
-            _schema_error (schema_error::length_greater_than_max);
-            return;
-          }
+          string_common::validate_facets (
+            value_.c_str (), value_.size (), _facets (), _context ());
 
           // Make sure we don't hold any references to the string.
           //

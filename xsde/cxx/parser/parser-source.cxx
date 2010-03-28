@@ -5,6 +5,8 @@
 
 #include <cxx/parser/parser-source.hxx>
 
+#include <cult/containers/set.hxx>
+
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
@@ -34,7 +36,14 @@ namespace CXX
             base.inherits_p () &&
             base_ret == ret_type (base.inherits ().base ()));
 
-          if (same || ret == L"void" || poly_code ||
+          Boolean facets (false); // Whether we need to set facets.
+          if (validation)
+          {
+            StringBasedType t (facets);
+            t.dispatch (e);
+          }
+
+          if (facets || same || ret == L"void" || poly_code ||
               (tiein && !(base_same || base_ret == L"void")))
           {
             os << "// " << name << endl
@@ -144,6 +153,26 @@ namespace CXX
                << "assert (this->" << impl << ");"
                << "return this->" << impl << "->" << base_post << " ();"
                << "}";
+          }
+
+          if (facets)
+          {
+            typedef Cult::Containers::Set<String> Enums;
+            Enums enums;
+
+            for (Type::NamesIterator i (e.names_begin ()),
+                   end (e.names_end ()); i != end; ++i)
+              enums.insert (i->name ());
+
+            os << "const char* const " << name << "::" << "_xsde_" << name <<
+              "_enums_[" << enums.size () << "UL] = "
+               << "{";
+
+            for (Enums::Iterator b (enums.begin ()), i (b), end (enums.end ());
+                 i != end; ++i)
+              os << (i != b ? ",\n" : "") << strlit (*i);
+
+            os << "};";
           }
         }
       };

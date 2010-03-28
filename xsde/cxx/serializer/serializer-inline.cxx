@@ -24,9 +24,41 @@ namespace CXX
         virtual Void
         traverse (Type& e)
         {
+          String const& name (ename (e));
+
+          Boolean facets (false); // Whether we need to set facets.
+          if (validation)
+          {
+            StringBasedType t (facets);
+            t.dispatch (e);
+          }
+
+          UnsignedLong enum_count (0);
+          if (facets)
+          {
+            for (Type::NamesIterator i (e.names_begin ()), end (e.names_end ());
+                 i != end; ++i)
+              ++enum_count;
+          }
+
+          if (facets || tiein)
+            os << "// " << name << endl
+               << "//" << endl
+               << endl;
+
+          if (facets && !tiein)
+          {
+            os << inl
+               << name << "::" << endl
+               << name << " ()" << endl
+               << "{"
+               << "this->_enumeration_facet (_xsde_" << name << "_enums_, " <<
+              enum_count << "UL);"
+               << "}";
+          }
+
           if (tiein)
           {
-            String const& name (ename (e));
             String const& impl (etiein (e));
 
             // We have to use "real" (non-typedef) base name in base
@@ -36,25 +68,31 @@ namespace CXX
             String fq_base (fq_name (base));
             String real_fq_base (real_fq_name (base));
 
-            os << "// " << name << endl
-               << "//" << endl
-               << endl;
-
             os << inl
                << name << "::" << endl
                << name << " (" << fq_base << "* tiein)" << endl
                << ": " << real_fq_base << " (tiein, 0)," << endl
                << "  " << impl << " (0)"
-               << "{"
-               << "}";
+               << "{";
+
+            if (facets)
+              os << "this->_enumeration_facet (_xsde_" << name <<
+                "_enums_, " << enum_count << "UL);";
+
+            os << "}";
 
             os << inl
                << name << "::" << endl
                << name << " (" << name << "* impl, void*)" << endl
                << ": " << real_fq_base << " (impl, 0)," << endl
                << "  " << impl << " (impl)"
-               << "{"
-               << "}";
+               << "{";
+
+            if (facets)
+              os << "this->_enumeration_facet (_xsde_" << name <<
+                "_enums_, " << enum_count << "UL);";
+
+            os << "}";
           }
         }
       };

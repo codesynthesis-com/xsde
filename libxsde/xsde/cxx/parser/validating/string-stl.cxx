@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/validating/string-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -28,27 +29,8 @@ namespace xsde
         void string_pimpl::
         _post ()
         {
-          // Check facets.
-          //
-          const facets& f = _facets ();
-
-          if (f.length_set_ && str_.size () != f.length_)
-          {
-            _schema_error (schema_error::length_not_equal_prescribed);
-            return;
-          }
-
-          if (f.min_length_set_ && str_.size () < f.min_length_)
-          {
-            _schema_error (schema_error::length_less_than_min);
-            return;
-          }
-
-          if (f.max_length_set_ && str_.size () > f.max_length_)
-          {
-            _schema_error (schema_error::length_greater_than_max);
-            return;
-          }
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
         }
 
         std::string string_pimpl::

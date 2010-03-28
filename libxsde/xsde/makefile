@@ -103,6 +103,7 @@ ifeq ($(xsde_parser_validation),y)
 cxx_tun +=                                      \
 cxx/parser/validating/parser.cxx                \
 cxx/parser/validating/time-zone.cxx             \
+cxx/parser/validating/string-common.cxx         \
 cxx/parser/validating/xml-schema-pskel.cxx
 
 ifeq ($(xsde_polymorphic),y)
@@ -296,6 +297,7 @@ ifeq ($(xsde_serializer_validation),y)
 cxx_tun +=                                          \
 cxx/serializer/validating/serializer.cxx            \
 cxx/serializer/validating/time-zone.cxx             \
+cxx/serializer/validating/string-common.cxx         \
 cxx/serializer/validating/xml-schema-sskel.cxx
 
 ifeq ($(xsde_polymorphic),y)

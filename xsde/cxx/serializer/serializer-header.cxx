@@ -275,6 +275,13 @@ namespace CXX
           SemanticGraph::Type& base (e.inherits ().base ());
           String fq_base (fq_name (base));
 
+          Boolean facets (false); // Whether we need to set facets.
+          if (validation)
+          {
+            StringBasedType t (facets);
+            t.dispatch (e);
+          }
+
           os << "class " << name << ": public " <<
             (mixin ? "virtual " : "") << fq_base
              << "{"
@@ -328,15 +335,22 @@ namespace CXX
                << "_dynamic_type () const;";
           }
 
-          if (tiein)
+          if (facets || tiein)
           {
             os << endl
                << "// Constructor." << endl
-               << "//" << endl
-               << name << " (" << fq_base << "* tiein);"
-               << endl;
+               << "//" << endl;
 
-            os << "// Implementation details." << endl
+            if (tiein)
+              os << name << " (" << fq_base << "* tiein);";
+            else
+              os << name << " ();";
+          }
+
+          if (tiein)
+          {
+            os << endl
+               << "// Implementation details." << endl
                << "//" << endl;
 
             // If our base has pure virtual functions, override them here.
@@ -345,8 +359,21 @@ namespace CXX
 
             os << "protected:" << endl
                << name << "* " << etiein (e) << ";"
-               << name << " (" << name << "*, void*);"
-               << endl;
+               << name << " (" << name << "*, void*);";
+          }
+
+          if (facets)
+          {
+            UnsignedLong enum_count (0);
+
+            for (Type::NamesIterator i (e.names_begin ()), end (e.names_end ());
+                 i != end; ++i)
+              ++enum_count;
+
+            os << endl
+               << "protected:" << endl
+               << "static const char* const _xsde_" << name << "_enums_[" <<
+              enum_count << "UL];";
           }
 
           os << "};";

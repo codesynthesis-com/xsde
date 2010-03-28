@@ -191,6 +191,108 @@ namespace CXX
       String parser_map_;
     };
 
+    // Check whether this is a string-based type (including ID, IDFER,
+    // anyURI, and ENTITY).
+    //
+    struct StringBasedType: Traversal::Complex,
+                            Traversal::Fundamental::String,
+                            Traversal::Fundamental::NormalizedString,
+                            Traversal::Fundamental::Token,
+                            Traversal::Fundamental::Name,
+                            Traversal::Fundamental::NameToken,
+                            Traversal::Fundamental::NCName,
+                            Traversal::Fundamental::Language,
+                            Traversal::Fundamental::Id,
+                            Traversal::Fundamental::IdRef,
+                            Traversal::Fundamental::AnyURI,
+                            Traversal::Fundamental::Entity
+
+    {
+      StringBasedType (Boolean& r)
+          : r_ (r)
+      {
+        *this >> inherits_ >> *this;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Complex& c)
+      {
+        inherits (c, inherits_);
+      }
+
+      // Strings.
+      //
+      virtual Void
+      traverse (SemanticGraph::Fundamental::String&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NormalizedString&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Token&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NameToken&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Name&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::NCName&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Language&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Id&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::IdRef&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::AnyURI&)
+      {
+        r_ = true;
+      }
+
+      virtual Void
+      traverse (SemanticGraph::Fundamental::Entity&)
+      {
+        r_ = true;
+      }
+
+    private:
+      Boolean& r_;
+      Traversal::Inherits inherits_;
+    };
+
     //
     //
     struct RequiredAttributeTest: Traversal::Attribute

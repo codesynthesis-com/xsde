@@ -636,9 +636,46 @@ namespace xsde
 #endif
         };
 
+        //
         // String-based types.
         //
-        struct string_sskel: simple_content
+
+        struct string_facets
+        {
+          string_facets ();
+
+          void
+          _length_facet (size_t);
+
+          void
+          _max_length_facet (size_t);
+
+          void
+          _min_length_facet (size_t);
+
+          void
+          _enumeration_facet (const char* const*, size_t count);
+
+        public:
+          struct facets
+          {
+            size_t length_;
+            size_t min_length_;
+            size_t max_length_;
+
+            const char* const* enum_;
+            size_t enum_count_;
+
+            unsigned int length_set_ : 1;
+            unsigned int min_length_set_ : 1;
+            unsigned int max_length_set_ : 1;
+          };
+
+        protected:
+          facets facets_;
+        };
+
+        struct string_sskel: simple_content, string_facets
         {
           virtual void
 #ifdef XSDE_STL
@@ -655,9 +692,8 @@ namespace xsde
           _dynamic_type () const;
 #endif
 
-          string_sskel ();
-
 #ifdef XSDE_REUSE_STYLE_TIEIN
+          string_sskel ();
           string_sskel (string_sskel* impl, void*);
 
         protected:
@@ -665,33 +701,8 @@ namespace xsde
 #endif
           // Facets.
           //
-        public:
-          void
-          _length_facet (size_t);
-
-          void
-          _max_length_facet (size_t);
-
-          void
-          _min_length_facet (size_t);
-
-        protected:
-          struct facets
-          {
-            size_t length_;
-            size_t min_length_;
-            size_t max_length_;
-
-            unsigned int length_set_ : 1;
-            unsigned int min_length_set_ : 1;
-            unsigned int max_length_set_ : 1;
-          };
-
           const facets&
           _facets () const;
-
-        private:
-          facets facets_;
         };
 
 #ifdef XSDE_REUSE_STYLE_MIXIN
