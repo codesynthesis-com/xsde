@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/serializer/validating/token-stl.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -47,10 +48,17 @@ namespace xsde
           if (ok && s != tmp.c_str () && *(s - 1) == 0x20)
             ok = false;
 
-          if (ok)
-            _characters (tmp.c_str (), tmp.size ());
-          else
+          if (!ok)
+          {
             _schema_error (schema_error::invalid_token_value);
+            return;
+          }
+
+          if (!string_common::validate_facets (
+                tmp.c_str (), tmp.size (), _facets (), _context ()))
+            return;
+
+          _characters (tmp.c_str (), tmp.size ());
         }
       }
     }

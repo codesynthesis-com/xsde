@@ -211,12 +211,11 @@ namespace CXX
             {
               // Do facet validation.
               //
-              os << "::xsde::cxx::serializer::validating::string_common::" <<
-                "validate_facets (" << endl
+              os << "if (::xsde::cxx::serializer::validating::" <<
+                "string_common::validate_facets (" << endl
                  << "this->" << state << "->" << string << " ()," << endl
                  << "this->_facets ()," << endl
-                 << "this->_context ());"
-                 << endl;
+                 << "this->_context ()))" << endl;
             }
 
             os << "this->_characters (this->" << state << "->" <<

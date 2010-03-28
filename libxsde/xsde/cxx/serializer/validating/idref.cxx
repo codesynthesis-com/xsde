@@ -8,6 +8,7 @@
 #include <xsde/cxx/xml/ncname.hxx>
 
 #include <xsde/cxx/serializer/validating/idref.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -36,7 +37,13 @@ namespace xsde
           size_t n = strlen (value_);
 
           if (xml::valid_ncname (value_, n))
-            _characters (value_, n);
+          {
+            if (string_common::validate_facets (
+                  value_, n, _facets (), _context ()))
+            {
+              _characters (value_, n);
+            }
+          }
           else
             _schema_error (schema_error::invalid_idref_value);
 

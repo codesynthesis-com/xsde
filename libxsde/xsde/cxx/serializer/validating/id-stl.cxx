@@ -6,6 +6,7 @@
 #include <xsde/cxx/xml/ncname.hxx>
 
 #include <xsde/cxx/serializer/validating/id-stl.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -27,10 +28,17 @@ namespace xsde
           std::string tmp;
           tmp.swap (value_);
 
-          if (xml::valid_ncname (tmp.c_str (), tmp.size ()))
-            _characters (tmp.c_str (), tmp.size ());
-          else
+          if (!xml::valid_ncname (tmp.c_str (), tmp.size ()))
+          {
             _schema_error (schema_error::invalid_id_value);
+            return;
+          }
+
+          if (!string_common::validate_facets (
+                tmp.c_str (), tmp.size (), _facets (), _context ()))
+            return;
+
+          _characters (tmp.c_str (), tmp.size ());
         }
       }
     }

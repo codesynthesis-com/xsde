@@ -6,6 +6,7 @@
 #include <xsde/cxx/xml/char-table.hxx>
 
 #include <xsde/cxx/serializer/validating/name.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -54,7 +55,13 @@ namespace xsde
           }
 
           if (ok)
-            _characters (value_);
+          {
+            if (string_common::validate_facets (
+                  value_, _facets (), _context ()))
+            {
+              _characters (value_);
+            }
+          }
           else
             _schema_error (schema_error::invalid_name_value);
 

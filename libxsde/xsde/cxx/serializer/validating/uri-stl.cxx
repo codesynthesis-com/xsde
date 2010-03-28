@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/serializer/validating/uri-stl.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -31,7 +32,11 @@ namespace xsde
           // can be a URI and conforming processors do not need to figure
           // out and verify particular URI schemes.
           //
-          _characters (tmp.c_str (), tmp.size ());
+          if (string_common::validate_facets (
+                tmp.c_str (), tmp.size (), _facets (), _context ()))
+          {
+            _characters (tmp.c_str (), tmp.size ());
+          }
         }
       }
     }

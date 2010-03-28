@@ -30,9 +30,11 @@ namespace xsde
         void string_simpl::
         _serialize_content ()
         {
-          string_common::validate_facets (value_, _facets (), _context ());
-
-          _characters (value_);
+          if (string_common::validate_facets (
+                value_, _facets (), _context ()))
+          {
+            _characters (value_);
+          }
 
           if (free_)
           {

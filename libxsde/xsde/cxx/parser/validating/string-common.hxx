@@ -18,7 +18,7 @@ namespace xsde
       {
         struct string_common
         {
-          static void
+          static bool
           validate_facets (const char* s,
                            size_t n,
                            const string_facets::facets&,

@@ -6,6 +6,7 @@
 #include <xsde/cxx/xml/char-table.hxx>
 
 #include <xsde/cxx/serializer/validating/nmtoken-stl.hxx>
+#include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -42,10 +43,17 @@ namespace xsde
               ok = false;
           }
 
-          if (ok)
-            _characters (tmp.c_str (), tmp.size ());
-          else
+          if (!ok)
+          {
             _schema_error (schema_error::invalid_nmtoken_value);
+            return;
+          }
+
+          if (!string_common::validate_facets (
+                tmp.c_str (), tmp.size (), _facets (), _context ()))
+            return;
+
+          _characters (tmp.c_str (), tmp.size ());
         }
       }
     }

@@ -14,7 +14,7 @@ namespace xsde
     {
       namespace validating
       {
-        void string_common::
+        bool string_common::
         validate_facets (const char* s,
                          size_t n,
                          const string_facets::facets& f,
@@ -23,19 +23,19 @@ namespace xsde
           if (f.length_set_ && n != f.length_)
           {
             ctx.schema_error (schema_error::length_not_equal_prescribed);
-            return;
+            return false;
           }
 
           if (f.min_length_set_ && n < f.min_length_)
           {
             ctx.schema_error (schema_error::length_less_than_min);
-            return;
+            return false;
           }
 
           if (f.max_length_set_ && n > f.max_length_)
           {
             ctx.schema_error (schema_error::length_greater_than_max);
-            return;
+            return false;
           }
 
           if (f.enum_count_ != 0)
@@ -51,9 +51,11 @@ namespace xsde
             if (i == f.enum_count_)
             {
               ctx.schema_error (schema_error::value_not_in_enumeration);
-              return;
+              return false;
             }
           }
+
+          return true;
         }
       }
     }

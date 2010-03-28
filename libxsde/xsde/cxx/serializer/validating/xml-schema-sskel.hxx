@@ -699,9 +699,9 @@ namespace xsde
         protected:
           string_sskel* string_impl_;
 #endif
-          // Facets.
-          //
-          const facets&
+
+        protected:
+          const string_facets::facets&
           _facets () const;
         };
 
@@ -933,7 +933,7 @@ namespace xsde
 #endif
         };
 
-        struct uri_sskel: simple_content
+        struct uri_sskel: simple_content, string_facets
         {
           virtual void
 #ifdef XSDE_STL
@@ -957,6 +957,9 @@ namespace xsde
         protected:
           uri_sskel* uri_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
         struct qname_sskel: simple_content

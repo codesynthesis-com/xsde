@@ -23,15 +23,16 @@ namespace xsde
         void string_simpl::
         _serialize_content ()
         {
-          string_common::validate_facets (
-            value_.c_str (), value_.size (), _facets (), _context ());
-
           // Make sure we don't hold any references to the string.
           //
           std::string tmp;
           tmp.swap (value_);
 
-          _characters (tmp.c_str (), tmp.size ());
+          if (string_common::validate_facets (
+                tmp.c_str (), tmp.size (), _facets (), _context ()))
+          {
+            _characters (tmp.c_str (), tmp.size ());
+          }
         }
       }
     }

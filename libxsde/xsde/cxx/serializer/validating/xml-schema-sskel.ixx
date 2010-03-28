@@ -504,7 +504,7 @@ namespace xsde
         }
 #endif
 
-        inline const string_sskel::facets& string_sskel::
+        inline const string_facets::facets& string_sskel::
         _facets () const
         {
 #ifdef XSDE_REUSE_STYLE_TIEIN
@@ -690,6 +690,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& uri_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const uri_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // qname_sskel
         //
