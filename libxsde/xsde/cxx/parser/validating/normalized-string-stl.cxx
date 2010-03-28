@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/validating/normalized-string-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -25,8 +26,8 @@ namespace xsde
           str_ += s;
         }
 
-        std::string normalized_string_pimpl::
-        post_normalized_string ()
+        void normalized_string_pimpl::
+        _post ()
         {
           std::string::size_type size = str_.size ();
 
@@ -38,6 +39,13 @@ namespace xsde
               c = 0x20;
           }
 
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
+        }
+
+        std::string normalized_string_pimpl::
+        post_normalized_string ()
+        {
           std::string r;
           r.swap (str_);
           return r;

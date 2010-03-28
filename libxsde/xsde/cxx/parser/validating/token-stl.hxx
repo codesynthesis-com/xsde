@@ -30,6 +30,9 @@ namespace xsde
           virtual void
           _characters (const ro_string&);
 
+          virtual void
+          _post ();
+
           virtual std::string
           post_token ();
 

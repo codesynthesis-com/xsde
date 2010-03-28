@@ -6,6 +6,7 @@
 #include <xsde/cxx/xml/ncname.hxx>
 
 #include <xsde/cxx/parser/validating/idref-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -44,7 +45,13 @@ namespace xsde
           if (xml::valid_ncname (tmp.data (), size))
             str_.resize (size);
           else
+          {
             _schema_error (schema_error::invalid_idref_value);
+            return;
+          }
+
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
         }
 
         std::string idref_pimpl::

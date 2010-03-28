@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/validating/language-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -79,7 +80,13 @@ namespace xsde
           if (ok)
             str_.resize (size);
           else
+          {
             _schema_error (schema_error::invalid_language_value);
+            return;
+          }
+
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
         }
 
         std::string language_pimpl::

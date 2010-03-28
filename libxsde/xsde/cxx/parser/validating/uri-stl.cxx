@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/validating/uri-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -33,8 +34,8 @@ namespace xsde
             str_ += s;
         }
 
-        std::string uri_pimpl::
-        post_uri ()
+        void uri_pimpl::
+        _post ()
         {
           // According to Datatypes 3.2.17 and RFC2396 pretty much anything
           // can be a URI and conforming processors do not need to figure
@@ -43,6 +44,13 @@ namespace xsde
           ro_string tmp (str_);
           str_.resize (trim_right (tmp));
 
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
+        }
+
+        std::string uri_pimpl::
+        post_uri ()
+        {
           std::string r;
           r.swap (str_);
           return r;

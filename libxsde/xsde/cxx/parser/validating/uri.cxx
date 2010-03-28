@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/validating/uri.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -54,8 +55,8 @@ namespace xsde
           }
         }
 
-        char* uri_pimpl::
-        post_uri ()
+        void uri_pimpl::
+        _post ()
         {
           // According to Datatypes 3.2.17 and RFC2396 pretty much anything
           // can be a URI and conforming processors do not need to figure
@@ -63,6 +64,14 @@ namespace xsde
           //
           ro_string tmp (str_);
           str_.truncate (trim_right (tmp));
+
+          string_common::validate_facets (
+            str_.data (), str_.size (), _facets (), _context ());
+        }
+
+        char* uri_pimpl::
+        post_uri ()
+        {
           return str_.detach ();
         }
       }

@@ -717,13 +717,12 @@ namespace xsde
         protected:
           string_pskel* string_impl_;
 #endif
-          // Facets.
-          //
-          const facets&
+        protected:
+          const string_facets::facets&
           _facets () const;
         };
 
-        struct normalized_string_pskel: simple_content
+        struct normalized_string_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -747,9 +746,12 @@ namespace xsde
         protected:
           normalized_string_pskel* normalized_string_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct token_pskel: simple_content
+        struct token_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -773,9 +775,12 @@ namespace xsde
         protected:
           token_pskel* token_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct name_pskel: simple_content
+        struct name_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -799,9 +804,12 @@ namespace xsde
         protected:
           name_pskel* name_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct nmtoken_pskel: simple_content
+        struct nmtoken_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -825,6 +833,9 @@ namespace xsde
         protected:
           nmtoken_pskel* nmtoken_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
         struct nmtokens_pskel: list_base
@@ -849,7 +860,7 @@ namespace xsde
 #endif
         };
 
-        struct ncname_pskel: simple_content
+        struct ncname_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -873,9 +884,12 @@ namespace xsde
         protected:
           ncname_pskel* ncname_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct id_pskel: simple_content
+        struct id_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -899,9 +913,12 @@ namespace xsde
         protected:
           id_pskel* id_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct idref_pskel: simple_content
+        struct idref_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -925,6 +942,9 @@ namespace xsde
         protected:
           idref_pskel* idref_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
         struct idrefs_pskel: list_base
@@ -949,7 +969,7 @@ namespace xsde
 #endif
         };
 
-        struct language_pskel: simple_content
+        struct language_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -973,9 +993,12 @@ namespace xsde
         protected:
           language_pskel* language_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
-        struct uri_pskel: simple_content
+        struct uri_pskel: simple_content, string_facets
         {
 #ifdef XSDE_STL
           virtual std::string
@@ -999,6 +1022,9 @@ namespace xsde
         protected:
           uri_pskel* uri_impl_;
 #endif
+        protected:
+          const string_facets::facets&
+          _facets () const;
         };
 
         struct qname_pskel: simple_content

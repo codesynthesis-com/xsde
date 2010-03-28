@@ -503,7 +503,7 @@ namespace xsde
         }
 #endif
 
-        inline const string_pskel::facets& string_pskel::
+        inline const string_facets::facets& string_pskel::
         _facets () const
         {
 #ifdef XSDE_REUSE_STYLE_TIEIN
@@ -530,6 +530,18 @@ namespace xsde
         }
 #endif
 
+        inline const string_facets::facets& normalized_string_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const normalized_string_pskel&> (
+              *parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
+
         // token_pskel
         //
 #ifdef XSDE_REUSE_STYLE_TIEIN
@@ -545,6 +557,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& token_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const token_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // name_pskel
         //
@@ -561,6 +583,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& name_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const name_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // nmtoken_pskel
         //
@@ -577,6 +609,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& nmtoken_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const nmtoken_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // nmtokens_pskel
         //
@@ -609,6 +651,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& ncname_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const ncname_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // id_pskel
         //
@@ -625,6 +677,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& id_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const id_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // idref_pskel
         //
@@ -641,6 +703,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& idref_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const idref_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // idrefs_pskel
         //
@@ -673,6 +745,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& language_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const language_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // uri_pskel
         //
@@ -689,6 +771,16 @@ namespace xsde
         {
         }
 #endif
+        inline const string_facets::facets& uri_pskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const uri_pskel&> (*parent_).facets_;
+          else
+#endif
+          return facets_;
+        }
 
         // qname_pskel
         //

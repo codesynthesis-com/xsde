@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/validating/token.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -54,8 +55,8 @@ namespace xsde
           }
         }
 
-        char* token_pimpl::
-        post_token ()
+        void token_pimpl::
+        _post ()
         {
           typedef string::size_type size_type;
 
@@ -86,6 +87,13 @@ namespace xsde
 
           str_.truncate (j);
 
+          string_common::validate_facets (
+            str_.data (), str_.size (), _facets (), _context ());
+        }
+
+        char* token_pimpl::
+        post_token ()
+        {
           return str_.detach ();
         }
       }

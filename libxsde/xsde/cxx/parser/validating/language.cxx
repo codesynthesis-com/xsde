@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/validating/language.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -100,7 +101,13 @@ namespace xsde
           if (ok)
             str_.truncate (size);
           else
+          {
             _schema_error (schema_error::invalid_language_value);
+            return;
+          }
+
+          string_common::validate_facets (
+            str_.data (), str_.size (), _facets (), _context ());
         }
 
         char* language_pimpl::

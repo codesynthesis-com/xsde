@@ -8,6 +8,7 @@
 #include <xsde/cxx/xml/char-table.hxx>
 
 #include <xsde/cxx/parser/validating/nmtoken.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -84,7 +85,13 @@ namespace xsde
           str_.truncate (size);
 
           if (!ok)
+          {
             _schema_error (schema_error::invalid_nmtoken_value);
+            return;
+          }
+
+          string_common::validate_facets (
+            str_.data (), str_.size (), _facets (), _context ());
         }
 
         char* nmtoken_pimpl::

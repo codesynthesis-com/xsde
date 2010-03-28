@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/validating/token-stl.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -33,8 +34,8 @@ namespace xsde
             str_ += s;
         }
 
-        std::string token_pimpl::
-        post_token ()
+        void token_pimpl::
+        _post ()
         {
           std::string::size_type size = str_.size ();
           std::string::size_type j = 0;
@@ -63,6 +64,13 @@ namespace xsde
 
           str_.resize (j);
 
+          string_common::validate_facets (
+            str_.c_str (), str_.size (), _facets (), _context ());
+        }
+
+        std::string token_pimpl::
+        post_token ()
+        {
           std::string r;
           r.swap (str_);
           return r;

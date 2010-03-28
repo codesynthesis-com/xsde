@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/validating/normalized-string.hxx>
+#include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
 {
@@ -37,8 +38,8 @@ namespace xsde
 #endif
         }
 
-        char* normalized_string_pimpl::
-        post_normalized_string ()
+        void normalized_string_pimpl::
+        _post ()
         {
           typedef string::size_type size_type;
 
@@ -52,6 +53,13 @@ namespace xsde
               c = 0x20;
           }
 
+          string_common::validate_facets (
+            str_.data (), str_.size (), _facets (), _context ());
+        }
+
+        char* normalized_string_pimpl::
+        post_normalized_string ()
+        {
           return str_.detach ();
         }
       }
