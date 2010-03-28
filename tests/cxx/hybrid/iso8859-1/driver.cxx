@@ -45,6 +45,7 @@ main (int argc, char* argv[])
     doc_p.parse (argv[1]);
     type* r = root_p.post ();
     assert (false);
+    delete r;
   }
   catch (const xml_schema::parser_exception& e)
   {
