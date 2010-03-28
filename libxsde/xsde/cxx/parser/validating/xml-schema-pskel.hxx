@@ -653,13 +653,16 @@ namespace xsde
         };
 
 
-        // String-based types.
+        // String-based types. If STL is disabled you are getting a C
+        // string that you have to delete with delete[].
         //
+        struct string_pskel: simple_content
+        {
 #ifdef XSDE_STL
-
-        struct string_pskel: simple_content
-        {
           virtual std::string
+#else
+          virtual char*
+#endif
           post_string () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -711,7 +714,11 @@ namespace xsde
 
         struct normalized_string_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_normalized_string () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -733,7 +740,11 @@ namespace xsde
 
         struct token_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_token () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -755,7 +766,11 @@ namespace xsde
 
         struct name_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_name () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -777,7 +792,11 @@ namespace xsde
 
         struct nmtoken_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_nmtoken () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -821,7 +840,11 @@ namespace xsde
 
         struct ncname_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_ncname () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -843,7 +866,11 @@ namespace xsde
 
         struct id_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_id () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -865,7 +892,11 @@ namespace xsde
 
         struct idref_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_idref () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -909,7 +940,11 @@ namespace xsde
 
         struct language_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_language () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -931,7 +966,11 @@ namespace xsde
 
         struct uri_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual std::string
+#else
+          virtual char*
+#endif
           post_uri () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -953,328 +992,11 @@ namespace xsde
 
         struct qname_pskel: simple_content
         {
+#ifdef XSDE_STL
           virtual qname
-          post_qname () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          qname_pskel ();
-          qname_pskel (qname_pskel* impl, void*);
-
-        protected:
-          qname_pskel* qname_impl_;
-#endif
-        };
-
-#else // XSDE_STL
-
-        // Note that in this case you are getting a C string that you
-        // have to delete with delete[].
-        //
-        struct string_pskel: simple_content
-        {
-          virtual char*
-          post_string () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-          string_pskel ();
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          string_pskel (string_pskel* impl, void*);
-
-        protected:
-          string_pskel* string_impl_;
-#endif
-          // Facets.
-          //
-        public:
-          void
-          _length_facet (size_t);
-
-          void
-          _max_length_facet (size_t);
-
-          void
-          _min_length_facet (size_t);
-
-        protected:
-          struct facets
-          {
-            size_t length_;
-            size_t min_length_;
-            size_t max_length_;
-
-            unsigned int length_set_ : 1;
-            unsigned int min_length_set_ : 1;
-            unsigned int max_length_set_ : 1;
-          };
-
-          const facets&
-          _facets () const;
-
-        private:
-          facets facets_;
-        };
-
-        struct normalized_string_pskel: simple_content
-        {
-          virtual char*
-          post_normalized_string () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          normalized_string_pskel ();
-          normalized_string_pskel (normalized_string_pskel* impl, void*);
-
-        protected:
-          normalized_string_pskel* normalized_string_impl_;
-#endif
-        };
-
-        struct token_pskel: simple_content
-        {
-          virtual char*
-          post_token () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          token_pskel ();
-          token_pskel (token_pskel* impl, void*);
-
-        protected:
-          token_pskel* token_impl_;
-#endif
-        };
-
-        struct name_pskel: simple_content
-        {
-          virtual char*
-          post_name () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          name_pskel ();
-          name_pskel (name_pskel* impl, void*);
-
-        protected:
-          name_pskel* name_impl_;
-#endif
-        };
-
-        struct nmtoken_pskel: simple_content
-        {
-          virtual char*
-          post_nmtoken () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          nmtoken_pskel ();
-          nmtoken_pskel (nmtoken_pskel* impl, void*);
-
-        protected:
-          nmtoken_pskel* nmtoken_impl_;
-#endif
-        };
-
-        struct nmtokens_pskel: list_base
-        {
-          virtual string_sequence*
-          post_nmtokens () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          nmtokens_pskel ();
-          nmtokens_pskel (nmtokens_pskel* impl, void*);
-
-        protected:
-          nmtokens_pskel* nmtokens_impl_;
-#endif
-        };
-
-        struct ncname_pskel: simple_content
-        {
-          virtual char*
-          post_ncname () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          ncname_pskel ();
-          ncname_pskel (ncname_pskel* impl, void*);
-
-        protected:
-          ncname_pskel* ncname_impl_;
-#endif
-        };
-
-        struct id_pskel: simple_content
-        {
-          virtual char*
-          post_id () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          id_pskel ();
-          id_pskel (id_pskel* impl, void*);
-
-        protected:
-          id_pskel* id_impl_;
-#endif
-        };
-
-        struct idref_pskel: simple_content
-        {
-          virtual char*
-          post_idref () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          idref_pskel ();
-          idref_pskel (idref_pskel* impl, void*);
-
-        protected:
-          idref_pskel* idref_impl_;
-#endif
-        };
-
-        struct idrefs_pskel: list_base
-        {
-          virtual string_sequence*
-          post_idrefs () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          idrefs_pskel ();
-          idrefs_pskel (idrefs_pskel* impl, void*);
-
-        protected:
-          idrefs_pskel* idrefs_impl_;
-#endif
-        };
-
-        struct language_pskel: simple_content
-        {
-          virtual char*
-          post_language () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          language_pskel ();
-          language_pskel (language_pskel* impl, void*);
-
-        protected:
-          language_pskel* language_impl_;
-#endif
-        };
-
-        struct uri_pskel: simple_content
-        {
-          virtual char*
-          post_uri () = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          uri_pskel ();
-          uri_pskel (uri_pskel* impl, void*);
-
-        protected:
-          uri_pskel* uri_impl_;
-#endif
-        };
-
-        struct qname_pskel: simple_content
-        {
+#else
           virtual qname*
+#endif
           post_qname () = 0;
 
 #ifdef XSDE_POLYMORPHIC
@@ -1293,8 +1015,6 @@ namespace xsde
           qname_pskel* qname_impl_;
 #endif
         };
-#endif // XSDE_STL
-
 
         // base64Binary
         //

@@ -530,12 +530,14 @@ namespace xsde
 
         // String-based types.
         //
+        struct string_sskel: simple_content
+        {
+          virtual void
 #ifdef XSDE_STL
-
-        struct string_sskel: simple_content
-        {
-          virtual void
           pre (const std::string&) = 0;
+#else
+          pre (const char*) = 0;
+#endif
 
 #ifdef XSDE_POLYMORPHIC
           static const char*
@@ -785,7 +787,11 @@ namespace xsde
         struct uri_sskel: simple_content
         {
           virtual void
+#ifdef XSDE_STL
           pre (const std::string&) = 0;
+#else
+          pre (const char*) = 0;
+#endif
 
 #ifdef XSDE_POLYMORPHIC
           static const char*
@@ -807,303 +813,11 @@ namespace xsde
         struct qname_sskel: simple_content
         {
           virtual void
+#ifdef XSDE_STL
           pre (const qname&) = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          qname_sskel ();
-          qname_sskel (qname_sskel* impl, void*);
-
-        protected:
-          qname_sskel* qname_impl_;
-#endif
-        };
-
-#else // XSDE_STL
-
-        struct string_sskel: simple_content
-        {
-          virtual void
-          pre (const char*) = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          string_sskel ();
-          string_sskel (string_sskel* impl, void*);
-
-        protected:
-          string_sskel* string_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct normalized_string_sskel: virtual string_sskel
 #else
-        struct normalized_string_sskel: string_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          normalized_string_sskel ();
-          normalized_string_sskel (normalized_string_sskel* impl, void*);
-
-        protected:
-          normalized_string_sskel* normalized_string_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct token_sskel: virtual normalized_string_sskel
-#else
-        struct token_sskel: normalized_string_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          token_sskel ();
-          token_sskel (token_sskel* impl, void*);
-
-        protected:
-          token_sskel* token_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct name_sskel: virtual token_sskel
-#else
-        struct name_sskel: token_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          name_sskel ();
-          name_sskel (name_sskel* impl, void*);
-
-        protected:
-          name_sskel* name_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct nmtoken_sskel: virtual token_sskel
-#else
-        struct nmtoken_sskel: token_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          nmtoken_sskel ();
-          nmtoken_sskel (nmtoken_sskel* impl, void*);
-
-        protected:
-          nmtoken_sskel* nmtoken_impl_;
-#endif
-        };
-
-        struct nmtokens_sskel: simple_content
-        {
-          virtual void
-          pre (const string_sequence*) = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          nmtokens_sskel ();
-          nmtokens_sskel (nmtokens_sskel* impl, void*);
-
-        protected:
-          nmtokens_sskel* nmtokens_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct ncname_sskel: virtual name_sskel
-#else
-        struct ncname_sskel: name_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          ncname_sskel ();
-          ncname_sskel (ncname_sskel* impl, void*);
-
-        protected:
-          ncname_sskel* ncname_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct id_sskel: virtual ncname_sskel
-#else
-        struct id_sskel: ncname_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          id_sskel ();
-          id_sskel (id_sskel* impl, void*);
-
-        protected:
-          id_sskel* id_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct idref_sskel: virtual ncname_sskel
-#else
-        struct idref_sskel: ncname_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          idref_sskel ();
-          idref_sskel (idref_sskel* impl, void*);
-
-        protected:
-          idref_sskel* idref_impl_;
-#endif
-        };
-
-        struct idrefs_sskel: simple_content
-        {
-          virtual void
-          pre (const string_sequence*) = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          idrefs_sskel ();
-          idrefs_sskel (idrefs_sskel* impl, void*);
-
-        protected:
-          idrefs_sskel* idrefs_impl_;
-#endif
-        };
-
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct language_sskel: virtual token_sskel
-#else
-        struct language_sskel: token_sskel
-#endif
-        {
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          language_sskel ();
-          language_sskel (language_sskel* impl, void*);
-
-        protected:
-          language_sskel* language_impl_;
-#endif
-        };
-
-        struct uri_sskel: simple_content
-        {
-          virtual void
-          pre (const char*) = 0;
-
-#ifdef XSDE_POLYMORPHIC
-          static const char*
-          _static_type ();
-
-          virtual const char*
-          _dynamic_type () const;
-#endif
-
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          uri_sskel ();
-          uri_sskel (uri_sskel* impl, void*);
-
-        protected:
-          uri_sskel* uri_impl_;
-#endif
-        };
-
-        struct qname_sskel: simple_content
-        {
-          virtual void
           pre (const qname*) = 0;
+#endif
 
 #ifdef XSDE_POLYMORPHIC
           static const char*
@@ -1121,9 +835,6 @@ namespace xsde
           qname_sskel* qname_impl_;
 #endif
         };
-
-#endif // XSDE_STL
-
 
         // base64Binary
         //
