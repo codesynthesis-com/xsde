@@ -245,27 +245,13 @@ namespace CXX
 
           // pre
           //
-          os << "void " << name << "::" << endl
-             << "pre ()"
-             << "{";
-
-          if (fl)
+          if (!fl || !base_enum)
           {
-            if (base_enum)
-            {
-              // Our base is also fixed-length so call its pre()
-              //
-              if (tiein)
-                os << "this->base_impl_.";
-              else
-                os << epimpl (b) << "::"; //@@ fq-name.
+            os << "void " << name << "::" << endl
+               << "pre ()"
+               << "{";
 
-              os << "pre ();";
-            }
-
-            // Clear the string buffer.
-            //
-            if (!base_enum)
+            if (fl)
             {
               if (stl)
                 os << "this->" << state << ".str_.clear ();";
@@ -281,25 +267,34 @@ namespace CXX
                 }
               }
             }
-          }
-          else
-          {
-            if (exceptions)
-              os << "this->" << pre_impl_name (e) << " (new " << type << ");";
             else
-              os << type << "* x = new " << type << ";"
-                 << "if (x)" << endl
-                 << "this->" << pre_impl_name (e) << " (x);"
-                 << "else" << endl
-                 << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+            {
+              if (exceptions)
+                os << "this->" << pre_impl_name (e) << " (new " << type << ");";
+              else
+                os << type << "* x = new " << type << ";"
+                   << "if (x)" << endl
+                   << "this->" << pre_impl_name (e) << " (x);"
+                   << "else" << endl
+                   << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+            }
+
+            os << "}";
           }
 
-          os << "}";
-
-          // _characters
-          //
           if (!base_enum)
           {
+            // _pre
+            //
+            os << "void " << name << "::" << endl
+               << "_pre ()"
+               << "{"
+            // Override it to cut off our base.
+            //
+               << "}";
+
+            // _characters
+            //
             os << "void " << name << "::" << endl
                << "_characters (const " << string_type << "& s)"
                << "{";
@@ -319,6 +314,31 @@ namespace CXX
             }
 
             os << "}";
+
+            // _post
+            //
+            if (!options.value<CLI::suppress_validation> () &&
+                !options.value<CLI::suppress_parser_val> ())
+            {
+              // Do facet validation.
+              //
+              os << "void " << name << "::" << endl
+                 << "_post ()"
+                 << "{"
+                 << "::xsde::cxx::parser::validating::string_common::" <<
+                "validate_facets (" << endl;
+
+              if (stl)
+                os << "this->" << state << ".str_.c_str ()," << endl
+                   << "this->" << state << ".str_.size ()," << endl;
+              else
+                os << "this->" << state << ".str_.data ()," << endl
+                   << "this->" << state << ".str_.size ()," << endl;
+
+              os << "this->_facets ()," << endl
+                 << "this->_context ());"
+                 << "}";
+            }
           }
 
           // post
@@ -371,10 +391,6 @@ namespace CXX
 
               os << ";";
             }
-
-            //
-            // @@ TODO: check enumerators (switch)
-            //
           }
           else
           {
@@ -387,19 +403,6 @@ namespace CXX
                << endl;
 
             names<Enumeration> (e, names_, 0, 0, 0, &Enumeration::comma);
-
-
-            /*
-            // @@ Cannot do error checking in post.
-
-            if (!options.value<CLI::suppress_validation> () &&
-                !options.value<CLI::suppress_parser_val> ())
-            {
-              os << "else" << endl
-                 << "this->_schema_error (" <<
-                "::xsde::cxx::schema_error::invalid_enumeration_value);";
-            }
-            */
 
             os << endl;
 
@@ -1787,6 +1790,16 @@ namespace CXX
     Void
     generate_parser_source (Context& ctx)
     {
+      if (ctx.enum_ &&
+          !ctx.options.value<CLI::suppress_validation> () &&
+          !ctx.options.value<CLI::suppress_parser_val> ())
+      {
+        // We need this functionality for enum mapping.
+        //
+        ctx.os << "#include <xsde/cxx/parser/validating/string-common.hxx>" << endl
+               << endl;
+      }
+
       {
         // Emit "weak" header includes for the object model types.
         // Otherwise we cannot delete the objects of forward-declared

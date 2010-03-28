@@ -6,7 +6,6 @@
 #ifndef XSDE_CXX_SERIALIZER_VALIDATING_STRING_COMMON_HXX
 #define XSDE_CXX_SERIALIZER_VALIDATING_STRING_COMMON_HXX
 
-#include <xsde/cxx/config.hxx>
 #include <xsde/cxx/serializer/validating/xml-schema-sskel.hxx>
 
 namespace xsde
@@ -21,9 +20,12 @@ namespace xsde
         {
           static void
           validate_facets (const char* s,
-#ifdef XSDE_STL
+                           const string_facets::facets&,
+                           context&);
+
+          static void
+          validate_facets (const char* s,
                            size_t n,
-#endif
                            const string_facets::facets&,
                            context&);
         };

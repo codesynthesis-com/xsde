@@ -16,18 +16,24 @@ namespace xsde
       {
         void string_common::
         validate_facets (const char* s,
-#ifdef XSDE_STL
-                         size_t n,
-#endif
                          const string_facets::facets& f,
                          context& ctx)
         {
-#ifndef XSDE_STL
-          size_t n;
-          if (f.length_set_ || f.min_length_set_ || f.max_length_set_)
-            n = strlen (s);
-#endif
+          if (f.length_set_ ||
+              f.min_length_set_ ||
+              f.max_length_set_ ||
+              f.enum_count_ != 0)
+          {
+            validate_facets (s, strlen (s), f, ctx);
+          }
+        }
 
+        void string_common::
+        validate_facets (const char* s,
+                         size_t n,
+                         const string_facets::facets& f,
+                         context& ctx)
+        {
           if (f.length_set_ && n != f.length_)
           {
             ctx.schema_error (schema_error::length_not_equal_prescribed);

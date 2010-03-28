@@ -113,16 +113,37 @@ namespace CXX
 
             // pre
             //
-            os << "virtual void" << endl
-               << "pre ();"
-               << endl;
+            if (!fl || !base_enum)
+              os << "virtual void" << endl
+                 << "pre ();"
+                 << endl;
 
-            // _characters
+            // _pre
             //
             if (!base_enum)
               os << "virtual void" << endl
+                 << "_pre ();"
+                 << endl;
+
+            if (!base_enum)
+            {
+              // _characters
+              //
+              os << "virtual void" << endl
                  << "_characters (const " << string_type << "&);"
                  << endl;
+
+              // _post
+              //
+              if (!options.value<CLI::suppress_validation> () &&
+                  !options.value<CLI::suppress_parser_val> ())
+              {
+                os << "virtual void" << endl
+                   << "_post ();"
+                   << endl;
+              }
+            }
+
 
             // post
             //

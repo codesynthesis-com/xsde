@@ -204,8 +204,22 @@ namespace CXX
 
             os << "void " << name << "::" << endl
                << "_serialize_content ()"
-               << "{"
-               << "this->_characters (this->" << state << "->" <<
+               << "{";
+
+            if (!options.value<CLI::suppress_validation> () &&
+                !options.value<CLI::suppress_serializer_val> ())
+            {
+              // Do facet validation.
+              //
+              os << "::xsde::cxx::serializer::validating::string_common::" <<
+                "validate_facets (" << endl
+                 << "this->" << state << "->" << string << " ()," << endl
+                 << "this->_facets ()," << endl
+                 << "this->_context ());"
+                 << endl;
+            }
+
+            os << "this->_characters (this->" << state << "->" <<
               string << " ());"
                << "}";
           }
@@ -1376,6 +1390,16 @@ namespace CXX
       if (ctx.poly_code && !ctx.stl)
         ctx.os << "#include <string.h>" << endl
                << endl;
+
+      if (ctx.enum_ &&
+          !ctx.options.value<CLI::suppress_validation> () &&
+          !ctx.options.value<CLI::suppress_serializer_val> ())
+      {
+        // We need this functionality for enum mapping.
+        //
+        ctx.os << "#include <xsde/cxx/serializer/validating/string-common.hxx>" << endl
+               << endl;
+      }
 
       Traversal::Schema schema;
 
