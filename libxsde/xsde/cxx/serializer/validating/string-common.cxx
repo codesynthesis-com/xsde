@@ -3,7 +3,8 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <string.h> // strlen, strcmp
+#include <string.h> // strlen
+#include <xsde/cxx/string-search.hxx>
 #include <xsde/cxx/serializer/validating/string-common.hxx>
 
 namespace xsde
@@ -56,15 +57,7 @@ namespace xsde
 
           if (f.enum_count_ != 0)
           {
-            size_t i = 0;
-
-            for (; i < f.enum_count_; ++i)
-            {
-              if (strcmp (s, f.enum_[i]) == 0)
-                break;
-            }
-
-            if (i == f.enum_count_)
+            if (search (f.enum_, f.enum_count_, s) == f.enum_count_)
             {
               ctx.schema_error (schema_error::value_not_in_enumeration);
               return false;

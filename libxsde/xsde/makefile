@@ -8,7 +8,11 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 c_tun := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 c_tun += c/genx/genx.c c/genx/char-props.c
 
-cxx_tun := cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
+cxx_tun :=            \
+cxx/string.cxx        \
+cxx/string-search.cxx \
+cxx/ro-string.cxx     \
+cxx/stack.cxx
 
 ifeq ($(xsde_encoding),iso8859-1)
 cxx_tun += cxx/iso8859-1.cxx

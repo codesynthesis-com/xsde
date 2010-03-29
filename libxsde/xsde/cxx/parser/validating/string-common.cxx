@@ -3,7 +3,7 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <string.h> // strcmp
+#include <xsde/cxx/string-search.hxx>
 #include <xsde/cxx/parser/validating/string-common.hxx>
 
 namespace xsde
@@ -40,13 +40,7 @@ namespace xsde
 
           if (f.enum_count_ != 0)
           {
-            size_t i = 0;
-
-            for (; i < f.enum_count_; ++i)
-            {
-              if (strcmp (s, f.enum_[i]) == 0)
-                break;
-            }
+            size_t i = search (f.enum_, f.enum_count_, s);
 
             if (i == f.enum_count_)
             {
