@@ -120,7 +120,7 @@ namespace CXX
 
             // _pre
             //
-            if (!base_enum)
+            if (mixin && !base_enum)
               os << "virtual void" << endl
                  << "_pre ();"
                  << endl;

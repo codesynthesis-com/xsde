@@ -286,12 +286,13 @@ namespace CXX
           {
             // _pre
             //
-            os << "void " << name << "::" << endl
-               << "_pre ()"
-               << "{"
-            // Override it to cut off our base.
-            //
-               << "}";
+            if (mixin)
+              os << "void " << name << "::" << endl
+                 << "_pre ()"
+                 << "{"
+                // Override it to cut off our base.
+                //
+                 << "}";
 
             // _characters
             //
