@@ -11,7 +11,11 @@ EXTRA_CPPFLAGS = /I..
 src = c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
 src = $(src) c\genx\genx.c c\genx\char-props.c
 
-src = $(src) cxx\string.cxx cxx\ro-string.cxx cxx\stack.cxx
+src = $(src)          \
+cxx\string.cxx        \
+cxx\string-search.cxx \
+cxx\ro-string.cxx     \
+cxx\stack.cxx
 
 !if "$(XSDE_ENCODING)" == "iso8859-1"
 src = $(src) cxx\iso8859-1.cxx
@@ -103,6 +107,7 @@ src = $(src) cxx\parser\error.cxx
 src = $(src)                                    \
 cxx\parser\validating\parser.cxx                \
 cxx\parser\validating\time-zone.cxx             \
+cxx\parser\validating\string-search.cxx         \
 cxx\parser\validating\xml-schema-pskel.cxx
 
 !if "$(XSDE_POLYMORPHIC)" == "y"
@@ -300,6 +305,7 @@ src = $(src) cxx\serializer\error.cxx
 src = $(src)                                        \
 cxx\serializer\validating\serializer.cxx            \
 cxx\serializer\validating\time-zone.cxx             \
+cxx\serializer\validating\string-common.cxx         \
 cxx\serializer\validating\xml-schema-sskel.cxx
 
 !if "$(XSDE_POLYMORPHIC)" == "y"

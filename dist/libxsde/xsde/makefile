@@ -9,7 +9,7 @@ EXTRA_CPPFLAGS := -I..
 src := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 src += c/genx/genx.c c/genx/char-props.c
 
-src += cxx/string.cxx cxx/ro-string.cxx cxx/stack.cxx
+src += cxx/string.cxx cxx/string-search.cxx cxx/ro-string.cxx cxx/stack.cxx
 
 ifeq ($(XSDE_ENCODING),iso8859-1)
 src += cxx/iso8859-1.cxx
@@ -101,6 +101,7 @@ ifeq ($(XSDE_PARSER_VALIDATION),y)
 src +=                                          \
 cxx/parser/validating/parser.cxx                \
 cxx/parser/validating/time-zone.cxx             \
+cxx/parser/validating/string-common.cxx         \
 cxx/parser/validating/xml-schema-pskel.cxx
 
 ifeq ($(XSDE_POLYMORPHIC),y)
@@ -293,6 +294,7 @@ ifeq ($(XSDE_SERIALIZER_VALIDATION),y)
 src +=                                              \
 cxx/serializer/validating/serializer.cxx            \
 cxx/serializer/validating/time-zone.cxx             \
+cxx/serializer/validating/string-common.cxx         \
 cxx/serializer/validating/xml-schema-sskel.cxx
 
 ifeq ($(XSDE_POLYMORPHIC),y)
