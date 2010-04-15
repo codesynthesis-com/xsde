@@ -21,6 +21,7 @@
 
 #include <xsd-frontend/parser.hxx>
 #include <xsd-frontend/transformations/anonymous.hxx>
+#include <xsd-frontend/transformations/enum-synthesis.hxx>
 #include <xsd-frontend/transformations/restriction.hxx>
 #include <xsd-frontend/transformations/schema-per-type.hxx>
 #include <xsd-frontend/transformations/simplifier.hxx>
@@ -795,6 +796,14 @@ main (Int argc, Char* argv[])
           }
         }
 
+        // Synthesize enumerations from unions.
+        //
+        if (gen_hybrid)
+        {
+          Transformations::EnumSynthesis trans;
+          trans.transform (*schema, tu);
+        }
+
         // Simplify the schema graph.
         //
         {
@@ -1075,6 +1084,14 @@ main (Int argc, Char* argv[])
         {
           return 1; // Diagnostic has already been issued.
         }
+      }
+
+      // Synthesize enumerations from unions.
+      //
+      if (gen_hybrid)
+      {
+        Transformations::EnumSynthesis trans;
+        trans.transform (*schema, "");
       }
 
       // Simplify the schema graph.

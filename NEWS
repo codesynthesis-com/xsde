@@ -50,6 +50,10 @@ Version 3.2.0
     and serialization code that works with both polymorphic and non-
     polymorphic object models.
 
+  * XML Schema union types with members that are enumeration types are 
+    automatically converted to equivalent enumeration types with a union 
+    of all the member's enumerators.
+
 Version 3.1.0
 
  C++/Hybrid
