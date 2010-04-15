@@ -288,7 +288,7 @@ namespace CXX
       SemanticGraph::Path path;
       Schema& schema (dynamic_cast<Schema&> (ns.scope ()));
 
-      if (schema.used ())
+      if (schema.used_p ())
       {
         // Here we need to detect a special multi-schema compilation
         // case where the root schemas are imported into a special
@@ -456,7 +456,7 @@ namespace CXX
     // is where the type was defined.
     //
 
-    if (n.named ())
+    if (n.named_p ())
     {
       SemanticGraph::Scope& s (n.scope ());
 

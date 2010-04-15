@@ -455,7 +455,7 @@ namespace CXX
           String const& s (
             eimpl (dynamic_cast<SemanticGraph::Complex&> (a.scope ())));
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
             os << "bool " << s << "::" << endl
                << epresent (a) << " ()"

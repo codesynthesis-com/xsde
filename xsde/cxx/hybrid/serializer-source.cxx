@@ -1044,17 +1044,17 @@ namespace CXX
 
           String access (access_seq (a));
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
             os << "bool " << s << "::" << endl
                << espresent (a) << " ()"
                << "{";
 
-            if (a.default_ ())
+            if (a.default_p ())
             {
               Boolean omit (options.value<CLI::omit_default_attributes> ());
 
-              if (a.fixed ())
+              if (a.fixed_p ())
                 os << "return " << (omit ? "false" : "true") << ";";
               else
               {

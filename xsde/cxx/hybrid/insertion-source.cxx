@@ -147,12 +147,12 @@ namespace CXX
         {
           // Don't waste space on fixed attributes.
           //
-          if (a.fixed ())
+          if (a.fixed_p ())
             return;
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
-            if (!a.default_ ())
+            if (!a.default_p ())
             {
               String const& present (epresent (a));
 
@@ -190,7 +190,7 @@ namespace CXX
             os << "if (!(s << x." << name << " ()))" << endl
                << "return false;";
 
-          if (a.optional ())
+          if (a.optional_p ())
             os << "}";
         }
       };

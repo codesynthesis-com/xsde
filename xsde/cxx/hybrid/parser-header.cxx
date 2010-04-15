@@ -543,7 +543,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (a.fixed ())
+          if (a.fixed_p ())
             return;
 
           String const& arg (parg_type (a.type ()));

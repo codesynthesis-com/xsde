@@ -59,7 +59,7 @@ namespace Processing
         if (dynamic_cast<SemanticGraph::Namespace*> (&n) != 0)
           return L"<namespace-level>"; // There is a bug if you see this.
 
-        if (n.named ())
+        if (n.named_p ())
         {
           SemanticGraph::Scope& scope (n.scope ());
 
@@ -121,7 +121,7 @@ namespace Processing
         {
           SemanticGraph::Type& t (m.type ());
 
-          if (!t.named ())
+          if (!t.named_p ())
           {
             if (types_seen_.find (&t) == types_seen_.end ())
             {
@@ -224,7 +224,7 @@ namespace Processing
         virtual Void
         traverse (SemanticGraph::Type& t)
         {
-          if (t.named ())
+          if (t.named_p ())
             types_seen_.insert (&t);
         }
 
@@ -247,7 +247,7 @@ namespace Processing
         {
           SemanticGraph::Type& t (e.type ());
 
-          if (!t.named ())
+          if (!t.named_p ())
           {
             t.context ().set ("instance-name", xpath (e));
             check_dep (e, t);
@@ -358,7 +358,7 @@ namespace Processing
               //
               String name (t.name ());
               {
-                Names& n (t.named_ ());
+                Names& n (t.named ());
                 root_.delete_edge (scope, t, n);
               }
 
@@ -367,7 +367,7 @@ namespace Processing
               {
                 // Convert to the insert-after call.
                 //
-                Scope::NamesIterator i (scope.find (global.named_ ()));
+                Scope::NamesIterator i (scope.find (global.named ()));
 
                 if (i == scope.names_begin ())
                   i = scope.names_end ();

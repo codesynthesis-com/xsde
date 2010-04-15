@@ -319,7 +319,7 @@ namespace CXX
       virtual Void
       traverse (Type& a)
       {
-        if (!result_ && !a.optional ())
+        if (!result_ && !a.optional_p ())
           result_ = true;
       }
 

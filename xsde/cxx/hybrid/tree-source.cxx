@@ -314,7 +314,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (a.default_ ())
+          if (a.default_p ())
           {
             SemanticGraph::Type& t (a.type ());
 
@@ -797,9 +797,9 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (!a.fixed ())
+          if (!a.fixed_p ())
           {
-            Boolean def (a.default_ ());
+            Boolean def (a.default_p ());
             Boolean fl (fixed_length (a.type ()));
 
             if (!fl)
@@ -812,7 +812,7 @@ namespace CXX
                 edefault_value (a) << " ();";
             }
 
-            if (fl && !def && a.optional ())
+            if (fl && !def && a.optional_p ())
               os << "this->" << epresent_member (a) << " = false;";
           }
         }
@@ -934,7 +934,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (!a.fixed ())
+          if (!a.fixed_p ())
           {
             SemanticGraph::Type& t (a.type ());
 
@@ -1063,11 +1063,11 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (!a.fixed ())
+          if (!a.fixed_p ())
           {
             String const& member (emember (a));
 
-            if (a.optional () && !a.default_ ())
+            if (a.optional_p () && !a.default_p ())
             {
               String const& present (epresent_member (a));
 
@@ -1207,11 +1207,11 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (!a.fixed ())
+          if (!a.fixed_p ())
           {
             String const& member (emember (a));
 
-            if (a.optional () && !a.default_ ())
+            if (a.optional_p () && !a.default_p ())
             {
               String const& present (epresent_member (a));
 

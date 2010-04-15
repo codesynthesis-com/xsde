@@ -164,7 +164,7 @@ namespace CXX
         {
           // Nothing is serialized for fixed attributes.
           //
-          if (a.fixed ())
+          if (a.fixed_p ())
             return;
 
           SemanticGraph::Type& t (a.type ());
@@ -182,9 +182,9 @@ namespace CXX
 
           os << "{";
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
-            if (!a.default_ ())
+            if (!a.default_p ())
             {
               os << "bool p;";
 
@@ -257,9 +257,9 @@ namespace CXX
                  << "return false;";
           }
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
-            if (!a.default_ ())
+            if (!a.default_p ())
             {
               os << "}"
                  << "else" << endl

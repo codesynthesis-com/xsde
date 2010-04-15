@@ -977,7 +977,7 @@ namespace CXX
           virtual Void
           traverse (Type& a)
           {
-            if (!a.fixed ())
+            if (!a.fixed_p ())
               Traversal::Attribute::traverse (a);
           }
         };
@@ -1002,14 +1002,14 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (!a.fixed ())
+          if (!a.fixed_p ())
           {
             SemanticGraph::Type& t (a.type ());
 
             var_.dispatch (t);
             os << " " << emember (a) << ";";
 
-            if (a.optional () && !a.default_ () && fixed_length (t))
+            if (a.optional_p () && !a.default_p () && fixed_length (t))
               os << "unsigned char " << epresent_member (a) << ";";
           }
         }
@@ -1317,14 +1317,14 @@ namespace CXX
           os << "// " << comment (a.name ()) << endl
              << "// " << endl;
 
-          Boolean def (a.default_ ());
-          Boolean fix (a.fixed ());
+          Boolean def (a.default_p ());
+          Boolean fix (a.fixed_p ());
 
           String const& name (ename (a));
           SemanticGraph::Type& t (a.type ());
 
 
-          if (a.optional () && !fix)
+          if (a.optional_p () && !fix)
           {
             String const& name (def ? edefault (a) : epresent (a));
 

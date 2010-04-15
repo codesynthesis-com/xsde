@@ -211,12 +211,12 @@ namespace CXX
         traverse (SemanticGraph::Element& e)
         {
           String const& name (e.name ());
-          Boolean subst (poly_code && e.global ());
+          Boolean subst (poly_code && e.global_p ());
 
           if (subst)
             os << "(";
 
-          if (e.qualified () && e.namespace_ ().name ())
+          if (e.qualified_p () && e.namespace_ ().name ())
           {
             String const& ns (e.namespace_ ().name ());
 
@@ -338,7 +338,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Element& e)
         {
-          String ns (e.qualified () ? e.namespace_ ().name () : String ());
+          String ns (e.qualified_p () ? e.namespace_ ().name () : String ());
 
           os << L << strlit (ns) << ", " << L << strlit (e.name ());
         }
@@ -1323,7 +1323,7 @@ namespace CXX
               continue;
 
             Element& e (dynamic_cast<Element&> (ci->particle ()));
-            String ns (e.qualified () ? e.namespace_ ().name () : String ());
+            String ns (e.qualified_p () ? e.namespace_ ().name () : String ());
             UnsignedLong state (e.context ().get<UnsignedLong> ("p:state"));
 
             os << "if (count[" << state << "UL] == 0)"

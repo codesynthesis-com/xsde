@@ -862,7 +862,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (a.optional ())
+          if (a.optional_p ())
           {
             os << "virtual bool" << endl
                << epresent (a) << " ();"

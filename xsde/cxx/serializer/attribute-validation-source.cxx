@@ -105,7 +105,7 @@ namespace CXX
           os << "// " << name << endl
              << "//" << endl;
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
             os << "if (this->" << epresent (a) << " ())";
           }
@@ -147,7 +147,7 @@ namespace CXX
 
           if (exceptions)
           {
-            if (a.qualified () && a.namespace_ ().name ())
+            if (a.qualified_p () && a.namespace_ ().name ())
               os << "this->_start_attribute (" <<
                 strlit (a.namespace_ ().name ()) << ", " <<
                 strlit (a.name ()) << ");";
@@ -158,7 +158,7 @@ namespace CXX
           {
             os << "if (!";
 
-            if (a.qualified () && a.namespace_ ().name ())
+            if (a.qualified_p () && a.namespace_ ().name ())
               os << "this->_start_attribute (" <<
                 strlit (a.namespace_ ().name ()) << ", " <<
                 strlit (a.name ()) << ")";
@@ -210,7 +210,7 @@ namespace CXX
 
           os << "}"; // if (inst)
 
-          if (!a.optional ())
+          if (!a.optional_p ())
           {
             os << "else"
                << "{"
@@ -222,7 +222,7 @@ namespace CXX
 
           os << "}";
 
-          if (a.optional () && !exceptions)
+          if (a.optional_p () && !exceptions)
           {
             os << "if (ctx.error_type ())" << endl
                << "return;"

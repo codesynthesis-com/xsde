@@ -357,8 +357,8 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Attribute& a)
         {
-          Boolean def (a.default_ ());
-          Boolean fix (a.fixed ());
+          Boolean def (a.default_p ());
+          Boolean fix (a.fixed_p ());
 
           String const& name (ename (a));
           String member;
@@ -370,7 +370,7 @@ namespace CXX
           Boolean fl (fixed_length (t));
           String scope (Context::scope (a));
 
-          if (a.optional () && !fix)
+          if (a.optional_p () && !fix)
           {
             String const& name (def ? edefault (a) : epresent (a));
 
@@ -537,7 +537,7 @@ namespace CXX
 
             os << "this->" << member << " = x;";
 
-            if (fl && !def && a.optional ())
+            if (fl && !def && a.optional_p ())
               os << "this->" << epresent_member (a) << " = true;";
 
             os << "}";

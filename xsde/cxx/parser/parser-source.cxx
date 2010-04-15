@@ -487,10 +487,10 @@ namespace CXX
         traverse (Type& e)
         {
           Boolean poly (poly_code && !anonymous (e.type ()));
-          Boolean subst (poly && e.global ());
+          Boolean subst (poly && e.global_p ());
           String const& inst (poly ? emember_cache (e) : emember (e));
 
-          if (e.qualified () && e.namespace_ ().name ())
+          if (e.qualified_p () && e.namespace_ ().name ())
           {
             os << "if (" << (subst ? "(" : "") <<
               "n == " << strlit (e.name ()) << " &&" << endl
@@ -600,10 +600,10 @@ namespace CXX
         {
           String const& name (ename (e));
           Boolean poly (poly_code && !anonymous (e.type ()));
-          Boolean subst (poly && e.global ());
+          Boolean subst (poly && e.global_p ());
           String const& inst (poly ? emember_cache (e) : emember (e));
 
-          if (e.qualified () && e.namespace_ ().name ())
+          if (e.qualified_p () && e.namespace_ ().name ())
           {
             os << "if (" << (subst ? "(" : "") <<
               "n == " << strlit (e.name ()) << " &&" << endl
@@ -701,7 +701,7 @@ namespace CXX
           String const& name (ename (a));
           String const& inst (emember (a));
 
-          if (a.qualified () && a.namespace_ ().name ())
+          if (a.qualified_p () && a.namespace_ ().name ())
           {
             os << "if (n == " << L << strlit (a.name ()) << " &&" << endl
                << "ns == " << L << strlit (a.namespace_ ().name ()) << ")"

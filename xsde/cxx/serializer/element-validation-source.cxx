@@ -434,9 +434,9 @@ namespace CXX
 
           // Only a globally-defined element can be a subst-group root.
           //
-          if (poly && e.global ())
+          if (poly && e.global_p ())
           {
-            if (e.qualified () && e.namespace_ ().name ())
+            if (e.qualified_p () && e.namespace_ ().name ())
               os << "const char* ns = " <<
                 strlit (e.namespace_ ().name ()) << ";";
             else
@@ -477,7 +477,7 @@ namespace CXX
           {
             if (exceptions)
             {
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "this->_start_element (" <<
                   strlit (e.namespace_ ().name ()) << ", " <<
                   strlit (e.name ()) << ");";
@@ -488,7 +488,7 @@ namespace CXX
             {
               os << "if (!";
 
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "this->_start_element (" <<
                   strlit (e.namespace_ ().name ()) << ", " <<
                   strlit (e.name ()) << ")";

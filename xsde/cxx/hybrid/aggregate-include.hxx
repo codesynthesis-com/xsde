@@ -134,7 +134,7 @@ namespace CXX
         //
         for (;;)
         {
-          if (!s->used ())
+          if (!s->used_p ())
             break;
 
           SemanticGraph::Uses& u (*s->used_begin ());

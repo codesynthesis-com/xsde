@@ -1095,9 +1095,9 @@ namespace CXX
 
             // Only a globally-defined element can be a subst-group root.
             //
-            if (poly && e.global ())
+            if (poly && e.global_p ())
             {
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "const char* ns = " <<
                   strlit (e.namespace_ ().name ()) << ";";
               else
@@ -1119,7 +1119,7 @@ namespace CXX
             }
             else
             {
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "this->_start_element (" <<
                   strlit (e.namespace_ ().name ()) << ", " <<
                   strlit (e.name ()) << ");";
@@ -1177,9 +1177,9 @@ namespace CXX
 
             // Only a globally-defined element can be a subst-group root.
             //
-            if (poly && e.global ())
+            if (poly && e.global_p ())
             {
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "const char* ns = " <<
                   strlit (e.namespace_ ().name ()) << ";";
               else
@@ -1207,7 +1207,7 @@ namespace CXX
             }
             else
             {
-              if (e.qualified () && e.namespace_ ().name ())
+              if (e.qualified_p () && e.namespace_ ().name ())
                 os << "if (!this->_start_element (" <<
                   strlit (e.namespace_ ().name ()) << ", " <<
                   strlit (e.name ()) << "))" << endl
@@ -1432,7 +1432,7 @@ namespace CXX
           os << "// " << name << endl
              << "//" << endl;
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
             os << "if (this->" << epresent (a) << " ())";
           }
@@ -1465,7 +1465,7 @@ namespace CXX
             else
               os << "this->" << inst << "->pre (r);";
 
-            if (a.qualified () && a.namespace_ ().name ())
+            if (a.qualified_p () && a.namespace_ ().name ())
               os << "this->_start_attribute (" <<
                 strlit (a.namespace_ ().name ()) << ", " <<
                 strlit (a.name ()) << ");";
@@ -1494,7 +1494,7 @@ namespace CXX
                << "return;"
                << endl;
 
-            if (a.qualified () && a.namespace_ ().name ())
+            if (a.qualified_p () && a.namespace_ ().name ())
               os << "if (!this->_start_attribute (" <<
                 strlit (a.namespace_ ().name ()) << ", " <<
                 strlit (a.name ()) << "))" << endl
@@ -1545,7 +1545,7 @@ namespace CXX
           os << "}"  // if (inst)
              << "}";
 
-          if (a.optional () && !exceptions)
+          if (a.optional_p () && !exceptions)
           {
             os << "if (ctx.error_type ())" << endl
                << "return;"
@@ -2160,7 +2160,7 @@ namespace CXX
           if (tiein)
             impl = etiein (dynamic_cast<SemanticGraph::Type&> (a.scope ()));
 
-          if (a.optional ())
+          if (a.optional_p ())
           {
             String const& present (epresent (a));
 

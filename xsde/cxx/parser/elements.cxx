@@ -85,7 +85,7 @@ namespace CXX
     {
       using namespace SemanticGraph;
 
-      if (c.mixed ())
+      if (c.mixed_p ())
         return Content::mixed;
 
       if (c.inherits_p ())

@@ -26,7 +26,7 @@ namespace CXX
         virtual Void
         traverse (Type& c)
         {
-          if (!c.mixed ())
+          if (!c.mixed_p ())
             return;
 
           String const& name (ename (c));
@@ -73,4 +73,3 @@ namespace CXX
     }
   }
 }
-

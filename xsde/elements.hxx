@@ -70,7 +70,7 @@ public:
   {
     SemanticGraph::Type& t (e.type ());
 
-    if (!t.named () && !t.context ().count ("seen"))
+    if (!t.named_p () && !t.context ().count ("seen"))
     {
       t.context ().set ("seen", true);
 
@@ -89,7 +89,7 @@ public:
   {
     SemanticGraph::Type& t (a.type ());
 
-    if (!t.named () && !t.context ().count ("seen"))
+    if (!t.named_p () && !t.context ().count ("seen"))
     {
       t.context ().set ("seen", true);
 
@@ -132,4 +132,3 @@ private:
 };
 
 #endif // ELEMENTS_HXX
-

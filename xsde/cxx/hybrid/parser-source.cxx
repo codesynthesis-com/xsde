@@ -1300,7 +1300,7 @@ namespace CXX
         {
           using SemanticGraph::Complex;
 
-          if (a.fixed ())
+          if (a.fixed_p ())
             return;
 
           String const& name (epname (a));

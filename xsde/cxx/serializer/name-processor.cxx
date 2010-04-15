@@ -603,7 +603,7 @@ namespace CXX
           {
             String const& base (ac.get<String> ("s:name"));
 
-            if (a.optional ())
+            if (a.optional_p ())
               ac.set ("s:present", find_name (base + L"_present", set_));
 
             ac.set ("s:serializer", find_name (base + L"_serializer", set_));
@@ -615,7 +615,7 @@ namespace CXX
               *ac.get<Attribute*> ("xsd-frontend-restriction-correspondence"));
             SemanticGraph::Context& bc (b.context ());
 
-            if (a.optional ())
+            if (a.optional_p ())
               ac.set ("s:present", bc.get<String> ("s:present"));
 
             ac.set ("s:serializer", bc.get<String> ("s:serializer"));

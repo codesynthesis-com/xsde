@@ -409,14 +409,14 @@ namespace CXX
         {
           SemanticGraph::Context& ac (a.context ());
 
-          Boolean def (a.default_ ());
-          Boolean fix (a.fixed ());
+          Boolean def (a.default_p ());
+          Boolean fix (a.fixed_p ());
 
           String const& base (ac.get<String> ("name"));
 
           if (!data_members_)
           {
-            if (a.optional () && !fix)
+            if (a.optional_p () && !fix)
             {
               String n;
               if (def)
@@ -440,7 +440,7 @@ namespace CXX
           }
           else if (!fix)
           {
-            if (a.optional () && !a.default_ () && fixed_length (a.type ()))
+            if (a.optional_p () && !a.default_p () && fixed_length (a.type ()))
             {
               ac.set ("present-member",
                       find_name (ac.get<String> ("present") + L"_", set_));

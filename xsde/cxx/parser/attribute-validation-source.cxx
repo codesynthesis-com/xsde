@@ -28,7 +28,7 @@ namespace CXX
         {
           String const& name (a.name ());
 
-          if (a.qualified () && a.namespace_ ().name ())
+          if (a.qualified_p () && a.namespace_ ().name ())
           {
             String const& ns (a.namespace_ ().name ());
 
@@ -151,7 +151,7 @@ namespace CXX
 
           os << "}";
 
-          if (!a.optional ())
+          if (!a.optional_p ())
             os << "static_cast< v_state_attr_* > (" <<
               "this->v_state_attr_stack_.top ())->" << name << " = true;";
 
@@ -204,7 +204,7 @@ namespace CXX
         virtual Void
         traverse (Type& a)
         {
-          if (!a.optional ())
+          if (!a.optional_p ())
             os << "as." << ename (a) << " = false;";
         }
       };
@@ -222,9 +222,9 @@ namespace CXX
         virtual Void
         traverse (Type& a)
         {
-          if (!a.optional ())
+          if (!a.optional_p ())
           {
-            String ns (a.qualified () ? a.namespace_ ().name () : String ());
+            String ns (a.qualified_p () ? a.namespace_ ().name () : String ());
 
             os << "if (!as." << ename (a) << ")"
                << "{"
