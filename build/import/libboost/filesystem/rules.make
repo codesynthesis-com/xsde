@@ -1,6 +1,6 @@
 # file      : build/import/libboost/filesystem/rules.make
 # author    : Boris Kolpackov <boris@kolpackov.net>
-# copyright : Copyright (c) 2005-2008 Boris Kolpackov
+# copyright : Copyright (c) 2005-2010 Boris Kolpackov
 # license   : GNU GPL v2; see accompanying LICENSE file
 
 #@@ Should use message everywhere.
@@ -13,15 +13,27 @@ $(dcf_root)/import/libboost/filesystem/filesystem.l: \
 
 ifeq ($(libboost_type),archive)
 
+ifeq ($(libboost_system),y)
+$(dcf_root)/import/libboost/filesystem/filesystem.l: \
+  $(libboost_root)/stage/lib/libboost_filesystem$(libboost_suffix).a \
+  $(libboost_root)/stage/lib/libboost_system$(libboost_suffix).a
+else
 $(dcf_root)/import/libboost/filesystem/filesystem.l: \
   $(libboost_root)/stage/lib/libboost_filesystem$(libboost_suffix).a
-	@echo $< >$@
+endif
+	@echo $^ >$@
 
 else
 
+ifeq ($(libboost_system),y)
+$(dcf_root)/import/libboost/filesystem/filesystem.l: \
+  $(libboost_root)/stage/lib/libboost_filesystem$(libboost_suffix).so \
+  $(libboost_root)/stage/lib/libboost_system$(libboost_suffix).so
+else
 $(dcf_root)/import/libboost/filesystem/filesystem.l: \
   $(libboost_root)/stage/lib/libboost_filesystem$(libboost_suffix).so
-	@echo $< >$@
+endif
+	@echo $^ >$@
 	@echo rpath:$(root)/stage/lib >>$@
 
 endif
