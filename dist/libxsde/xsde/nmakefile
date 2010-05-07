@@ -107,7 +107,7 @@ src = $(src) cxx\parser\error.cxx
 src = $(src)                                    \
 cxx\parser\validating\parser.cxx                \
 cxx\parser\validating\time-zone.cxx             \
-cxx\parser\validating\string-search.cxx         \
+cxx\parser\validating\string-common.cxx         \
 cxx\parser\validating\xml-schema-pskel.cxx
 
 !if "$(XSDE_POLYMORPHIC)" == "y"
