@@ -1,7 +1,7 @@
-This directory contains a number of examples that show how to
-use the Embedded C++/Hybrid mapping. The following list gives
-an overview of each example. See the README files in example
-directories for more information on each example.
+This directory contains a number of examples that show how to use the
+Embedded C++/Hybrid mapping. The following list gives an overview of
+each example. See the README files in example directories for more
+information on each example.
 
 hello
   A simple "Hello, world!" example that shows how to parse XML
@@ -43,6 +43,9 @@ polymorphism
 polyroot
   Shows how to handle XML vocabularies with polymorphic document root 
   elements.
+
+allocator
+  Shows how to use a custom memory allocator implementation.
 
 custom/
   A collection of examples that show how to customize the C++/Hybrid

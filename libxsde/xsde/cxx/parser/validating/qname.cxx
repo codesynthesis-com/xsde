@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/config.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/xml/ncname.hxx>
 
 #include <xsde/cxx/parser/validating/qname.hxx>
@@ -20,8 +24,15 @@ namespace xsde
         qname_pimpl::
         ~qname_pimpl ()
         {
-          if (!base_)
+          if (!base_ && qn_)
+          {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete qn_;
+#else
+            qn_->~qname ();
+            cxx::free (qn_);
+#endif
+          }
         }
 
         void qname_pimpl::
@@ -29,9 +40,14 @@ namespace xsde
         {
           qname_pskel::_reset ();
 
-          if (!base_)
+          if (!base_ && qn_)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete qn_;
+#else
+            qn_->~qname ();
+            cxx::free (qn_);
+#endif
             qn_ = 0;
           }
         }
@@ -53,7 +69,20 @@ namespace xsde
         {
           if (qn_ == 0)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             qn_ = new qname ();
+#else
+            qn_ = static_cast<qname*> (alloc (sizeof (qname)));
+
+#ifdef XSDE_EXCEPTIONS
+            alloc_guard ag (qn_);
+            new (qn_) qname ();
+            ag.release ();
+#else
+            if (qn_)
+              new (qn_) qname ();
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
             if (qn_ == 0)

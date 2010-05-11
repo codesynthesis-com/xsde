@@ -44,6 +44,7 @@ namespace CXX
       extern Key generate_xml_schema;
       extern Key extern_xml_schema;
       extern Key suppress_reset;
+      extern Key custom_allocator;
       extern Key generate_polymorphic;
       extern Key runtime_polymorphic;
       extern Key polymorphic_type;
@@ -134,6 +135,7 @@ namespace CXX
         generate_xml_schema,      Boolean,
         extern_xml_schema,        NarrowString,
         suppress_reset,           Boolean,
+        custom_allocator,         Boolean,
         generate_polymorphic,     Boolean,
         runtime_polymorphic,      Boolean,
         polymorphic_type,         Cult::Containers::Vector<NarrowString>,

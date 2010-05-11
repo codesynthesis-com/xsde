@@ -4,6 +4,8 @@ include $(root)/build/config.make
 
 dirs :=
 
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),n)
+
 ifeq ($(XSDE_STL),y)
 ifeq ($(XSDE_IOSTREAM),y)
 ifeq ($(XSDE_EXCEPTIONS),y)
@@ -35,6 +37,7 @@ endif
 endif
 endif
 
+endif # XSDE_CUSTOM_ALLOCATOR
 
 .PHONY: all $(dirs)
 

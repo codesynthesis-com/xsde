@@ -260,6 +260,8 @@ namespace CXX
           }
           else
           {
+            String p (L"this->" + member);
+
             // const char*
             // name () const
             //
@@ -267,7 +269,7 @@ namespace CXX
                << "const char* " << name << "::" << endl
                << value << " () const"
                << "{"
-               << "return this->" << member << ";"
+               << "return " << p << ";"
                << "}";
 
             // char*
@@ -277,7 +279,7 @@ namespace CXX
                << "char* " << name << "::" << endl
                << value << " ()"
                << "{"
-               << "return this->" << member << ";"
+               << "return " << p << ";"
                << "}";
 
             // void
@@ -286,9 +288,14 @@ namespace CXX
             os << inl
                << "void " << name << "::" << endl
                << value << " (char* x)"
-               << "{"
-               << "delete[] this->" << member << ";"
-               << "this->" << member << " = x;"
+               << "{";
+
+            if (!custom_alloc)
+              os << "delete[] " << p << ";";
+            else
+              os << "::xsde::cxx::free (" << p << ");";
+
+            os << p << " = x;"
                << "}";
 
             // char*
@@ -300,8 +307,8 @@ namespace CXX
                  << "char* " << name << "::" << endl
                  << uc.get<String> ("value-detach") << " ()"
                  << "{"
-                 << "char* r = this->" << member << ";"
-                 << "this->" << member << " = 0;"
+                 << "char* r = " << p << ";"
+                 << p << " = 0;"
                  << "return r;"
                  << "}";
             }
@@ -348,8 +355,8 @@ namespace CXX
               ro_ret_ (c, TypeName::ro_ret),
               ret_ (c, TypeName::ret),
               arg_ (c, TypeName::arg),
-              deref_ (c, TypeOps::deref),
-              delete_ (c, TypeOps::delete_),
+              deref_ (c),
+              delete_ (c),
               compare_value_ (c)
         {
         }
@@ -425,9 +432,8 @@ namespace CXX
               else
               {
                 os << "{";
-                delete_.dispatch (t);
-                os << " this->" << member << ";"
-                   << "this->" << member << " = 0;"
+                delete_.dispatch (t, L"this->" + member);
+                os << "this->" << member << " = 0;"
                    << "}";
               }
             }
@@ -439,9 +445,8 @@ namespace CXX
               {
                 os << "if (!x)"
                    << "{";
-                delete_.dispatch (t);
-                os << " this->" << member << ";"
-                   << "this->" << member << " = 0;"
+                delete_.dispatch (t, L"this->" + member);
+                os << "this->" << member << " = 0;"
                    << "}";
               }
             }
@@ -530,10 +535,7 @@ namespace CXX
                << "{";
 
             if (!fl)
-            {
-              delete_.dispatch (t);
-              os << " this->" << member << ";";
-            }
+              delete_.dispatch (t, L"this->" + member);
 
             os << "this->" << member << " = x;";
 
@@ -566,8 +568,8 @@ namespace CXX
         TypeName ro_ret_;
         TypeName ret_;
         TypeName arg_;
-        TypeOps deref_;
-        TypeOps delete_;
+        TypeDeref deref_;
+        TypeDelete delete_;
         CompareValue compare_value_;
       };
 
@@ -578,8 +580,8 @@ namespace CXX
               ro_ret_ (c, TypeName::ro_ret),
               ret_ (c, TypeName::ret),
               arg_ (c, TypeName::arg),
-              deref_ (c, TypeOps::deref),
-              delete_ (c, TypeOps::delete_)
+              deref_ (c),
+              delete_ (c)
         {
         }
 
@@ -653,9 +655,8 @@ namespace CXX
               {
                 os << "if (!x)"
                    << "{";
-                delete_.dispatch (t);
-                os << " this->" << member << ";"
-                   << "this->" << member << " = 0;"
+                delete_.dispatch (t, L"this->" + member);
+                os << "this->" << member << " = 0;"
                    << "}";
               }
 
@@ -699,10 +700,7 @@ namespace CXX
                << "{";
 
             if (!fl)
-            {
-              delete_.dispatch (t);
-              os << " this->" << member << ";";
-            }
+              delete_.dispatch (t, L"this->" + member);
 
             os << "this->" << member << " = x;";
 
@@ -734,8 +732,8 @@ namespace CXX
         TypeName ro_ret_;
         TypeName ret_;
         TypeName arg_;
-        TypeOps deref_;
-        TypeOps delete_;
+        TypeDeref deref_;
+        TypeDelete delete_;
       };
 
       struct ElementInChoiceFunc: Traversal::Element, Context
@@ -746,8 +744,8 @@ namespace CXX
               ret_ (c, TypeName::ret),
               arg_ (c, TypeName::arg),
               var_ (c, TypeName::var),
-              deref_ (c, TypeOps::deref),
-              delete_ (c, TypeOps::delete_)
+              deref_ (c),
+              delete_ (c)
         {
         }
 
@@ -849,9 +847,8 @@ namespace CXX
               {
                 os << "else if (!x)"
                    << "{";
-                delete_.dispatch (t);
-                os << " this->" << umember << "." << member << ";"
-                   << "this->" << umember << "." << member << " = 0;"
+                delete_.dispatch (t, L"this->" + umember + L"." + member);
+                os << "this->" << umember << "." << member << " = 0;"
                    << "}";
               }
 
@@ -935,10 +932,10 @@ namespace CXX
             }
             else
             {
-              os << "else" << endl;
-              delete_.dispatch (t);
-              os << " this->" << umember << "." << member << ";"
-                 << endl
+              os << "else"
+                 << "{";
+              delete_.dispatch (t, L"this->" + umember + L"." + member);
+              os << "}"
                  << "this->" << umember << "." << member << " = x;";
             }
 
@@ -968,8 +965,8 @@ namespace CXX
         TypeName ret_;
         TypeName arg_;
         TypeName var_;
-        TypeOps deref_;
-        TypeOps delete_;
+        TypeDeref deref_;
+        TypeDelete delete_;
       };
 
       struct AllFunc: Traversal::All, Context
@@ -1013,7 +1010,7 @@ namespace CXX
 
 
             // void
-            // preset (bool);
+            // present (bool);
             //
             os << inl
                << "void " << scope << "::" << endl
@@ -1024,10 +1021,21 @@ namespace CXX
               os << "this->" << epresent_member (a) << " = x;";
             else
             {
+              String p (L"this->" + member);
+
               os << "if (!x)"
-                 << "{"
-                 << "delete this->" << member << ";"
-                 << "this->" << member << " = 0;"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+
+              os << p << " = 0;"
                  << "}";
             }
 
@@ -1083,7 +1091,18 @@ namespace CXX
                << "{";
 
             if (!fl)
-              os << "delete this->" << member << ";";
+            {
+              String p (L"this->" + member);
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+            }
 
             os << "this->" << member << " = x;";
 
@@ -1206,10 +1225,21 @@ namespace CXX
               os << "this->" << epresent_member (c) << " = x;";
             else
             {
+              String p (L"this->" + member);
+
               os << "if (!x)"
-                 << "{"
-                 << "delete this->" << member << ";"
-                 << "this->" << member << " = 0;"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+
+              os << p << " = 0;"
                  << "}";
             }
 
@@ -1265,7 +1295,18 @@ namespace CXX
                << "{";
 
             if (!fl)
-              os << "delete this->" << member << ";";
+            {
+              String p (L"this->" + member);
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+            }
 
             os << "this->" << member << " = x;";
 
@@ -1374,10 +1415,21 @@ namespace CXX
               os << "this->" << epresent_member (s) << " = x;";
             else
             {
+              String p (L"this->" + member);
+
               os << "if (!x)"
-                 << "{"
-                 << "delete this->" << member << ";"
-                 << "this->" << member << " = 0;"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+
+              os << p << " = 0;"
                  << "}";
             }
 
@@ -1433,7 +1485,18 @@ namespace CXX
                << "{";
 
             if (!fl)
-              os << "delete this->" << member << ";";
+            {
+              String p (L"this->" + member);
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+            }
 
             os << "this->" << member << " = x;";
 
@@ -1562,10 +1625,21 @@ namespace CXX
               }
               else
               {
+                String p (L"this->" + umember + L"." + member);
+
                 os << "else if (!x)"
-                   << "{"
-                   << "delete this->" << umember << "." << member << ";"
-                   << "this->" << umember << "." << member << " = 0;"
+                   << "{";
+
+                if (!custom_alloc)
+                  os << "delete " << p << ";";
+                else
+                  os << "if (" << p << ")"
+                     << "{"
+                     << p << "->~" << type << " ();"
+                     << "::xsde::cxx::free (" << p << ");"
+                     << "}";
+
+                os << p << " = 0;"
                    << "}";
               }
 
@@ -1638,10 +1712,22 @@ namespace CXX
             }
             else
             {
-              os << "else" << endl
-                 << "delete this->" << umember << "." << member << ";"
-                 << endl
-                 << "this->" << umember << "." << member << " = x;";
+              String p (L"this->" + umember + L"." + member);
+
+              os << "else";
+
+              if (!custom_alloc)
+                os << endl
+                   << "delete " << p << ";"
+                   << endl;
+              else
+                os << " if (" << p << ")"
+                   << "{"
+                   << p << "->~" << type << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+
+              os << p << " = x;";
             }
 
             os << "}";

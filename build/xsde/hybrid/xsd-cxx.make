@@ -94,6 +94,10 @@ ifeq ($(xsde_reuse_style),none)
 $(error Hybrid mapping requires support for base parser/serializer reuse)
 endif
 
+ifeq ($(xsde_custom_allocator),y)
+ops += $(xsde_options) --custom-allocator
+endif
+
 $(xsd_hybrid_pattern): xsde_options := $(ops)
 
 .PRECIOUS: $(xsd_hybrid_pattern)

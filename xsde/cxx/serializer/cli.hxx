@@ -36,6 +36,7 @@ namespace CXX
       extern Key generate_polymorphic;
       extern Key runtime_polymorphic;
       extern Key suppress_reset;
+      extern Key custom_allocator;
       extern Key generate_empty_impl;
       extern Key generate_test_driver;
       extern Key force_overwrite;
@@ -98,6 +99,7 @@ namespace CXX
         generate_polymorphic,     Boolean,
         runtime_polymorphic,      Boolean,
         suppress_reset,           Boolean,
+        custom_allocator,         Boolean,
         generate_empty_impl,      Boolean,
         generate_test_driver,     Boolean,
         force_overwrite,          Boolean,

@@ -11,6 +11,14 @@ Version 3.2.0
     XSD/e runtime library accordingly and pass the --char-encoding option
     to the XSD/e compiler when translating your schemas.
 
+  * Support for custom allocators. This feature allows you to configure
+    the XSD/e runtime and generated code to perform memory management
+    using custom allocator functions provided by your application instead
+    of the standard operator new/delete. For more information, see Section
+    3.8, "Custom Allocators" in the C++/Hybrid Mapping Getting Started
+    Guide (equivalent documentation is provided for other mappings) as
+    well as the 'allocator' example in the examples/cxx/hybrid/ directory.
+
   * When built with Xerces-C++ 3-series, enable handling of multiple imports
     for the same namespace. Before, all subsequent imports for a namespace
     were ignored which caused error in some schemas.

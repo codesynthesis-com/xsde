@@ -1589,6 +1589,21 @@ namespace CXX
 
           String const c (char_type);
 
+          // Custom allocator.
+          //
+          if (custom_alloc)
+          {
+            os << "// Custom allocator." << endl
+               << "//" << endl
+               << "using ::xsde::cxx::alloc;"
+               << "using ::xsde::cxx::free;";
+
+            if (exceptions)
+              os << "using ::xsde::cxx::alloc_guard;";
+
+            os << endl;
+          }
+
           os << "// Built-in XML Schema types mapping." << endl
              << "//" << endl
              << "using ::xsde::cxx::string_sequence;"
@@ -1739,8 +1754,10 @@ namespace CXX
       }
       else
       {
-        ctx.os << "#include <xsde/config.h>" << endl
-               << "#include <xsde/cxx/ro-string.hxx>" << endl;
+        if (ctx.custom_alloc)
+          ctx.os << "#include <xsde/cxx/allocator.hxx>" << endl;
+
+        ctx.os << "#include <xsde/cxx/ro-string.hxx>" << endl;
 
         if (ctx.char_encoding == L"iso8859-1")
           ctx.os << "#include <xsde/cxx/iso8859-1.hxx>" << endl;

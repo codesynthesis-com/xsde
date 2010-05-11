@@ -998,8 +998,13 @@ namespace CXX
         if (options.value<CLI::no_stl> () &&
             default_type (t, xs_ns_name () + L"::qname*"))
         {
-          os << endl
-             << "delete " << arg_ << ";";
+          os << endl;
+
+          if (!custom_alloc)
+            os << "delete " << arg_ << ";";
+          else
+            os << arg_ << "->~qname ();"
+               << xs_ns_name () << "::free (" << arg_ << ");";
         }
       }
 
@@ -1029,8 +1034,12 @@ namespace CXX
       {
         if (options.value<CLI::no_stl> () && default_type (t, "char*"))
         {
-          os << endl
-             << "delete[] " << arg_ << ";";
+          os << endl;
+
+          if (!custom_alloc)
+            os << "delete[] " << arg_ << ";";
+          else
+            os << xs_ns_name () << "::free (" << arg_ << ");";
         }
       }
 
@@ -1039,8 +1048,13 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::string_sequence*"))
         {
-          os << endl
-             << "delete " << arg_ << ";";
+          os << endl;
+
+          if (!custom_alloc)
+            os << "delete " << arg_ << ";";
+          else
+            os << arg_ << "->~string_sequence ();"
+               << xs_ns_name () << "::free (" << arg_ << ");";
         }
       }
 
@@ -1049,8 +1063,13 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::buffer*"))
         {
-          os << endl
-             << "delete " << arg_ << ";";
+          os << endl;
+
+          if (!custom_alloc)
+            os << "delete " << arg_ << ";";
+          else
+            os << arg_ << "->~buffer ();"
+               << xs_ns_name () << "::free (" << arg_ << ");";
         }
       }
 

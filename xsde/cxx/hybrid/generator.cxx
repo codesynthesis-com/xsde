@@ -132,6 +132,7 @@ namespace CXX
       extern Key generate_xml_schema      = "generate-xml-schema";
       extern Key extern_xml_schema        = "extern-xml-schema";
       extern Key suppress_reset           = "suppress-reset";
+      extern Key custom_allocator         = "custom-allocator";
       extern Key generate_polymorphic     = "generate-polymorphic";
       extern Key runtime_polymorphic      = "runtime-polymorphic";
       extern Key polymorphic_type         = "polymorphic-type";
@@ -307,6 +308,11 @@ namespace CXX
     e << "--suppress-reset" << endl
       << " Suppress the generation of parser and serializer\n"
       << " reset code."
+      << endl;
+
+    e << "--custom-allocator" << endl
+      << " Generate code that uses custom allocator functions\n"
+      << " instead of operator new/delete."
       << endl;
 
     e << "--generate-polymorphic" << endl
@@ -836,6 +842,7 @@ namespace CXX
     r->value<P::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
     r->value<P::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
     r->value<P::suppress_reset> ()        = h.value<H::suppress_reset> ();
+    r->value<P::custom_allocator> ()      = h.value<H::custom_allocator> ();
     r->value<P::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
     r->value<P::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
     r->value<P::output_dir> ()            = h.value<H::output_dir> ();
@@ -918,6 +925,7 @@ namespace CXX
     r->value<S::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
     r->value<S::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
     r->value<S::suppress_reset> ()        = h.value<H::suppress_reset> ();
+    r->value<S::custom_allocator> ()      = h.value<H::custom_allocator> ();
     r->value<S::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
     r->value<S::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
     r->value<S::output_dir> ()            = h.value<H::output_dir> ();
@@ -1630,6 +1638,25 @@ namespace CXX
                 << "#error the generated code uses long long while the " <<
               "XSD/e runtime does not (reconfigure the runtime or " <<
               "add --no-long-long)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+
+          if (ops.value<CLI::custom_allocator> ())
+          {
+            hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
+                << "#error the generated code uses custom allocator while " <<
+              "the XSD/e runtime does not (reconfigure the runtime or " <<
+              "remove --custom-allocator)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+          else
+          {
+            hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
+                << "#error the XSD/e runtime uses custom allocator while " <<
+              "the generated code does not (reconfigure the runtime or " <<
+              "add --custom-allocator)" << endl
                 << "#endif" << endl
                 << endl;
           }

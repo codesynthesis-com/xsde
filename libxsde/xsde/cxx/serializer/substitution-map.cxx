@@ -12,6 +12,10 @@
 #  include <stdlib.h> // exit
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/serializer/substitution-map.hxx>
 #include <xsde/cxx/serializer/substitution-map-load.hxx>
 
@@ -29,7 +33,14 @@ namespace xsde
       {
         for (const_iterator i (begin ()), e (end ()); i != e; ++i)
         {
-          delete *static_cast<hashmap**> (const_cast<void*> (*i));
+          hashmap* p = *static_cast<hashmap**> (const_cast<void*> (*i));
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete p;
+#else
+          if (p)
+            p->~hashmap ();
+          cxx::free (p);
+#endif
         }
       }
 
@@ -45,8 +56,23 @@ namespace xsde
           m = *static_cast<hashmap**> (const_cast<void*> (p));
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           m = new hashmap (XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS,
                            sizeof (value));
+#else
+          m = static_cast<hashmap*> (alloc (sizeof (hashmap)));
+
+#ifdef XSDE_EXCEPTIONS
+          alloc_guard mg (m);
+          new (m) hashmap (XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS,
+                           sizeof (value));
+          mg.release ();
+#else
+          if (m)
+            new (m) hashmap (XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS,
+                             sizeof (value));
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (m == 0 || m->_error () != hashmap::error_none)
@@ -166,7 +192,21 @@ namespace xsde
       {
         if (count == 0)
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           map = new substitution_map (XSDE_SERIALIZER_SMAP_BUCKETS);
+#else
+          map = static_cast<substitution_map*> (
+            alloc (sizeof (substitution_map)));
+
+#ifdef XSDE_EXCEPTIONS
+          alloc_guard mg (map);
+          new (map) substitution_map (XSDE_SERIALIZER_SMAP_BUCKETS);
+          mg.release ();
+#else
+          if (map)
+            new (map) substitution_map (XSDE_SERIALIZER_SMAP_BUCKETS);
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (map == 0 || map->_error () != substitution_map::error_none)
@@ -189,7 +229,14 @@ namespace xsde
       ~substitution_map_init ()
       {
         if (--count == 0)
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           delete map;
+#else
+          map->~substitution_map ();
+          cxx::free (map);
+#endif
+        }
       }
 
       // substitution_map_entry

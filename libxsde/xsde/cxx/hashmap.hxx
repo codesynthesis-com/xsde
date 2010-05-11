@@ -117,6 +117,8 @@ namespace xsde
       hash (size_t hash, const char*, size_t n);
 
     protected:
+      // Keep these types POD.
+      //
       struct bucket
       {
         size_t size_;

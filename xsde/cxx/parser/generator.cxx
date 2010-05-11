@@ -125,6 +125,7 @@ namespace CXX
       extern Key generate_polymorphic     = "generate-polymorphic";
       extern Key runtime_polymorphic      = "runtime-polymorphic";
       extern Key suppress_reset           = "suppress-reset";
+      extern Key custom_allocator         = "custom-allocator";
       extern Key generate_noop_impl       = "generate-noop-impl";
       extern Key generate_print_impl      = "generate-print-impl";
       extern Key generate_test_driver     = "generate-test-driver";
@@ -244,6 +245,11 @@ namespace CXX
 
     e << "--suppress-reset" << endl
       << " Suppress the generation of parser reset code."
+      << endl;
+
+    e << "--custom-allocator" << endl
+      << " Generate code that uses custom allocator functions\n"
+      << " instead of operator new/delete."
       << endl;
 
     e << "--generate-noop-impl" << endl
@@ -1392,6 +1398,25 @@ namespace CXX
                 << "#error the generated code uses the tiein reuse style " <<
               "while the XSD/e runtime does not (reconfigure the runtime " <<
               "or add --reuse-style-mixin or --reuse-style-none)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+
+          if (ops.value<CLI::custom_allocator> ())
+          {
+            hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
+                << "#error the generated code uses custom allocator while " <<
+              "the XSD/e runtime does not (reconfigure the runtime or " <<
+              "remove --custom-allocator)" << endl
+                << "#endif" << endl
+                << endl;
+          }
+          else
+          {
+            hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
+                << "#error the XSD/e runtime uses custom allocator while " <<
+              "the generated code does not (reconfigure the runtime or " <<
+              "add --custom-allocator)" << endl
                 << "#endif" << endl
                 << endl;
           }

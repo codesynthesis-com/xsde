@@ -46,6 +46,10 @@ ifeq ($(XSDE_POLYMORPHIC),y)
 EXTRA_XSDFLAGS += --runtime-polymorphic
 endif
 
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)
+EXTRA_XSDFLAGS += --custom-allocator
+endif
+
 library-pdriver: library-pdriver.o library-pskel.o library-pimpl.o $(root)/libxsde/xsde/libxsde.a
 
 library-pdriver.o: library-pdriver.cxx library-pimpl.hxx library-pskel.hxx

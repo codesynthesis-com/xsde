@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/serializer/validating/nmtokens-stl.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -16,8 +20,16 @@ namespace xsde
         nmtokens_simpl::
         ~nmtokens_simpl ()
         {
-          if (free_)
-            delete const_cast<string_sequence*> (value_);
+          if (free_ && value_)
+          {
+            string_sequence* v = const_cast<string_sequence*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~string_sequence ();
+            cxx::free (v);
+#endif
+          }
         }
 
         void nmtokens_simpl::
@@ -92,7 +104,13 @@ namespace xsde
 
           if (free_)
           {
-            delete const_cast<string_sequence*> (value_);
+            string_sequence* v = const_cast<string_sequence*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~string_sequence ();
+            cxx::free (v);
+#endif
             value_ = 0;
           }
         }

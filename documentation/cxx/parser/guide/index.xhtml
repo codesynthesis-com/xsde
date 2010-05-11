@@ -286,7 +286,8 @@
 	  <tr><th>5.5</th><td><a href="#5.5">64-bit Integer Type</a></td></tr>
 	  <tr><th>5.6</th><td><a href="#5.6">Parser Reuse</a></td></tr>
 	  <tr><th>5.7</th><td><a href="#5.7">Support for Polymorphism</a></td></tr>
-          <tr><th>5.8</th><td><a href="#5.8">A Minimal Example</a></td></tr>
+	  <tr><th>5.8</th><td><a href="#5.8">Custom Allocators</a></td></tr>
+          <tr><th>5.9</th><td><a href="#5.9">A Minimal Example</a></td></tr>
         </table>
       </td>
     </tr>
@@ -2842,7 +2843,116 @@ main ()
      on root elements requires a number of special actions as shown in
      the <code>polyroot</code> example.</p>
 
-  <h2><a name="5.8">5.8 A Minimal Example</a></h2>
+  <h2><a name="5.8">5.8 Custom Allocators</a></h2>
+
+  <p>By default the XSD/e runtime and generated code use
+     the standard operators <code>new</code> and <code>delete</code>
+     to manage dynamic memory. However, it is possible to instead
+     use custom allocator functions provided by your application.
+     To achieve this, configure the XSD/e runtime library to use
+     custom allocator functions as well as pass the
+     <code>--custom-allocator</code> option to the XSD/e compiler
+     when translating your schemas. The signatures of the custom
+     allocator functions that should be provided by your application
+     are listed below. Their semantics should be equivalent to the
+     standard C <code>malloc()</code>, <code>realloc()</code>, and
+     <code>free()</code> functions.</p>
+
+  <pre class="c++">
+extern "C" void*
+xsde_alloc (size_t);
+
+extern "C" void*
+xsde_realloc (void*, size_t);
+
+extern "C" void
+xsde_free (void*);
+  </pre>
+
+  <p>Note also that when custom allocators are enabled, any
+     dynamically-allocated object of which the XSD/e runtime
+     or generated code assume ownership should be allocated
+     using the custom allocation function. Similarly, if your
+     application assumes ownership of any dynamically-allocated
+     object returned by the XSD/e runtime or the generated code,
+     then such an object should be disposed of using the custom
+     deallocation function. To help with these tasks the generated
+     <code>xml_schema</code> namespace defines the following two
+     helper functions and, if C++ exceptions are enabled, automatic
+     pointer class:</p>
+
+  <pre class="c++">
+namespace xml_schema
+{
+  void*
+  alloc (size_t);
+
+  void
+  free (void*);
+
+  struct alloc_guard
+  {
+    alloc_guard (void*);
+    ~alloc_guard ();
+
+    void*
+    get () const;
+
+    void
+    release ();
+
+  private:
+    ...
+  };
+}
+  </pre>
+
+  <p>If C++ exceptions are disabled, these functions are equivalent
+     to <code>xsde_alloc()</code> and <code>xsde_free()</code>.
+     If exceptions are enabled, <code>xml_schema::alloc()</code>
+     throws <code>std::bad_alloc</code> on memory allocation failure.</p>
+
+  <p>The following code fragment shows how to create and destroy a
+     dynamically-allocated object with custom allocators when C++
+     exceptions are disabled:</p>
+
+  <pre class="c++">
+void* v = xml_schema::alloc (sizeof (type));
+
+if (v == 0)
+{
+  // Handle out of memory condition.
+}
+
+type* x = new (v) type (1, 2);
+
+...
+
+if (x)
+{
+  x->~type ();
+  xml_schema::free (x);
+}
+  </pre>
+
+  <p>The equivalent code fragment for configurations with C++ exceptions
+     enabled is shown below:</p>
+
+  <pre class="c++">
+xml_schema::alloc_guard g (xml_schema::alloc (sizeof (type)));
+type* x = new (g.get ()) type (1, 2);
+g.release ();
+
+...
+
+if (x)
+{
+  x->~type ();
+  xml_schema::free (x);
+}
+  </pre>
+
+  <h2><a name="5.9">5.9 A Minimal Example</a></h2>
 
   <p>The following example is a re-implementation of the person
      records example presented in <a href="#3">Chapter 3,

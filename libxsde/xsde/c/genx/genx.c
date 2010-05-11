@@ -10,7 +10,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <xsde/config.h>
+
 #include "genx.h"
+
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/allocator.h>
+#endif
 
 #define Boolean int
 #define True 1
@@ -156,7 +162,11 @@ static void * allocate(genxWriter w, int bytes)
   if (w->alloc)
     return (void *) (*w->alloc)(w->userData, bytes);
   else
+#ifdef XSDE_CUSTOM_ALLOCATOR
+    return (void *) xsde_alloc(bytes);
+#else
     return (void *) malloc(bytes);
+#endif
 }
 
 static void deallocate(genxWriter w, void * data)
@@ -164,7 +174,11 @@ static void deallocate(genxWriter w, void * data)
   if (w->dealloc)
     (*w->dealloc)(w->userData, data);
   else if (w->alloc == NULL)
+#ifdef XSDE_CUSTOM_ALLOCATOR
+    xsde_free(data);
+#else
     free(data);
+#endif
 }
 
 static utf8 copy(genxWriter w, constUtf8 from)
@@ -527,7 +541,11 @@ genxWriter genxNew(void * (* alloc)(void * userData, int bytes),
   if (alloc)
     w = (genxWriter) (*alloc)(userData, sizeof(struct genxWriter_rec));
   else
+#ifdef XSDE_CUSTOM_ALLOCATOR
+    w = (genxWriter) xsde_alloc(sizeof(struct genxWriter_rec));
+#else
     w = (genxWriter) malloc(sizeof(struct genxWriter_rec));
+#endif
 
   if (w == NULL)
     return NULL;

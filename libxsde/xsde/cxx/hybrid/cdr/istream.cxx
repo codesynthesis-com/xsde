@@ -17,7 +17,14 @@ namespace xsde
       struct str_guard
       {
         str_guard (char* s) : s_ (s) {}
-        ~str_guard () {delete[] s_;}
+        ~str_guard ()
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete[] s_;
+#else
+          cxx::free (s_);
+#endif
+        }
 
       private:
         char* s_;
@@ -70,7 +77,11 @@ namespace xsde
           return false;
 
         x = v;
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] v;
+#else
+        cxx::free (v);
+#endif
         return true;
       }
 #else

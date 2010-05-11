@@ -239,15 +239,30 @@ namespace CXX
             {
               String fq (fq_name (t));
 
-              if (exceptions)
-                os << "x." << name << " (new " << fq << ");";
+              if (!custom_alloc)
+                os << fq << "* i = new " << fq << ";";
               else
-                os << fq << "* i = new " << fq << ";"
-                   << endl
+                os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+              if (!exceptions)
+                os << endl
                    << "if (i == 0)" << endl
                    << "return false;"
-                   << endl
-                   << "x." << name << " (i);";
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ig (i);";
+
+                os << "new (i) " << fq << ";";
+
+                if (exceptions)
+                  os << "ig.release ();";
+              }
+
+              os << "x." << name << " (i);";
             }
 
             if (exceptions)
@@ -354,15 +369,30 @@ namespace CXX
               {
                 String fq (fq_name (t));
 
-                if (exceptions)
-                  os << "x." << name << " (new " << fq << ");";
+                if (!custom_alloc)
+                  os << fq << "* i = new " << fq << ";";
                 else
-                  os << fq << "* i = new " << fq << ";"
-                     << endl
+                  os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                     << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+                if (!exceptions)
+                  os << endl
                      << "if (i == 0)" << endl
                      << "return false;"
-                     << endl
-                     << "x." << name << " (i);";
+                     << endl;
+
+                if (custom_alloc)
+                {
+                  if (exceptions)
+                    os << "::xsde::cxx::alloc_guard ig (i);";
+
+                  os << "new (i) " << fq << ";";
+
+                  if (exceptions)
+                    os << "ig.release ();";
+                }
+
+                os << "x." << name << " (i);";
               }
 
               if (exceptions)
@@ -423,15 +453,30 @@ namespace CXX
             {
               String fq (scope (a) + L"::" + etype (a));
 
-              if (exceptions)
-                os << "x." << name << " (new " << fq << ");";
+              if (!custom_alloc)
+                os << fq << "* i = new " << fq << ";";
               else
-                os << fq << "* i = new " << fq << ";"
-                   << endl
+                os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+              if (!exceptions)
+                os << endl
                    << "if (i == 0)" << endl
                    << "return false;"
-                   << endl
-                   << "x." << name << " (i);";
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ig (i);";
+
+                os << "new (i) " << fq << ";";
+
+                if (exceptions)
+                  os << "ig.release ();";
+              }
+
+              os << "x." << name << " (i);";
             }
 
             if (exceptions)
@@ -529,15 +574,30 @@ namespace CXX
               {
                 String fq (fq_name (t));
 
-                if (exceptions)
-                  os << "x." << name << " (new " << fq << ");";
+                if (!custom_alloc)
+                  os << fq << "* i = new " << fq << ";";
                 else
-                  os << fq << "* i = new " << fq << ";"
-                     << endl
+                  os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                     << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+                if (!exceptions)
+                  os << endl
                      << "if (i == 0)" << endl
                      << "return false;"
-                     << endl
-                     << "x." << name << " (i);";
+                     << endl;
+
+                if (custom_alloc)
+                {
+                  if (exceptions)
+                    os << "::xsde::cxx::alloc_guard ig (i);";
+
+                  os << "new (i) " << fq << ";";
+
+                  if (exceptions)
+                    os << "ig.release ();";
+                }
+
+                os << "x." << name << " (i);";
               }
 
               if (exceptions)
@@ -604,15 +664,30 @@ namespace CXX
             {
               String fq (scope (c) + L"::" + etype (c));
 
-              if (exceptions)
-                os << "x." << name << " (new " << fq << ");";
+              if (!custom_alloc)
+                os << fq << "* i = new " << fq << ";";
               else
-                os << fq << "* i = new " << fq << ";"
-                   << endl
+                os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+              if (!exceptions)
+                os << endl
                    << "if (i == 0)" << endl
                    << "return false;"
-                   << endl
-                   << "x." << name << " (i);";
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ig (i);";
+
+                os << "new (i) " << fq << ";";
+
+                if (exceptions)
+                  os << "ig.release ();";
+              }
+
+              os << "x." << name << " (i);";
             }
 
             if (exceptions)
@@ -681,15 +756,30 @@ namespace CXX
             {
               String fq (scope (c) + L"::" + etype (c));
 
-              if (exceptions)
-                os << "x." << name << " (new " << fq << ");";
+              if (!custom_alloc)
+                os << fq << "* i = new " << fq << ";";
               else
-                os << fq << "* i = new " << fq << ";"
-                   << endl
+                os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+              if (!exceptions)
+                os << endl
                    << "if (i == 0)" << endl
                    << "return false;"
-                   << endl
-                   << "x." << name << " (i);";
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ig (i);";
+
+                os << "new (i) " << fq << ";";
+
+                if (exceptions)
+                  os << "ig.release ();";
+              }
+
+              os << "x." << name << " (i);";
             }
 
             if (exceptions)
@@ -784,15 +874,30 @@ namespace CXX
             {
               String fq (scope (s) + L"::" + etype (s));
 
-              if (exceptions)
-                os << "x." << name << " (new " << fq << ");";
+              if (!custom_alloc)
+                os << fq << "* i = new " << fq << ";";
               else
-                os << fq << "* i = new " << fq << ";"
-                   << endl
+                os << fq << "* i = static_cast< " << fq << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << fq << ")));";
+
+              if (!exceptions)
+                os << endl
                    << "if (i == 0)" << endl
                    << "return false;"
-                   << endl
-                   << "x." << name << " (i);";
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ig (i);";
+
+                os << "new (i) " << fq << ";";
+
+                if (exceptions)
+                  os << "ig.release ();";
+              }
+
+              os << "x." << name << " (i);";
             }
 
             if (exceptions)

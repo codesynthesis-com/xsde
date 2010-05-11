@@ -11,11 +11,23 @@ EXTRA_CPPFLAGS = /I..
 src = c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
 src = $(src) c\genx\genx.c c\genx\char-props.c
 
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"
+!if "$(XSDE_DEFAULT_ALLOCATOR)" == "y"
+src = $(src) allocator.c
+!endif
+!endif
+
 src = $(src)          \
 cxx\string.cxx        \
 cxx\string-search.cxx \
 cxx\ro-string.cxx     \
 cxx\stack.cxx
+
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"
+!if "$(XSDE_EXCEPTIONS)" == "y"
+src = $(src) cxx/allocator.cxx
+!endif
+!endif
 
 !if "$(XSDE_ENCODING)" == "iso8859-1"
 src = $(src) cxx\iso8859-1.cxx
@@ -564,6 +576,12 @@ config.h:
 	@echo #define XSDE_REUSE_STYLE_NONE       >>$@
 !else
 	@echo #undef XSDE_REUSE_STYLE_NONE        >>$@
+!endif
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"
+	@echo #define XSDE_CUSTOM_ALLOCATOR       >>$@
+!endif
+!if "$(XSDE_DEFAULT_ALLOCATOR)" == "y"
+	@echo #define XSDE_DEFAULT_ALLOCATOR      >>$@
 !endif
 !if "$(XSDE_POLYMORPHIC)" == "y"
 	@echo #define XSDE_POLYMORPHIC            >>$@

@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/serializer/non-validating/hex-binary.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -16,8 +20,16 @@ namespace xsde
         hex_binary_simpl::
         ~hex_binary_simpl ()
         {
-          if (free_)
-            delete const_cast<buffer*> (value_);
+          if (free_ && value_)
+          {
+            buffer* v = const_cast<buffer*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~buffer ();
+            cxx::free (v);
+#endif
+          }
         }
 
         void hex_binary_simpl::
@@ -60,7 +72,13 @@ namespace xsde
 
           if (free_)
           {
-            delete const_cast<buffer*> (value_);
+            buffer* v = const_cast<buffer*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~buffer ();
+            cxx::free (v);
+#endif
             value_ = 0;
           }
         }

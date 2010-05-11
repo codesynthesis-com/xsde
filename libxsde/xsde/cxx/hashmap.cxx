@@ -7,6 +7,10 @@
 
 #include <xsde/cxx/hashmap.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -76,10 +80,18 @@ namespace xsde
         for (size_t i = 0; i < bcount_; ++i)
         {
           if (buckets_[i])
+#ifndef XSDE_CUSTOM_ALLOCATOR
             operator delete (buckets_[i]);
+#else
+            cxx::free (buckets_[i]);
+#endif
         }
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] buckets_;
+#else
+        cxx::free (buckets_); // POD.
+#endif
 
 #ifndef XSDE_EXCEPTIONS
       }
@@ -95,7 +107,11 @@ namespace xsde
       error_ = error_none;
 #endif
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
       buckets_ = new bucket*[bcount_];
+#else
+      buckets_ = static_cast<bucket**> (alloc (bcount_ * sizeof (bucket*)));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
       if (buckets_ == 0)
@@ -118,8 +134,13 @@ namespace xsde
         // No elements in this bucket yet. Start with capacity for 2
         // elements.
         //
+#ifndef XSDE_CUSTOM_ALLOCATOR
         p = static_cast<bucket*> (
           operator new (sizeof (bucket) + 2 * (sizeof (element) + esize_)));
+#else
+        p = static_cast<bucket*> (
+          alloc (sizeof (bucket) + 2 * (sizeof (element) + esize_)));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
         if (p == 0)
@@ -137,8 +158,14 @@ namespace xsde
         // No more space in this bucket. Create a bigger bucket.
         //
         size_t c = p->size_ * 2;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
         bucket* n = static_cast<bucket*> (
           operator new (sizeof (bucket) + c * (sizeof (element) + esize_)));
+#else
+        bucket* n = static_cast<bucket*> (
+          alloc (sizeof (bucket) + c * (sizeof (element) + esize_)));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
         if (n == 0)
@@ -155,7 +182,11 @@ namespace xsde
 
         memcpy (dst, src, p->size_ * (sizeof (element) + esize_));
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
         operator delete (p);
+#else
+        cxx::free (p);
+#endif
         p = n;
       }
 

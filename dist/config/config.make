@@ -117,6 +117,24 @@ XSDE_SERIALIZER_VALIDATION := y
 XSDE_REUSE_STYLE := tiein
 
 
+# Set to 'y' if you would like the XSD/e runtime and the generated code
+# to perform memory management using custom allocator functions provided
+# by your application instead of the standard operator new/delete. Also
+# don't forget to use the --custom-allocator option when compiling your
+# schemas. See the documentation and examples for more information on
+# custom allocators.
+#
+XSDE_CUSTOM_ALLOCATOR := n
+
+
+# Set to 'y' if you would like to include the default implementation of the
+# custom allocator into the XSD/e runtime library. This option is primarily
+# useful for testing and only makes sense if XSDE_CUSTOM_ALLOCATOR is set
+# to 'y'.
+#
+XSDE_DEFAULT_ALLOCATOR := n
+
+
 # Set to 'y' if you want support for serialization of the C++/Hybrid
 # object model to the CDR (Common Data Representation) binary format.
 # This functionality requires the ACE library.

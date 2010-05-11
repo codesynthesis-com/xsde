@@ -3,6 +3,12 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#else
+#  include <new> // operator new/delete
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -10,7 +16,12 @@ namespace xsde
     inline stack::
     ~stack ()
     {
-      delete[] data_;
+      if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        operator delete (data_);
+#else
+        cxx::free (data_);
+#endif
     }
 
     inline stack::

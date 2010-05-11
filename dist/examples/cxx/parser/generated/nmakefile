@@ -46,6 +46,10 @@ EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --reuse-style-mixin
 EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --runtime-polymorphic
 !endif
 
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"
+EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --custom-allocator
+!endif
+
 library-pdriver.exe: library-pdriver.obj library-pskel.obj library-pimpl.obj $(root)\libxsde\xsde\xsde.lib
 
 library-pdriver.obj: library-pdriver.cxx library-pimpl.hxx library-pskel.hxx

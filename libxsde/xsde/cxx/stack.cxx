@@ -19,7 +19,12 @@ namespace xsde
     grow ()
     {
       size_t c = capacity_ ? capacity_ * 2 : 8;
-      char* d = new char[c * el_size_];
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+      char* d = static_cast<char*> (operator new (c * el_size_));
+#else
+      char* d = static_cast<char*> (alloc (c * el_size_));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
       if (d == 0)
@@ -29,7 +34,11 @@ namespace xsde
       if (size_ > 1)
         memcpy (d, data_, (size_ - 1) * el_size_);
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] data_;
+#else
+      cxx::free (data_);
+#endif
 
       data_ = d;
       capacity_ = c;

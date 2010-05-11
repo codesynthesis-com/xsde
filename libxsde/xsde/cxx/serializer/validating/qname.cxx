@@ -9,6 +9,10 @@
 
 #include <xsde/cxx/serializer/validating/qname.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -20,8 +24,16 @@ namespace xsde
         qname_simpl::
         ~qname_simpl ()
         {
-          if (free_)
-            delete const_cast<qname*> (value_);
+          if (free_ && value_)
+          {
+            qname* v = const_cast<qname*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~qname ();
+            cxx::free (v);
+#endif
+          }
         }
 
         void qname_simpl::
@@ -69,7 +81,13 @@ namespace xsde
 
           if (free_)
           {
-            delete const_cast<qname*> (value_);
+            qname* v = const_cast<qname*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~qname ();
+            cxx::free (v);
+#endif
             value_ = 0;
           }
         }

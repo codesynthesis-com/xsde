@@ -3,6 +3,10 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -90,14 +94,22 @@ namespace xsde
     inline void string_sequence::
     pop_back ()
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] static_cast<char**> (data_)[size_ - 1];
+#else
+      cxx::free (static_cast<char**> (data_)[size_ - 1]);
+#endif
       --size_;
     }
 
     inline string_sequence::iterator string_sequence::
     erase (iterator i)
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] *i;
+#else
+      cxx::free (*i);
+#endif
 
       if (i != static_cast<char**> (data_) + (size_ - 1))
         erase_ (i, sizeof (char*), 0);
@@ -112,7 +124,15 @@ namespace xsde
     {
       struct guard
       {
-        ~guard () { delete[] p_; }
+        ~guard ()
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete[] p_;
+#else
+          cxx::free (p_);
+#endif
+        }
+
         guard (char* p) : p_ (p) {}
 
         void
@@ -164,7 +184,11 @@ namespace xsde
       if (r == error_none)
         static_cast<char**> (data_)[size_++] = x;
       else
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] x;
+#else
+        cxx::free (x);
+#endif
 
       return r;
     }
@@ -181,7 +205,11 @@ namespace xsde
       }
       else
       {
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] x;
+#else
+        cxx::free (x);
+#endif
         return error_no_memory;
       }
     }
@@ -199,7 +227,11 @@ namespace xsde
       }
       else
       {
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] x;
+#else
+        cxx::free (x);
+#endif
         return error_no_memory;
       }
     }
@@ -225,7 +257,12 @@ namespace xsde
     inline void string_sequence::
     attach (iterator p, char* x)
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] *p;
+#else
+      cxx::free (*p);
+#endif
+
       *p = x;
     }
 

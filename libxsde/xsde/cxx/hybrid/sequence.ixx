@@ -551,7 +551,15 @@ namespace xsde
       inline void var_sequence<T>::
       pop_back ()
       {
-        delete static_cast<T**> (data_)[size_ - 1];
+        T* x = static_cast<T**> (data_)[size_ - 1];
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete x;
+#else
+        if (x)
+          x->~T ();
+        cxx::free (x);
+#endif
         --size_;
       }
 
@@ -559,7 +567,15 @@ namespace xsde
       inline var_iterator<T> var_sequence<T>::
       erase (iterator i)
       {
-        delete *i.i_;
+        T* x = *i.i_;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete x;
+#else
+        if (x)
+          x->~T ();
+        cxx::free (x);
+#endif
 
         if (i.i_ != static_cast<T**> (data_) + (size_ - 1))
           erase_ (i.i_, sizeof (T*), 0);
@@ -582,7 +598,15 @@ namespace xsde
       inline void var_sequence<T>::
       attach (iterator i, T* x)
       {
-        delete *i.i_;
+        T* t = *i.i_;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete t;
+#else
+        if (t)
+          t->~T ();
+        cxx::free (t);
+#endif
         *i.i_ = x;
       }
 
@@ -632,7 +656,15 @@ namespace xsde
         if (r == error_none)
           static_cast<T**> (data_)[size_++] = x;
         else
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           delete x;
+#else
+          if (x)
+            x->~T ();
+          cxx::free (x);
+#endif
+        }
 
         return r;
       }
@@ -650,7 +682,13 @@ namespace xsde
         }
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           delete x;
+#else
+          if (x)
+            x->~T ();
+          cxx::free (x);
+#endif
           return error_no_memory;
         }
       }
@@ -669,7 +707,13 @@ namespace xsde
         }
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           delete x;
+#else
+          if (x)
+            x->~T ();
+          cxx::free (x);
+#endif
           return error_no_memory;
         }
       }

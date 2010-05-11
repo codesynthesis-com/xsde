@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/config.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/parser/non-validating/hex-binary.hxx>
 
 static unsigned char
@@ -33,8 +37,15 @@ namespace xsde
         hex_binary_pimpl::
         ~hex_binary_pimpl ()
         {
-          if (!base_)
+          if (!base_ && buf_)
+          {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete buf_;
+#else
+            buf_->~buffer ();
+            cxx::free (buf_);
+#endif
+          }
         }
 
         void hex_binary_pimpl::
@@ -42,9 +53,14 @@ namespace xsde
         {
           hex_binary_pskel::_reset ();
 
-          if (!base_)
+          if (!base_ && buf_)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete buf_;
+#else
+            buf_->~buffer ();
+            cxx::free (buf_);
+#endif
             buf_ = 0;
           }
         }
@@ -66,7 +82,20 @@ namespace xsde
         {
           if (buf_ == 0)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             buf_ = new buffer ();
+#else
+            buf_ = static_cast<buffer*> (alloc (sizeof (buffer)));
+
+#ifdef XSDE_EXCEPTIONS
+            alloc_guard ag (buf_);
+            new (buf_) buffer ();
+            ag.release ();
+#else
+            if (buf_)
+              new (buf_) buffer ();
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
             if (buf_ == 0)

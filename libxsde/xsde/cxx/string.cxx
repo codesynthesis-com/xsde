@@ -56,7 +56,11 @@ namespace xsde
       else
         new_cap += (new_cap & 1) ? 1 : 0; // Make even.
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
       char* p = new char[new_cap];
+#else
+      char* p = static_cast<char*> (alloc (new_cap));
+#endif
 
       if (p == 0)
         return error_no_memory;
@@ -64,7 +68,11 @@ namespace xsde
       if (copy && size_ != 0)
         memcpy (p, data_, size_ + 1);
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] data_;
+#else
+      cxx::free (data_);
+#endif
 
       data_ = p;
       capacity_ = new_cap;

@@ -1611,76 +1611,63 @@ namespace CXX
       String xs_ns_;
     };
 
-    struct TypeOps: Traversal::Type,
-                    Traversal::AnyType,
-                    Traversal::AnySimpleType,
+    struct TypeOpsBase: Traversal::Type,
+                        Traversal::AnyType,
+                        Traversal::AnySimpleType,
 
-                    Traversal::Fundamental::Byte,
-                    Traversal::Fundamental::UnsignedByte,
-                    Traversal::Fundamental::Short,
-                    Traversal::Fundamental::UnsignedShort,
-                    Traversal::Fundamental::Int,
-                    Traversal::Fundamental::UnsignedInt,
-                    Traversal::Fundamental::Long,
-                    Traversal::Fundamental::UnsignedLong,
-                    Traversal::Fundamental::Integer,
-                    Traversal::Fundamental::NonPositiveInteger,
-                    Traversal::Fundamental::NonNegativeInteger,
-                    Traversal::Fundamental::PositiveInteger,
-                    Traversal::Fundamental::NegativeInteger,
+                        Traversal::Fundamental::Byte,
+                        Traversal::Fundamental::UnsignedByte,
+                        Traversal::Fundamental::Short,
+                        Traversal::Fundamental::UnsignedShort,
+                        Traversal::Fundamental::Int,
+                        Traversal::Fundamental::UnsignedInt,
+                        Traversal::Fundamental::Long,
+                        Traversal::Fundamental::UnsignedLong,
+                        Traversal::Fundamental::Integer,
+                        Traversal::Fundamental::NonPositiveInteger,
+                        Traversal::Fundamental::NonNegativeInteger,
+                        Traversal::Fundamental::PositiveInteger,
+                        Traversal::Fundamental::NegativeInteger,
 
-                    Traversal::Fundamental::Boolean,
+                        Traversal::Fundamental::Boolean,
 
-                    Traversal::Fundamental::Float,
-                    Traversal::Fundamental::Double,
-                    Traversal::Fundamental::Decimal,
+                        Traversal::Fundamental::Float,
+                        Traversal::Fundamental::Double,
+                        Traversal::Fundamental::Decimal,
 
-                    Traversal::Fundamental::String,
-                    Traversal::Fundamental::NormalizedString,
-                    Traversal::Fundamental::Token,
-                    Traversal::Fundamental::Name,
-                    Traversal::Fundamental::NameToken,
-                    Traversal::Fundamental::NameTokens,
-                    Traversal::Fundamental::NCName,
-                    Traversal::Fundamental::Language,
+                        Traversal::Fundamental::String,
+                        Traversal::Fundamental::NormalizedString,
+                        Traversal::Fundamental::Token,
+                        Traversal::Fundamental::Name,
+                        Traversal::Fundamental::NameToken,
+                        Traversal::Fundamental::NameTokens,
+                        Traversal::Fundamental::NCName,
+                        Traversal::Fundamental::Language,
 
-                    Traversal::Fundamental::QName,
+                        Traversal::Fundamental::QName,
 
-                    Traversal::Fundamental::Id,
-                    Traversal::Fundamental::IdRef,
-                    Traversal::Fundamental::IdRefs,
+                        Traversal::Fundamental::Id,
+                        Traversal::Fundamental::IdRef,
+                        Traversal::Fundamental::IdRefs,
 
-                    Traversal::Fundamental::AnyURI,
+                        Traversal::Fundamental::AnyURI,
 
-                    Traversal::Fundamental::Base64Binary,
-                    Traversal::Fundamental::HexBinary,
+                        Traversal::Fundamental::Base64Binary,
+                        Traversal::Fundamental::HexBinary,
 
-                    Traversal::Fundamental::Date,
-                    Traversal::Fundamental::DateTime,
-                    Traversal::Fundamental::Duration,
-                    Traversal::Fundamental::Day,
-                    Traversal::Fundamental::Month,
-                    Traversal::Fundamental::MonthDay,
-                    Traversal::Fundamental::Year,
-                    Traversal::Fundamental::YearMonth,
-                    Traversal::Fundamental::Time,
+                        Traversal::Fundamental::Date,
+                        Traversal::Fundamental::DateTime,
+                        Traversal::Fundamental::Duration,
+                        Traversal::Fundamental::Day,
+                        Traversal::Fundamental::Month,
+                        Traversal::Fundamental::MonthDay,
+                        Traversal::Fundamental::Year,
+                        Traversal::Fundamental::YearMonth,
+                        Traversal::Fundamental::Time,
 
-                    Traversal::Fundamental::Entity,
-                    Traversal::Fundamental::Entities,
-
-                    Context
+                        Traversal::Fundamental::Entity,
+                        Traversal::Fundamental::Entities
     {
-      enum Use
-      {
-        deref,
-        delete_
-      };
-
-      TypeOps (Context& c, Use use)
-          : Context (c), use_ (use)
-      {
-      }
-
       virtual Void
       traverse (SemanticGraph::Type& t)
       {
@@ -1704,135 +1691,135 @@ namespace CXX
       // Boolean.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::Boolean&)
+      traverse (SemanticGraph::Fundamental::Boolean& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       // Integral types.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::Byte&)
+      traverse (SemanticGraph::Fundamental::Byte& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::UnsignedByte&)
+      traverse (SemanticGraph::Fundamental::UnsignedByte& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Short&)
+      traverse (SemanticGraph::Fundamental::Short& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::UnsignedShort&)
+      traverse (SemanticGraph::Fundamental::UnsignedShort& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Int&)
+      traverse (SemanticGraph::Fundamental::Int& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::UnsignedInt&)
+      traverse (SemanticGraph::Fundamental::UnsignedInt& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Long&)
+      traverse (SemanticGraph::Fundamental::Long& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::UnsignedLong&)
+      traverse (SemanticGraph::Fundamental::UnsignedLong& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Integer&)
+      traverse (SemanticGraph::Fundamental::Integer& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NonPositiveInteger&)
+      traverse (SemanticGraph::Fundamental::NonPositiveInteger& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NonNegativeInteger&)
+      traverse (SemanticGraph::Fundamental::NonNegativeInteger& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::PositiveInteger&)
+      traverse (SemanticGraph::Fundamental::PositiveInteger& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NegativeInteger&)
+      traverse (SemanticGraph::Fundamental::NegativeInteger& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       // Floats.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::Float&)
+      traverse (SemanticGraph::Fundamental::Float& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Double&)
+      traverse (SemanticGraph::Fundamental::Double& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Decimal&)
+      traverse (SemanticGraph::Fundamental::Decimal& t)
       {
-        fund_type ();
+        fund_type (t);
       }
 
       // Strings.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::String&)
+      traverse (SemanticGraph::Fundamental::String& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NormalizedString&)
+      traverse (SemanticGraph::Fundamental::NormalizedString& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Token&)
+      traverse (SemanticGraph::Fundamental::Token& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NameToken&)
+      traverse (SemanticGraph::Fundamental::NameToken& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
@@ -1842,21 +1829,21 @@ namespace CXX
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Name&)
+      traverse (SemanticGraph::Fundamental::Name& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::NCName&)
+      traverse (SemanticGraph::Fundamental::NCName& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::Language&)
+      traverse (SemanticGraph::Fundamental::Language& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       // Qualified name.
@@ -1870,15 +1857,15 @@ namespace CXX
       // ID/IDREF.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::Id&)
+      traverse (SemanticGraph::Fundamental::Id& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
-      traverse (SemanticGraph::Fundamental::IdRef&)
+      traverse (SemanticGraph::Fundamental::IdRef& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
@@ -1890,9 +1877,9 @@ namespace CXX
       // URI.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::AnyURI&)
+      traverse (SemanticGraph::Fundamental::AnyURI& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       // Binary.
@@ -1968,9 +1955,9 @@ namespace CXX
       // Entity.
       //
       virtual Void
-      traverse (SemanticGraph::Fundamental::Entity&)
+      traverse (SemanticGraph::Fundamental::Entity& t)
       {
-        string_type ();
+        string_type (t);
       }
 
       virtual Void
@@ -1979,66 +1966,96 @@ namespace CXX
         type (t);
       }
 
-    private:
-      Void
+    protected:
+      virtual Void
+      type (SemanticGraph::Type&) = 0;
+
+      virtual Void
+      fund_type (SemanticGraph::Type&) = 0;
+
+      virtual Void
+      string_type (SemanticGraph::Type&) = 0;
+    };
+
+    struct TypeDeref: TypeOpsBase, Context
+    {
+      TypeDeref (Context& c)
+          : Context (c)
+      {
+      }
+
+    protected:
+      virtual Void
       type (SemanticGraph::Type& t)
       {
-        switch (use_)
-        {
-        case deref:
-          {
-            if (!fixed_length (t))
-              os << "*";
+        if (!fixed_length (t))
+          os << "*";
+      }
 
-            break;
-          }
-        case delete_:
-          {
-            os << "delete";
-            break;
-          }
-        }
+      virtual Void
+      fund_type (SemanticGraph::Type&)
+      {
+      }
+
+      virtual Void
+      string_type (SemanticGraph::Type&)
+      {
+      }
+    };
+
+    struct TypeDelete: TypeOpsBase, Context
+    {
+      TypeDelete (Context& c)
+          : Context (c)
+      {
       }
 
       Void
-      fund_type ()
+      dispatch (SemanticGraph::Node& type, String const& var)
       {
-        switch (use_)
+        var_ = var;
+        Traversal::NodeBase::dispatch (type);
+      }
+
+    protected:
+      virtual Void
+      type (SemanticGraph::Type& t)
+      {
+        if (!custom_alloc)
+          os << "delete " << var_ << ";";
+        else
         {
-        case deref:
-          {
-            break;
-          }
-        case delete_:
-          {
-            os << "delete";
-            break;
-          }
+          os << "if (" << var_ << ")"
+             << "{"
+             << "typedef " << fq_name (t) << " _dtor;"
+             << var_ << "->~_dtor ();"
+             << "::xsde::cxx::free (" << var_ << ");"
+             << "}";
         }
       }
 
-      Void
-      string_type ()
+      virtual Void
+      fund_type (SemanticGraph::Type& t)
       {
-        switch (use_)
+        type (t);
+      }
+
+      virtual Void
+      string_type (SemanticGraph::Type& t)
+      {
+        if (stl)
+          type (t);
+        else
         {
-        case deref:
-          {
-            break;
-          }
-        case delete_:
-          {
-            if (stl)
-              os << "delete";
-            else
-              os << "delete[]";
-            break;
-          }
+          if (!custom_alloc)
+            os << "delete[] " << var_ << ";";
+          else
+            os << "::xsde::cxx::free (" << var_ << ");";
         }
       }
 
     private:
-      Use use_;
+      String var_;
     };
 
     //

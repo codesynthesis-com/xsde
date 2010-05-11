@@ -6,6 +6,10 @@
 #include <xsde/cxx/serializer/validating/language.hxx>
 #include <xsde/cxx/serializer/validating/string-common.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -17,8 +21,15 @@ namespace xsde
         language_simpl::
         ~language_simpl ()
         {
-          if (free_)
-            delete[] const_cast<char*> (value_);
+          if (free_ && value_)
+          {
+            char* v = const_cast<char*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete[] v;
+#else
+            cxx::free (v);
+#endif
+          }
         }
 
         void language_simpl::
@@ -78,7 +89,12 @@ namespace xsde
 
           if (free_)
           {
-            delete[] const_cast<char*> (value_);
+            char* v = const_cast<char*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete[] v;
+#else
+            cxx::free (v);
+#endif
             value_ = 0;
           }
         }

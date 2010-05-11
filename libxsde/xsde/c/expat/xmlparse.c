@@ -12,6 +12,10 @@
 
 #include "expat.h"
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/allocator.h>
+#endif
+
 #ifdef XML_UNICODE
 #define XML_ENCODE_MAX XML_UTF16_ENCODE_MAX
 #define XmlConvert XmlUtf16Convert
@@ -702,6 +706,16 @@ parserCreate(const XML_Char *encodingName,
   }
   else {
     XML_Memory_Handling_Suite *mtemp;
+
+#ifdef XSDE_CUSTOM_ALLOCATOR
+    parser = (XML_Parser)xsde_alloc(sizeof(struct XML_ParserStruct));
+    if (parser != NULL) {
+      mtemp = (XML_Memory_Handling_Suite *)&(parser->m_mem);
+      mtemp->malloc_fcn = xsde_alloc;
+      mtemp->realloc_fcn = xsde_realloc;
+      mtemp->free_fcn = xsde_free;
+    }
+#else
     parser = (XML_Parser)malloc(sizeof(struct XML_ParserStruct));
     if (parser != NULL) {
       mtemp = (XML_Memory_Handling_Suite *)&(parser->m_mem);
@@ -709,6 +723,7 @@ parserCreate(const XML_Char *encodingName,
       mtemp->realloc_fcn = realloc;
       mtemp->free_fcn = free;
     }
+#endif
   }
 
   if (!parser)

@@ -159,6 +159,7 @@ namespace CXX
              Containers::Vector<NarrowString> const& include_regex,
              Boolean trace_include_regex_,
              Boolean inline_,
+             Boolean custom_allocator,
              Containers::Vector<NarrowString> const& reserved_name);
 
   protected:
@@ -176,6 +177,7 @@ namespace CXX
           type_exp (c.type_exp),
           inst_exp (c.inst_exp),
           inl (c.inl),
+          custom_alloc (c.custom_alloc),
           ns_mapping_cache (c.ns_mapping_cache),
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
@@ -204,6 +206,7 @@ namespace CXX
           type_exp (c.type_exp),
           inst_exp (c.inst_exp),
           inl (c.inl),
+          custom_alloc (c.custom_alloc),
           ns_mapping_cache (c.ns_mapping_cache),
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
@@ -337,6 +340,8 @@ namespace CXX
     String& type_exp;
     String& inst_exp;
     String& inl;
+
+    Boolean custom_alloc;
 
   public:
     MappingCache& ns_mapping_cache;

@@ -13,6 +13,10 @@
 #  include <xsde/cxx/serializer/exceptions.hxx>
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #ifdef XSDE_ENCODING_ISO8859_1
 #  include <xsde/cxx/iso8859-1.hxx>
 #endif
@@ -738,7 +742,11 @@ namespace xsde
           buf = data_buf_;
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           buf = new char[utf_n];
+#else
+          buf = static_cast<char*> (alloc (utf_n));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (buf == 0)
@@ -763,7 +771,11 @@ namespace xsde
           buf = data_buf_;
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           buf = new char[utf_n];
+#else
+          buf = static_cast<char*> (alloc (utf_n));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (buf == 0)
@@ -788,7 +800,11 @@ namespace xsde
           buf = fix;
         else
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           buf = new char[utf_n];
+#else
+          buf = static_cast<char*> (alloc (utf_n));
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (buf == 0)

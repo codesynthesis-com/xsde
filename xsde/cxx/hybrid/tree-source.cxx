@@ -252,8 +252,14 @@ namespace CXX
                << "{";
 
             if (!stl)
-              os << "delete[] this->" <<
-                u.context ().get<String> ("value-member") << ";";
+            {
+              String p (L"this->" + u.context ().get<String> ("value-member"));
+
+              if (!custom_alloc)
+                os << "delete[] " << p << ";";
+              else
+                os << "::xsde::cxx::free (" << p << ");";
+            }
 
             os << "}";
 
@@ -382,7 +388,7 @@ namespace CXX
             : Context (c),
               action_ (action),
               var_ (c, TypeName::var),
-              delete_ (c, TypeOps::delete_)
+              delete_ (c)
         {
         }
 
@@ -487,10 +493,7 @@ namespace CXX
                      << "~_dtor ();";
                 }
                 else
-                {
-                  delete_.dispatch (t);
-                  os << " this->" << umember << "." << member << ";";
-                }
+                  delete_.dispatch (t, L"this->" + umember + L"." + member);
               }
 
               break;
@@ -626,15 +629,26 @@ namespace CXX
               }
               else
               {
+                String const& type (etype (c));
+
                 if (fixed_length (c))
                 {
-                  String const& type (etype (c));
-
                   os << "reinterpret_cast< " << type << "& > (this->" <<
                     umember << "." << member << ").~" << type << " ();";
                 }
                 else
-                  os << "delete this->" << umember << "." << member << ";";
+                {
+                  String p (L"this->" + umember + L"." + member);
+
+                  if (!custom_alloc)
+                    os << "delete " << p << ";";
+                  else
+                    os << "if (" << p << ")"
+                       << "{"
+                       << p << "->~" << type << " ();"
+                       << "::xsde::cxx::free (" << p << ");"
+                       << "}";
+                }
               }
 
               break;
@@ -691,7 +705,7 @@ namespace CXX
       private:
         Action action_;
         TypeName var_;
-        TypeOps delete_;
+        TypeDelete delete_;
       };
 
       //
@@ -927,7 +941,7 @@ namespace CXX
       struct AttributeDtor: Traversal::Attribute, Context
       {
         AttributeDtor (Context& c)
-            : Context (c), delete_ (c, TypeOps::delete_)
+            : Context (c), delete_ (c)
         {
         }
 
@@ -939,22 +953,19 @@ namespace CXX
             SemanticGraph::Type& t (a.type ());
 
             if (!fixed_length (t))
-            {
-              delete_.dispatch (t);
-              os << " this->" << emember (a) << ";";
-            }
+              delete_.dispatch (t, L"this->" + emember (a));
           }
         }
 
       private:
-        TypeOps delete_;
+        TypeDelete delete_;
       };
 
 
       struct ElementDtor: Traversal::Element, Context
       {
         ElementDtor (Context& c)
-            : Context (c), delete_ (c, TypeOps::delete_)
+            : Context (c), delete_ (c)
         {
         }
 
@@ -966,15 +977,12 @@ namespace CXX
             SemanticGraph::Type& t (e.type ());
 
             if (!fixed_length (t))
-            {
-              delete_.dispatch (t);
-              os << " this->" << emember (e) << ";";
-            }
+              delete_.dispatch (t, L"this->" + emember (e));
           }
         }
 
       private:
-        TypeOps delete_;
+        TypeDelete delete_;
       };
 
       struct AllDtor: Traversal::All, Context
@@ -993,7 +1001,18 @@ namespace CXX
           if (a.min () == 0)
           {
             if (!fixed_length (a))
-              os << "delete this->" << emember (a) << ";";
+            {
+              String p (L"this->" + emember (a));
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << "if (" << p << ")"
+                   << "{"
+                   << p << "->~" << etype (a) << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+            }
           }
           else
             All::contains (a);
@@ -1015,7 +1034,18 @@ namespace CXX
             if (c.min () == 0)
             {
               if (!fixed_length (c))
-                os << "delete this->" << emember (c) << ";";
+              {
+                String p (L"this->" + emember (c));
+
+                if (!custom_alloc)
+                  os << "delete " << p << ";";
+                else
+                  os << "if (" << p << ")"
+                     << "{"
+                     << p << "->~" << etype (c) << " ();"
+                     << "::xsde::cxx::free (" << p << ");"
+                     << "}";
+              }
             }
             else
             {
@@ -1041,7 +1071,18 @@ namespace CXX
             if (s.min () == 0)
             {
               if (!fixed_length (s))
-                os << "delete this->" << emember (s) << ";";
+              {
+                String p (L"this->" + emember (s));
+
+                if (!custom_alloc)
+                  os << "delete " << p << ";";
+                else
+                  os << "if (" << p << ")"
+                     << "{"
+                     << p << "->~" << etype (s) << " ();"
+                     << "::xsde::cxx::free (" << p << ");"
+                     << "}";
+              }
             }
             else
               Sequence::contains (s);

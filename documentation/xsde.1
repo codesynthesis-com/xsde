@@ -213,6 +213,11 @@ and
 .B unsigned
 .BR long .
 
+.IP "\fB\--custom-allocator\fR"
+Generate code that performs memory management using custom allocator
+functions provided by your application instead of the standard operator
+new/delete.
+
 .IP "\fB\--generate-inline\fR"
 Generate simple functions inline. This option triggers creation of the
 inline file.

@@ -22,6 +22,10 @@
 #  include <xsde/cxx/string-sequence.hxx>
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -831,7 +835,15 @@ namespace xsde
       public:
         struct guard
         {
-          ~guard () { delete p_; }
+          ~guard ()
+          {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete p_;
+#else
+            cxx::free (p_);
+#endif
+          }
+
           guard (T* p) : p_ (p) {}
 
           void

@@ -1386,10 +1386,16 @@ namespace CXX
                  << "r = this->_start_element (ns, name);"
                  << endl
                  << "if (free)"
-                 << "{"
-                 << "delete[] ns;"
-                 << "delete[] name;"
-                 << "}"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete[] ns;"
+                   << "delete[] name;";
+              else
+                os << "::xsde::cxx::free (ns);"
+                   << "::xsde::cxx::free (name);";
+
+              os << "}"
                  << "if (!r)" << endl
                  << "return;"
                  << endl
@@ -1640,10 +1646,16 @@ namespace CXX
                  << "r = this->_start_attribute (ns, name);"
                  << endl
                  << "if (free)"
-                 << "{"
-                 << "delete[] ns;"
-                 << "delete[] name;"
-                 << "}"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete[] ns;"
+                   << "delete[] name;";
+              else
+                os << "::xsde::cxx::free (ns);"
+                   << "::xsde::cxx::free (name);";
+
+              os << "}"
                  << "if (!r)" << endl
                  << "return;"
                  << endl

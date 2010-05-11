@@ -4,6 +4,8 @@ include $(root)/build/config.make
 
 dirs :=
 
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),n)
+
 ifneq ($(XSDE_REUSE_STYLE),none)
 dirs += generated
 endif
@@ -39,6 +41,15 @@ endif
 endif
 endif
 
+else # XSDE_CUSTOM_ALLOCATOR
+
+ifeq ($(XSDE_DEFAULT_ALLOCATOR),y)
+ifneq ($(XSDE_REUSE_STYLE),none)
+dirs += generated
+endif
+endif
+
+endif
 
 .PHONY: all $(dirs)
 

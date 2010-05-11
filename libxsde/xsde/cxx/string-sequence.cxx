@@ -3,8 +3,9 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <string.h> // memcpy, strlen, strcmp
+#include <string.h> // strcmp
 
+#include <xsde/cxx/strdupx.hxx>
 #include <xsde/cxx/string-sequence.hxx>
 
 namespace xsde
@@ -15,7 +16,11 @@ namespace xsde
     clear ()
     {
       for (size_t i = 0;  i < size_; ++i)
+#ifndef XSDE_CUSTOM_ALLOCATOR
         delete[] static_cast<char**> (data_)[i];
+#else
+        cxx::free (static_cast<char**> (data_)[i]);
+#endif
 
       size_ = 0;
     }
@@ -27,11 +32,7 @@ namespace xsde
       if (capacity_ < size_ + 1)
         grow_ (0, sizeof (char*), 0);
 
-      size_t n = strlen (cs) + 1;
-      char* s = new char[n];
-      memcpy (s, cs, n);
-
-      static_cast<char**> (data_)[size_++] = s;
+      static_cast<char**> (data_)[size_++] = strdupx (cs);
     }
 #else
     string_sequence::error string_sequence::
@@ -44,14 +45,10 @@ namespace xsde
 
       if (r == error_none)
       {
-        size_t n = strlen (cs) + 1;
-        char* s = new char[n];
+        char* s = strdupx (cs);
 
         if (s != 0)
-        {
-          memcpy (s, cs, n);
           static_cast<char**> (data_)[size_++] = s;
-        }
         else
           r = error_no_memory;
       }

@@ -125,6 +125,7 @@ namespace CXX
            Containers::Vector<NarrowString> const& ir,
            Boolean trace_include_regex_,
            Boolean inline_,
+           Boolean custom_allocator,
            Containers::Vector<NarrowString> const& reserved_name)
       : os (o),
         schema_root (root),
@@ -139,6 +140,7 @@ namespace CXX
         type_exp (type_exp_),
         inst_exp (inst_exp_),
         inl (inl_),
+        custom_alloc (custom_allocator),
         ns_mapping_cache (ns_mapping_cache_),
         schema_path_ (path),
         xs_ns_ (0),

@@ -5,6 +5,10 @@
 
 #include <string.h> // memcmp
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -15,7 +19,11 @@ namespace xsde
     ~buffer ()
     {
       if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
         operator delete (data_);
+#else
+        cxx::free (data_);
+#endif
     }
 
     inline buffer::
@@ -41,7 +49,11 @@ namespace xsde
       }
 
       if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
         operator delete (data_);
+#else
+        cxx::free (data_);
+#endif
 
       data_ = reinterpret_cast<char*> (data);
       size_ = size;
@@ -210,4 +222,3 @@ namespace xsde
     }
   }
 }
-

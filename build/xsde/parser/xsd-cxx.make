@@ -68,6 +68,10 @@ ifeq ($(xsde_reuse_style),none)
 ops += $(xsde_options) --reuse-style-none
 endif
 
+ifeq ($(xsde_custom_allocator),y)
+ops += $(xsde_options) --custom-allocator
+endif
+
 $(xsd_parser_pattern): xsde_options := $(ops)
 
 

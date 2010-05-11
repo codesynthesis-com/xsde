@@ -13,8 +13,9 @@ namespace xsde
   namespace cxx
   {
     // C++ versions of strdup and strndup. They allocate the string
-    // using new char[]. In the no-exceptions case return 0 if
-    // allocation fails.
+    // using new char[] (or custom allocator, if enabled). When
+    // exceptions are disabled these functions return 0 if allocation
+    // fails.
     //
     char*
     strdupx (const char*);

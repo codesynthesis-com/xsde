@@ -628,6 +628,20 @@ namespace CXX
           pre (ns);
           names (ns);
 
+          // Custom allocator.
+          //
+          if (custom_alloc)
+          {
+            os << endl
+               << "// Custom allocator." << endl
+               << "//" << endl
+               << "using ::xsde::cxx::alloc;"
+               << "using ::xsde::cxx::free;";
+
+            if (exceptions)
+              os << "using ::xsde::cxx::alloc_guard;";
+          }
+
           // strdupx
           //
           if (!stl)
@@ -718,6 +732,10 @@ namespace CXX
       }
       else
       {
+        if (ctx.custom_alloc)
+          ctx.os << "#include <xsde/cxx/allocator.hxx>" << endl
+                 << endl;
+
         if (ctx.stl)
           ctx.os << "#include <string>" << endl;
         else

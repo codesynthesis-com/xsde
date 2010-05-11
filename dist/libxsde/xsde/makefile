@@ -9,7 +9,19 @@ EXTRA_CPPFLAGS := -I..
 src := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 src += c/genx/genx.c c/genx/char-props.c
 
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)
+ifeq ($(XSDE_DEFAULT_ALLOCATOR),y)
+src += allocator.c
+endif
+endif
+
 src += cxx/string.cxx cxx/string-search.cxx cxx/ro-string.cxx cxx/stack.cxx
+
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)
+ifeq ($(XSDE_EXCEPTIONS),y)
+src += cxx/allocator.cxx
+endif
+endif
 
 ifeq ($(XSDE_ENCODING),iso8859-1)
 src += cxx/iso8859-1.cxx
@@ -564,6 +576,12 @@ ifeq ($(XSDE_REUSE_STYLE),none)
 	@echo $(h)define XSDE_REUSE_STYLE_NONE      >>$@
 else
 	@echo $(h)undef XSDE_REUSE_STYLE_NONE       >>$@
+endif
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)
+	@echo $(h)define XSDE_CUSTOM_ALLOCATOR      >>$@
+endif
+ifeq ($(XSDE_DEFAULT_ALLOCATOR),y)
+	@echo $(h)define XSDE_DEFAULT_ALLOCATOR     >>$@
 endif
 ifeq ($(XSDE_POLYMORPHIC),y)
 	@echo $(h)define XSDE_POLYMORPHIC           >>$@

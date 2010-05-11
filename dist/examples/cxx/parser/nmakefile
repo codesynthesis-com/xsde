@@ -4,6 +4,8 @@ root = ..\..\..
 
 dirs =
 
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "n"
+
 !if "$(XSDE_REUSE_STYLE)" != "none"
 dirs = $(dirs) generated
 !endif
@@ -37,6 +39,16 @@ dirs = $(dirs) mixed wildcard
 dirs = $(dirs) minimal
 !endif
 !endif
+!endif
+
+!else # XSDE_CUSTOM_ALLOCATOR
+
+!if "$(XSDE_DEFAULT_ALLOCATOR)" == "y"
+!if "$(XSDE_REUSE_STYLE)" != "none"
+dirs = $(dirs) generated
+!endif
+!endif
+
 !endif
 
 all:

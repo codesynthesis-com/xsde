@@ -5,6 +5,12 @@
 
 #include <string.h>
 
+#include <xsde/cxx/config.hxx>
+
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -12,7 +18,11 @@ namespace xsde
     inline string::
     ~string ()
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] data_;
+#else
+      cxx::free (data_);
+#endif
     }
 
     inline string::
@@ -40,7 +50,11 @@ namespace xsde
     inline void string::
     attach (char* s, size_t n)
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] data_;
+#else
+      cxx::free (data_);
+#endif
 
       data_ = s;
       size_ = n;

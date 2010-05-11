@@ -5,6 +5,10 @@
 
 #include <string.h> // strcmp
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -14,8 +18,13 @@ namespace xsde
     inline qname::
     ~qname ()
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] prefix_;
       delete[] name_;
+#else
+      cxx::free (prefix_);
+      cxx::free (name_);
+#endif
     }
 
     inline qname::
@@ -66,7 +75,11 @@ namespace xsde
     inline void qname::
     prefix (char* prefix)
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] prefix_;
+#else
+      cxx::free (prefix_);
+#endif
       prefix_ = prefix;
     }
 
@@ -95,7 +108,11 @@ namespace xsde
     inline void qname::
     name (char* name)
     {
+#ifndef XSDE_CUSTOM_ALLOCATOR
       delete[] name_;
+#else
+      cxx::free (name_);
+#endif
       name_ = name;
     }
 

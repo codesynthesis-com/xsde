@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/config.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/parser/validating/nmtokens-stl.hxx>
 
 namespace xsde
@@ -18,8 +22,15 @@ namespace xsde
         nmtokens_pimpl::
         ~nmtokens_pimpl ()
         {
-          if (!base_)
+          if (!base_ && seq_)
+          {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete seq_;
+#else
+            seq_->~string_sequence ();
+            cxx::free (seq_);
+#endif
+          }
         }
 
         void nmtokens_pimpl::
@@ -27,9 +38,14 @@ namespace xsde
         {
           nmtokens_pskel::_reset ();
 
-          if (!base_)
+          if (!base_ && seq_)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete seq_;
+#else
+            seq_->~string_sequence ();
+            cxx::free (seq_);
+#endif
             seq_ = 0;
           }
 
@@ -53,7 +69,21 @@ namespace xsde
         {
           if (seq_ == 0)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             seq_ = new string_sequence ();
+#else
+            seq_ = static_cast<string_sequence*> (
+              alloc (sizeof (string_sequence)));
+
+#ifdef XSDE_EXCEPTIONS
+            alloc_guard ag (seq_);
+            new (seq_) string_sequence ();
+            ag.release ();
+#else
+            if (seq_)
+              new () string_sequence ();
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
             if (seq_ == 0)

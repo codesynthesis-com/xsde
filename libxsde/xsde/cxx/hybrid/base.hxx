@@ -12,6 +12,10 @@
 #  include <string.h> // strcmp
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -566,17 +570,34 @@ namespace xsde
       struct string_base
       {
         string_base () : x_ (0) {}
-        ~string_base () {delete[] x_;}
+        ~string_base ()
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete[] x_;
+#else
+          cxx::free (x_);
+#endif
+        }
 
         const char* base_value () const {return x_;}
         char* base_value () {return x_;}
-        void base_value (char* x) {delete[] x_; x_ = x;}
+
+        void base_value (char* x)
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete[] x_;
+#else
+          cxx::free (x_);
+#endif
+          x_ = x;
+        }
+
         char* base_value_detach () {char* r = x_; x_ = 0; return r;}
 
         operator const char* () const {return x_;}
         operator char* () {return x_;}
 
-        string_base& operator= (char* x) {delete[] x_; x_ = x; return *this;}
+        string_base& operator= (char* x) {base_value (x); return *this;}
 
       protected:
         char* x_;

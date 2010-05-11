@@ -263,6 +263,10 @@ gen 'ifeq ($(XSDE_POLYMORPHIC),y)'
 gen 'EXTRA_XSDFLAGS += --runtime-polymorphic'
 gen 'endif'
 gen
+gen 'ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)'
+gen 'EXTRA_XSDFLAGS += --custom-allocator'
+gen 'endif'
+gen
 gen "$driver: $obj" '$(root)/libxsde/xsde/libxsde.a'
 gen
 
@@ -412,6 +416,10 @@ gen '!endif'
 gen
 gen '!if "$(XSDE_POLYMORPHIC)" == "y"'
 gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --runtime-polymorphic'
+gen '!endif'
+gen
+gen '!if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"'
+gen 'EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --custom-allocator'
 gen '!endif'
 gen
 gen "$driver: $obj" '$(root)\\libxsde\\xsde\\xsde.lib'

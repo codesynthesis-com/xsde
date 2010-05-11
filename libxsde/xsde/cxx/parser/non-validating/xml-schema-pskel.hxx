@@ -548,7 +548,8 @@ namespace xsde
 
 
         // String-based types. If STL is disabled you are getting a C
-        // string that you have to delete with delete[].
+        // string that you have to delete with delete[] (or custom
+        // deallocator if enabled).
         //
         struct string_pskel: simple_content
         {

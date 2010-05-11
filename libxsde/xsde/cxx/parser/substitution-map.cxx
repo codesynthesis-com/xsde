@@ -12,6 +12,10 @@
 #  include <stdlib.h> // exit
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/parser/substitution-map.hxx>
 #include <xsde/cxx/parser/substitution-map-load.hxx>
 
@@ -174,7 +178,21 @@ namespace xsde
       {
         if (count == 0)
         {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           map = new substitution_map (XSDE_PARSER_SMAP_BUCKETS);
+#else
+          map = static_cast<substitution_map*> (
+            alloc (sizeof (substitution_map)));
+
+#ifdef XSDE_EXCEPTIONS
+          alloc_guard mg (map);
+          new (map) substitution_map (XSDE_PARSER_SMAP_BUCKETS);
+          mg.release ();
+#else
+          if (map)
+            new (map) substitution_map (XSDE_PARSER_SMAP_BUCKETS);
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
           if (map == 0 || map->_error () != substitution_map::error_none)
@@ -197,7 +215,14 @@ namespace xsde
       ~substitution_map_init ()
       {
         if (--count == 0)
+        {
+#ifndef XSDE_CUSTOM_ALLOCATOR
           delete map;
+#else
+          map->~substitution_map ();
+          cxx::free (map);
+#endif
+        }
       }
 
       // substitution_map_entry

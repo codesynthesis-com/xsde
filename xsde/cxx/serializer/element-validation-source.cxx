@@ -736,6 +736,7 @@ namespace CXX
                  << "this->_start_element (ns, name);"
                  << endl;
             else
+            {
               os << "bool r;"
                  << "if (ns == 0 || *ns == '\\0')" << endl
                  << "r = this->_start_element (name);"
@@ -743,13 +744,20 @@ namespace CXX
                  << "r = this->_start_element (ns, name);"
                  << endl
                  << "if (free)"
-                 << "{"
-                 << "delete[] ns;"
-                 << "delete[] name;"
-                 << "}"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete[] ns;"
+                   << "delete[] name;";
+              else
+                os << "::xsde::cxx::free (ns);"
+                   << "::xsde::cxx::free (name);";
+
+              os << "}"
                  << "if (!r)" << endl
                  << "return;"
                  << endl;
+            }
 
             os << "this->" << eserialize (a) << " ();"
                << endl

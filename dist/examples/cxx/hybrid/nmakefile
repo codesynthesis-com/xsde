@@ -2,7 +2,11 @@ root = ..\..\..
 
 !include $(root)\build\config.nmake
 
-dirs = binary compositors custom
+dirs =
+
+!if "$(XSDE_CUSTOM_ALLOCATOR)" == "n"
+
+dirs = $(dirs) binary compositors custom
 
 !if "$(XSDE_IOSTREAM)" == "y"
 !if "$(XSDE_EXCEPTIONS)" == "y"
@@ -25,6 +29,17 @@ dirs = $(dirs) polymorphism polyroot
 dirs = $(dirs) minimal
 !endif
 !endif
+
+!else # XSDE_CUSTOM_ALLOCATOR
+
+!if "$(XSDE_STL)" == "n"
+!if "$(XSDE_EXCEPTIONS)" == "n"
+dirs = $(dirs) allocator
+!endif
+!endif
+
+!endif
+
 
 all:
 	@for %i in ( $(dirs) ) do \

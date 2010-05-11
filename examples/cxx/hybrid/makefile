@@ -5,8 +5,20 @@
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
-all_examples := binary compositors custom hello multiroot polymorphism \
-polyroot streaming library wildcard filter minimal
+all_examples := \
+allocator       \
+binary          \
+compositors     \
+custom          \
+hello           \
+multiroot       \
+polymorphism    \
+polyroot        \
+streaming       \
+library         \
+wildcard        \
+filter          \
+minimal
 
 build_examples := binary compositors custom
 
@@ -29,8 +41,14 @@ endif
 ifeq ($(xsde_stl),n)
 ifeq ($(xsde_exceptions),n)
 build_examples += minimal
+
+ifeq ($(xsde_custom_allocator),y)
+build_examples += allocator
+endif
+
 endif
 endif
+
 
 default  := $(out_base)/
 dist     := $(out_base)/.dist

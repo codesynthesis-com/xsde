@@ -165,14 +165,25 @@ namespace CXX
 
           if (!fl)
           {
+            String p (L"this->" + state + L".x_");
+
             // d-tor
             //
             os << name << "::" << endl
                << "~" << name << " ()"
                << "{"
-               << "if (!this->" << epstate_base (e) << ")" << endl
-               << "delete this->" << state << ".x_;"
-               << "}";
+               << "if (!this->" << epstate_base (e) << " && " << p << ")";
+
+            if (!custom_alloc)
+              os << endl
+                 << "delete " << p << ";";
+            else
+              os << "{"
+                 << p << "->~" << ename (e) << " ();"
+                 << "::xsde::cxx::free (" << p << ");"
+                 << "}";
+
+              os << "}";
 
             // reset
             //
@@ -188,10 +199,16 @@ namespace CXX
               os << epskel (e) << "::_reset ();"
                  << endl;
 
-              os << "if (!this->" << epstate_base (e) << ")"
-                 << "{"
-                 << "delete this->" << state << ".x_;"
-                 << "this->" << state << ".x_ = 0;"
+              os << "if (!this->" << epstate_base (e) << " && " << p << ")"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << p << "->~" << ename (e) << " ();"
+                   << "::xsde::cxx::free (" << p << ");";
+
+              os << p << " = 0;"
                  << "}"
                  << "}";
             }
@@ -269,12 +286,32 @@ namespace CXX
             }
             else
             {
-              if (exceptions)
-                os << "this->" << pre_impl_name (e) << " (new " << type << ");";
+              if (!custom_alloc)
+                os << type << "* x = new " << type << ";";
               else
-                os << type << "* x = new " << type << ";"
-                   << "if (x)" << endl
-                   << "this->" << pre_impl_name (e) << " (x);"
+                os << type << "* x = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (x)"
+                   << "{";
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard xg (x);";
+
+                os << "new (x) " << type << ";";
+
+                if (exceptions)
+                  os << "xg.release ();";
+              }
+
+              os << "this->" << pre_impl_name (e) << " (x);";
+
+              if (!exceptions)
+                os << "}"
                    << "else" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
@@ -455,6 +492,8 @@ namespace CXX
           String const& member (epstate_member (l));
           String item (unclash (epskel (l), "item"));
 
+          String p (L"this->" + member);
+
           os << "// " << name << endl
              << "//" << endl
              << endl;
@@ -465,7 +504,7 @@ namespace CXX
              << name << " (bool b)"
              << "{"
              << "this->" << base << " = b;"
-             << "this->" << member << " = 0;"
+             << p << " = 0;"
              << "}";
 
           // d-tor
@@ -473,31 +512,48 @@ namespace CXX
           os << name << "::" << endl
              << "~" << name << " ()"
              << "{"
-             << "if (!this->" << base << ")" << endl
-             << "delete this->" << member << ";"
-             << "}";
+             << "if (!this->" << base << " && " << p << ")";
+
+          if (!custom_alloc)
+            os << endl
+               << "delete " << p << ";";
+          else
+            os << "{"
+               << p << "->~" << ename (l) << " ();"
+               << "::xsde::cxx::free (" << p << ");"
+               << "}";
+
+          os << "}";
 
           // reset
           //
           if (reset)
+          {
             os << "void " << name << "::" << endl
                << "_reset ()"
                << "{"
                << epskel (l) << "::_reset ();"
                << endl
-               << "if (!this->" << base << ")"
-               << "{"
-               << "delete this->" << member << ";"
-               << "this->" << member << " = 0;"
+               << "if (!this->" << base << " && " << p << ")"
+               << "{";
+
+            if (!custom_alloc)
+              os << "delete " << p << ";";
+            else
+              os << p << "->~" << ename (l) << " ();"
+                 << "::xsde::cxx::free (" << p << ");";
+
+            os << p << " = 0;"
                << "}"
                << "}";
+          }
 
           // pre_impl
           //
           os << "void " << name << "::" << endl
              << pre_impl_name (l) << " (" << type << "* x)"
              << "{"
-             << "this->" << member << " = x;"
+             << p << " = x;"
              << "}";
 
           // pre
@@ -506,12 +562,32 @@ namespace CXX
              << "pre ()"
              << "{";
 
-          if (exceptions)
-            os << "this->" << pre_impl_name (l) << " (new " << type << ");";
+          if (!custom_alloc)
+            os << type << "* x = new " << type << ";";
           else
-            os << type << "* x = new " << type << ";"
-               << "if (x)" << endl
-               << "this->" << pre_impl_name (l) << " (x);"
+            os << type << "* x = static_cast< " << type << "* > (" << endl
+               << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+          if (!exceptions)
+            os << endl
+               << "if (x)"
+               << "{";
+
+          if (custom_alloc)
+          {
+            if (exceptions)
+              os << "::xsde::cxx::alloc_guard xg (x);";
+
+            os << "new (x) " << type << ";";
+
+            if (exceptions)
+              os << "xg.release ();";
+          }
+
+          os << "this->" << pre_impl_name (l) << " (x);";
+
+          if (!exceptions)
+            os << "}"
                << "else" << endl
                << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
 
@@ -526,9 +602,9 @@ namespace CXX
              << "{";
 
           if (exceptions)
-            os << "this->" << member << "->push_back (i);";
+            os << p << "->push_back (i);";
           else
-            os << "if (this->" << member << "->push_back (i))" << endl
+            os << "if (" << p << "->push_back (i))" << endl
                << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
 
           os << "}";
@@ -540,8 +616,8 @@ namespace CXX
           os << ret << " " << name << "::" << endl
              << post_name (l) << " ()"
              << "{"
-             << type << "* r = this->" << member << ";"
-             << "this->" << member << " = 0;"
+             << type << "* r = " << p << ";"
+             << p << " = 0;"
              << "return r;"
              << "}";
         }
@@ -606,6 +682,7 @@ namespace CXX
           else
           {
             String const& base (epstate_base (u));
+            String p (L"this->" + state + L".x_");
 
             // c-tor
             //
@@ -613,7 +690,7 @@ namespace CXX
                << name << " (bool b)"
                << "{"
                << "this->" << base << " = b;"
-               << "this->" << state << ".x_ = 0;"
+               << p << " = 0;"
                << "}";
 
             // d-tor
@@ -621,31 +698,48 @@ namespace CXX
             os << name << "::" << endl
                << "~" << name << " ()"
                << "{"
-               << "if (!this->" << base << ")" << endl
-               << "delete this->" << state << ".x_;"
-               << "}";
+               << "if (!this->" << base << " && " << p << ")";
+
+            if (!custom_alloc)
+              os << endl
+                 << "delete " << p << ";";
+            else
+              os << "{"
+                 << p << "->~" << ename (u) << " ();"
+                 << "::xsde::cxx::free (" << p << ");"
+                 << "}";
+
+            os << "}";
 
             // reset
             //
             if (reset)
+            {
               os << "void " << name << "::" << endl
                  << "_reset ()"
                  << "{"
                  << epskel (u) << "::_reset ();"
                  << endl
-                 << "if (!this->" << base << ")"
-                 << "{"
-                 << "delete this->" << state << ".x_;"
-                 << "this->" << state << ".x_ = 0;"
+                 << "if (!this->" << base << " && " << p << ")"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete " << p << ";";
+              else
+                os << p << "->~" << ename (u) << " ();"
+                   << "::xsde::cxx::free (" << p << ");";
+
+              os << p << " = 0;"
                  << "}"
                  << "}";
+            }
 
             // pre_impl
             //
             os << "void " << name << "::" << endl
                << pre_impl_name (u) << " (" << type << "* x)"
                << "{"
-               << "this->" << state << ".x_ = x;";
+               << p << " = x;";
 
             if (exceptions)
               os << "this->" << state << ".str_.assign (\"\", 0);";
@@ -664,12 +758,32 @@ namespace CXX
                << "pre ()"
                << "{";
 
-            if (exceptions)
-              os << "this->" << pre_impl_name (u) << " (new " << type << ");";
+            if (!custom_alloc)
+              os << type << "* x = new " << type << ";";
             else
-              os << type << "* x = new " << type << ";"
-                 << "if (x)" << endl
-                 << "this->" << pre_impl_name (u) << " (x);"
+              os << type << "* x = static_cast< " << type << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (x)"
+                 << "{";
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard xg (x);";
+
+              os << "new (x) " << type << ";";
+
+              if (exceptions)
+                os << "xg.release ();";
+            }
+
+            os << "this->" << pre_impl_name (u) << " (x);";
+
+            if (!exceptions)
+              os << "}"
                  << "else" << endl
                  << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
 
@@ -697,8 +811,8 @@ namespace CXX
             os << ret << " " << name << "::" << endl
                << post_name (u) << " ()"
                << "{"
-               << type << "* r = this->" << state << ".x_;"
-               << "this->" << state << ".x_ = 0;"
+               << type << "* r = " << p << ";"
+               << p << " = 0;"
                << "r->" << value << " (this->" << state << ".str_.detach ());"
                << "return r;"
                << "}";
@@ -946,17 +1060,35 @@ namespace CXX
             else
             {
               String const& name (ename (a));
-              String const& type (etype (a));
               String const& scope (fq_scope (a));
+              String type (scope + L"::" + etype (a));
 
-              if (exceptions)
-                os << access << name << " (new " <<
-                  scope << "::" << type << ");";
+              if (!custom_alloc)
+                os << type << "* x = new " << type << ";";
               else
-                os << scope << "::" << type << "* x = new " <<
-                  scope << "::" << type << ";"
-                   << "if (x)" << endl
-                   << access << name << " (x);"
+                os << type << "* x = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (x)"
+                   << "{";
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard xg (x);";
+
+                os << "new (x) " << type << ";";
+
+                if (exceptions)
+                  os << "xg.release ();";
+              }
+
+              os << access << name << " (x);";
+
+              if (!exceptions)
+                os << "}"
                    << "else" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
@@ -981,18 +1113,17 @@ namespace CXX
           if (c.max () != 1)
           {
             String const& name (ename (c));
-            String const& type (etype (c));
             String const& access_s (access_seq (c, false));
             String const& ptr (epstate_member (c));
+            String type (type_scope + L"::" + etype (c));
 
             if (fixed_length (c))
             {
               if (exceptions)
-                os << access_s << name << " ().push_back (" <<
-                  type_scope << "::" << type << " ());";
+                os << access_s << name << " ().push_back (" << type << " ());";
               else
                 os << "if (" << access_s << name << " ().push_back (" <<
-                  type_scope << "::" << type << " ()))"
+                  type << " ()))"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
                    << "return;"
@@ -1003,8 +1134,27 @@ namespace CXX
             }
             else
             {
-              os << access << ptr << " = new " << type_scope << "::" <<
-                type << ";";
+              if (!custom_alloc)
+                os << access << ptr << " = new " << type << ";";
+              else
+              {
+                os << access << ptr << " = static_cast< " << type <<
+                  "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ag (" << access << ptr << ");";
+                else
+                  os << endl
+                     << "if (" << access << ptr << ")" << endl;
+
+                os << "new (" << access << ptr << ") " << type << ";";
+
+                if (exceptions)
+                  os << "ag.release ();";
+                else
+                  os << endl;
+              }
 
               if (exceptions)
                 os << access_s << name << " ().push_back (" <<
@@ -1029,16 +1179,34 @@ namespace CXX
               os << access << epresent (c) << " (true);";
             else
             {
-              String const& type (etype (c));
+              String type (type_scope + L"::" + etype (c));
 
-              if (exceptions)
-                os << access << name << " (new " << type_scope << "::" <<
-                  type << ");";
+              if (!custom_alloc)
+                os << type << "* x = new " << type << ";";
               else
-                os << type_scope << "::" << type << "* x = new " <<
-                  type_scope << "::" << type << ";"
-                   << "if (x)" << endl
-                   << access << name << " (x);"
+                os << type << "* x = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (x)"
+                   << "{";
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard xg (x);";
+
+                os << "new (x) " << type << ";";
+
+                if (exceptions)
+                  os << "xg.release ();";
+              }
+
+              os << access << name << " (x);";
+
+              if (!exceptions)
+                os << "}"
                    << "else"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
@@ -1103,17 +1271,35 @@ namespace CXX
                 os << "case " << eptag (p) << ":"
                    << "{";
 
-                String const& type (etype (p));
                 String const& scope (fq_scope (p));
+                String type (scope + L"::" + etype (p));
 
-                if (exceptions)
-                  os << access_seq (p) << ename (p) <<
-                    " (new " << scope << "::" << type << ");";
+                if (!custom_alloc)
+                  os << type << "* x = new " << type << ";";
                 else
-                  os << scope << "::" << type << "* x = new " <<
-                    scope << "::" << type << ";"
-                     << "if (x)" << endl
-                     << access_seq (p) << ename (p) << " (x);"
+                  os << type << "* x = static_cast< " << type << "* > (" << endl
+                     << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+                if (!exceptions)
+                  os << endl
+                     << "if (x)"
+                     << "{";
+
+                if (custom_alloc)
+                {
+                  if (exceptions)
+                    os << "::xsde::cxx::alloc_guard xg (x);";
+
+                  os << "new (x) " << type << ";";
+
+                  if (exceptions)
+                    os << "xg.release ();";
+                }
+
+                os << access_seq (p) << ename (p) << " (x);";
+
+                if (!exceptions)
+                  os << "}"
                      << "else" << endl
                      << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
 
@@ -1144,9 +1330,9 @@ namespace CXX
             String const& access (access_seq (s));
             String const& access_s (access_seq (s, false));
             String const& name (ename (s));
-            String const& type (etype (s));
             String const& scope (fq_scope (s));
             String const& ptr (epstate_member (s));
+            String type (scope + L"::" + etype (s));
 
             os << "void " << sc << "::" << endl
                << epnext (s) << " ()"
@@ -1155,11 +1341,10 @@ namespace CXX
             if (fixed_length (s))
             {
               if (exceptions)
-                os << access_s << name << " ().push_back (" <<
-                  scope << "::" << type << " ());";
+                os << access_s << name << " ().push_back (" << type << " ());";
               else
                 os << "if (" << access_s << name << " ().push_back (" <<
-                  scope << "::" << type << " ()))"
+                  type << " ()))"
                    << "{"
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);"
                    << "return;"
@@ -1170,8 +1355,27 @@ namespace CXX
             }
             else
             {
-              os << access << ptr << " = new " << scope << "::" <<
-                type << ";";
+              if (!custom_alloc)
+                os << access << ptr << " = new " << type << ";";
+              else
+              {
+                os << access << ptr << " = static_cast< " << type <<
+                  "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ag (" << access << ptr << ");";
+                else
+                  os << endl
+                     << "if (" << access << ptr << ")" << endl;
+
+                os << "new (" << access << ptr << ") " << type << ";";
+
+                if (exceptions)
+                  os << "ag.release ();";
+                else
+                  os << endl;
+              }
 
               if (exceptions)
                 os << access_s << name << " ().push_back (" <<
@@ -1200,17 +1404,35 @@ namespace CXX
             else
             {
               String const& name (ename (s));
-              String const& type (etype (s));
               String const& scope (fq_scope (s));
+              String type (scope + L"::" + etype (s));
 
-              if (exceptions)
-                os << access << name << " (new " <<
-                  scope << "::" << type << ");";
+              if (!custom_alloc)
+                os << type << "* x = new " << type << ";";
               else
-                os << scope << "::" << type << "* x = new " <<
-                  scope << "::" << type << ";"
-                   << "if (x)" << endl
-                   << access << name << " (x);"
+                os << type << "* x = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (x)"
+                   << "{";
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard xg (x);";
+
+                os << "new (x) " << type << ";";
+
+                if (exceptions)
+                  os << "xg.release ();";
+              }
+
+              os << access << name << " (x);";
+
+              if (!exceptions)
+                os << "}"
                    << "else" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
             }
@@ -1450,17 +1672,38 @@ namespace CXX
 
             if (!rec)
             {
-              os << "if (!this->" << epstate_base (c) << ")" << endl
-                 << "delete this->" << state << "." << member << ";";
+              String p (L"this->" + state + L"." + member);
+
+              os << "if (!this->" << epstate_base (c) << " && " << p << ")";
+
+              if (!custom_alloc)
+                os << endl
+                   << "delete " << p << ";";
+              else
+                os << "{"
+                   << p << "->~" << ename (c) << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
             }
             else
             {
+              String p (top_member);
+
               os << "for (; !this->" << state << ".empty (); " <<
                 "this->" << state << ".pop ())"
                  << "{"
-                 << "if (!this->" << epstate_base (c) << ")" << endl
-                 << "delete " << top_member << ";"
-                 << "}";
+                 << "if (!this->" << epstate_base (c) << " && " << p << ")";
+
+              if (!custom_alloc)
+                os << endl
+                   << "delete " << p << ";";
+              else
+                os << "{"
+                   << p << "->~" << ename (c) << " ();"
+                   << "::xsde::cxx::free (" << p << ");"
+                   << "}";
+
+              os << "}";
             }
 
             os << "}";
@@ -1481,22 +1724,41 @@ namespace CXX
 
               if (!rec)
               {
-                os << "if (!this->" << epstate_base (c) << ")"
-                   << "{"
-                   << "delete this->" << state << "." << member << ";"
-                   << "this->" << state << "." << member << " = 0;"
+                String p (L"this->" + state + L"." + member);
+
+                os << "if (!this->" << epstate_base (c) << " && " << p << ")"
+                   << "{";
+
+                if (!custom_alloc)
+                  os << "delete " << p << ";";
+                else
+                  os << p << "->~" << ename (c) << " ();"
+                     << "::xsde::cxx::free (" << p << ");";
+
+                os << p << " = 0;"
                    << "}";
               }
               else
               {
                 // Same code as in d-tor.
                 //
+                String p (top_member);
+
                 os << "for (; !this->" << state << ".empty (); " <<
                   "this->" << state << ".pop ())"
                    << "{"
-                   << "if (!this->" << epstate_base (c) << ")" << endl
-                   << "delete " << top_member << ";"
-                   << "}";
+                   << "if (!this->" << epstate_base (c) << " && " << p << ")";
+
+                if (!custom_alloc)
+                  os << endl
+                     << "delete " << p << ";";
+                else
+                  os << "{"
+                     << p << "->~" << ename (c) << " ();"
+                     << "::xsde::cxx::free (" << p << ");"
+                     << "}";
+
+                os << "}";
               }
 
               os << "}";
@@ -1633,12 +1895,32 @@ namespace CXX
           }
           else
           {
-            if (exceptions)
-              os << "this->" << pre_impl_name (c) << " (new " << type << ");";
+            if (!custom_alloc)
+              os << type << "* x = new " << type << ";";
             else
-              os << type << "* x = new " << type << ";"
-                 << "if (x)" << endl
-                 << "this->" << pre_impl_name (c) << " (x);"
+              os << type << "* x = static_cast< " << type << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (x)"
+                 << "{";
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard xg (x);";
+
+              os << "new (x) " << type << ";";
+
+              if (exceptions)
+                os << "xg.release ();";
+            }
+
+            os << "this->" << pre_impl_name (c) << " (x);";
+
+            if (!exceptions)
+              os << "}"
                  << "else" << endl
                  << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
           }

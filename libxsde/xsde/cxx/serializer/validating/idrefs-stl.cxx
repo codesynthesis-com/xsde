@@ -5,6 +5,10 @@
 
 #include <xsde/cxx/serializer/validating/idrefs-stl.hxx>
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -16,8 +20,16 @@ namespace xsde
         idrefs_simpl::
         ~idrefs_simpl ()
         {
-          if (free_)
-            delete const_cast<string_sequence*> (value_);
+          if (free_ && value_)
+          {
+            string_sequence* v = const_cast<string_sequence*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~string_sequence ();
+            cxx::free (v);
+#endif
+          }
         }
 
         void idrefs_simpl::
@@ -92,7 +104,13 @@ namespace xsde
 
           if (free_)
           {
-            delete const_cast<string_sequence*> (value_);
+            string_sequence* v = const_cast<string_sequence*> (value_);
+#ifndef XSDE_CUSTOM_ALLOCATOR
+            delete v;
+#else
+            v->~string_sequence ();
+            cxx::free (v);
+#endif
             value_ = 0;
           }
         }

@@ -2,7 +2,11 @@ root := ../../..
 
 include $(root)/build/config.make
 
-dirs := binary compositors custom
+dirs :=
+
+ifeq ($(XSDE_CUSTOM_ALLOCATOR),n)
+
+dirs += binary compositors custom
 
 ifeq ($(XSDE_IOSTREAM),y)
 ifeq ($(XSDE_EXCEPTIONS),y)
@@ -24,6 +28,16 @@ ifeq ($(XSDE_STL),n)
 ifeq ($(XSDE_EXCEPTIONS),n)
 dirs += minimal
 endif
+endif
+
+else # XSDE_CUSTOM_ALLOCATOR
+
+ifeq ($(XSDE_STL),n)
+ifeq ($(XSDE_EXCEPTIONS),n)
+dirs += allocator
+endif
+endif
+
 endif
 
 

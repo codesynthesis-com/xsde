@@ -3,6 +3,10 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 namespace xsde
 {
   namespace cxx
@@ -73,7 +77,14 @@ namespace xsde
 
           while (n--)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             T* p = new T;
+#else
+            T* p = static_cast<T*> (alloc (sizeof (T)));
+            alloc_guard pg (p);
+            new (p) T;
+            pg.release ();
+#endif
             typename var_sequence<T>::guard g (p);
             s >> *p;
             g.release ();
@@ -159,14 +170,27 @@ namespace xsde
 
           while (n--)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             T* p = new T;
 
             if (p == 0)
               return false;
+#else
+            void* v = alloc (sizeof (T));
 
+            if (v == 0)
+              return false;
+
+            T* p = new (v) T; // c-tor cannot fail
+#endif
             if (!(s >> *p))
             {
+#ifndef XSDE_CUSTOM_ALLOCATOR
               delete p;
+#else
+              p->~T ();
+              cxx::free (p);
+#endif
               return false;
             }
 

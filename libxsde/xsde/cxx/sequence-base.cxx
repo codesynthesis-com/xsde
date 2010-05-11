@@ -29,7 +29,15 @@ namespace xsde
     struct guard
     {
       guard (void* p) : p_ (p) {}
-      ~guard () {if (p_) operator delete (p_);}
+      ~guard ()
+      {
+        if (p_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          operator delete (p_);
+#else
+          cxx::free (p_);
+#endif
+      }
 
       void
       release () { p_ = 0; }
@@ -42,7 +50,12 @@ namespace xsde
     grow_ (size_t n, size_t es, move_func mv)
     {
       size_t c = n == 0 ? (capacity_ != 0 ? capacity_ * 2 : 8) : n;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
       void* d = operator new (c * es);
+#else
+      void* d = alloc (c * es);
+#endif
 
       if (size_)
       {
@@ -57,7 +70,11 @@ namespace xsde
       }
 
       if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
         operator delete (data_);
+#else
+        cxx::free (data_);
+#endif
 
       data_ = d;
       capacity_ = c;
@@ -89,7 +106,11 @@ namespace xsde
     grow_ (size_t n, size_t es, move_func mv)
     {
       size_t c = n == 0 ? (capacity_ != 0 ? capacity_ * 2 : 8) : n;
+#ifndef XSDE_CUSTOM_ALLOCATOR
       void* d = operator new (c * es);
+#else
+      void* d = alloc (c * es);
+#endif
 
       if (d == 0)
         return error_no_memory;
@@ -103,7 +124,11 @@ namespace xsde
       }
 
       if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
         operator delete (data_);
+#else
+        cxx::free (data_);
+#endif
 
       data_ = d;
       capacity_ = c;

@@ -499,7 +499,29 @@ namespace CXX
             member_ = "tmp.";
           else
           {
-            os << "tmp = new " << fq_name (t) << ";";
+            String tn (fq_name (t));
+
+            if (!custom_alloc)
+              os << "tmp = new " << tn << ";";
+            else
+            {
+              os << "tmp = static_cast< " << tn << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << tn << ")));";
+
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard tmpg (tmp);";
+              else
+                os << endl
+                   << "if (tmp)" << endl;
+
+              os << "new (tmp) " << fq_name (t) << ";";
+
+              if (exceptions)
+                os << "tmpg.release ();";
+              else
+                os << endl;
+
+            }
 
             if (!exceptions)
             {

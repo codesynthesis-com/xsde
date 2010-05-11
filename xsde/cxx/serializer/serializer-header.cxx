@@ -1756,6 +1756,21 @@ namespace CXX
 
           String const c (char_type);
 
+          // Custom allocator.
+          //
+          if (custom_alloc)
+          {
+            os << "// Custom allocator." << endl
+               << "//" << endl
+               << "using ::xsde::cxx::alloc;"
+               << "using ::xsde::cxx::free;";
+
+            if (exceptions)
+              os << "using ::xsde::cxx::alloc_guard;";
+
+            os << endl;
+          }
+
           os << "// Built-in XML Schema types mapping." << endl
              << "//" << endl
              << "using ::xsde::cxx::string_sequence;"
@@ -1898,8 +1913,9 @@ namespace CXX
       }
       else
       {
-        ctx.os << "#include <xsde/config.h>" << endl
-               << endl;
+        if (ctx.custom_alloc)
+          ctx.os << "#include <xsde/cxx/allocator.hxx>" << endl
+                 << endl;
 
         // std::string or xsde::cxx::string is used in wildcard API.
         //

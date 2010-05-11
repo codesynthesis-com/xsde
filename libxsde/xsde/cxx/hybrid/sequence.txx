@@ -152,7 +152,17 @@ namespace xsde
       clear ()
       {
         for (size_t i = 0;  i < size_; ++i)
-          delete static_cast<T**> (data_)[i];
+        {
+          T* x = static_cast<T**> (data_)[i];
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+          delete x;
+#else
+          if (x)
+            x->~T ();
+          cxx::free (x);
+#endif
+        }
 
         size_ = 0;
       }

@@ -8,11 +8,23 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 c_tun := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 c_tun += c/genx/genx.c c/genx/char-props.c
 
+ifeq ($(xsde_custom_allocator),y)
+ifeq ($(xsde_default_allocator),y)
+c_tun += allocator.c
+endif
+endif
+
 cxx_tun :=            \
 cxx/string.cxx        \
 cxx/string-search.cxx \
 cxx/ro-string.cxx     \
 cxx/stack.cxx
+
+ifeq ($(xsde_custom_allocator),y)
+ifeq ($(xsde_exceptions),y)
+cxx_tun += cxx/allocator.cxx
+endif
+endif
 
 ifeq ($(xsde_encoding),iso8859-1)
 cxx_tun += cxx/iso8859-1.cxx
@@ -592,6 +604,16 @@ ifeq ($(xsde_reuse_style),none)
 else
 	@echo '#undef XSDE_REUSE_STYLE_NONE'                            >>$@
 endif
+ifeq ($(xsde_custom_allocator),y)
+	@echo '#define XSDE_CUSTOM_ALLOCATOR'                      	>>$@
+else
+	@echo '#undef XSDE_CUSTOM_ALLOCATOR'                       	>>$@
+endif
+ifeq ($(xsde_default_allocator),y)
+	@echo '#define XSDE_DEFAULT_ALLOCATOR'                      	>>$@
+else
+	@echo '#undef XSDE_DEFAULT_ALLOCATOR'                       	>>$@
+endif
 ifeq ($(xsde_polymorphic),y)
 	@echo '#define XSDE_POLYMORPHIC'                                >>$@
 	@echo '#define XSDE_PARSER_SMAP_BUCKETS $(xsde_parser_smap_buckets)UL' >>$@
@@ -618,6 +640,8 @@ $(out_base)/: $(xsde.l)
 # Dist.
 #
 $(dist):
+	$(call install-data,$(src_base)/allocator.h,$(dist_prefix)/libxsde/xsde/allocator.h)
+	$(call install-data,$(src_base)/allocator.c,$(dist_prefix)/libxsde/xsde/allocator.c)
 	$(call install-dir,$(src_base)/c,$(dist_prefix)/libxsde/xsde/c,\( -name '*.h' -o -name '*.c' -o -name COPYING \))
 	$(call install-dir,$(src_base)/cxx,$(dist_prefix)/libxsde/xsde/cxx,-name '*.?xx')
 

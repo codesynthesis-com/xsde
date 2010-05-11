@@ -46,6 +46,7 @@ namespace CXX
                             ops.value<CLI::include_regex> (),
                             ops.value<CLI::include_regex_trace> (),
                             ops.value<CLI::generate_inline> (),
+                            ops.value<CLI::custom_allocator> (),
                             ops.value<CLI::reserved_name> ()),
               impl_suffix_ (ops.value<CLI::simpl_type_suffix> ()),
               aggr_suffix_ (ops.value<CLI::saggr_type_suffix> ()),

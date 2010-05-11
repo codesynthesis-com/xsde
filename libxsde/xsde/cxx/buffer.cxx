@@ -88,13 +88,21 @@ namespace xsde
       }
       else
       {
-        char* data = reinterpret_cast<char*> (operator new (capacity));
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        char* data = static_cast<char*> (operator new (capacity));
+#else
+        char* data = static_cast<char*> (alloc (capacity));
+#endif
 
         if (copy && size_ > 0)
           memcpy (data, data_, size_);
 
         if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
           operator delete (data_);
+#else
+          cxx::free (data_);
+#endif
 
         data_ = data;
         capacity_ = capacity;
@@ -118,7 +126,11 @@ namespace xsde
       }
       else
       {
-        char* data = reinterpret_cast<char*> (operator new (capacity));
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        char* data = static_cast<char*> (operator new (capacity));
+#else
+        char* data = static_cast<char*> (alloc (capacity));
+#endif
 
         if (data != 0)
         {
@@ -126,7 +138,11 @@ namespace xsde
             memcpy (data, data_, size_);
 
           if (data_)
+#ifndef XSDE_CUSTOM_ALLOCATOR
             operator delete (data_);
+#else
+            cxx::free (data_);
+#endif
 
           data_ = data;
           capacity_ = capacity;

@@ -12,6 +12,10 @@
 #  include <stdlib.h> // exit
 #endif
 
+#ifdef XSDE_CUSTOM_ALLOCATOR
+#  include <xsde/cxx/allocator.hxx>
+#endif
+
 #include <xsde/cxx/serializer/validating/inheritance-map.hxx>
 #include <xsde/cxx/serializer/validating/inheritance-map-load.hxx>
 
@@ -50,7 +54,21 @@ namespace xsde
         {
           if (count == 0)
           {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             map = new inheritance_map (XSDE_SERIALIZER_IMAP_BUCKETS);
+#else
+            map = static_cast<inheritance_map*> (
+              alloc (sizeof (inheritance_map)));
+
+#ifdef XSDE_EXCEPTIONS
+            alloc_guard mg (map);
+            new (map) inheritance_map (XSDE_SERIALIZER_IMAP_BUCKETS);
+            mg.release ();
+#else
+            if (map)
+              new (map) inheritance_map (XSDE_SERIALIZER_IMAP_BUCKETS);
+#endif
+#endif
 
 #ifndef XSDE_EXCEPTIONS
             if (map == 0 || map->_error () != inheritance_map::error_none)
@@ -73,7 +91,14 @@ namespace xsde
         ~inheritance_map_init ()
         {
           if (--count == 0)
+          {
+#ifndef XSDE_CUSTOM_ALLOCATOR
             delete map;
+#else
+            map->~inheritance_map ();
+            cxx::free (map);
+#endif
+          }
         }
 
         // inheritance_map_entry
