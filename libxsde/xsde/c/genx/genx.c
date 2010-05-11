@@ -115,7 +115,7 @@ struct genxWriter_rec
   genxSender *    	   sender;
   genxStatus   	  	   status;
   writerSequence  	   sequence;
-  char            	   xmlChars[0x10000];
+  char            	   xmlChars[GENX_CHAR_TABLE_SIZE];
   void *          	   userData;
   int             	   nextPrefix;
   utf8                     empty;
@@ -502,7 +502,7 @@ static Boolean isXMLChar(genxWriter w, int c)
 {
   if (c < 0)
     return False;
-  else if (c < 0x10000)
+  else if (c < GENX_CHAR_TABLE_SIZE)
     return (int) w->xmlChars[c];
   else
     return (c <= 0x10ffff);
@@ -513,7 +513,13 @@ static Boolean isLetter(genxWriter w, int c)
   if (c < 0 || c > 0xffff)
     return False;
   else
+  {
+#if GENX_CHAR_TABLE_SIZE == 0x10000
     return w->xmlChars[c] & GENX_LETTER;
+#else
+    return c < GENX_CHAR_TABLE_SIZE ? (w->xmlChars[c] & GENX_LETTER) : True;
+#endif
+  }
 }
 
 static Boolean isNameChar(genxWriter w, int c)
@@ -521,7 +527,13 @@ static Boolean isNameChar(genxWriter w, int c)
   if (c < 0 || c > 0xffff)
     return False;
   else
+  {
+#if GENX_CHAR_TABLE_SIZE == 0x10000
     return w->xmlChars[c] & GENX_NAMECHAR;
+#else
+    return c < GENX_CHAR_TABLE_SIZE ? (w->xmlChars[c] & GENX_NAMECHAR) : True;
+#endif
+  }
 }
 
 /*******************************

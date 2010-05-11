@@ -55,6 +55,12 @@ typedef enum
 #define GENX_LETTER 2
 #define GENX_NAMECHAR 4
 
+/* The size of the character table. Valid values are 0x100 (first 255
+   chars are checked) and 0x10000 (all chars are checked). */
+#ifndef GENX_CHAR_TABLE_SIZE
+#  define GENX_CHAR_TABLE_SIZE 0x100
+#endif
+
 /* a UTF-8 string */
 typedef unsigned char * utf8;
 typedef const unsigned char * constUtf8;

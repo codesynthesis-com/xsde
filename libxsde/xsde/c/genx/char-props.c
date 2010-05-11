@@ -29,15 +29,19 @@ void genxSetCharProps(char * p)
 {
   int i;
 
-  for (i = 0; i <= 0xffff; i++)
+  for (i = 0; i < GENX_CHAR_TABLE_SIZE; i++)
     p[i] = 0;
 
   /* per XML 1.0 */
   charProp(p, 0x9, GENX_XML_CHAR);
   charProp(p, 0xa, GENX_XML_CHAR);
   charProp(p, 0xd, GENX_XML_CHAR);
-  rangeProp(p, 0x20, 0xd7ff, GENX_XML_CHAR);
+  rangeProp(p, 0x20, 0xff, GENX_XML_CHAR);
+
+#if GENX_CHAR_TABLE_SIZE == 0x10000
+  rangeProp(p, 0x0100, 0xd7ff, GENX_XML_CHAR);
   rangeProp(p, 0xe000, 0xfffd, GENX_XML_CHAR);
+#endif
 
   /* Letter ::= BaseChar | Ideographic */
   rangeProp(p, 0x0041, 0x005A, GENX_LETTER|GENX_NAMECHAR);
@@ -45,6 +49,9 @@ void genxSetCharProps(char * p)
   rangeProp(p, 0x00C0, 0x00D6, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x00D8, 0x00F6, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x00F8, 0x00FF, GENX_LETTER|GENX_NAMECHAR);
+
+#if GENX_CHAR_TABLE_SIZE == 0x10000
+
   rangeProp(p, 0x0100, 0x0131, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x0134, 0x013E, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x0141, 0x0148, GENX_LETTER|GENX_NAMECHAR);
@@ -246,11 +253,22 @@ void genxSetCharProps(char * p)
   charProp(p, 0x3007, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x3021, 0x3029, GENX_LETTER|GENX_NAMECHAR);
 
+#endif // GENX_CHAR_TABLE_SIZE == 0x10000
+
   /*
    * NameChar ::=
    *   Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender
    */
+
+  charProp(p, '.', GENX_NAMECHAR);
+  charProp(p, '-', GENX_NAMECHAR);
+  charProp(p, '_', GENX_NAMECHAR);
+
   rangeProp(p, 0x0030, 0x0039, GENX_NAMECHAR);
+  charProp(p, 0x00B7, GENX_LETTER|GENX_NAMECHAR);
+
+#if GENX_CHAR_TABLE_SIZE == 0x10000
+
   rangeProp(p, 0x0660, 0x0669, GENX_NAMECHAR);
   rangeProp(p, 0x06F0, 0x06F9, GENX_NAMECHAR);
   rangeProp(p, 0x0966, 0x096F, GENX_NAMECHAR);
@@ -265,11 +283,6 @@ void genxSetCharProps(char * p)
   rangeProp(p, 0x0E50, 0x0E59, GENX_NAMECHAR);
   rangeProp(p, 0x0ED0, 0x0ED9, GENX_NAMECHAR);
   rangeProp(p, 0x0F20, 0x0F29, GENX_NAMECHAR);
-
-  charProp(p, '.', GENX_NAMECHAR);
-  charProp(p, '-', GENX_NAMECHAR);
-  charProp(p, '_', GENX_NAMECHAR);
-
   rangeProp(p, 0x0300, 0x0345, GENX_NAMECHAR);
   rangeProp(p, 0x0360, 0x0361, GENX_NAMECHAR);
   rangeProp(p, 0x0483, 0x0486, GENX_NAMECHAR);
@@ -366,7 +379,6 @@ void genxSetCharProps(char * p)
   charProp(p, 0x3099, GENX_LETTER|GENX_NAMECHAR);
   charProp(p, 0x309A, GENX_LETTER|GENX_NAMECHAR);
 
-  charProp(p, 0x00B7, GENX_LETTER|GENX_NAMECHAR);
   charProp(p, 0x02D0, GENX_LETTER|GENX_NAMECHAR);
   charProp(p, 0x02D1, GENX_LETTER|GENX_NAMECHAR);
   charProp(p, 0x0387, GENX_LETTER|GENX_NAMECHAR);
@@ -377,4 +389,6 @@ void genxSetCharProps(char * p)
   rangeProp(p, 0x3031, 0x3035, GENX_NAMECHAR);
   rangeProp(p, 0x309D, 0x309E, GENX_NAMECHAR);
   rangeProp(p, 0x30FC, 0x30FE, GENX_NAMECHAR);
+
+#endif // GENX_CHAR_TABLE_SIZE == 0x10000
 }
