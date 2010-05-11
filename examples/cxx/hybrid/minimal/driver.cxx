@@ -8,8 +8,6 @@
 #include "people-pimpl.hxx"
 #include "people-simpl.hxx"
 
-using namespace std;
-
 // eVC++ 4.0 does not like using xml_schema::strdupx;
 //
 inline char*
