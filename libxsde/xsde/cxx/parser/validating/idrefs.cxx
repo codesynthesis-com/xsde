@@ -83,7 +83,7 @@ namespace xsde
             ag.release ();
 #else
             if (seq_)
-              new () string_sequence ();
+              new (seq_) string_sequence ();
 #endif
 #endif
 
