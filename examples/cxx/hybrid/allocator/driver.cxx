@@ -74,7 +74,7 @@ main (int argc, char* argv[])
 
   // Set up the memory pool.
   //
-  char pool[65536 * 2];
+  char pool[20480];
   arena ar (pool, sizeof (pool));
   xsde_arena = &ar;
 
