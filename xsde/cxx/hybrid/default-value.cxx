@@ -154,7 +154,7 @@ namespace CXX
     {
       collapse (value_);
       strip_zeros (value_);
-      literal_ = value_;
+      literal_ = value_ + L"U";
     }
 
     Void LiteralValue::
@@ -170,7 +170,7 @@ namespace CXX
     {
       collapse (value_);
       strip_zeros (value_);
-      literal_ = value_;
+      literal_ = value_ + L"U";
     }
 
     Void LiteralValue::
@@ -186,7 +186,7 @@ namespace CXX
     {
       collapse (value_);
       strip_zeros (value_);
-      literal_ = value_;
+      literal_ = value_ + L"U";
     }
 
     Void LiteralValue::
