@@ -11,6 +11,8 @@
  * This version is generated semi-automatically from the source code of the
  *  XML specification via emacs global replace and keyboard macros
  */
+#include <xsde/c/pre.h>
+
 #include "genx.h"
 
 static void charProp(char * p, int c, int prop)
@@ -392,3 +394,5 @@ void genxSetCharProps(char * p)
 
 #endif // GENX_CHAR_TABLE_SIZE == 0x10000
 }
+
+#include <xsde/c/post.h>

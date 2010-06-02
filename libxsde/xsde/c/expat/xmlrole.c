@@ -2,6 +2,8 @@
    See the file COPYING for copying permission.
 */
 
+#include <xsde/c/pre.h>
+
 #include <stddef.h>
 
 #include "config.h"
@@ -1464,3 +1466,5 @@ XmlPrologStateInitExternalEntity(PROLOG_STATE *state)
 }
 
 #endif /* XML_DTD */
+
+#include <xsde/c/post.h>

@@ -2,6 +2,8 @@
    See the file COPYING for copying permission.
 */
 
+#include <xsde/c/pre.h>
+
 #include <stddef.h>
 #include <string.h>                     /* memset(), memcpy() */
 #include <assert.h>
@@ -6273,3 +6275,5 @@ getElementType(XML_Parser parser,
   }
   return ret;
 }
+
+#include <xsde/c/post.h>

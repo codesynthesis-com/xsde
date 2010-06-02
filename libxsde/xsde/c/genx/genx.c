@@ -5,6 +5,8 @@
  * For copying permission, see the accompanying COPYING file.
  */
 
+#include <xsde/c/pre.h>
+
 #define GENX_VERSION "cs-1"
 
 #include <stdlib.h>
@@ -2220,3 +2222,5 @@ char * genxGetVersion()
 {
   return GENX_VERSION;
 }
+
+#include <xsde/c/post.h>

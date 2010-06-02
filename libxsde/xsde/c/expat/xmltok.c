@@ -2,6 +2,8 @@
    See the file COPYING for copying permission.
 */
 
+#include <xsde/c/pre.h>
+
 #include <stddef.h>
 
 #include "config.h"
@@ -1669,3 +1671,5 @@ XmlInitUnknownEncodingNS(void *mem,
 }
 
 #endif /* XML_NS */
+
+#include <xsde/c/post.h>
