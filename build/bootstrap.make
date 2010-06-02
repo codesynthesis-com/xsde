@@ -3,7 +3,7 @@
 # copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-project_name := XSD/e
+project_name := xsd/e
 
 # First try to include the bundled bootstrap.make if it exist. If that
 # fails, let make search for the external bootstrap.make.
