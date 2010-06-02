@@ -1036,7 +1036,9 @@ namespace CXX
           {
             UnsignedLong depth (c.context ().get<UnsignedLong> ("p:depth"));
 
-            os << "protected:" << endl;
+            // Has to be public for some broken compilers (e.g., GH C++).
+            //
+            os << "public:" << endl;
 
             os << "struct v_state_descr_"
                << "{"
@@ -1061,6 +1063,8 @@ namespace CXX
                << "v_state_descr_ data[" << depth + 1 << "UL];"
                << "unsigned long size;"
                << "};";
+
+            os << "protected:" << endl;
 
             os << "v_state_ v_state_first_;"
                << "::xsde::cxx::stack v_state_stack_;"
