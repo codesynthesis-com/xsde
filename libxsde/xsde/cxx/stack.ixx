@@ -67,7 +67,7 @@ namespace xsde
     inline void* stack::
     top ()
     {
-      return size_ == 1 ? first_ : data_ + (size_ - 1) * el_size_;
+      return size_ == 1 ? first_ : data_ + (size_ - 2) * el_size_;
     }
 
     inline void stack::
