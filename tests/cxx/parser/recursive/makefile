@@ -8,6 +8,8 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 xsd := test.xsd
 cxx := driver.cxx
 
+tests := 000 001
+
 obj := $(addprefix $(out_base)/,$(cxx:.cxx=.o) $(xsd:.xsd=-pskel.o))
 dep := $(obj:.o=.o.d)
 
@@ -43,9 +45,14 @@ $(out_base)/: $(driver)
 
 # Test.
 #
-$(test): driver := $(driver)
-$(test): $(driver) $(src_base)/test-000.xml $(src_base)/test-000.std
-	$(call message,test $$1,$$1 $(src_base)/test-000.xml | diff -u $(src_base)/test-000.std -,$(driver))
+test_targets := $(addprefix $(out_base)/.test-,$(tests))
+
+$(test): $(test_targets)
+$(test_targets): driver := $(driver)
+
+.PHONY: $(out_base)/.test-%
+$(out_base)/.test-%: $(driver) $(src_base)/test.xsd $(src_base)/test-%.xml $(src_base)/test-%.std
+	$(call message,test $(out_base)/$*,$(driver) $(src_base)/test-$*.xml | diff -u $(src_base)/test-$*.std -)
 
 
 # Dist.

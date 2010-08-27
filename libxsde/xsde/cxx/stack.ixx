@@ -14,30 +14,33 @@ namespace xsde
   namespace cxx
   {
     inline stack::
-    ~stack ()
-    {
-      if (data_)
-#ifndef XSDE_CUSTOM_ALLOCATOR
-        operator delete (data_);
-#else
-        cxx::free (data_);
-#endif
-    }
-
-    inline stack::
     stack (size_t el_size, void* first_el)
         : el_size_ (el_size),
-          first_ (first_el),
-          data_ (0),
-          size_ (0),
-          capacity_ (0)
+          cur_ (static_cast<block*> (first_el)),
+          next_ (0),
+          cap_ (1),
+          num_ (0)
     {
     }
 
     inline void stack::
     pop ()
     {
-      --size_;
+      if (cap_ == 1)
+        --num_;
+      else
+      {
+        if (num_ > 1)
+          --num_;
+        else
+        {
+          // Move to the previous block.
+          //
+          cap_ = cur_ == next_ ? 1 : cap_ / 2;
+          cur_ = cur_->prev;
+          num_ = cap_;
+        }
+      }
     }
 
 #ifdef XSDE_EXCEPTIONS
@@ -47,45 +50,47 @@ namespace xsde
 #endif
     push ()
     {
-      if (size_ > capacity_)
+      if (num_ < cap_)
       {
-#ifdef XSDE_EXCEPTIONS
-        grow ();
-#else
-        if (error e = grow ())
-          return e;
+        num_++;
+#ifndef XSDE_EXCEPTIONS
+        return error_none;
 #endif
       }
-
-      ++size_;
-
-#ifndef XSDE_EXCEPTIONS
-      return error_none;
+      else
+      {
+#ifdef XSDE_EXCEPTIONS
+        push_impl ();
+#else
+        return push_impl ();
 #endif
+      }
     }
 
     inline void* stack::
     top ()
     {
-      return size_ == 1 ? first_ : data_ + (size_ - 2) * el_size_;
+      return cap_ == 1
+        ? static_cast<void*> (cur_)
+        : static_cast<void*> (cur_->data + (num_ - 1) * el_size_);
     }
 
     inline void stack::
     clear ()
     {
-      size_ = 0;
+      cap_ = 1;
+      num_ = 0;
+
+      // Reset cur_ to the first block.
+      //
+      if (next_)
+        cur_ = next_->prev;
     }
 
     inline bool stack::
     empty () const
     {
-      return size_ == 0;
-    }
-
-    inline size_t stack::
-    size () const
-    {
-      return size_;
+      return num_ == 0;
     }
 
     inline size_t stack::

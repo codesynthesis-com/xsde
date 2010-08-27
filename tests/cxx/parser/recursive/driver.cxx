@@ -91,6 +91,78 @@ struct indir_pimpl: indir_type_pskel
   }
 };
 
+struct a_pimpl: a_pskel
+{
+  virtual void
+  pre ()
+  {
+    cout << "a::pre" << endl;
+  }
+
+  virtual void
+  a ()
+  {
+    cout << "a::a" << endl;
+  }
+
+  virtual void
+  b ()
+  {
+    cout << "a::b" << endl;
+  }
+
+#ifdef XSDE_STL
+  virtual void
+  name (string const& n)
+  {
+    cout << "a::name: " << n << endl;
+  }
+#else
+  virtual void
+  name (char* n)
+  {
+    cout << "a::name: " << n << endl;
+    delete[] n;
+  }
+#endif
+
+  virtual void
+  post_a ()
+  {
+    cout << "a::post" << endl;
+  }
+};
+
+struct b_pimpl: b_pskel
+{
+  virtual void
+  pre ()
+  {
+    cout << "b::pre" << endl;
+  }
+
+#ifdef XSDE_STL
+  virtual void
+  name (string const& n)
+  {
+    cout << "b::name: " << n << endl;
+  }
+#else
+  virtual void
+  name (char* n)
+  {
+    cout << "b::name: " << n << endl;
+    delete[] n;
+  }
+#endif
+
+  virtual void
+  post_b ()
+  {
+    cout << "b::post" << endl;
+  }
+};
+
 struct test_pimpl: test_type_pskel
 {
   virtual void
@@ -103,6 +175,12 @@ struct test_pimpl: test_type_pskel
   sub ()
   {
     cout << "test::sub" << endl;
+  }
+
+  virtual void
+  a ()
+  {
+    cout << "test::a" << endl;
   }
 
 #ifdef XSDE_STL
@@ -143,11 +221,19 @@ main (int argc, char* argv[])
 
     sub_pimpl sub_p;
     indir_pimpl indir_p;
+
+    a_pimpl a_p;
+    b_pimpl b_p;
+
     test_pimpl test_p;
 
     sub_p.parsers (string_p, sub_p, indir_p, sub_p);
     indir_p.parsers (string_p, sub_p);
-    test_p.parsers (string_p, sub_p);
+
+    a_p.parsers (string_p, a_p, b_p);
+    b_p.parsers (string_p);
+
+    test_p.parsers (string_p, sub_p, a_p);
 
     xml_schema::document_pimpl doc_p (test_p, "test");
 

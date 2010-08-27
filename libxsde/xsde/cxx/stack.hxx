@@ -54,6 +54,8 @@ namespace xsde
       bool
       empty () const;
 
+      // Note: expensive, non-inline function.
+      //
       size_t
       size () const;
 
@@ -66,14 +68,28 @@ namespace xsde
 #else
       error
 #endif
-      grow ();
+      push_impl ();
 
     private:
-      size_t el_size_;
-      void* first_;
-      char* data_;
-      size_t size_;
-      size_t capacity_;
+      // The stack is implemented as a doubly-linked list of memory
+      // regions. The first region is special since it is the single,
+      // pre-allocated element. It also doesn't have the embedded
+      // 'next' and 'prev' fields. Instead, the next_ member is used
+      // for this purpose. The memory blocks have fixed sizes: 1, 8,
+      // 16, ... elements.
+      //
+      struct block
+      {
+        block* prev;
+        block* next;
+        char data[0]; // Sufficiently padded (2 * sizeof(void*)).
+      };
+
+      size_t el_size_; // Element size in bytes.
+      block* cur_;     // Current block (the first element if cap_ == 1).
+      block* next_;    // Next block of the special first block.
+      size_t cap_;     // Capacity of the current block in elements.
+      size_t num_;     // Number of elements in the current block.
     };
   }
 }

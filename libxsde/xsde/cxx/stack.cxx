@@ -3,49 +3,76 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <string.h> // memcpy
-
 #include <xsde/cxx/stack.hxx>
 
 namespace xsde
 {
   namespace cxx
   {
+    stack::
+    ~stack ()
+    {
+      for (block* n = next_; n != 0;)
+      {
+        block* t = n;
+        n = n->next;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        operator delete (t);
+#else
+        cxx::free (t);
+#endif
+      }
+    }
+
 #ifdef XSDE_EXCEPTIONS
     void stack::
 #else
     stack::error stack::
 #endif
-    grow ()
+    push_impl ()
     {
-      size_t c = capacity_ ? capacity_ * 2 : 8;
+      bool first = (cap_ == 1);
+      block*& n = first ? next_ : cur_->next;
+      size_t c = first ? 8 : cap_ * 2;
 
+      if (n == 0)
+      {
 #ifndef XSDE_CUSTOM_ALLOCATOR
-      char* d = static_cast<char*> (operator new (c * el_size_));
+        n = static_cast<block*> (operator new (sizeof (block) + c * el_size_));
 #else
-      char* d = static_cast<char*> (alloc (c * el_size_));
+        n = static_cast<block*> (alloc (sizeof (block) + c * el_size_));
 #endif
 
 #ifndef XSDE_EXCEPTIONS
-      if (d == 0)
-        return error_no_memory;
+        if (n == 0)
+          return error_no_memory;
 #endif
+        n->next = 0;
+        n->prev = cur_;
+      }
 
-      if (size_ > 1)
-        memcpy (d, data_, (size_ - 1) * el_size_);
-
-#ifndef XSDE_CUSTOM_ALLOCATOR
-      operator delete (data_);
-#else
-      cxx::free (data_);
-#endif
-
-      data_ = d;
-      capacity_ = c;
+      cur_ = n;
+      cap_ = c;
+      num_ = 1;
 
 #ifndef XSDE_EXCEPTIONS
       return error_none;
 #endif
+    }
+
+    size_t stack::
+    size () const
+    {
+      size_t r = num_;
+
+      for (size_t c = cap_; c != 1;)
+      {
+        c = c == 8 ? 1 : c / 2;
+        r += c;
+      }
+
+      return r;
     }
   }
 }
