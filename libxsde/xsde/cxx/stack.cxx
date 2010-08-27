@@ -35,7 +35,7 @@ namespace xsde
         memcpy (d, data_, (size_ - 1) * el_size_);
 
 #ifndef XSDE_CUSTOM_ALLOCATOR
-      delete[] data_;
+      operator delete data_;
 #else
       cxx::free (data_);
 #endif
