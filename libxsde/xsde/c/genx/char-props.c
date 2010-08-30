@@ -255,7 +255,7 @@ void genxSetCharProps(char * p)
   charProp(p, 0x3007, GENX_LETTER|GENX_NAMECHAR);
   rangeProp(p, 0x3021, 0x3029, GENX_LETTER|GENX_NAMECHAR);
 
-#endif // GENX_CHAR_TABLE_SIZE == 0x10000
+#endif /* GENX_CHAR_TABLE_SIZE == 0x10000 */
 
   /*
    * NameChar ::=
@@ -392,7 +392,7 @@ void genxSetCharProps(char * p)
   rangeProp(p, 0x309D, 0x309E, GENX_NAMECHAR);
   rangeProp(p, 0x30FC, 0x30FE, GENX_NAMECHAR);
 
-#endif // GENX_CHAR_TABLE_SIZE == 0x10000
+#endif /* GENX_CHAR_TABLE_SIZE == 0x10000 */
 }
 
 #include <xsde/c/post.h>
