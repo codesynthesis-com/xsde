@@ -86,14 +86,7 @@ namespace xsde
 #ifdef XSDE_POLYMORPHIC
           root_static_type_ = st;
 #endif
-          // Leave root_ns_ uninitialized.
-          //
-#ifdef XSDE_EXCEPTIONS
-          root_name_.assign (name);
-#else
-          if (root_name_.assign (name))
-            error_ = error (sys_error::no_memory);
-#endif
+          init_root_name (0, name);
         }
 
         document_simpl::
@@ -113,13 +106,7 @@ namespace xsde
 #ifdef XSDE_POLYMORPHIC
           root_static_type_ = st;
 #endif
-#ifdef XSDE_EXCEPTIONS
-          root_ns_.assign (ns);
-          root_name_.assign (name);
-#else
-          if (root_ns_.assign (ns) || root_name_.assign (name))
-            error_ = error (sys_error::no_memory);
-#endif
+          init_root_name (ns, name);
         }
 
 #ifdef XSDE_STL
@@ -137,14 +124,7 @@ namespace xsde
 #ifdef XSDE_POLYMORPHIC
           root_static_type_ = st;
 #endif
-          // Leave root_ns_ uninitialized.
-          //
-#ifdef XSDE_EXCEPTIONS
-          root_name_.assign (name.c_str (), name.size ());
-#else
-          if (root_name_.assign (name.c_str (), name.size ()))
-            error_ = error (sys_error::no_memory);
-#endif
+          init_root_name (0, name.c_str ());
         }
 
         document_simpl::
@@ -164,17 +144,36 @@ namespace xsde
 #ifdef XSDE_POLYMORPHIC
           root_static_type_ = st;
 #endif
-#ifdef XSDE_EXCEPTIONS
-          root_ns_.assign (ns.c_str (), ns.size ());
-          root_name_.assign (name.c_str (), name.size ());
-#else
-          if (root_ns_.assign (ns.c_str (), ns.size ()) ||
-              root_name_.assign (name.c_str (), name.size ()))
-            error_ = error (sys_error::no_memory);
-#endif
+          init_root_name (ns.c_str (), name.c_str ());
         }
 #endif // XSDE_STL
 
+
+        void document_simpl::
+        init_root_name (const char* ns, const char* name)
+        {
+          // Leave root_ns_ uninitialized if ns is not specified.
+          //
+          if (ns != 0 && *ns != '\0')
+          {
+#ifdef XSDE_EXCEPTIONS
+            root_ns_.assign (ns);
+#else
+            if (root_ns_.assign (ns))
+            {
+              error_ = error (sys_error::no_memory);
+              return;
+            }
+#endif
+          }
+
+#ifdef XSDE_EXCEPTIONS
+          root_name_.assign (name);
+#else
+          if (root_name_.assign (name))
+            error_ = error (sys_error::no_memory);
+#endif
+        }
 
         void document_simpl::
         add_prefix (const char* p, const char* ns)

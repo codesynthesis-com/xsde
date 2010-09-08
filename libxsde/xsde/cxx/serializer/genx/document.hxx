@@ -283,6 +283,10 @@ namespace xsde
 #ifndef XSDE_EXCEPTIONS
           error error_;
 #endif
+
+        private:
+          void
+          init_root_name (const char* ns, const char* name);
         };
       }
     }
