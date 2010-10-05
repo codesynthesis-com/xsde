@@ -9,6 +9,7 @@
 
 #define GENX_VERSION "cs-1"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -113,7 +114,6 @@ struct genxAttribute_rec
  */
 struct genxWriter_rec
 {
-  FILE *       	  	   file;
   genxSender *    	   sender;
   genxStatus   	  	   status;
   writerSequence  	   sequence;
@@ -1160,12 +1160,7 @@ static genxStatus sendx(genxWriter w, constUtf8 s)
   if (w->sender)
     return (*w->sender->send)(w->userData, s);
   else
-  {
-    if (fputs((const char *) s, w->file) == -1)
-      return GENX_IO_ERROR;
-    else
-      return GENX_SUCCESS;
-  }
+    return GENX_IO_ERROR;
 }
 
 static genxStatus sendxBounded(genxWriter w, constUtf8 start, constUtf8 end)
@@ -1173,11 +1168,7 @@ static genxStatus sendxBounded(genxWriter w, constUtf8 start, constUtf8 end)
   if (w->sender)
     return (*w->sender->sendBounded)(w->userData, start, end);
   else
-    /* Looks like on VxWorks fwrite returns a signed type which causes warnings. */
-    if ((unsigned) fwrite(start, 1, end - start, w->file) != (unsigned) (end - start))
-      return GENX_IO_ERROR;
-    else
-      return GENX_SUCCESS;
+    return GENX_IO_ERROR;
 }
 
 #define SendCheck(w,s) if ((w->status=sendx(w,(utf8)s))!=GENX_SUCCESS) return w->status;
@@ -1188,34 +1179,12 @@ static genxStatus sendxBounded(genxWriter w, constUtf8 start, constUtf8 end)
  *  for internal routines.
  */
 
-/*
- * Start a document
- */
-genxStatus genxStartDocFile(genxWriter w, FILE * file)
-{
-  if (w->sequence != SEQUENCE_NO_DOC)
-    return w->status = GENX_SEQUENCE_ERROR;
-
-  w->sequence = SEQUENCE_PRE_DOC;
-  w->file = file;
-  w->sender = NULL;
-
-  if (w->ppIndent)
-  {
-    w->ppSimple = True;
-    w->ppDepth = 0;
-  }
-
-  return GENX_SUCCESS;
-}
-
 genxStatus genxStartDocSender(genxWriter w, genxSender * sender)
 {
   if (w->sequence != SEQUENCE_NO_DOC)
     return w->status = GENX_SEQUENCE_ERROR;
 
   w->sequence = SEQUENCE_PRE_DOC;
-  w->file = NULL;
   w->sender = sender;
 
   if (w->ppIndent)
@@ -2029,11 +1998,8 @@ genxStatus genxEndDocument(genxWriter w)
   if (w->sequence != SEQUENCE_POST_DOC)
     return w->status = GENX_SEQUENCE_ERROR;
 
-  if (w->file)
-    fflush(w->file);
-  else
-    if ((w->status = (*w->sender->flush)(w->userData)) != GENX_SUCCESS)
-      return w->status;
+  if ((w->status = (*w->sender->flush)(w->userData)) != GENX_SUCCESS)
+    return w->status;
 
   w->sequence = SEQUENCE_NO_DOC;
   return GENX_SUCCESS;

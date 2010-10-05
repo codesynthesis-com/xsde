@@ -12,8 +12,6 @@
 #ifndef GENX_H
 #define GENX_H
 
-#include <stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -169,11 +167,6 @@ genxAttribute genxDeclareAttribute(genxWriter w,
 /*
  * Writing XML
  */
-
-/*
- * Start a new document.
- */
-genxStatus genxStartDocFile(genxWriter w, FILE * file);
 
 /*
  * Caller-provided I/O package.
