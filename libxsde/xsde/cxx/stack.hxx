@@ -82,7 +82,7 @@ namespace xsde
       {
         block* prev;
         block* next;
-        char data[0]; // Sufficiently padded (2 * sizeof(void*)).
+        //char data[0]; Sufficiently padded (2 * sizeof(void*)).
       };
 
       size_t el_size_; // Element size in bytes.

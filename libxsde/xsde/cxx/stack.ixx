@@ -70,9 +70,13 @@ namespace xsde
     inline void* stack::
     top ()
     {
-      return cap_ == 1
-        ? static_cast<void*> (cur_)
-        : static_cast<void*> (cur_->data + (num_ - 1) * el_size_);
+      if (cap_ == 1)
+        return cur_;
+      else
+      {
+        char* data = reinterpret_cast<char*> (cur_) + sizeof (block);
+        return data + (num_ - 1) * el_size_;
+      }
     }
 
     inline void stack::
