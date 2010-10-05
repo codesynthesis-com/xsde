@@ -1153,11 +1153,36 @@ main (int argc, char* argv[])
 
   // Change the greeting phrase.
   //
-  h->greeting (strdupx ("Hi"));
+  char* str = strdupx ("Hi");
+
+  if (str == 0)
+  {
+    fprintf (stderr, "error: no memory\n");
+    delete h;
+    return 1;
+  }
+
+  h->greeting (str);
 
   // Add another entry to the name sequence.
   //
-  h->name ().push_back (strdupx ("mars"));
+  str = strdupx ("mars");
+
+  if (str == 0)
+  {
+    fprintf (stderr, "error: no memory\n");
+    delete h;
+    return 1;
+  }
+
+  if (h->name ().push_back (str) != 0)
+  {
+    // The sequence has already freed str.
+    //
+    fprintf (stderr, "error: no memory\n");
+    delete h;
+    return 1;
+  }
 
   // Serialize.
   //

@@ -175,13 +175,58 @@ main (int argc, char* argv[])
   // Insert a new person.
   //
   {
-    person* p = new person;
-    p->first_name (strdupx ("Joe"));
-    p->last_name (strdupx ("Dirt"));
-    p->age (36);
-    p->gender (gender::male);
+    person* p = 0;
+    bool mem_error = false;
 
-    ps.insert (ps.begin (), p);
+    do
+    {
+      p = new person;
+
+      if (p == 0)
+      {
+        mem_error = true;
+        break;
+      }
+
+      char* s = strdupx ("Joe");
+
+      if (s == 0)
+      {
+        mem_error = true;
+        break;
+      }
+
+      p->first_name (s);
+
+      s = strdupx ("Dirt");
+
+      if (s == 0)
+      {
+        mem_error = true;
+        break;
+      }
+
+      p->last_name (s);
+
+      p->age (36);
+      p->gender (gender::male);
+
+      if (ps.insert (ps.begin (), p) != 0)
+      {
+        mem_error = true;
+        p = 0; // The sequence has already deleted the object.
+        break;
+      }
+
+    } while (false);
+
+    if (mem_error)
+    {
+      fprintf (stderr, "error: no memory\n");
+      delete p;
+      delete ppl;
+      return 1;
+    }
   }
 
   // Serialize.
