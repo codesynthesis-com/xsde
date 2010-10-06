@@ -44,8 +44,8 @@ $(gen): $(out_root)/xsde/xsde
 $(gen): xsde := $(out_root)/xsde/xsde
 $(gen): xsde_options += --generate-parser --generate-serializer \
 --generate-aggregate --extern-xml-schema xml-schema.xsd \
---generate-insertion orawstream --hxx-prologue '\\\#include "orawstream.hxx"' \
---generate-extraction irawstream --hxx-prologue '\\\#include "irawstream.hxx"'
+--generate-insertion orawstream --hxx-prologue '\#include "orawstream.hxx"' \
+--generate-extraction irawstream --hxx-prologue '\#include "irawstream.hxx"'
 
 # Header files for XML Schema namespace.
 #

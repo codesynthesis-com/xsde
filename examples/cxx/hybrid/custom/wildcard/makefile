@@ -47,7 +47,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --custom-type envelope=v//envelope_base/envelope.hxx \
 --custom-parser envelope=envelope_base_pimpl/envelope-pimpl.hxx \
 --custom-serializer envelope=envelope_base_simpl/envelope-simpl.hxx \
---hxx-epilogue '\\\#include "body.hxx"'
+--hxx-epilogue '\#include "body.hxx"'
 
 $(call include-dep,$(dep))
 
