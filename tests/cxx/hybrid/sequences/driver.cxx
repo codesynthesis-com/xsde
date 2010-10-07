@@ -20,12 +20,14 @@ using std::string;
 using namespace xsde::cxx;
 using namespace xsde::cxx::hybrid;
 
-void data_destructor (void* p, size_t)
+void
+data_destructor (void* p, size_t)
 {
   delete static_cast<string*> (p);
 }
 
-void data_destructor_pos (void* p, size_t i)
+void
+data_destructor_pos (void* p, size_t i)
 {
   switch (i)
   {
