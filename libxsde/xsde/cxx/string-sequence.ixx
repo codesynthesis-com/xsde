@@ -172,6 +172,12 @@ namespace xsde
       if (capacity_ < n)
         grow_ (n, sizeof (char*), 0);
     }
+
+    inline void string_sequence::
+    _copy (string_sequence& c) const
+    {
+      copy (c);
+    }
 #else
     inline sequence_base::error string_sequence::
     push_back (char* x)
@@ -243,6 +249,12 @@ namespace xsde
       if (capacity_ < n)
         r = grow_ (n, sizeof (char*), 0);
       return r;
+    }
+
+    inline bool string_sequence::
+    _copy (string_sequence& c) const
+    {
+      return copy (c) == error_none;
     }
 #endif
 

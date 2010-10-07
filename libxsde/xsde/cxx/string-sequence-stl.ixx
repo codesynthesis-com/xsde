@@ -134,8 +134,15 @@ namespace xsde
     reserve (size_t n)
     {
       if (capacity_ < n)
-        grow_ (n, sizeof (std::string*), &move_);
+        grow_ (n, sizeof (std::string), &move_);
     }
+
+    inline void string_sequence::
+    _copy (string_sequence& c) const
+    {
+      copy (c);
+    }
+
 #else
     inline sequence_base::error string_sequence::
     push_back (const std::string& x)
@@ -192,6 +199,12 @@ namespace xsde
       if (capacity_ < n)
         r = grow_ (n, sizeof (std::string), &move_);
       return r;
+    }
+
+    inline bool string_sequence::
+    _copy (string_sequence& c) const
+    {
+      return copy (c) == error_none;
     }
 #endif
 

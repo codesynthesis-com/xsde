@@ -110,6 +110,58 @@ namespace xsde
         return true;
       }
     }
+
+    void buffer::
+    assign (void* data, size_t size)
+    {
+      capacity (size);
+      size_ = size;
+
+      if (size_)
+        memcpy (data_, data, size_);
+    }
+
+    struct buffer_guard
+    {
+      buffer_guard (buffer* p) : p_ (p) {}
+
+      ~buffer_guard ()
+      {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete p_;
+#else
+        if (p_ != 0)
+        {
+          p_->~buffer ();
+          cxx::free (p_);
+        }
+#endif
+      }
+
+      void
+      release () { p_ = 0; }
+
+    private:
+      buffer* p_;
+    };
+
+    buffer* buffer::
+    _clone () const
+    {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+      buffer* c = new buffer;
+#else
+      // Default buffer c-tor cannot throw so we don't need alloc_guard.
+      //
+      buffer* c = static_cast<buffer*> (cxx::alloc (sizeof (buffer)));
+      new (c) buffer;
+#endif
+      buffer_guard g (c);
+      _copy (*c);
+      g.release ();
+      return c;
+    }
+
 #else
     buffer::error buffer::
     capacity (size_t capacity, bool copy, bool* moved)
@@ -155,6 +207,50 @@ namespace xsde
       }
 
       return error_none;
+    }
+
+    buffer::error buffer::
+    assign (void* data, size_t size)
+    {
+      if (error r = capacity (size))
+        return r;
+
+      size_ = size;
+
+      if (size_)
+        memcpy (data_, data, size_);
+
+      return error_none;
+    }
+
+    buffer* buffer::
+    _clone () const
+    {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+      buffer* c = new buffer;
+#else
+      buffer* c = static_cast<buffer*> (cxx::alloc (sizeof (buffer)));
+#endif
+
+      if (c == 0)
+        return 0;
+
+#ifdef XSDE_CUSTOM_ALLOCATOR
+      new (c) buffer;
+#endif
+
+      if (!_copy (*c))
+      {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete c;
+#else
+        c->~buffer ();
+        cxx::free (c);
+#endif
+        return 0;
+      }
+
+      return c;
     }
 #endif
   }

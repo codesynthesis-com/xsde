@@ -220,5 +220,21 @@ namespace xsde
     {
       return !(x == y);
     }
+
+    //
+    //
+#ifndef XSDE_EXCEPTIONS
+    inline bool buffer::
+    _copy (buffer& c) const
+    {
+      return c.assign (data_, size_) == error_none;
+    }
+#else
+    inline void buffer::
+    _copy (buffer& c) const
+    {
+      c.assign (data_, size_);
+    }
+#endif
   }
 }

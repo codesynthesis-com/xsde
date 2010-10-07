@@ -30,7 +30,9 @@ namespace xsde
       void fix_sequence<T>::
       assign (const T* p, size_t n)
       {
-        clear ();
+        if (size_ != 0)
+          clear ();
+
         reserve (n);
 
         for (; size_ < n; ++size_)
@@ -41,7 +43,8 @@ namespace xsde
       sequence_base::error fix_sequence<T>::
       assign (const T* p, size_t n)
       {
-        clear ();
+        if (size_ != 0)
+          clear ();
 
         if (error r = reserve (n))
           return r;
@@ -166,6 +169,47 @@ namespace xsde
 
         size_ = 0;
       }
+
+#ifdef XSDE_EXCEPTIONS
+      template <typename T>
+      void var_sequence<T>::
+      copy (var_sequence& c) const
+      {
+        if (c.size_ != 0)
+          c.clear ();
+
+        c.reserve (size_);
+
+        for (; c.size_ < size_; ++c.size_)
+        {
+          static_cast<T**> (c.data_)[c.size_] =
+            static_cast<T**> (data_)[c.size_]->_clone ();
+        }
+      }
+#else
+      template <typename T>
+      sequence_base::error var_sequence<T>::
+      copy (var_sequence& c) const
+      {
+        if (c.size_ != 0)
+          c.clear ();
+
+        if (error r = c.reserve (size_))
+          return r;
+
+        for (; c.size_ < size_; ++c.size_)
+        {
+          T* x = static_cast<T**> (data_)[c.size_]->_clone ();
+
+          if (x == 0)
+            return error_no_memory;
+
+          static_cast<T**> (c.data_)[c.size_] = x;
+        }
+
+        return error_none;
+      }
+#endif
     }
   }
 }

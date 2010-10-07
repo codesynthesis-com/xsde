@@ -124,6 +124,7 @@ namespace CXX
       extern Key suppress_serializer_val  = "suppress-serializer-val";
       extern Key omit_default_attributes  = "omit-default-attributes";
       extern Key suppress_enum            = "suppress-enum";
+      extern Key generate_clone           = "generate-clone";
       extern Key generate_detach          = "generate-detach";
       extern Key generate_insertion       = "generate-insertion";
       extern Key generate_extraction      = "generate-extraction";
@@ -269,6 +270,11 @@ namespace CXX
     e << "--suppress-enum" << endl
       << " Suppress the generation of the XML Schema\n"
       << " enumeration to C++ enum mapping."
+      << endl;
+
+    e << "--generate-clone" << endl
+      << " Generate clone functions for variable-length\n"
+      << " types."
       << endl;
 
     e << "--generate-detach" << endl

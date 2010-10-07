@@ -40,6 +40,7 @@ namespace CXX
           poly_code (ops.value<CLI::generate_polymorphic> ()),
           poly_runtime (poly_code || ops.value<CLI::runtime_polymorphic> ()),
           reset (!ops.value<CLI::suppress_reset> ()),
+          clone (ops.value<CLI::generate_clone> ()),
           detach (ops.value<CLI::generate_detach> ()),
           mixin (ops.value<CLI::reuse_style_mixin> ()),
           tiein (!mixin),

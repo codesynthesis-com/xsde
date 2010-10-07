@@ -45,6 +45,7 @@ namespace CXX
             poly_code (c.poly_code),
             poly_runtime (c.poly_runtime),
             reset (c.reset),
+            clone (c.clone),
             detach (c.detach),
             typeinfo (c.typeinfo),
             mixin (c.mixin),
@@ -76,6 +77,7 @@ namespace CXX
             poly_code (c.poly_code),
             poly_runtime (c.poly_runtime),
             reset (c.reset),
+            clone (c.clone),
             detach (c.detach),
             typeinfo (c.typeinfo),
             mixin (c.mixin),
@@ -594,6 +596,7 @@ namespace CXX
       Boolean poly_code;
       Boolean poly_runtime;
       Boolean reset;
+      Boolean clone;
       Boolean detach;
       Boolean typeinfo;
       Boolean mixin;
@@ -2056,6 +2059,73 @@ namespace CXX
 
     private:
       String var_;
+    };
+
+    //
+    //
+    struct TypeClone: TypeOpsBase, Context
+    {
+      TypeClone (Context& c)
+          : Context (c)
+      {
+      }
+
+      // Copy member from 'this' to 'c'.
+      //
+      Void
+      dispatch (SemanticGraph::Node& type, SemanticGraph::Member& member)
+      {
+        member_ = &member;
+        Traversal::NodeBase::dispatch (type);
+      }
+
+    protected:
+      virtual Void
+      type (SemanticGraph::Type& t)
+      {
+        String const& name (ename (*member_));
+
+        os << "{"
+           << fq_name (t) << "* m = this->" << name << " ()._clone ();";
+
+        if (!exceptions)
+          os << endl
+             << "if (m == 0)" << endl
+             << "return false;"
+             << endl;
+
+        os << "c." << name << " (m);"
+           << "}";
+      }
+
+      virtual Void
+      fund_type (SemanticGraph::Type& t)
+      {
+        type (t);
+      }
+
+      virtual Void
+      string_type (SemanticGraph::Type&)
+      {
+        // We can only get here if STL is disabled.
+        //
+        String const& name (ename (*member_));
+
+        os << "{"
+           << "char* m = ::xsde::cxx::strdupx (this->" << name << " ());";
+
+        if (!exceptions)
+          os << endl
+             << "if (m == 0)" << endl
+             << "return false;"
+             << endl;
+
+        os << "c." << name << " (m);"
+           << "}";
+      }
+
+    private:
+      SemanticGraph::Member* member_;
     };
 
     //

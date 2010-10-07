@@ -128,6 +128,13 @@ namespace xsde
 
         void
         swap (pod_sequence&);
+
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        copy (pod_sequence&) const;
       };
 
       // Sequence with fixed-length elements.
@@ -229,6 +236,13 @@ namespace xsde
 
         void
         swap (fix_sequence&);
+
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        copy (fix_sequence&) const;
 
       private:
         static void
@@ -831,6 +845,13 @@ namespace xsde
         void
         swap (var_sequence&);
 
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        copy (var_sequence&) const;
+
 #ifdef XSDE_EXCEPTIONS
       public:
         struct guard
@@ -877,9 +898,13 @@ namespace xsde
         data_sequence ();
 
         typedef void (*destroy_func) (void* data, size_t pos);
+        typedef void* (*clone_func) (void* data, size_t pos);
 
         void
         destructor (destroy_func);
+
+        void
+        clone (clone_func);
 
       public:
         iterator
@@ -953,8 +978,16 @@ namespace xsde
         void
         swap (data_sequence&);
 
+#ifndef XSDE_EXCEPTIONS
+        error
+#else
+        void
+#endif
+        copy (data_sequence&) const;
+
       private:
         destroy_func destructor_;
+        clone_func clone_;
       };
     }
   }

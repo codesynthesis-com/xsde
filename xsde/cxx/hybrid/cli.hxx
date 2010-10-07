@@ -36,6 +36,7 @@ namespace CXX
       extern Key suppress_serializer_val;
       extern Key omit_default_attributes;
       extern Key suppress_enum;
+      extern Key generate_clone;
       extern Key generate_detach;
       extern Key generate_insertion;
       extern Key generate_extraction;
@@ -127,6 +128,7 @@ namespace CXX
         suppress_serializer_val,  Boolean,
         omit_default_attributes,  Boolean,
         suppress_enum,            Boolean,
+        generate_clone,           Boolean,
         generate_detach,          Boolean,
         generate_insertion,       Cult::Containers::Vector<NarrowString>,
         generate_extraction,      Cult::Containers::Vector<NarrowString>,

@@ -30,7 +30,7 @@ dirs = $(dirs) binary/xdr
 !endif
 
 !if "$(XSDE_PARSER_VALIDATION)" == "y"
-dirs = $(dirs) choice recursive
+dirs = $(dirs) choice recursive clone
 !endif
 
 !endif # XSDE_IOSTREAM

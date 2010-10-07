@@ -44,6 +44,10 @@ Version 3.2.0
     Section 4.3, "Enumerations" in the Getting Started Guide for more
     information.
 
+  * New option, --generate-clone, triggers the generation of clone functions
+    for variable-length types. These functions allow you to make dynamically-
+    allocated copies of variable-length objects.
+
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
     provided by the mapping conform to the STL requirements. This feature
     requires working <iterator> header and allows you to use the standard

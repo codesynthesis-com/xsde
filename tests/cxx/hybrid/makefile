@@ -10,7 +10,8 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 #
 
 all_tests := sequences polymorphism iterator built-in default enumeration \
-iso8859-1 list recursive test-template union binary/cdr binary/xdr choice
+iso8859-1 list recursive test-template union binary/cdr binary/xdr choice \
+clone
 
 build_tests := sequences
 
@@ -40,7 +41,7 @@ build_tests += binary/xdr
 endif
 
 ifeq ($(xsde_parser_validation),y)
-build_tests += choice recursive
+build_tests += choice recursive clone
 endif
 
 endif # xsde_iostream

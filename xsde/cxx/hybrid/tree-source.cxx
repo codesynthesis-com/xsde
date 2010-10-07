@@ -32,7 +32,10 @@ namespace CXX
       struct Enumeration: Traversal::Enumeration, Context
       {
         Enumeration (Context& c, Traversal::Complex& complex)
-            : Context (c), complex_ (complex), enumerator_ (c)
+            : Context (c),
+              complex_ (complex),
+              base_name_ (c, TypeName::base),
+              enumerator_ (c)
         {
           names_ >> enumerator_;
         }
@@ -129,6 +132,123 @@ namespace CXX
                  << "}";
             }
           }
+
+          // _clone
+          //
+          if (clone && !fixed_length (e))
+          {
+            //
+            // _copy
+            //
+
+            os << (exceptions ? "void " : "bool ") << name << "::" << endl
+               << "_copy (" << name << "& c) const"
+               << "{";
+
+            // Copy the base or enum value.
+            //
+            if (base_enum)
+            {
+              SemanticGraph::Type& b (e.inherits ().base ());
+
+              if (fixed_length (b))
+              {
+                os << "static_cast< ";
+                base_name_.dispatch (b);
+                os << "& > (c) = *this;";
+              }
+              else
+              {
+                os << "const ";
+                base_name_.dispatch (b);
+                os << "& b = *this;";
+
+                if (exceptions)
+                  os << "b._copy (c);";
+                else
+                  os << "if (!b._copy (c))" << endl
+                     << "return false;"
+                     << endl;
+              }
+            }
+            else
+            {
+              String const& m (ec.get<String> ("value-member"));
+              os << "c." << m << " = this->" << m << ";";
+            }
+
+            // Copy custom data.
+            //
+            if (ec.count ("cd-name"))
+            {
+              String const& m (ecd_member (e));
+
+              if (exceptions)
+                os << "this->" << m << ".copy (c." << m << ");";
+              else
+                os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            if (!exceptions)
+              os << "return true;";
+
+            os << "}";
+
+            //
+            // _clone
+            //
+
+            os << name << "* "  << name << "::" << endl
+               << "_clone () const"
+               << "{";
+
+            if (!custom_alloc)
+              os << name << "* c = new " << name << ";";
+            else
+              os << name << "* c = static_cast< " << name << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << name << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (c == 0)" << endl
+                 << "return 0;"
+                 << endl;
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard ag (c);";
+
+              os << "new (c) " << name << ";";
+
+              if (exceptions)
+                os << "ag.release ();";
+            }
+
+            if (exceptions)
+              os << "::xsde::cxx::guard< " << name << " > g (c);"
+                 << "this->_copy (*c);"
+                 << "g.release ();";
+            else
+            {
+              os << "if (!this->_copy (*c))"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete c;";
+              else
+                os << "c->~" << name << " ();"
+                   << "::xsde::cxx::free (c);";
+
+              os << "return 0;"
+                 << "}";
+            }
+
+            os << "return c;"
+               << "}";
+          }
         }
 
         virtual Void
@@ -140,6 +260,8 @@ namespace CXX
       private:
         Traversal::Complex& complex_;
 
+        TypeName base_name_;
+
         Traversal::Names names_;
         Enumerator enumerator_;
       };
@@ -147,7 +269,7 @@ namespace CXX
       struct List : Traversal::List, Context
       {
         List (Context& c)
-            : Context (c)
+            : Context (c), base_name_ (c, TypeName::seq)
         {
         }
 
@@ -162,12 +284,16 @@ namespace CXX
           if (!name)
             return;
 
-          if (polymorphic (l))
-          {
+          Boolean poly (polymorphic (l));
+          SemanticGraph::Context& lc (l.context ());
+
+          if (poly || clone)
             os << "// " << comment (l.name ()) << endl
                << "//" << endl
                << endl;
 
+          if (poly)
+          {
             // d-tor
             //
             os << name << "::" << endl
@@ -214,7 +340,108 @@ namespace CXX
                  << "}";
             }
           }
+
+          // _clone
+          //
+          if (clone)
+          {
+            //
+            // _copy
+            //
+
+            os << (exceptions ? "void " : "bool ") << name << "::" << endl
+               << "_copy (" << name << "& c) const"
+               << "{";
+
+            // Copy the base.
+            //
+            os << "const ";
+            base_name_.dispatch (l.argumented ().type ());
+            os << "& b = *this;";
+
+            if (exceptions)
+              os << "b.copy (c);";
+            else
+              os << "if (b.copy (c))" << endl
+                 << "return false;"
+                 << endl;
+
+            // Copy custom data.
+            //
+            if (lc.count ("cd-name"))
+            {
+              String const& m (ecd_member (l));
+
+              if (exceptions)
+                os << "this->" << m << ".copy (c." << m << ");";
+              else
+                os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            if (!exceptions)
+              os << "return true;";
+
+            os << "}";
+
+            //
+            // _clone
+            //
+
+            os << name << "* "  << name << "::" << endl
+               << "_clone () const"
+               << "{";
+
+            if (!custom_alloc)
+              os << name << "* c = new " << name << ";";
+            else
+              os << name << "* c = static_cast< " << name << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << name << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (c == 0)" << endl
+                 << "return 0;"
+                 << endl;
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard ag (c);";
+
+              os << "new (c) " << name << ";";
+
+              if (exceptions)
+                os << "ag.release ();";
+            }
+
+            if (exceptions)
+              os << "::xsde::cxx::guard< " << name << " > g (c);"
+                 << "this->_copy (*c);"
+                 << "g.release ();";
+            else
+            {
+              os << "if (!this->_copy (*c))"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete c;";
+              else
+                os << "c->~" << name << " ();"
+                   << "::xsde::cxx::free (c);";
+
+              os << "return 0;"
+                 << "}";
+            }
+
+            os << "return c;"
+               << "}";
+          }
         }
+
+      private:
+        TypeName base_name_;
       };
 
       //
@@ -238,13 +465,14 @@ namespace CXX
             return;
 
           Boolean poly (polymorphic (u));
+          SemanticGraph::Context& uc (u.context ());
+
+          os << "// " << comment (u.name ()) << endl
+             << "//" << endl
+             << endl;
 
           if (!stl || poly)
           {
-            os << "// " << comment (u.name ()) << endl
-               << "//" << endl
-               << endl;
-
             // d-tor
             //
             os << name << "::" << endl
@@ -301,6 +529,108 @@ namespace CXX
                  << "return _static_type ();"
                  << "}";
             }
+          }
+
+          // _clone
+          //
+          if (clone && !fixed_length (u))
+          {
+            //
+            // _copy
+            //
+
+            os << (exceptions ? "void " : "bool ") << name << "::" << endl
+               << "_copy (" << name << "& c) const"
+               << "{";
+
+            // Copy the value.
+            //
+            String const& m (uc.get<String> ("value-member"));
+
+            if (stl)
+              os << "c." << m << " = this->" << m << ";";
+            else
+            {
+              os << "c." << m << " = ::xsde::cxx::strdupx (this->" << m << ");";
+
+              if (!exceptions)
+                os << endl
+                   << "if (c." << m << " == 0)" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            // Copy custom data.
+            //
+            if (uc.count ("cd-name"))
+            {
+              String const& m (ecd_member (u));
+
+              if (exceptions)
+                os << "this->" << m << ".copy (c." << m << ");";
+              else
+                os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            if (!exceptions)
+              os << "return true;";
+
+            os << "}";
+
+            //
+            // _clone
+            //
+
+            os << name << "* "  << name << "::" << endl
+               << "_clone () const"
+               << "{";
+
+            if (!custom_alloc)
+              os << name << "* c = new " << name << ";";
+            else
+              os << name << "* c = static_cast< " << name << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << name << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (c == 0)" << endl
+                 << "return 0;"
+                 << endl;
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard ag (c);";
+
+              os << "new (c) " << name << ";";
+
+              if (exceptions)
+                os << "ag.release ();";
+            }
+
+            if (exceptions)
+              os << "::xsde::cxx::guard< " << name << " > g (c);"
+                 << "this->_copy (*c);"
+                 << "g.release ();";
+            else
+            {
+              os << "if (!this->_copy (*c))"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete c;";
+              else
+                os << "c->~" << name << " ();"
+                   << "::xsde::cxx::free (c);";
+
+              os << "return 0;"
+                 << "}";
+            }
+
+            os << "return c;"
+               << "}";
           }
         }
       };
@@ -1379,21 +1709,91 @@ namespace CXX
       };
 
       //
-      // Nested classes.
+      // Clone.
       //
 
-      struct All: Traversal::All, Context
+      struct AttributeClone: Traversal::Attribute, Context
       {
-        All (Context& c,
-             Traversal::ContainsParticle& contains_ctor,
-             Traversal::ContainsParticle& contains_dtor,
-             Traversal::ContainsParticle& contains_copy,
-             Traversal::ContainsParticle& contains_assign)
-            : Context (c),
-              contains_ctor_ (contains_ctor),
-              contains_dtor_ (contains_dtor),
-              contains_copy_ (contains_copy),
-              contains_assign_ (contains_assign)
+        AttributeClone (Context& c)
+            : Context (c), clone_ (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Attribute& a)
+        {
+          if (!a.fixed_p ())
+          {
+            String const& name (ename (a));
+            SemanticGraph::Type& t (a.type ());
+
+            Boolean opt (a.optional_p () && !a.default_p ());
+
+            if (opt)
+              os << "if (this->" << epresent (a) << " ())";
+
+            if (fixed_length (t))
+              os << (opt ? "\n" : "")
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
+              clone_.dispatch (t, a);
+          }
+        }
+
+      private:
+        TypeClone clone_;
+      };
+
+
+      struct ElementClone: Traversal::Element, Context
+      {
+        ElementClone (Context& c)
+            : Context (c), clone_ (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Element& e)
+        {
+          String const& name (ename (e));
+
+          if (e.max () != 1)
+          {
+            if (exceptions)
+              os << "this->" << name << " ().copy (c." << name << " ());"
+                 << endl;
+            else
+              os << "if (this->" << name << " ().copy (c." << name << " ()))" << endl
+                 << "return false;"
+                 << endl;
+          }
+          else
+          {
+            SemanticGraph::Type& t (e.type ());
+
+            Boolean opt (e.min () == 0);
+
+            if (opt)
+              os << "if (this->" << epresent (e) << " ())";
+
+            if (fixed_length (t))
+              os << (opt ? "\n" : "")
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
+              clone_.dispatch (t, e);
+          }
+        }
+
+      private:
+        TypeClone clone_;
+      };
+
+      struct AllClone: Traversal::All, Context
+      {
+        AllClone (Context& c)
+            : Context (c)
         {
         }
 
@@ -1405,55 +1805,395 @@ namespace CXX
           //
           if (a.min () == 0)
           {
-            String const& type (etype (a));
-            String const& scope (Context::scope (a));
+            String const& name (ename (a));
 
-            // c-tor
-            //
-            os << scope << "::" << type << "::" << endl
-               << type << " ()"
-               << "{";
-
-            All::contains (a, contains_ctor_);
-
-            os << "}";
-
-            // d-tor
-            //
-            os << scope << "::" << type << "::" << endl
-               << "~" << type << " ()"
-               << "{";
-
-            All::contains (a, contains_dtor_);
-
-            os << "}";
+            os << "if (this->" << epresent (a) << " ())";
 
             if (fixed_length (a))
+              os << endl
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
             {
-              // copy c-tor
-              //
-              os << scope << "::" << type << "::" << endl
-                 << type << " (const " << type << "& x)"
-                 << "{"
-                 << "XSDE_UNUSED (x);";
+              os << "{"
+                 << etype (a) << "* m = this->" << name << " ()._clone ();";
 
-              All::contains (a, contains_copy_);
+              if (!exceptions)
+                os << endl
+                   << "if (m == 0)" << endl
+                   << "return false;"
+                   << endl;
 
-              os << "}";
-
-              // operator=
-              //
-              os << scope << "::" << type << "& " << scope << "::" <<
-                type << "::" << endl
-                 << "operator= (const " << type << "& x)"
-                 << "{"
-                 << "XSDE_UNUSED (x);";
-
-              All::contains (a, contains_assign_);
-
-              os << "return *this;"
+              os << "c." << name << " (m);"
                  << "}";
             }
+          }
+          else
+            All::contains (a);
+        }
+      };
+
+      struct SequenceInSequenceClone: Traversal::Sequence, Context
+      {
+        SequenceInSequenceClone (Context& c)
+            : Context (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Sequence& s)
+        {
+          if (s.max () != 1)
+          {
+            String const& name (ename (s));
+
+            if (exceptions)
+              os << "this->" << name << " ().copy (c." << name << " ());"
+                 << endl;
+            else
+              os << "if (this->" << name << " ().copy (c." << name << " ()))" << endl
+                 << "return false;"
+                 << endl;
+          }
+          else if (s.min () == 0)
+          {
+            String const& name (ename (s));
+
+            os << "if (this->" << epresent (s) << " ())";
+
+            if (fixed_length (s))
+              os << endl
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
+            {
+              os << "{"
+                 << etype (s) << "* m = this->" << name << " ()._clone ();";
+
+              if (!exceptions)
+                os << endl
+                   << "if (m == 0)" << endl
+                   << "return false;"
+                   << endl;
+
+              os << "c." << name << " (m);"
+                 << "}";
+            }
+          }
+          else
+            Sequence::contains (s);
+        }
+      };
+
+      struct ParticleInChoiceClone: ElementClone, Traversal::Compositor
+      {
+        ParticleInChoiceClone (Context& c)
+            : ElementClone (c)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Element& e)
+        {
+          os << "case " << etag (e) << ":"
+             << "{";
+
+          ElementClone::traverse (e);
+
+          os << "break;"
+             << "}";
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Compositor& c)
+        {
+          // In choice there are no inline compositors.
+          //
+          os << "case " << etag (c) << ":"
+             << "{";
+
+          String const& name (ename (c));
+
+          if (c.max () != 1)
+          {
+            if (exceptions)
+              os << "this->" << name << " ().copy (c." << name << " ());";
+            else
+              os << "if (this->" << name << " ().copy (c." << name << " ()))" << endl
+                 << "return false;";
+          }
+          else
+          {
+            Boolean opt (c.min () == 0);
+
+            if (opt)
+              os << "if (this->" << epresent (c) << " ())";
+
+            if (fixed_length (c))
+              os << (opt ? "\n" : "")
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
+            {
+              os << "{"
+                 << etype (c) << "* m = this->" << name << " ()._clone ();";
+
+              if (!exceptions)
+                os << endl
+                   << "if (m == 0)" << endl
+                   << "return false;"
+                   << endl;
+
+              os << "c." << name << " (m);"
+                 << "}";
+            }
+          }
+
+          os << "break;"
+             << "}";
+        }
+      };
+
+      struct ChoiceInSequenceClone: Traversal::Choice, Context
+      {
+        ChoiceInSequenceClone (Context& c)
+            : Context (c), particle_ (c)
+        {
+          contains_particle_ >> particle_;
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Choice& c)
+        {
+          if (c.max () != 1)
+          {
+            String const& name (ename (c));
+
+            if (exceptions)
+              os << "this->" << name << " ().copy (c." << name << " ());"
+                 << endl;
+            else
+              os << "if (this->" << name << " ().copy (c." << name << " ()))" << endl
+                 << "return false;"
+                 << endl;
+          }
+          else if (c.min () == 0)
+          {
+            String const& name (ename (c));
+
+            os << "if (this->" << epresent (c) << " ())";
+
+            if (fixed_length (c))
+              os << endl
+                 << "c." << name << " (this->" << name << " ());"
+                 << endl;
+            else
+            {
+              os << "{"
+                 << etype (c) << "* m = this->" << name << " ()._clone ();";
+
+              if (!exceptions)
+                os << endl
+                   << "if (m == 0)" << endl
+                   << "return false;"
+                   << endl;
+
+              os << "c." << name << " (m);"
+                 << "}";
+            }
+          }
+          else
+          {
+            // Inline choice.
+            //
+            String const& arm (earm (c));
+
+            os << "c." << arm << " (this->" << arm << " ());"
+               << endl
+               << "switch (this->" << arm << " ())"
+               << "{";
+
+            Choice::contains (c, contains_particle_);
+
+            os << "default:" << endl
+               << "break;"
+               << "}";
+          }
+        }
+
+      private:
+        ParticleInChoiceClone particle_;
+        Traversal::ContainsParticle contains_particle_;
+      };
+
+      //
+      // Nested classes.
+      //
+
+      struct All: Traversal::All, Context
+      {
+        All (Context& c,
+             Traversal::ContainsParticle& contains_ctor,
+             Traversal::ContainsParticle& contains_dtor,
+             Traversal::ContainsParticle& contains_copy,
+             Traversal::ContainsParticle& contains_assign,
+             Traversal::ContainsParticle& contains_clone)
+            : Context (c),
+              contains_ctor_ (contains_ctor),
+              contains_dtor_ (contains_dtor),
+              contains_copy_ (contains_copy),
+              contains_assign_ (contains_assign),
+              contains_clone_ (contains_clone)
+        {
+        }
+
+        virtual Void
+        traverse (SemanticGraph::All& a)
+        {
+          // For the all compositor, maxOccurs=1 and minOccurs={0,1}
+          // and it can only contain particles.
+          //
+          if (a.min () != 0)
+            return;
+
+          Boolean fl (fixed_length (a));
+          String const& type (etype (a));
+          String const& scope (Context::scope (a));
+
+          // c-tor
+          //
+          os << scope << "::" << type << "::" << endl
+             << type << " ()"
+             << "{";
+
+          All::contains (a, contains_ctor_);
+
+          os << "}";
+
+          // d-tor
+          //
+          os << scope << "::" << type << "::" << endl
+             << "~" << type << " ()"
+             << "{";
+
+          All::contains (a, contains_dtor_);
+
+          os << "}";
+
+          if (fl)
+          {
+            // copy c-tor
+            //
+            os << scope << "::" << type << "::" << endl
+               << type << " (const " << type << "& x)"
+               << "{"
+               << "XSDE_UNUSED (x);";
+
+            All::contains (a, contains_copy_);
+
+            os << "}";
+
+            // operator=
+            //
+            os << scope << "::" << type << "& " << scope << "::" <<
+              type << "::" << endl
+               << "operator= (const " << type << "& x)"
+               << "{"
+               << "XSDE_UNUSED (x);";
+
+            All::contains (a, contains_assign_);
+
+            os << "return *this;"
+               << "}";
+          }
+
+          // _clone
+          //
+          if (!fl && clone)
+          {
+            //
+            // _copy
+            //
+
+            os << (exceptions ? "void " : "bool ") << scope << "::" <<
+              type << "::" << endl
+               << "_copy (" << type << "& c) const"
+               << "{";
+
+            All::contains (a, contains_clone_);
+
+            // Copy custom data.
+            //
+            if (a.context ().count ("cd-name"))
+            {
+              String const& m (ecd_member (a));
+
+              if (exceptions)
+                os << "this->" << m << ".copy (c." << m << ");";
+              else
+                os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            if (!exceptions)
+              os << "return true;";
+
+            os << "}";
+
+            //
+            // _clone
+            //
+
+            os << scope << "::" << type << "* " << scope << "::" <<
+              type << "::" << endl
+               << "_clone () const"
+               << "{";
+
+            if (!custom_alloc)
+              os << type << "* c = new " << type << ";";
+            else
+              os << type << "* c = static_cast< " << type << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (c == 0)" << endl
+                 << "return 0;"
+                 << endl;
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard ag (c);";
+
+              os << "new (c) " << type << ";";
+
+              if (exceptions)
+                os << "ag.release ();";
+            }
+
+            if (exceptions)
+              os << "::xsde::cxx::guard< " << type << " > g (c);"
+                 << "this->_copy (*c);"
+                 << "g.release ();";
+            else
+            {
+              os << "if (!this->_copy (*c))"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete c;";
+              else
+                os << "c->~" << type << " ();"
+                   << "::xsde::cxx::free (c);";
+
+              os << "return 0;"
+                 << "}";
+            }
+
+            os << "return c;"
+               << "}";
           }
         }
 
@@ -1462,6 +2202,7 @@ namespace CXX
         Traversal::ContainsParticle& contains_dtor_;
         Traversal::ContainsParticle& contains_copy_;
         Traversal::ContainsParticle& contains_assign_;
+        Traversal::ContainsParticle& contains_clone_;
       };
 
       struct Choice: Traversal::Choice, Context
@@ -1475,12 +2216,14 @@ namespace CXX
               particle_free_ (c, ChoiceParticle::free),
               particle_alloc_ (c, ChoiceParticle::alloc),
               particle_copy_ (c, ChoiceParticle::copy),
-              particle_assign_ (c, ChoiceParticle::assign)
+              particle_assign_ (c, ChoiceParticle::assign),
+              particle_clone_ (c)
         {
           contains_free_ >> particle_free_;
           contains_alloc_ >> particle_alloc_;
           contains_copy_ >> particle_copy_;
           contains_assign_ >> particle_assign_;
+          contains_clone_ >> particle_clone_;
         }
 
         virtual Void
@@ -1498,6 +2241,8 @@ namespace CXX
             UnsignedLong bad_tag (arm_tag_count (c));
 
             String const& scope (Context::scope (c));
+
+            Boolean fl (fixed_length (c));
 
             // c-tor ()
             //
@@ -1517,7 +2262,7 @@ namespace CXX
               arm_tag << " (" << bad_tag << "));"
                << "}";
 
-            if (fixed_length (c))
+            if (fl)
             {
               // copy c-tor
               //
@@ -1586,6 +2331,104 @@ namespace CXX
                << "}";
 
             Choice::contains (c, contains_func_);
+
+            // _clone
+            //
+            if (!fl && clone)
+            {
+              //
+              // _copy
+              //
+              String const& arm (earm (c));
+
+              os << (exceptions ? "void " : "bool ") << scope << "::" <<
+                type << "::" << endl
+                 << "_copy (" << type << "& c) const"
+                 << "{"
+                 << "c." << arm << " (this->" << arm << " ());"
+                 << endl
+                 << "switch (this->" << arm << " ())"
+                 << "{";
+
+              Choice::contains (c, contains_clone_);
+
+              os << "default:" << endl
+                 << "break;"
+                 << "}";
+
+              // Copy custom data.
+              //
+              if (c.context ().count ("cd-name"))
+              {
+                String const& m (ecd_member (c));
+
+                if (exceptions)
+                  os << "this->" << m << ".copy (c." << m << ");";
+                else
+                  os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                     << "return false;"
+                     << endl;
+              }
+
+              if (!exceptions)
+                os << "return true;";
+
+              os << "}";
+
+              //
+              // _clone
+              //
+
+              os << scope << "::" << type << "* " << scope << "::" <<
+                type << "::" << endl
+                 << "_clone () const"
+                 << "{";
+
+              if (!custom_alloc)
+                os << type << "* c = new " << type << ";";
+              else
+                os << type << "* c = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (c == 0)" << endl
+                   << "return 0;"
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ag (c);";
+
+                os << "new (c) " << type << ";";
+
+                if (exceptions)
+                  os << "ag.release ();";
+              }
+
+              if (exceptions)
+                os << "::xsde::cxx::guard< " << type << " > g (c);"
+                   << "this->_copy (*c);"
+                   << "g.release ();";
+              else
+              {
+                os << "if (!this->_copy (*c))"
+                   << "{";
+
+                if (!custom_alloc)
+                  os << "delete c;";
+                else
+                  os << "c->~" << type << " ();"
+                     << "::xsde::cxx::free (c);";
+
+                os << "return 0;"
+                   << "}";
+              }
+
+              os << "return c;"
+                 << "}";
+            }
           }
 
           Choice::contains (c);
@@ -1606,6 +2449,9 @@ namespace CXX
 
         ChoiceParticle particle_assign_;
         Traversal::ContainsParticle contains_assign_;
+
+        ParticleInChoiceClone particle_clone_;
+        Traversal::ContainsParticle contains_clone_;
       };
 
 
@@ -1617,6 +2463,7 @@ namespace CXX
                   Traversal::ContainsParticle& contains_dtor,
                   Traversal::ContainsParticle& contains_copy,
                   Traversal::ContainsParticle& contains_assign,
+                  Traversal::ContainsParticle& contains_clone,
                   Traversal::ContainsParticle& contains_func)
             : Context (c),
               in_choice_ (in_choice),
@@ -1624,6 +2471,7 @@ namespace CXX
               contains_dtor_ (contains_dtor),
               contains_copy_ (contains_copy),
               contains_assign_ (contains_assign),
+              contains_clone_ (contains_clone),
               contains_func_ (contains_func)
         {
         }
@@ -1638,6 +2486,8 @@ namespace CXX
           {
             String const& type (etype (s));
             String const& scope (Context::scope (s));
+
+            Boolean fl (fixed_length (s));
 
             // c-tor ()
             //
@@ -1659,7 +2509,7 @@ namespace CXX
 
             os << "}";
 
-            if (fixed_length (s))
+            if (fl)
             {
               // copy c-tor
               //
@@ -1686,6 +2536,95 @@ namespace CXX
                  << "}";
             }
 
+            // _clone
+            //
+            if (!fl && clone)
+            {
+              //
+              // _copy
+              //
+
+              os << (exceptions ? "void " : "bool ") << scope << "::" <<
+                type << "::" << endl
+                 << "_copy (" << type << "& c) const"
+                 << "{";
+
+              Sequence::contains (s, contains_clone_);
+
+              // Copy custom data.
+              //
+              if (s.context ().count ("cd-name"))
+              {
+                String const& m (ecd_member (s));
+
+                if (exceptions)
+                  os << "this->" << m << ".copy (c." << m << ");";
+                else
+                  os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                     << "return false;"
+                     << endl;
+              }
+
+              if (!exceptions)
+                os << "return true;";
+
+              os << "}";
+
+              //
+              // _clone
+              //
+
+              os << scope << "::" << type << "* " << scope << "::" <<
+                type << "::" << endl
+                 << "_clone () const"
+                 << "{";
+
+              if (!custom_alloc)
+                os << type << "* c = new " << type << ";";
+              else
+                os << type << "* c = static_cast< " << type << "* > (" << endl
+                   << "::xsde::cxx::alloc (sizeof (" << type << ")));";
+
+              if (!exceptions)
+                os << endl
+                   << "if (c == 0)" << endl
+                   << "return 0;"
+                   << endl;
+
+              if (custom_alloc)
+              {
+                if (exceptions)
+                  os << "::xsde::cxx::alloc_guard ag (c);";
+
+                os << "new (c) " << type << ";";
+
+                if (exceptions)
+                  os << "ag.release ();";
+              }
+
+              if (exceptions)
+                os << "::xsde::cxx::guard< " << type << " > g (c);"
+                   << "this->_copy (*c);"
+                   << "g.release ();";
+              else
+              {
+                os << "if (!this->_copy (*c))"
+                   << "{";
+
+                if (!custom_alloc)
+                  os << "delete c;";
+                else
+                  os << "c->~" << type << " ();"
+                     << "::xsde::cxx::free (c);";
+
+                os << "return 0;"
+                   << "}";
+              }
+
+              os << "return c;"
+                 << "}";
+            }
+
             Sequence::contains (s, contains_func_);
           }
 
@@ -1698,10 +2637,11 @@ namespace CXX
         Traversal::ContainsParticle& contains_dtor_;
         Traversal::ContainsParticle& contains_copy_;
         Traversal::ContainsParticle& contains_assign_;
+        Traversal::ContainsParticle& contains_clone_;
         Traversal::ContainsParticle& contains_func_;
       };
 
-      struct Complex : Traversal::Complex, Context
+      struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),
@@ -1747,13 +2687,22 @@ namespace CXX
               choice_in_sequence_assign_ (c),
               sequence_in_sequence_assign_ (c),
 
+              // Clone.
+              //
+              attribute_clone_ (c),
+              element_clone_ (c),
+              all_clone_ (c),
+              choice_in_sequence_clone_ (c),
+              sequence_in_sequence_clone_ (c),
+
               // Nested c-tors, etc.
               //
               all_ (c,
                     all_contains_ctor_,
                     all_contains_dtor_,
                     all_contains_copy_,
-                    all_contains_assign_),
+                    all_contains_assign_,
+                    all_contains_clone_),
               choice_in_choice_ (c, true, choice_contains_func_),
               choice_in_sequence_ (c, false, choice_contains_func_),
               sequence_in_choice_ (
@@ -1763,6 +2712,7 @@ namespace CXX
                 sequence_contains_dtor_,
                 sequence_contains_copy_,
                 sequence_contains_assign_,
+                sequence_contains_clone_,
                 sequence_contains_func_),
               sequence_in_sequence_ (
                 c,
@@ -1771,6 +2721,7 @@ namespace CXX
                 sequence_contains_dtor_,
                 sequence_contains_copy_,
                 sequence_contains_assign_,
+                sequence_contains_clone_,
                 sequence_contains_func_)
         {
           // Functions.
@@ -1850,6 +2801,21 @@ namespace CXX
           contains_compositor_assign_ >> choice_in_sequence_assign_;
           contains_compositor_assign_ >> sequence_in_sequence_assign_;
 
+          // Clone.
+          //
+          attribute_names_clone_ >> attribute_clone_;
+
+          all_clone_ >> all_contains_clone_ >> element_clone_;
+
+          sequence_in_sequence_clone_ >> sequence_contains_clone_;
+          sequence_contains_clone_ >> element_clone_;
+          sequence_contains_clone_ >> choice_in_sequence_clone_;
+          sequence_contains_clone_ >> sequence_in_sequence_clone_;
+
+          contains_compositor_clone_ >> all_clone_;
+          contains_compositor_clone_ >> choice_in_sequence_clone_;
+          contains_compositor_clone_ >> sequence_in_sequence_clone_;
+
           // Nested c-tors, etc.
           //
           all_ >> all_contains_;
@@ -1880,6 +2846,7 @@ namespace CXX
           if (!name)
             return;
 
+          Boolean fl (fixed_length (c));
           Boolean poly (polymorphic (c));
           Boolean restriction (restriction_p (c));
 
@@ -1924,7 +2891,7 @@ namespace CXX
 
           if (!restriction)
           {
-            if (fixed_length (c))
+            if (fl)
             {
               // copy c-tor
               //
@@ -1978,6 +2945,130 @@ namespace CXX
 
             if (c.contains_compositor_p ())
               Complex::contains_compositor (c, contains_compositor_func_);
+          }
+
+          // _clone
+          //
+          if (!fl && clone)
+          {
+            //
+            // _copy
+            //
+
+            os << (exceptions ? "void " : "bool ") << name << "::" << endl
+               << "_copy (" << name << "& c) const"
+               << "{"
+               << "XSDE_UNUSED (c);"
+               << endl;
+
+            // Copy the base.
+            //
+            if (c.inherits_p ())
+            {
+              SemanticGraph::Type& b (c.inherits ().base ());
+
+              if (fixed_length (b))
+              {
+                os << "static_cast< ";
+                base_name_.dispatch (b);
+                os << "& > (c) = *this;";
+              }
+              else
+              {
+                os << "const ";
+                base_name_.dispatch (b);
+                os << "& b = *this;";
+
+                if (exceptions)
+                  os << "b._copy (c);";
+                else
+                  os << "if (!b._copy (c))" << endl
+                     << "return false;"
+                     << endl;
+              }
+            }
+
+            // Copy members.
+            //
+            if (!restriction)
+            {
+              Complex::names (c, attribute_names_clone_);
+
+              if (c.contains_compositor_p ())
+                Complex::contains_compositor (c, contains_compositor_clone_);
+            }
+
+            // Copy custom data.
+            //
+            if (c.context ().count ("cd-name"))
+            {
+              String const& m (ecd_member (c));
+
+              if (exceptions)
+                os << "this->" << m << ".copy (c." << m << ");";
+              else
+                os << "if (this->" << m << ".copy (c." << m << "))" << endl
+                   << "return false;"
+                   << endl;
+            }
+
+            if (!exceptions)
+              os << "return true;";
+
+            os << "}";
+
+            //
+            // _clone
+            //
+
+            os << name << "* "  << name << "::" << endl
+               << "_clone () const"
+               << "{";
+
+            if (!custom_alloc)
+              os << name << "* c = new " << name << ";";
+            else
+              os << name << "* c = static_cast< " << name << "* > (" << endl
+                 << "::xsde::cxx::alloc (sizeof (" << name << ")));";
+
+            if (!exceptions)
+              os << endl
+                 << "if (c == 0)" << endl
+                 << "return 0;"
+                 << endl;
+
+            if (custom_alloc)
+            {
+              if (exceptions)
+                os << "::xsde::cxx::alloc_guard ag (c);";
+
+              os << "new (c) " << name << ";";
+
+              if (exceptions)
+                os << "ag.release ();";
+            }
+
+            if (exceptions)
+              os << "::xsde::cxx::guard< " << name << " > g (c);"
+                 << "this->_copy (*c);"
+                 << "g.release ();";
+            else
+            {
+              os << "if (!this->_copy (*c))"
+                 << "{";
+
+              if (!custom_alloc)
+                os << "delete c;";
+              else
+                os << "c->~" << name << " ();"
+                   << "::xsde::cxx::free (c);";
+
+              os << "return 0;"
+                 << "}";
+            }
+
+            os << "return c;"
+               << "}";
           }
 
           if (poly && typeinfo)
@@ -2101,6 +3192,20 @@ namespace CXX
 
         Traversal::ContainsCompositor contains_compositor_assign_;
 
+        // Clone.
+        //
+        AttributeClone attribute_clone_;
+        Traversal::Names attribute_names_clone_;
+
+        ElementClone element_clone_;
+        AllClone all_clone_;
+        ChoiceInSequenceClone choice_in_sequence_clone_;
+        SequenceInSequenceClone sequence_in_sequence_clone_;
+        Traversal::ContainsParticle all_contains_clone_;
+        Traversal::ContainsParticle sequence_contains_clone_;
+
+        Traversal::ContainsCompositor contains_compositor_clone_;
+
         // Nested c-tors, etc.
         //
         All all_;
@@ -2128,6 +3233,10 @@ namespace CXX
 
       ctx.os << "#include <new>" << endl
              << endl;
+
+      if (ctx.clone && ctx.exceptions)
+        ctx.os << "#include <xsde/cxx/guard.hxx>" << endl
+               << endl;
 
       Traversal::Schema schema;
       Traversal::Sources sources;

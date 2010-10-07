@@ -2024,10 +2024,21 @@ private:
      (see <a href="#3.8">Section 3.8, "Custom Allocators"</a>),
      the object model expects you to allocate such an object with
      operator <code>new</code> and will eventually delete it
-     with operator <code>delete</code>. You can also request generation
-     of detach functions with the <code>--generate-detach</code> compiler
-     option. These functions allow you to detach a variable-length
-     object from the object model. As an example, let us extend
+     with operator <code>delete</code>.</p>
+
+  <p>If you wish to make copies of variable-length objects, then
+     you can request the generation of the object cloning functions
+     with the <code>--generate-clone</code> compiler
+     option. When this option is specified, each variable-length
+     type implements the <code>_clone()</code> function which returns
+     a dynamically-allocated copy of the object or <code>NULL</code>
+     if the allocation failed and C++ exceptions are disabled (see
+     <a href="#3.3">Section 3.3, "C++ Exceptions"</a>). </p>
+
+  <p>You can also request generation of detach functions with the
+     <code>--generate-detach</code> compiler option. These functions
+     allow you to detach a variable-length object from the object model.
+     As an example, let us extend
      our <code>people.xsd</code> schema with the following type:</p>
 
   <pre class="xml">
@@ -2039,8 +2050,9 @@ private:
 &lt;/xs:complexType>
   </pre>
 
-  <p>If we compile it with XSD/e and specify the <code>--generate-detach</code>
-     option, we will get the following C++ class:</p>
+  <p>If we compile it with XSD/e and specify the
+     <code>--generate-clone</code> and <code>--generate-detach</code>
+     options, we will get the following C++ class:</p>
 
   <pre class="c++">
 // staff (variable-length)
@@ -2049,6 +2061,9 @@ class staff
 {
 public:
   staff ();
+
+  staff*
+  _clone () const;
 
 private:
   staff (const staff&amp;);
@@ -4143,7 +4158,9 @@ for (people::person_iterator i = ps.begin (); i != ps.end (); ++i)
      type is always variable-length which means objects of polymorphic
      types are allocated dynamically and are stored and passed around
      as pointers or references. A polymorphic type also defines a
-     virtual destructor which allows you to delete an instance of a
+     virtual <code>_clone()</code> function (see <a href="#4.2">Section 4.2,
+     "Memory Management"</a>) and a virtual destructor
+     which allow you to copy and delete an instance of a
      polymorphic type via a pointer to its base. The following code
      fragment shows how we can parse, access, modify, and serialize
      the above XML document:</p>
@@ -4957,10 +4974,14 @@ namespace xml_schema
 
   public:
     void
+    assign (void* data, size_t size);
+
+    void
     attach (void* data, size_t size, size_t capacity);
 
     void*
     detach ();
+
 
     void
     swap (buffer&amp;);
@@ -5047,6 +5068,9 @@ namespace xml_schema
     operator= (const buffer&amp;);
 
   public:
+    error
+    assign (void* data, size_t size);
+
     error
     attach (void* data, size_t size, size_t capacity);
 

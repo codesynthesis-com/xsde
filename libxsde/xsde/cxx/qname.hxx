@@ -81,6 +81,16 @@ namespace xsde
       char*
       name_detach ();
 
+      qname*
+      _clone () const;
+
+#ifndef XSDE_EXCEPTIONS
+      bool
+#else
+      void
+#endif
+      _copy (qname&) const;
+
     private:
       char* prefix_;
       char* name_;

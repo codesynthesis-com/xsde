@@ -34,6 +34,64 @@ namespace xsde
 
       static_cast<char**> (data_)[size_++] = strdupx (cs);
     }
+
+    void string_sequence::
+    copy (string_sequence& c) const
+    {
+      if (c.size_ != 0)
+        c.clear ();
+
+      c.reserve (size_);
+
+      for (; c.size_ < size_; ++c.size_)
+      {
+        static_cast<char**> (c.data_)[c.size_] =
+          strdupx (static_cast<char**> (data_)[c.size_]);
+      }
+    }
+
+    struct string_sequence_guard
+    {
+      string_sequence_guard (string_sequence* p) : p_ (p) {}
+
+      ~string_sequence_guard ()
+      {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete p_;
+#else
+        if (p_ != 0)
+        {
+          p_->~string_sequence ();
+          cxx::free (p_);
+        }
+#endif
+      }
+
+      void
+      release () { p_ = 0; }
+
+    private:
+      string_sequence* p_;
+    };
+
+    string_sequence* string_sequence::
+    _clone () const
+    {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+      string_sequence* c = new string_sequence;
+#else
+      // Default string_sequence c-tor cannot throw so we don't need
+      // alloc_guard.
+      //
+      string_sequence* c = static_cast<string_sequence*> (
+        cxx::alloc (sizeof (string_sequence)));
+      new (c) string_sequence;
+#endif
+      string_sequence_guard g (c);
+      _copy (*c);
+      g.release ();
+      return c;
+    }
 #else
     string_sequence::error string_sequence::
     push_back_copy (const char* cs)
@@ -54,6 +112,59 @@ namespace xsde
       }
 
       return r;
+    }
+
+    sequence_base::error string_sequence::
+    copy (string_sequence& c) const
+    {
+      if (c.size_ != 0)
+        c.clear ();
+
+      if (error r = c.reserve (size_))
+        return r;
+
+      for (; c.size_ < size_; ++c.size_)
+      {
+        char* x = strdupx (static_cast<char**> (data_)[c.size_]);
+
+        if (x == 0)
+          return error_no_memory;
+
+        static_cast<char**> (c.data_)[c.size_] = x;
+      }
+
+      return error_none;
+    }
+
+    string_sequence* string_sequence::
+    _clone () const
+    {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+      string_sequence* c = new string_sequence;
+#else
+      string_sequence* c = static_cast<string_sequence*> (
+        cxx::alloc (sizeof (string_sequence)));
+#endif
+
+      if (c == 0)
+        return 0;
+
+#ifdef XSDE_CUSTOM_ALLOCATOR
+      new (c) string_sequence;
+#endif
+
+      if (!_copy (*c))
+      {
+#ifndef XSDE_CUSTOM_ALLOCATOR
+        delete c;
+#else
+        c->~string_sequence ();
+        cxx::free (c);
+#endif
+        return 0;
+      }
+
+      return c;
     }
 #endif
 

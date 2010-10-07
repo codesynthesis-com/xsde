@@ -124,6 +124,24 @@ namespace xsde
       return r;
     }
 
+#ifdef XSDE_EXCEPTIONS
+    inline void qname::
+    _copy (qname& c) const
+    {
+      c.prefix_copy (prefix_);
+      c.name_copy (name_);
+    }
+#else
+    inline bool qname::
+    _copy (qname& c) const
+    {
+      if (c.prefix_copy (prefix_) || c.name_copy (name_))
+        return false;
+
+      return true;
+    }
+#endif
+
     //
     //
     inline bool

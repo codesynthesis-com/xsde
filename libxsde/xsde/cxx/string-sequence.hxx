@@ -123,6 +123,23 @@ namespace xsde
 
       void
       swap (string_sequence&);
+
+#ifndef XSDE_EXCEPTIONS
+      error
+#else
+      void
+#endif
+      copy (string_sequence&) const;
+
+      string_sequence*
+      _clone () const;
+
+#ifndef XSDE_EXCEPTIONS
+      bool
+#else
+      void
+#endif
+      _copy (string_sequence&) const;
     };
 
     bool

@@ -112,6 +112,13 @@ namespace CXX
                << name << " (" << vt << ");"
                << endl;
 
+            // _clone
+            //
+            if (!fl && clone)
+              os << (poly ? "virtual " : "") << name << "*" << endl
+                 << "_clone () const;"
+                 << endl;
+
             // value (value_type)
             //
             if (!base_enum)
@@ -197,6 +204,13 @@ namespace CXX
                  << endl;
             }
 
+            // _copy
+            //
+            if (!fl && clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << name << "&) const;"
+                 << endl;
+
             if (!base_enum || cd)
               os << "private:" << endl;
 
@@ -274,15 +288,22 @@ namespace CXX
             // c-tor
             //
             os << "public:" << endl
-               << name << " ();";
+               << name << " ();"
+               << endl;
+
+            // _clone
+            //
+            if (clone)
+              os << (poly ? "virtual " : "") << name << "*" << endl
+                 << "_clone () const;"
+                 << endl;
 
             // d-tor
             //
             if (poly)
               os << "virtual" << endl
-                 << "~" << name << " ();";
-
-            os << endl;
+                 << "~" << name << " ();"
+                 << endl;
 
             // Custom data.
             //
@@ -334,6 +355,13 @@ namespace CXX
                  << "_dynamic_type () const;"
                  << endl;
             }
+
+            // _copy
+            //
+            if (clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << name << "&) const;"
+                 << endl;
 
             if (cd)
             {
@@ -401,7 +429,15 @@ namespace CXX
 
             // c-tor
             //
-            os << name << " ();";
+            os << name << " ();"
+               << endl;
+
+            // _clone
+            //
+            if (!fl && clone)
+              os << (poly ? "virtual " : "") << name << "*" << endl
+                 << "_clone () const;"
+                 << endl;
 
             // d-tor
             //
@@ -521,6 +557,13 @@ namespace CXX
                  << endl;
             }
 
+            // _copy
+            //
+            if (!fl && clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << name << "&) const;"
+                 << endl;
+
             if (stl)
             {
               os << "private:" << endl
@@ -634,7 +677,7 @@ namespace CXX
           belongs_ >> *this;
         }
 
-        // Type alignment ranking (the high the rank, the stricter
+        // Type alignment ranking (the higher the rank, the stricter
         // the alignment requirements):
         //
         // char      1
@@ -1315,7 +1358,7 @@ namespace CXX
         traverse (SemanticGraph::Attribute& a)
         {
           os << "// " << comment (a.name ()) << endl
-             << "// " << endl;
+             << "//" << endl;
 
           Boolean def (a.default_p ());
           Boolean fix (a.fixed_p ());
@@ -1413,7 +1456,7 @@ namespace CXX
         traverse (SemanticGraph::Element& e)
         {
           os << "// " << comment (e.name ()) << endl
-             << "// " << endl;
+             << "//" << endl;
 
           String const& name (ename (e));
           SemanticGraph::Type& t (e.type ());
@@ -1535,22 +1578,33 @@ namespace CXX
 
             os << "// " << comment (name) << " (" <<
               (fl ? "fixed-length" : "variable-length") << ")" << endl
-               << "// " << endl;
+               << "//" << endl;
 
             os << "class " << type
                << "{";
 
-            // c-tor & d-tor
+            // c-tor
             //
             os << "public:" << endl
                << type << " ();"
-               << "~" << type << " ();";
+               << endl;
+
+            // _clone
+            //
+            if (!fl && clone)
+              os << type << "*" << endl
+                 << "_clone () const;"
+                 << endl;
+
+            // d-tor
+            //
+            os << "~" << type << " ();"
+               << endl;
 
             // copy c-tor & operator=
             //
             if (!fl)
-              os << endl
-                 << "private:" << endl;
+              os << "private:" << endl;
 
             os << type << " (const " << type << "&);"
                << type << "& operator= (const " << type << "&);"
@@ -1595,6 +1649,13 @@ namespace CXX
                  << name << " ();"
                  << endl;
             }
+
+            // _copy
+            //
+            if (!fl && clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << type << "&) const;"
+                 << endl;
 
             os << "private:" << endl;
 
@@ -1739,22 +1800,33 @@ namespace CXX
 
             os << "// " << comment (name) << " (" <<
             (fl ? "fixed-length" : "variable-length") << ")" << endl
-             << "// " << endl;
+             << "//" << endl;
 
             os << "class " << type
                << "{";
 
-            // c-tor & d-tor
+            // c-tor
             //
             os << "public:" << endl
                << type << " ();"
-               << "~" << type << " ();";
+               << endl;
+
+            // _clone
+            //
+            if (!fl && clone)
+              os << type << "*" << endl
+                 << "_clone () const;"
+                 << endl;
+
+            // d-tor
+            //
+            os << "~" << type << " ();"
+               << endl;
 
             // copy c-tor & operator=
             //
             if (!fl)
-              os << endl
-                 << "private:" << endl;
+              os << "private:" << endl;
 
             os << type << " (const " << type << "&);"
                << type << "& operator= (const " << type << "&);"
@@ -1766,7 +1838,7 @@ namespace CXX
           else
           {
             os << "// " << comment (name) << endl
-               << "// " << endl;
+               << "//" << endl;
           }
 
           String const& arm_tag (earm_tag (c));
@@ -1837,6 +1909,13 @@ namespace CXX
                  << name << " ();"
                  << endl;
             }
+
+            // _copy
+            //
+            if (!fl && clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << type << "&) const;"
+                 << endl;
 
             os << "private:" << endl
                << "union"
@@ -1967,22 +2046,33 @@ namespace CXX
 
           os << "// " << comment (name) << " (" <<
             (fl ? "fixed-length" : "variable-length") << ")" << endl
-             << "// " << endl;
+             << "//" << endl;
 
           os << "class " << type
              << "{";
 
-          // c-tor & d-tor
+          // c-tor
           //
           os << "public:" << endl
              << type << " ();"
-             << "~" << type << " ();";
+             << endl;
+
+          // _clone
+          //
+          if (!fl && clone)
+            os << type << "*" << endl
+               << "_clone () const;"
+               << endl;
+
+          // d-tor
+          //
+          os << "~" << type << " ();"
+             << endl;
 
           // copy c-tor & operator=
           //
           if (!fl)
-            os << endl
-               << "private:" << endl;
+            os << "private:" << endl;
 
           os << type << " (const " << type << "&);"
              << type << "& operator= (const " << type << "&);"
@@ -2055,6 +2145,13 @@ namespace CXX
                << name << " ();"
                << endl;
           }
+
+          // _copy
+          //
+          if (!fl && clone)
+            os << (exceptions ? "void" : "bool") << endl
+               << "_copy (" << type << "&) const;"
+               << endl;
 
           os << "private:" << endl
              << "union"
@@ -2190,22 +2287,33 @@ namespace CXX
 
           os << "// " << comment (name) << " (" <<
             (fl ? "fixed-length" : "variable-length") << ")" << endl
-             << "// " << endl;
+             << "//" << endl;
 
           os << "class " << type
              << "{";
 
-          // c-tor & d-tor
+          // c-tor
           //
           os << "public:" << endl
              << type << " ();"
-             << "~" << type << " ();";
+             << endl;
+
+          // _clone
+          //
+          if (!fl && clone)
+            os << type << "*" << endl
+               << "_clone () const;"
+               << endl;
+
+          // d-tor
+          //
+          os << "~" << type << " ();"
+             << endl;
 
           // copy c-tor & operator=
           //
           if (!fl)
-            os << endl
-               << "private:" << endl;
+            os << "private:" << endl;
 
           os << type << " (const " << type << "&);"
              << type << "& operator= (const " << type << "&);"
@@ -2250,6 +2358,13 @@ namespace CXX
                << name << " ();"
                << endl;
           }
+
+          // _copy
+          //
+          if (!fl && clone)
+            os << (exceptions ? "void" : "bool") << endl
+               << "_copy (" << type << "&) const;"
+               << endl;
 
           os << "private:" << endl;
 
@@ -2372,22 +2487,33 @@ namespace CXX
 
           os << "// " << comment (name) << " (" <<
             (fl ? "fixed-length" : "variable-length") << ")" << endl
-             << "// " << endl;
+             << "//" << endl;
 
           os << "class " << type
              << "{";
 
-          // c-tor & d-tor
+          // c-tor
           //
           os << "public:" << endl
              << type << " ();"
-             << "~" << type << " ();";
+             << endl;
+
+          // _clone
+          //
+          if (!fl && clone)
+            os << type << "*" << endl
+               << "_clone () const;"
+               << endl;
+
+          // d-tor
+          //
+          os << "~" << type << " ();"
+             << endl;
 
           // copy c-tor & operator=
           //
           if (!fl)
-            os << endl
-               << "private:" << endl;
+            os << "private:" << endl;
 
           os << type << " (const " << type << "&);"
              << type << "& operator= (const " << type << "&);"
@@ -2430,6 +2556,13 @@ namespace CXX
                << name << " ();"
                << endl;
           }
+
+          // _copy
+          //
+          if (!fl && clone)
+            os << (exceptions ? "void" : "bool") << endl
+               << "_copy (" << type << "&) const;"
+               << endl;
 
           os << "private:" << endl;
 
@@ -2533,7 +2666,7 @@ namespace CXX
         Traversal::ContainsParticle& contains_data_;
       };
 
-      struct Complex : Traversal::Complex, Context
+      struct Complex: Traversal::Complex, Context
       {
         Complex (Context& c)
             : Context (c),
@@ -2646,20 +2779,28 @@ namespace CXX
             // c-tor
             //
             os << "public:" << endl
-               << name << " ();";
-
-            // d-tor
-            //
-            if (!restriction || poly)
-              os << (poly ? "virtual\n" : "") << "~" << name << " ();";
+               << name << " ();"
+               << endl;
 
             // copy c-tor & operator= (public)
             //
             if (fl && !restriction)
               os << name << " (const " << name << "&);"
-                 << name << "& operator= (const " << name << "&);";
+                 << name << "& operator= (const " << name << "&);"
+                 << endl;
 
-            os << endl;
+            // _clone
+            //
+            if (!fl && clone)
+              os << (poly ? "virtual " : "") << name << "*" << endl
+                 << "_clone () const;"
+                 << endl;
+
+            // d-tor
+            //
+            if (!restriction || poly)
+              os << (poly ? "virtual\n" : "") << "~" << name << " ();"
+                 << endl;
 
             if (!restriction)
             {
@@ -2719,6 +2860,13 @@ namespace CXX
                  << "_dynamic_type () const;"
                  << endl;
             }
+
+            // _copy
+            //
+            if (!fl && clone)
+              os << (exceptions ? "void" : "bool") << endl
+                 << "_copy (" << name << "&) const;"
+                 << endl;
 
             if (!restriction || cd)
               os << "private:" << endl;

@@ -60,6 +60,13 @@ namespace xsde
 #else
       void
 #endif
+      assign (void* data, size_t size);
+
+#ifndef XSDE_EXCEPTIONS
+      error
+#else
+      void
+#endif
       attach (void* data, size_t size, size_t capacity);
 
       void*
@@ -67,6 +74,16 @@ namespace xsde
 
       void
       swap (buffer&);
+
+      buffer*
+      _clone () const;
+
+#ifndef XSDE_EXCEPTIONS
+      bool
+#else
+      void
+#endif
+      _copy (buffer&) const;
 
     public:
       size_t

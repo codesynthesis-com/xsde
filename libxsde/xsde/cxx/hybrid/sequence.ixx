@@ -167,6 +167,13 @@ namespace xsde
         memcpy (data_, p, n * sizeof (T));
         size_ = n;
       }
+
+      template <typename T>
+      inline void pod_sequence<T>::
+      copy (pod_sequence& c) const
+      {
+        c.assign (begin (), size ());
+      }
 #else
       template <typename T>
       inline sequence_base::error pod_sequence<T>::
@@ -237,6 +244,13 @@ namespace xsde
         memcpy (data_, p, n * sizeof (T));
         size_ = n;
         return error_none;
+      }
+
+      template <typename T>
+      inline sequence_base::error pod_sequence<T>::
+      copy (pod_sequence& c) const
+      {
+        return c.assign (begin (), size ());
       }
 #endif
 
@@ -387,6 +401,13 @@ namespace xsde
         if (capacity_ < n)
           grow_ (n, sizeof (T), &move_);
       }
+
+      template <typename T>
+      inline void fix_sequence<T>::
+      copy (fix_sequence& c) const
+      {
+        c.assign (begin (), size ());
+      }
 #else
       template <typename T>
       inline sequence_base::error fix_sequence<T>::
@@ -447,6 +468,13 @@ namespace xsde
         if (capacity_ < n)
           r = grow_ (n, sizeof (T), &move_);
         return r;
+      }
+
+      template <typename T>
+      inline sequence_base::error fix_sequence<T>::
+      copy (fix_sequence& c) const
+      {
+        return c.assign (begin (), size ());
       }
 #endif
 
@@ -741,7 +769,7 @@ namespace xsde
 
       inline data_sequence::
       data_sequence ()
-          : destructor_ (0)
+          : destructor_ (0), clone_ (0)
       {
       }
 
@@ -749,6 +777,12 @@ namespace xsde
       destructor (data_sequence::destroy_func d)
       {
         destructor_ = d;
+      }
+
+      inline void data_sequence::
+      clone (data_sequence::clone_func c)
+      {
+        clone_ = c;
       }
 
       inline size_t data_sequence::

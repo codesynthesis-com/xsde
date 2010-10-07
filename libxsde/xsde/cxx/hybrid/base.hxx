@@ -10,6 +10,7 @@
 
 #ifndef XSDE_STL
 #  include <string.h> // strcmp
+#  include <xsde/cxx/strdupx.hxx>
 #endif
 
 #ifdef XSDE_CUSTOM_ALLOCATOR
@@ -598,6 +599,26 @@ namespace xsde
         operator char* () {return x_;}
 
         string_base& operator= (char* x) {base_value (x); return *this;}
+
+#ifndef XSDE_EXCEPTIONS
+        bool
+#else
+        void
+#endif
+        _copy (string_base& c) const
+        {
+          char* x = strdupx (x_);
+
+#ifndef XSDE_EXCEPTIONS
+          if (x == 0)
+            return false;
+#endif
+          c.base_value (x);
+
+#ifndef XSDE_EXCEPTIONS
+          return true;
+#endif
+        }
 
       protected:
         char* x_;
