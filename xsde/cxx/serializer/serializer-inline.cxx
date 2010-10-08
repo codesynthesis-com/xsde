@@ -14,6 +14,48 @@ namespace CXX
   {
     namespace
     {
+      Void
+      facet_calls (SemanticGraph::Complex& c, Context& ctx)
+      {
+        std::wostream& os (ctx.os);
+
+        using SemanticGraph::Restricts;
+        Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
+
+        for (Restricts::FacetIterator i (r.facet_begin ());
+             i != r.facet_end (); ++i)
+        {
+          if (i->first == L"length")
+          {
+            os << "this->_length_facet (" << i->second << "UL);";
+          }
+          else if (i->first == L"minLength")
+          {
+            os << "this->_min_length_facet (" << i->second << "UL);";
+          }
+          else if (i->first == L"maxLength")
+          {
+            os << "this->_max_length_facet (" << i->second << "UL);";
+          }
+          else if (i->first == L"minInclusive")
+          {
+            os << "this->_min_facet (" << i->second << ", true);";
+          }
+          else if (i->first == L"minExclusive")
+          {
+            os << "this->_min_facet (" << i->second << ", false);";
+          }
+          else if (i->first == L"maxInclusive")
+          {
+            os << "this->_max_facet (" << i->second << ", true);";
+          }
+          else if (i->first == L"maxExclusive")
+          {
+            os << "this->_max_facet (" << i->second << ", false);";
+          }
+        }
+      }
+
       struct Enumeration: Traversal::Enumeration, Context
       {
         Enumeration (Context& c)
@@ -26,20 +68,22 @@ namespace CXX
         {
           String const& name (ename (e));
 
-          Boolean facets (false); // Whether we need to set facets.
+          Boolean enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
-            StringBasedType t (facets);
+            StringBasedType t (enum_facets);
             t.dispatch (e);
           }
 
           UnsignedLong enum_count (0);
-          if (facets)
+          if (enum_facets)
           {
             for (Type::NamesIterator i (e.names_begin ()), end (e.names_end ());
                  i != end; ++i)
               ++enum_count;
           }
+
+          Boolean facets (enum_facets || has_facets (e));
 
           if (facets || tiein)
             os << "// " << name << endl
@@ -51,10 +95,9 @@ namespace CXX
             os << inl
                << name << "::" << endl
                << name << " ()" << endl
-               << "{"
-               << "this->_enumeration_facet (_xsde_" << name << "_enums_, " <<
-              enum_count << "UL);"
-               << "}";
+               << "{";
+            facet_calls (e, enum_count);
+            os << "}";
           }
 
           if (tiein)
@@ -76,8 +119,7 @@ namespace CXX
                << "{";
 
             if (facets)
-              os << "this->_enumeration_facet (_xsde_" << name <<
-                "_enums_, " << enum_count << "UL);";
+              facet_calls (e, enum_count);
 
             os << "}";
 
@@ -89,11 +131,21 @@ namespace CXX
                << "{";
 
             if (facets)
-              os << "this->_enumeration_facet (_xsde_" << name <<
-                "_enums_, " << enum_count << "UL);";
+              facet_calls (e, enum_count);
 
             os << "}";
           }
+        }
+
+      private:
+        Void
+        facet_calls (Type& e, UnsignedLong enum_count)
+        {
+          Serializer::facet_calls (e, *this);
+
+          if (enum_count != 0)
+            os << "this->_enumeration_facet (_xsde_" << ename (e) <<
+              "_enums_, " << enum_count << "UL);";
         }
       };
 
@@ -431,36 +483,7 @@ namespace CXX
           Boolean he (has<Traversal::Element> (c));
           Boolean ha (has<Traversal::Attribute> (c));
           Boolean restriction (restriction_p (c));
-
-          Boolean facets (false); // Defines facets.
-          if (validation && restriction)
-          {
-            SemanticGraph::Type& ub (ultimate_base (c));
-
-            if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
-                ub.is_a<SemanticGraph::Fundamental::String> ()        ||
-                ub.is_a<SemanticGraph::Fundamental::AnyURI> ())
-            {
-              using SemanticGraph::Restricts;
-              Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
-
-              if (!r.facet_empty ())
-              {
-                Restricts::FacetIterator end (r.facet_end ());
-                facets =
-                  r.facet_find (L"length") != end ||
-                  r.facet_find (L"minLength") != end ||
-                  r.facet_find (L"maxLength") != end ||
-                  r.facet_find (L"minInclusive") != end ||
-                  r.facet_find (L"minExclusive") != end ||
-                  r.facet_find (L"maxInclusive") != end ||
-                  r.facet_find (L"maxExclusive") != end;
-              }
-            }
-          }
+          Boolean facets (has_facets (c));
 
           if (!(tiein || facets || (!restriction && (he || ha))))
             return;
@@ -579,7 +602,7 @@ namespace CXX
           os << "{";
 
           if (facets)
-            facet_calls (c);
+            facet_calls (c, *this);
 
           os << "}";
 
@@ -634,50 +657,9 @@ namespace CXX
             os << "{";
 
             if (facets)
-              facet_calls (c);
+              facet_calls (c, *this);
 
             os << "}";
-          }
-        }
-
-      private:
-        Void
-        facet_calls (Type& c)
-        {
-          using SemanticGraph::Restricts;
-          Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
-
-          for (Restricts::FacetIterator i (r.facet_begin ());
-               i != r.facet_end (); ++i)
-          {
-            if (i->first == L"length")
-            {
-              os << "this->_length_facet (" << i->second << "UL);";
-            }
-            else if (i->first == L"minLength")
-            {
-              os << "this->_min_length_facet (" << i->second << "UL);";
-            }
-            else if (i->first == L"maxLength")
-            {
-              os << "this->_max_length_facet (" << i->second << "UL);";
-            }
-            else if (i->first == L"minInclusive")
-            {
-              os << "this->_min_facet (" << i->second << ", true);";
-            }
-            else if (i->first == L"minExclusive")
-            {
-              os << "this->_min_facet (" << i->second << ", false);";
-            }
-            else if (i->first == L"maxInclusive")
-            {
-              os << "this->_max_facet (" << i->second << ", true);";
-            }
-            else if (i->first == L"maxExclusive")
-            {
-              os << "this->_max_facet (" << i->second << ", false);";
-            }
           }
         }
 

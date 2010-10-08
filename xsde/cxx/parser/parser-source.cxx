@@ -36,14 +36,14 @@ namespace CXX
             base.inherits_p () &&
             base_ret == ret_type (base.inherits ().base ()));
 
-          Boolean facets (false); // Whether we need to set facets.
+          Boolean enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
-            StringBasedType t (facets);
+            StringBasedType t (enum_facets);
             t.dispatch (e);
           }
 
-          if (facets || same || ret == L"void" || poly_code ||
+          if (enum_facets || same || ret == L"void" || poly_code ||
               (tiein && !(base_same || base_ret == L"void")))
           {
             os << "// " << name << endl
@@ -155,7 +155,7 @@ namespace CXX
                << "}";
           }
 
-          if (facets)
+          if (enum_facets)
           {
             typedef Cult::Containers::Set<String> Enums;
             Enums enums;

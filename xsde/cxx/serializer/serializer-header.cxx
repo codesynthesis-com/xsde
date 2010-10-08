@@ -275,12 +275,14 @@ namespace CXX
           SemanticGraph::Type& base (e.inherits ().base ());
           String fq_base (fq_name (base));
 
-          Boolean facets (false); // Whether we need to set facets.
+          Boolean enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
-            StringBasedType t (facets);
+            StringBasedType t (enum_facets);
             t.dispatch (e);
           }
+
+          Boolean facets (enum_facets || has_facets (e));
 
           os << "class " << name << ": public " <<
             (mixin ? "virtual " : "") << fq_base
@@ -362,7 +364,7 @@ namespace CXX
                << name << " (" << name << "*, void*);";
           }
 
-          if (facets)
+          if (enum_facets)
           {
             UnsignedLong enum_count (0);
 
@@ -1041,6 +1043,7 @@ namespace CXX
           // as in the base. We only need the serialization/validation code.
           //
           Boolean restriction (restriction_p (c));
+          Boolean facets (has_facets (c));
 
           Boolean hb (c.inherits_p ());
           Boolean he (has<Traversal::Element> (c));
@@ -1055,36 +1058,6 @@ namespace CXX
             RequiredAttributeTest test (hra);
             Traversal::Names names_test (test);
             names (c, names_test);
-          }
-
-          Boolean facets (false); // Defines facets.
-          if (validation && restriction)
-          {
-            SemanticGraph::Type& ub (ultimate_base (c));
-
-            if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
-                ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
-                ub.is_a<SemanticGraph::Fundamental::String> ()        ||
-                ub.is_a<SemanticGraph::Fundamental::AnyURI> ())
-            {
-              using SemanticGraph::Restricts;
-              Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
-
-              if (!r.facet_empty ())
-              {
-                Restricts::FacetIterator end (r.facet_end ());
-                facets =
-                  r.facet_find (L"length") != end ||
-                  r.facet_find (L"minLength") != end ||
-                  r.facet_find (L"maxLength") != end ||
-                  r.facet_find (L"minInclusive") != end ||
-                  r.facet_find (L"minExclusive") != end ||
-                  r.facet_find (L"maxInclusive") != end ||
-                  r.facet_find (L"maxExclusive") != end;
-              }
-            }
           }
 
           //

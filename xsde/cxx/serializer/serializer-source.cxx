@@ -384,10 +384,10 @@ namespace CXX
           String const& arg (arg_type (e));
           SemanticGraph::Type& base (e.inherits ().base ());
 
-          Boolean facets (false); // Whether we need to set facets.
+          Boolean enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
-            StringBasedType t (facets);
+            StringBasedType t (enum_facets);
             t.dispatch (e);
           }
 
@@ -480,7 +480,7 @@ namespace CXX
             t.dispatch (base);
           }
 
-          if (facets)
+          if (enum_facets)
           {
             typedef Cult::Containers::Set<String> Enums;
             Enums enums;
