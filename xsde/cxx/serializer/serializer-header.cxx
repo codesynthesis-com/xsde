@@ -1066,7 +1066,8 @@ namespace CXX
                 ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
                 ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
                 ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
-                ub.is_a<SemanticGraph::Fundamental::String> ())
+                ub.is_a<SemanticGraph::Fundamental::String> ()        ||
+                ub.is_a<SemanticGraph::Fundamental::AnyURI> ())
             {
               using SemanticGraph::Restricts;
               Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));

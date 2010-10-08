@@ -335,12 +335,38 @@ namespace CXX
             //
             os << "void " << name << "::" << endl
                << "_characters (const " << string_type << "& s)"
+               << "{"
+               << "if (this->_facets ().whitespace_ == 2 &&" << endl
+               << "this->" << state << ".str_.size () == 0)"
+               << "{"
+               << string_type << " tmp (s.data (), s.size ());"
+               << endl
+               << "if (::xsde::cxx::trim_left (tmp) != 0)"
                << "{";
 
             if (stl)
-              os << "this->" << state << ".str_.append (s.data (), s.size ());";
+              os << "this->" << state << ".str_ += tmp;"
+                 << "}"
+                 << "}"
+                 << "else" << endl
+                 << "this->" << state << ".str_ += s;";
             else
             {
+              if (exceptions)
+                os << "this->" << state << ".str_.append (tmp.data (), " <<
+                  "tmp.size ());";
+              else
+              {
+                os << "if (this->" << state << ".str_.append (" <<
+                  "tmp.data (), tmp.size ()))" << endl
+                   << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
+              }
+
+              os << "}"
+                 << "}"
+                 << "else"
+                 << "{";
+
               if (exceptions)
                 os << "this->" << state << ".str_.append (s.data (), s.size ());";
               else
@@ -349,34 +375,37 @@ namespace CXX
                   "s.data (), s.size ()))" << endl
                    << "this->_sys_error (::xsde::cxx::sys_error::no_memory);";
               }
+
+              os << "}";
             }
 
             os << "}";
 
             // _post
             //
+            os << "void " << name << "::" << endl
+               << "_post ()"
+               << "{";
+
             if (!options.value<CLI::suppress_validation> () &&
                 !options.value<CLI::suppress_parser_val> ())
             {
-              // Do facet validation.
-              //
-              os << "void " << name << "::" << endl
-                 << "_post ()"
-                 << "{"
-                 << "::xsde::cxx::parser::validating::string_common::" <<
-                "validate_facets (" << endl;
-
-              if (stl)
-                os << "this->" << state << ".str_.c_str ()," << endl
-                   << "this->" << state << ".str_.size ()," << endl;
-              else
-                os << "this->" << state << ".str_.data ()," << endl
-                   << "this->" << state << ".str_.size ()," << endl;
-
-              os << "this->_facets ()," << endl
-                 << "this->_context ());"
-                 << "}";
+              os << "::xsde::cxx::parser::validating::string_common::" <<
+                "validate_facets (" << endl
+                 << "this->" << state << ".str_," << endl
+                 << "this->_facets ()," << endl
+                 << "this->_context ());";
             }
+            else
+            {
+
+              os << "::xsde::cxx::parser::non_validating::string_common::" <<
+                "process_facets (" << endl
+                 << "this->" << state << ".str_," << endl
+                 << "this->_facets ());";
+            }
+
+            os << "}";
           }
 
           // post
@@ -2073,14 +2102,17 @@ namespace CXX
     Void
     generate_parser_source (Context& ctx)
     {
-      if (ctx.enum_ &&
-          !ctx.options.value<CLI::suppress_validation> () &&
-          !ctx.options.value<CLI::suppress_parser_val> ())
+      if (ctx.enum_)
       {
         // We need this functionality for enum mapping.
         //
-        ctx.os << "#include <xsde/cxx/parser/validating/string-common.hxx>" << endl
-               << endl;
+        if (!ctx.options.value<CLI::suppress_validation> () &&
+            !ctx.options.value<CLI::suppress_parser_val> ())
+          ctx.os << "#include <xsde/cxx/parser/validating/string-common.hxx>" << endl
+                 << endl;
+        else
+          ctx.os << "#include <xsde/cxx/parser/non-validating/string-common.hxx>" << endl
+                 << endl;
       }
 
       {

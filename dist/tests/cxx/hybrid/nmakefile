@@ -21,6 +21,9 @@ dirs = $(dirs) built-in default enumeration list test-template union
 dirs = $(dirs) iso8859-1
 !endif
 
+!if "$(XSDE_PARSER_VALIDATION)" == "y"
+dirs = $(dirs) choice recursive clone
+
 !if "$(XSDE_CDR)" == "y"
 dirs = $(dirs) binary/cdr
 !endif
@@ -28,9 +31,6 @@ dirs = $(dirs) binary/cdr
 !if "$(XSDE_XDR)" == "y"
 dirs = $(dirs) binary/xdr
 !endif
-
-!if "$(XSDE_PARSER_VALIDATION)" == "y"
-dirs = $(dirs) choice recursive clone
 !endif
 
 !endif # XSDE_IOSTREAM

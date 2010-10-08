@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/non-validating/normalized-string.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -29,29 +30,35 @@ namespace xsde
         void normalized_string_pimpl::
         _characters (const ro_string& s)
         {
+          if (_facets ().whitespace_ == 2 && str_.size () == 0)
+          {
+            ro_string tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+            {
 #ifdef XSDE_EXCEPTIONS
-          str_.append (s.data (), s.size ());
+              str_.append (tmp.data (), tmp.size ());
 #else
-          if (str_.append (s.data (), s.size ()))
-            _sys_error (sys_error::no_memory);
+              if (str_.append (tmp.data (), tmp.size ()))
+                _sys_error (sys_error::no_memory);
 #endif
+            }
+          }
+          else
+          {
+#ifdef XSDE_EXCEPTIONS
+            str_.append (s.data (), s.size ());
+#else
+            if (str_.append (s.data (), s.size ()))
+              _sys_error (sys_error::no_memory);
+#endif
+          }
         }
 
         char* normalized_string_pimpl::
         post_normalized_string ()
         {
-          typedef string::size_type size_type;
-
-          size_type size = str_.size ();
-
-          for (size_type i = 0; i < size; ++i)
-          {
-            char& c = str_[i];
-
-            if (c == 0x0A || c == 0x0D || c == 0x09)
-              c = 0x20;
-          }
-
+          string_common::process_facets (str_, _facets ());
           return str_.detach ();
         }
       }

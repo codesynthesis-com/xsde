@@ -163,6 +163,11 @@ namespace CXX
       static String const&
       eimpl (SemanticGraph::Type&);
 
+
+    public:
+      Boolean
+      has_facets (SemanticGraph::Complex& c);
+
     public:
       CLI::Options const& options;
       String& xml_parser;

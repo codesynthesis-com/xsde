@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/non-validating/uri.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -57,8 +58,7 @@ namespace xsde
         char* uri_pimpl::
         post_uri ()
         {
-          ro_string tmp (str_);
-          str_.truncate (trim_right (tmp));
+          string_common::process_facets (str_, _facets ());
           return str_.detach ();
         }
       }

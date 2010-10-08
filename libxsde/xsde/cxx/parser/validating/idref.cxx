@@ -60,19 +60,11 @@ namespace xsde
         void idref_pimpl::
         _post ()
         {
-          ro_string tmp (str_.data (), str_.size ());
-          ro_string::size_type size = trim_right (tmp);
-
-          if (xml::valid_ncname (tmp.data (), size))
-            str_.truncate (size);
-          else
-          {
-            _schema_error (schema_error::invalid_idref_value);
+          if (!string_common::validate_facets (str_, _facets (), _context ()))
             return;
-          }
 
-          string_common::validate_facets (
-            str_.data (), str_.size (), _facets (), _context ());
+          if (!xml::valid_ncname (str_.data (), str_.size ()))
+            _schema_error (schema_error::invalid_idref_value);
         }
 
         char* idref_pimpl::

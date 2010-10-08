@@ -37,10 +37,11 @@ namespace xsde
         void language_pimpl::
         _post ()
         {
-          typedef ro_string::size_type size_type;
+          if (!string_common::validate_facets (str_, _facets (), _context ()))
+            return;
 
-          ro_string tmp (str_);
-          size_type size = trim_right (tmp);
+          typedef std::string::size_type size_type;
+          size_type size = str_.size ();
 
           // language := ALPHA{1,8} *(-(ALPHA | DIGIT){1,8})
           //
@@ -53,7 +54,7 @@ namespace xsde
 
             for (; i < size && n < 8; ++n, ++i)
             {
-              char c = tmp[i];
+              char c = str_[i];
 
               if (!((c >= 'a' && c <= 'z') ||
                     (c >= 'A' && c <= 'Z') ||
@@ -70,23 +71,15 @@ namespace xsde
             if (i == size)
               break;
 
-            if (tmp[i++] != '-')
+            if (str_[i++] != '-')
             {
               ok = false;
               break;
             }
           }
 
-          if (ok)
-            str_.resize (size);
-          else
-          {
+          if (!ok)
             _schema_error (schema_error::invalid_language_value);
-            return;
-          }
-
-          string_common::validate_facets (
-            str_.c_str (), str_.size (), _facets (), _context ());
         }
 
         std::string language_pimpl::

@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/non-validating/name.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -57,8 +58,7 @@ namespace xsde
         char* name_pimpl::
         post_name ()
         {
-          ro_string tmp (str_.data (), str_.size ());
-          str_.truncate (trim_right (tmp));
+          string_common::process_facets (str_, _facets ());
           return str_.detach ();
         }
       }

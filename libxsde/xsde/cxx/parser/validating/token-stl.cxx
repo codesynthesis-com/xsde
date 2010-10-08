@@ -37,35 +37,7 @@ namespace xsde
         void token_pimpl::
         _post ()
         {
-          std::string::size_type size = str_.size ();
-          std::string::size_type j = 0;
-
-          bool subs = false;
-
-          for (std::string::size_type i = 0; i < size; ++i)
-          {
-            char c = str_[i];
-
-            if (c == 0x20 || c == 0x0A || c == 0x0D || c == 0x09)
-            {
-              subs = true;
-            }
-            else
-            {
-              if (subs)
-              {
-                subs = false;
-                str_[j++] = 0x20;
-              }
-
-              str_[j++] = c;
-            }
-          }
-
-          str_.resize (j);
-
-          string_common::validate_facets (
-            str_.c_str (), str_.size (), _facets (), _context ());
+          string_common::validate_facets (str_, _facets (), _context ());
         }
 
         std::string token_pimpl::

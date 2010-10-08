@@ -41,11 +41,7 @@ namespace xsde
           // can be a URI and conforming processors do not need to figure
           // out and verify particular URI schemes.
           //
-          ro_string tmp (str_);
-          str_.resize (trim_right (tmp));
-
-          string_common::validate_facets (
-            str_.c_str (), str_.size (), _facets (), _context ());
+          string_common::validate_facets (str_, _facets (), _context ());
         }
 
         std::string uri_pimpl::

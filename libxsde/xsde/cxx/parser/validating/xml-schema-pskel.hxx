@@ -655,7 +655,7 @@ namespace xsde
 
         //
         // String-based types. If STL is disabled you are getting a C
-        // string that you have to delete with delete[] (or custom 
+        // string that you have to delete with delete[] (or custom
         // deallocator if enabled).
         //
 
@@ -673,6 +673,9 @@ namespace xsde
           _min_length_facet (size_t);
 
           void
+          _whitespace_facet (unsigned int);
+
+          void
           _enumeration_facet (const char* const*, size_t count);
 
         public:
@@ -688,6 +691,12 @@ namespace xsde
             unsigned int length_set_ : 1;
             unsigned int min_length_set_ : 1;
             unsigned int max_length_set_ : 1;
+
+            // 0 - preserve
+            // 1 - replace
+            // 2 - collapse
+            //
+            unsigned int whitespace_: 2;
           };
 
         protected:
@@ -739,9 +748,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          normalized_string_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          normalized_string_pskel ();
           normalized_string_pskel (normalized_string_pskel* impl, void*);
 
         protected:
@@ -768,9 +777,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          token_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          token_pskel ();
           token_pskel (token_pskel* impl, void*);
 
         protected:
@@ -797,9 +806,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          name_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          name_pskel ();
           name_pskel (name_pskel* impl, void*);
 
         protected:
@@ -826,9 +835,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          nmtoken_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          nmtoken_pskel ();
           nmtoken_pskel (nmtoken_pskel* impl, void*);
 
         protected:
@@ -877,9 +886,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          ncname_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          ncname_pskel ();
           ncname_pskel (ncname_pskel* impl, void*);
 
         protected:
@@ -906,9 +915,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          id_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          id_pskel ();
           id_pskel (id_pskel* impl, void*);
 
         protected:
@@ -935,9 +944,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          idref_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          idref_pskel ();
           idref_pskel (idref_pskel* impl, void*);
 
         protected:
@@ -986,9 +995,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          language_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          language_pskel ();
           language_pskel (language_pskel* impl, void*);
 
         protected:
@@ -1015,9 +1024,9 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          uri_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          uri_pskel ();
           uri_pskel (uri_pskel* impl, void*);
 
         protected:

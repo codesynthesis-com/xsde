@@ -193,6 +193,49 @@ namespace CXX
       return t.context ().get<String> ("p:impl");
     }
 
+    Boolean Context::
+    has_facets (SemanticGraph::Complex& c)
+    {
+      if (restriction_p (c))
+      {
+        using SemanticGraph::Restricts;
+        Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
+
+        if (r.facet_empty ())
+          return false;
+
+        SemanticGraph::Type& ub (ultimate_base (c));
+        Restricts::FacetIterator end (r.facet_end ());
+
+        if ((ub.is_a<SemanticGraph::Fundamental::String> () ||
+             ub.is_a<SemanticGraph::Fundamental::AnyURI> ()) &&
+            r.facet_find (L"whiteSpace") != end)
+          return true;
+
+        if (validation)
+        {
+          if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
+              ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
+              ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
+              ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()   ||
+              ub.is_a<SemanticGraph::Fundamental::String> ()        ||
+              ub.is_a<SemanticGraph::Fundamental::AnyURI> ())
+          {
+            if (r.facet_find (L"length") != end       ||
+                r.facet_find (L"minLength") != end    ||
+                r.facet_find (L"maxLength") != end    ||
+                r.facet_find (L"minInclusive") != end ||
+                r.facet_find (L"minExclusive") != end ||
+                r.facet_find (L"maxInclusive") != end ||
+                r.facet_find (L"maxExclusive") != end)
+              return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
     // Includes
     //
     Void TypeForward::

@@ -60,8 +60,11 @@ namespace xsde
         void name_pimpl::
         _post ()
         {
-          ro_string tmp (str_.data (), str_.size ());
-          ro_string::size_type size = trim_right (tmp);
+          if (!string_common::validate_facets (str_, _facets (), _context ()))
+            return;
+
+          typedef string::size_type size_type;
+          size_type size = str_.size ();
 
           // For now we are only checking the US-ASCII characters.
           //
@@ -89,16 +92,8 @@ namespace xsde
             }
           }
 
-          str_.truncate (size);
-
           if (!ok)
-          {
             _schema_error (schema_error::invalid_name_value);
-            return;
-          }
-
-          string_common::validate_facets (
-            str_.data (), str_.size (), _facets (), _context ());
         }
 
         char* name_pimpl::

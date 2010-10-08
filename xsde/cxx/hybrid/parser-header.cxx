@@ -135,13 +135,9 @@ namespace CXX
 
               // _post
               //
-              if (!options.value<CLI::suppress_validation> () &&
-                  !options.value<CLI::suppress_parser_val> ())
-              {
-                os << "virtual void" << endl
-                   << "_post ();"
-                   << endl;
-              }
+              os << "virtual void" << endl
+                 << "_post ();"
+                 << endl;
             }
 
 

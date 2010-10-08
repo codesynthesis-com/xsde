@@ -454,6 +454,7 @@ namespace xsde
           facets_.length_set_ = 0;
           facets_.min_length_set_ = 0;
           facets_.max_length_set_ = 0;
+          facets_.whitespace_ = 0;
 
           facets_.enum_ = 0;
           facets_.enum_count_ = 0;
@@ -478,6 +479,12 @@ namespace xsde
         {
           facets_.min_length_ = v;
           facets_.min_length_set_ = 1;
+        }
+
+        inline void string_facets::
+        _whitespace_facet (unsigned int v)
+        {
+          facets_.whitespace_ = v;
         }
 
         inline void string_facets::
@@ -516,17 +523,21 @@ namespace xsde
 
         // normalized_string_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline normalized_string_pskel::
         normalized_string_pskel ()
-            : normalized_string_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          normalized_string_impl_ = 0;
+#endif
+          _whitespace_facet (1); // replace
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline normalized_string_pskel::
         normalized_string_pskel (normalized_string_pskel* impl, void*)
             : simple_content (impl, 0), normalized_string_impl_ (impl)
         {
+          _whitespace_facet (1); // replace
         }
 #endif
 
@@ -544,17 +555,21 @@ namespace xsde
 
         // token_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline token_pskel::
         token_pskel ()
-            : token_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          token_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline token_pskel::
         token_pskel (token_pskel* impl, void*)
             : simple_content (impl, 0), token_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& token_pskel::
@@ -570,17 +585,21 @@ namespace xsde
 
         // name_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline name_pskel::
         name_pskel ()
-            : name_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          name_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline name_pskel::
         name_pskel (name_pskel* impl, void*)
             : simple_content (impl, 0), name_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& name_pskel::
@@ -596,17 +615,21 @@ namespace xsde
 
         // nmtoken_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline nmtoken_pskel::
         nmtoken_pskel ()
-            : nmtoken_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          nmtoken_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline nmtoken_pskel::
         nmtoken_pskel (nmtoken_pskel* impl, void*)
             : simple_content (impl, 0), nmtoken_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& nmtoken_pskel::
@@ -638,17 +661,21 @@ namespace xsde
 
         // ncname_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline ncname_pskel::
         ncname_pskel ()
-            : ncname_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          ncname_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline ncname_pskel::
         ncname_pskel (ncname_pskel* impl, void*)
             : simple_content (impl, 0), ncname_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& ncname_pskel::
@@ -664,17 +691,21 @@ namespace xsde
 
         // id_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline id_pskel::
         id_pskel ()
-            : id_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          id_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline id_pskel::
         id_pskel (id_pskel* impl, void*)
             : simple_content (impl, 0), id_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& id_pskel::
@@ -690,17 +721,21 @@ namespace xsde
 
         // idref_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline idref_pskel::
         idref_pskel ()
-            : idref_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          idref_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline idref_pskel::
         idref_pskel (idref_pskel* impl, void*)
             : simple_content (impl, 0), idref_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& idref_pskel::
@@ -732,17 +767,21 @@ namespace xsde
 
         // language_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline language_pskel::
         language_pskel ()
-            : language_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          language_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline language_pskel::
         language_pskel (language_pskel* impl, void*)
             : simple_content (impl, 0), language_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& language_pskel::
@@ -758,17 +797,21 @@ namespace xsde
 
         // uri_pskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline uri_pskel::
         uri_pskel ()
-            : uri_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          uri_impl_ = 0;
+#endif
+          _whitespace_facet (2); // collapse
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline uri_pskel::
         uri_pskel (uri_pskel* impl, void*)
             : simple_content (impl, 0), uri_impl_ (impl)
         {
+          _whitespace_facet (2); // collapse
         }
 #endif
         inline const string_facets::facets& uri_pskel::

@@ -208,6 +208,7 @@ else # validation
 cxx_tun +=                                          \
 cxx/parser/non-validating/parser.cxx                \
 cxx/parser/non-validating/time-zone.cxx             \
+cxx/parser/non-validating/string-common.cxx         \
 cxx/parser/non-validating/xml-schema-pskel.cxx
 
 cxx_tun +=                                          \

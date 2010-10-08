@@ -21,6 +21,9 @@ ifeq ($(XSDE_ENCODING),iso8859-1)
 dirs += iso8859-1
 endif
 
+ifeq ($(XSDE_PARSER_VALIDATION),y)
+dirs += choice recursive clone
+
 ifeq ($(XSDE_CDR),y)
 dirs += binary/cdr
 endif
@@ -28,9 +31,6 @@ endif
 ifeq ($(XSDE_XDR),y)
 dirs += binary/xdr
 endif
-
-ifeq ($(XSDE_PARSER_VALIDATION),y)
-dirs += choice recursive clone
 endif
 
 endif # XSDE_IOSTREAM

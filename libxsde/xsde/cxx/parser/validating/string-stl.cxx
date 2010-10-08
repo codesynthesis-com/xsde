@@ -23,14 +23,21 @@ namespace xsde
         void string_pimpl::
         _characters (const ro_string& s)
         {
-          str_ += s;
+          if (_facets ().whitespace_ == 2 && str_.size () == 0)
+          {
+            ro_string tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+              str_ += tmp;
+          }
+          else
+            str_ += s;
         }
 
         void string_pimpl::
         _post ()
         {
-          string_common::validate_facets (
-            str_.c_str (), str_.size (), _facets (), _context ());
+          string_common::validate_facets (str_, _facets (), _context ());
         }
 
         std::string string_pimpl::

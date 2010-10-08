@@ -6,6 +6,7 @@
 #include <xsde/cxx/config.hxx>
 
 #include <xsde/cxx/parser/non-validating/token.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -57,35 +58,7 @@ namespace xsde
         char* token_pimpl::
         post_token ()
         {
-          typedef string::size_type size_type;
-
-          size_type size = str_.size ();
-          size_type j = 0;
-
-          bool subs = false;
-
-          for (size_type i = 0; i < size; ++i)
-          {
-            char c = str_[i];
-
-            if (c == 0x20 || c == 0x0A || c == 0x0D || c == 0x09)
-            {
-              subs = true;
-            }
-            else
-            {
-              if (subs)
-              {
-                subs = false;
-                str_[j++] = 0x20;
-              }
-
-              str_[j++] = c;
-            }
-          }
-
-          str_.truncate (j);
-
+          string_common::process_facets (str_, _facets ());
           return str_.detach ();
         }
       }

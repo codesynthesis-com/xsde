@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/non-validating/name-stl.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -36,8 +37,7 @@ namespace xsde
         std::string name_pimpl::
         post_name ()
         {
-          ro_string tmp (str_);
-          str_.resize (trim_right (tmp));
+          string_common::process_facets (str_, _facets ());
 
           std::string r;
           r.swap (str_);

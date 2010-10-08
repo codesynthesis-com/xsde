@@ -4,6 +4,7 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <xsde/cxx/parser/non-validating/normalized-string-stl.hxx>
+#include <xsde/cxx/parser/non-validating/string-common.hxx>
 
 namespace xsde
 {
@@ -22,21 +23,21 @@ namespace xsde
         void normalized_string_pimpl::
         _characters (const ro_string& s)
         {
-          str_ += s;
+          if (_facets ().whitespace_ == 2 && str_.size () == 0)
+          {
+            ro_string tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+              str_ += tmp;
+          }
+          else
+            str_ += s;
         }
 
         std::string normalized_string_pimpl::
         post_normalized_string ()
         {
-          std::string::size_type size = str_.size ();
-
-          for (std::string::size_type i = 0; i < size; ++i)
-          {
-            char& c = str_[i];
-
-            if (c == 0x0A || c == 0x0D || c == 0x09)
-              c = 0x20;
-          }
+          string_common::process_facets (str_, _facets ());
 
           std::string r;
           r.swap (str_);

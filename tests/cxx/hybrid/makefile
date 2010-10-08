@@ -32,6 +32,9 @@ ifeq ($(xsde_encoding),iso8859-1)
 build_tests += iso8859-1
 endif
 
+ifeq ($(xsde_parser_validation),y)
+build_tests += choice recursive clone
+
 ifeq ($(xsde_cdr),y)
 build_tests += binary/cdr
 endif
@@ -39,9 +42,6 @@ endif
 ifeq ($(xsde_xdr),y)
 build_tests += binary/xdr
 endif
-
-ifeq ($(xsde_parser_validation),y)
-build_tests += choice recursive clone
 endif
 
 endif # xsde_iostream

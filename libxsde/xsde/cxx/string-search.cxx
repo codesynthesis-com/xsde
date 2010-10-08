@@ -24,15 +24,16 @@ namespace xsde
       while (l <= h)
       {
         m = l + (h - l) / 2;
+
         r = strcmp (array[m], s);
 
-        if (r == 0)
+        if (r == 0 || l == h)
           break;
 
         if (r < 0)
           l = m + 1;
         else
-          h = m - 1;
+          h = (m == 0 ? 0 : m - 1);
       }
 
       return r == 0 ? m : size;

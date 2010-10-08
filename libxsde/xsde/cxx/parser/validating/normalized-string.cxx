@@ -30,31 +30,35 @@ namespace xsde
         void normalized_string_pimpl::
         _characters (const ro_string& s)
         {
+          if (_facets ().whitespace_ == 2 && str_.size () == 0)
+          {
+            ro_string tmp (s.data (), s.size ());
+
+            if (trim_left (tmp) != 0)
+            {
 #ifdef XSDE_EXCEPTIONS
-          str_.append (s.data (), s.size ());
+              str_.append (tmp.data (), tmp.size ());
 #else
-          if (str_.append (s.data (), s.size ()))
-            _sys_error (sys_error::no_memory);
+              if (str_.append (tmp.data (), tmp.size ()))
+                _sys_error (sys_error::no_memory);
 #endif
+            }
+          }
+          else
+          {
+#ifdef XSDE_EXCEPTIONS
+            str_.append (s.data (), s.size ());
+#else
+            if (str_.append (s.data (), s.size ()))
+              _sys_error (sys_error::no_memory);
+#endif
+          }
         }
 
         void normalized_string_pimpl::
         _post ()
         {
-          typedef string::size_type size_type;
-
-          size_type size = str_.size ();
-
-          for (size_type i = 0; i < size; ++i)
-          {
-            char& c = str_[i];
-
-            if (c == 0x0A || c == 0x0D || c == 0x09)
-              c = 0x20;
-          }
-
-          string_common::validate_facets (
-            str_.data (), str_.size (), _facets (), _context ());
+          string_common::validate_facets (str_, _facets (), _context ());
         }
 
         char* normalized_string_pimpl::
