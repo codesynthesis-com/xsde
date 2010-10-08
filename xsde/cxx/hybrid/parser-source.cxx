@@ -121,6 +121,9 @@ namespace CXX
 
           Boolean fl (fixed_length (e));
 
+          Boolean val (!options.value<CLI::suppress_validation> () &&
+                       !options.value<CLI::suppress_parser_val> ());
+
           SemanticGraph::Context& ec (e.context ());
           SemanticGraph::Type& b (e.inherits ().base ());
 
@@ -383,29 +386,18 @@ namespace CXX
 
             // _post
             //
-            os << "void " << name << "::" << endl
-               << "_post ()"
-               << "{";
-
-            if (!options.value<CLI::suppress_validation> () &&
-                !options.value<CLI::suppress_parser_val> ())
+            if (val)
             {
-              os << "::xsde::cxx::parser::validating::string_common::" <<
+              os << "void " << name << "::" << endl
+                 << "_post ()"
+                 << "{"
+                 << "::xsde::cxx::parser::validating::string_common::" <<
                 "validate_facets (" << endl
                  << "this->" << state << ".str_," << endl
                  << "this->_facets ()," << endl
-                 << "this->_context ());";
+                 << "this->_context ());" << endl
+                 << "}";
             }
-            else
-            {
-
-              os << "::xsde::cxx::parser::non_validating::string_common::" <<
-                "process_facets (" << endl
-                 << "this->" << state << ".str_," << endl
-                 << "this->_facets ());";
-            }
-
-            os << "}";
           }
 
           // post
@@ -461,10 +453,19 @@ namespace CXX
           }
           else
           {
+            if (!val)
+            {
+              os << "::xsde::cxx::parser::non_validating::string_common::" <<
+                "process_facets (" << endl
+                 << "this->" << state << ".str_," << endl
+                 << "this->_facets ());"
+                 << endl;
+            }
+
             String const& vt (ec.get<String> ("value-type"));
 
-            os << type << "::" << vt << " v = static_cast< " << type <<
-              "::" << vt << " > (0);"
+            os << type << "::" << vt << " v =" << endl
+               << "static_cast< " << type << "::" << vt << " > (0);"
                << "const char* s = this->" << state << ".str_." <<
               (stl ? "c_str" : "data") <<  " ();"
                << endl;

@@ -74,6 +74,9 @@ namespace CXX
           if (name)
           {
             Boolean fl (fixed_length (e));
+            Boolean val (!options.value<CLI::suppress_validation> () &&
+                         !options.value<CLI::suppress_parser_val> ());
+
             SemanticGraph::Type& b (e.inherits ().base ());
 
             os << "class " << name << ": public " <<
@@ -135,9 +138,12 @@ namespace CXX
 
               // _post
               //
-              os << "virtual void" << endl
-                 << "_post ();"
-                 << endl;
+              if (val)
+              {
+                os << "virtual void" << endl
+                   << "_post ();"
+                   << endl;
+              }
             }
 
 
