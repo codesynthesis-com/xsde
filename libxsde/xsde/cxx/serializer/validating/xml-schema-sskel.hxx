@@ -12,6 +12,10 @@
 #  include <string>
 #endif
 
+#ifdef XSDE_REGEXP
+#  include <xsde/c/regexp/xmlregexp.h>
+#endif
+
 #include <xsde/cxx/serializer/xml-schema.hxx>
 
 #include <xsde/cxx/serializer/validating/serializer.hxx>
@@ -643,6 +647,9 @@ namespace xsde
         struct string_facets
         {
           string_facets ();
+#ifdef XSDE_REGEXP
+          ~string_facets ();
+#endif
 
           void
           _length_facet (size_t);
@@ -656,6 +663,9 @@ namespace xsde
           void
           _enumeration_facet (const char* const*, size_t count);
 
+          void
+          _pattern_facet (const char*);
+
         public:
           struct facets
           {
@@ -666,9 +676,24 @@ namespace xsde
             const char* const* enum_;
             size_t enum_count_;
 
+#ifdef XSDE_REGEXP
+            union
+            {
+              const char* str;
+              xmlRegexpPtr regexp;
+            } pattern_;
+#endif
             unsigned int length_set_ : 1;
             unsigned int min_length_set_ : 1;
             unsigned int max_length_set_ : 1;
+
+#ifdef XSDE_REGEXP
+            // 0 - not set
+            // 1 - string
+            // 2 - compiled
+            //
+            unsigned int pattern_set_: 2;
+#endif
           };
 
         protected:

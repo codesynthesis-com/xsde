@@ -97,6 +97,12 @@ $echo
 serializer_validation=`read_y_n y`
 
 $echo
+$echo "Would you like to include regexp support for xs:pattern validation?"
+$echo
+
+regexp=`read_y_n y`
+
+$echo
 $echo "Please select the base parser/serializer reuse style you would"
 $echo "like to use:"
 $echo
@@ -197,6 +203,7 @@ echo "xsde_longlong                       := $longlong"                       >>
 echo "xsde_snprintf                       := $snprintf"                       >>$1
 echo "xsde_parser_validation              := $parser_validation"              >>$1
 echo "xsde_serializer_validation          := $serializer_validation"          >>$1
+echo "xsde_regexp                         := $regexp"                         >>$1
 echo "xsde_reuse_style                    := $reuse_style"                    >>$1
 echo "xsde_custom_allocator               := $allocator"                      >>$1
 echo "xsde_default_allocator              := $allocator_default"              >>$1

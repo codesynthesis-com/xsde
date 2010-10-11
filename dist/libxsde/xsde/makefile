@@ -9,6 +9,12 @@ EXTRA_CPPFLAGS := -I..
 src := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 src += c/genx/genx.c c/genx/char-props.c
 
+ifneq ($(XSDE_PARSER_VALIDATION)$(XSDE_SERIALIZER_VALIDATION),nn)
+ifeq ($(XSDE_REGEXP),y)
+src += c/regexp/chvalid.c c/regexp/xmlunicode.c c/regexp/xmlregexp.c
+endif
+endif
+
 ifeq ($(XSDE_CUSTOM_ALLOCATOR),y)
 ifeq ($(XSDE_DEFAULT_ALLOCATOR),y)
 src += allocator.c
@@ -562,6 +568,9 @@ ifeq ($(XSDE_PARSER_VALIDATION),y)
 endif
 ifeq ($(XSDE_SERIALIZER_VALIDATION),y)
 	@echo $(h)define XSDE_SERIALIZER_VALIDATION >>$@
+endif
+ifeq ($(XSDE_REGEXP),y)
+	@echo $(h)define XSDE_REGEXP                >>$@
 endif
 ifeq ($(XSDE_REUSE_STYLE),mixin)
 	@echo $(h)define XSDE_REUSE_STYLE_MIXIN     >>$@

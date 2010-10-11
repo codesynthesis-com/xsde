@@ -15,7 +15,7 @@ endif
 endif
 
 ifeq ($(XSDE_IOSTREAM),y)
-dirs += built-in default enumeration list test-template union
+dirs += built-in default enumeration list test-template union pattern
 
 ifeq ($(XSDE_ENCODING),iso8859-1)
 dirs += iso8859-1

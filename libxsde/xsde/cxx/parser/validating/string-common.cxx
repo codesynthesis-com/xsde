@@ -3,6 +3,14 @@
 // copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <xsde/cxx/config.hxx>
+
+#ifdef XSDE_REGEXP
+#ifdef XSDE_EXCEPTIONS
+#  include <new> // std::bad_alloc
+#endif
+#endif
+
 #include <xsde/cxx/string-search.hxx>
 #include <xsde/cxx/parser/validating/string-common.hxx>
 
@@ -116,6 +124,41 @@ namespace xsde
             }
           }
 
+#ifdef XSDE_REGEXP
+          if (f.pattern_set_ != 0)
+          {
+            if (f.pattern_set_ == 1)
+            {
+              xmlRegexpPtr r = xmlRegexpCompile (
+                reinterpret_cast<const xmlChar*> (f.pattern_.str));
+
+              if (r == 0)
+              {
+#ifdef XSDE_EXCEPTIONS
+                throw std::bad_alloc ();
+#else
+                ctx.sys_error (sys_error::no_memory);
+                return false;
+#endif
+
+              }
+
+              string_facets::facets& t =
+                const_cast<string_facets::facets&> (f);
+
+              t.pattern_.regexp = r;
+              t.pattern_set_ = 2;
+            }
+
+            if (xmlRegexpExec (
+                  f.pattern_.regexp,
+                  reinterpret_cast<const xmlChar*> (s)) != 1)
+            {
+              ctx.schema_error (schema_error::value_pattern_mismatch);
+              return false;
+            }
+          }
+#endif
           return true;
         }
       }

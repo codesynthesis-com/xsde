@@ -110,6 +110,15 @@ XSDE_PARSER_VALIDATION = y
 XSDE_SERIALIZER_VALIDATION = y
 
 
+# Set to 'y' if you would like to have support for regular expressions in
+# the XSD/e runtime. If the regexp support is enabled, then the parser and
+# serializer validation code will use it to validate the xs:pattern facet.
+# If the regexp support is disabled, then this facet will be ignored. The
+# regexp support increases the resulting executable size by about 30-50Kb.
+#
+XSDE_REGEXP = n
+
+
 # Base parser/serializer implementation reuse style. Valid values are:
 #
 # 'mixin'  - virtual inheritance-based reuse (specify --reuse-style-mixin)

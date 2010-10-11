@@ -11,6 +11,12 @@ EXTRA_CPPFLAGS = /I..
 src = c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
 src = $(src) c\genx\genx.c c\genx\char-props.c
 
+!if "$(XSDE_PARSER_VALIDATION)$(XSDE_SERIALIZER_VALIDATION)" != "nn"
+!if "$(XSDE_REGEXP)" == "n"
+src = $(src) c\regexp\chvalid.c c\regexp\xmlunicode.c c\regexp\xmlregexp.c
+!endif
+!endif
+
 !if "$(XSDE_CUSTOM_ALLOCATOR)" == "y"
 !if "$(XSDE_DEFAULT_ALLOCATOR)" == "y"
 src = $(src) allocator.c
@@ -562,7 +568,9 @@ config.h:
 !if "$(XSDE_SERIALIZER_VALIDATION)" == "y"
 	@echo #define XSDE_SERIALIZER_VALIDATION  >>$@
 !endif
-
+!if "$(XSDE_REGEXP)" == "y"
+	@echo #define REGEXP                      >>$@
+!endif
 !if "$(XSDE_REUSE_STYLE)" == "mixin"
 	@echo #define XSDE_REUSE_STYLE_MIXIN      >>$@
 !else
@@ -619,6 +627,7 @@ cleanobj:
 	-del xsde.lib config.h
 	-del c\expat\*.obj
 	-del c\genx\*.obj
+	-del c\regexp\*.obj
 	-del cxx\*.obj
 	-del cxx\parser\*.obj
 	-del cxx\parser\expat\*.obj

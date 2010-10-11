@@ -458,7 +458,20 @@ namespace xsde
 
           facets_.enum_ = 0;
           facets_.enum_count_ = 0;
+
+#ifdef XSDE_REGEXP
+          facets_.pattern_set_ = 0;
+#endif
         }
+
+#ifdef XSDE_REGEXP
+        inline string_facets::
+        ~string_facets ()
+        {
+          if (facets_.pattern_set_ == 2)
+            xmlRegFreeRegexp (facets_.pattern_.regexp);
+        }
+#endif
 
         inline void string_facets::
         _length_facet (size_t v)
@@ -493,6 +506,20 @@ namespace xsde
           facets_.enum_ = e;
           facets_.enum_count_ = count;
         }
+
+#ifndef XSDE_REGEXP
+        inline void string_facets::
+        _pattern_facet (const char*)
+        {
+        }
+#else
+        inline void string_facets::
+        _pattern_facet (const char* s)
+        {
+          facets_.pattern_.str = s;
+          facets_.pattern_set_ = 1;
+        }
+#endif
 
         // string_pskel
         //

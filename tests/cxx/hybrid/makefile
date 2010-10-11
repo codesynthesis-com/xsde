@@ -11,7 +11,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
 all_tests := sequences polymorphism iterator built-in default enumeration \
 iso8859-1 list recursive test-template union binary/cdr binary/xdr choice \
-clone
+clone pattern
 
 build_tests := sequences
 
@@ -26,7 +26,7 @@ endif
 endif
 
 ifeq ($(xsde_iostream),y)
-build_tests += built-in default enumeration list test-template union
+build_tests += built-in default enumeration list test-template union pattern
 
 ifeq ($(xsde_encoding),iso8859-1)
 build_tests += iso8859-1

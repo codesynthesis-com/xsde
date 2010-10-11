@@ -66,6 +66,18 @@ Version 3.2.0
     automatically converted to equivalent enumeration types with a union 
     of all the member's enumerators.
 
+ C++/Parser
+
+  * Support for validation of the pattern XML Schema facet on string-base
+    types. See the XSDE_REGEXP parameter in the configuration files for 
+    details.
+
+ C++/Serializer
+
+  * Support for validation of the pattern XML Schema facet on string-base
+    types. See the XSDE_REGEXP parameter in the configuration files for 
+    details.
+
 Version 3.1.0
 
  C++/Hybrid

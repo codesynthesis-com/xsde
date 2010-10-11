@@ -59,6 +59,7 @@ namespace xsde
       "value is greater than maximum allowed",
       "value is less than minimum allowed",
       "value is not in enumeration",
+      "value does not match pattern",
       "length is greater than maximum allowed",
       "length is less than minimum allowed",
       "length is not equal to prescribed length",

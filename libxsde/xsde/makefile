@@ -8,6 +8,12 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../build/bootstrap.make
 c_tun := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 c_tun += c/genx/genx.c c/genx/char-props.c
 
+ifneq ($(xsde_parser_validation)$(xsde_serializer_validation),nn)
+ifeq ($(xsde_regexp),y)
+c_tun += c/regexp/chvalid.c c/regexp/xmlunicode.c c/regexp/xmlregexp.c
+endif
+endif
+
 ifeq ($(xsde_custom_allocator),y)
 ifeq ($(xsde_default_allocator),y)
 c_tun += allocator.c
@@ -40,6 +46,11 @@ endif
 
 ifneq ($(xsde_parser_validation)$(xsde_serializer_validation),nn)
 cxx_tun += cxx/schema-error.cxx
+
+ifeq ($(xsde_regexp),y)
+cxx_tun += cxx/schema-error.cxx
+endif
+
 endif
 
 ifeq ($(xsde_polymorphic),y)
@@ -589,6 +600,11 @@ ifeq ($(xsde_serializer_validation),y)
 	@echo '#define XSDE_SERIALIZER_VALIDATION'                      >>$@
 else
 	@echo '#undef XSDE_SERIALIZER_VALIDATION'                       >>$@
+endif
+ifeq ($(xsde_regexp),y)
+	@echo '#define XSDE_REGEXP'                      		>>$@
+else
+	@echo '#undef XSDE_REGEXP'                                      >>$@
 endif
 ifeq ($(xsde_reuse_style),mixin)
 	@echo '#define XSDE_REUSE_STYLE_MIXIN'                          >>$@

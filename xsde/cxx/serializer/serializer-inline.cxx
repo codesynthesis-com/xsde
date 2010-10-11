@@ -17,41 +17,68 @@ namespace CXX
       Void
       facet_calls (SemanticGraph::Complex& c, Context& ctx)
       {
+        using SemanticGraph::Restricts;
+
         std::wostream& os (ctx.os);
 
-        using SemanticGraph::Restricts;
+        SemanticGraph::Type& ub (ctx.ultimate_base (c));
         Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
 
-        for (Restricts::FacetIterator i (r.facet_begin ());
-             i != r.facet_end (); ++i)
+        if (ub.is_a<SemanticGraph::Fundamental::String> () ||
+            ub.is_a<SemanticGraph::Fundamental::AnyURI> ())
         {
-          if (i->first == L"length")
+          for (Restricts::FacetIterator i (r.facet_begin ());
+               i != r.facet_end (); ++i)
           {
-            os << "this->_length_facet (" << i->second << "UL);";
+            if (!ctx.validation)
+              continue;
+
+            if (i->first == L"length")
+            {
+              os << "this->_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"minLength")
+            {
+              os << "this->_min_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"maxLength")
+            {
+              os << "this->_max_length_facet (" << i->second << "UL);";
+            }
+            else if (i->first == L"pattern")
+            {
+              os << "this->_pattern_facet (" << ctx.strlit (i->second) << ");";
+            }
           }
-          else if (i->first == L"minLength")
+        }
+
+        if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ())
+        {
+          for (Restricts::FacetIterator i (r.facet_begin ());
+               i != r.facet_end (); ++i)
           {
-            os << "this->_min_length_facet (" << i->second << "UL);";
-          }
-          else if (i->first == L"maxLength")
-          {
-            os << "this->_max_length_facet (" << i->second << "UL);";
-          }
-          else if (i->first == L"minInclusive")
-          {
-            os << "this->_min_facet (" << i->second << ", true);";
-          }
-          else if (i->first == L"minExclusive")
-          {
-            os << "this->_min_facet (" << i->second << ", false);";
-          }
-          else if (i->first == L"maxInclusive")
-          {
-            os << "this->_max_facet (" << i->second << ", true);";
-          }
-          else if (i->first == L"maxExclusive")
-          {
-            os << "this->_max_facet (" << i->second << ", false);";
+            if (!ctx.validation)
+              continue;
+
+            if (i->first == L"minInclusive")
+            {
+              os << "this->_min_facet (" << i->second << ", true);";
+            }
+            else if (i->first == L"minExclusive")
+            {
+              os << "this->_min_facet (" << i->second << ", false);";
+            }
+            else if (i->first == L"maxInclusive")
+            {
+              os << "this->_max_facet (" << i->second << ", true);";
+            }
+            else if (i->first == L"maxExclusive")
+            {
+              os << "this->_max_facet (" << i->second << ", false);";
+            }
           }
         }
       }

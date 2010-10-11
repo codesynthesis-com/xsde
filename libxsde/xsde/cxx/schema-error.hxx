@@ -62,6 +62,7 @@ namespace xsde
         value_greater_than_max,
         value_less_than_min,
         value_not_in_enumeration,
+        value_pattern_mismatch,
         length_greater_than_max,
         length_less_than_min,
         length_not_equal_prescribed,
