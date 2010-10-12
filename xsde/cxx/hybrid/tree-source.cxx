@@ -642,7 +642,7 @@ namespace CXX
             : Context (c),
               var_ (c, TypeName::var_value),
               ro_ret_ (c, TypeName::ro_ret),
-              literal_value_ (c),
+              literal_value_ (c, !stl),
               init_value_ (c)
         {
         }

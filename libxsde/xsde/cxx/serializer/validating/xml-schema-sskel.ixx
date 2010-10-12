@@ -61,19 +61,51 @@ namespace xsde
 
         // byte_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline byte_sskel::
         byte_sskel ()
-            : byte_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          byte_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline byte_sskel::
         byte_sskel (byte_sskel* impl, void*)
             : simple_content (impl, 0), byte_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void byte_sskel::
+        _max_facet (signed char v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void byte_sskel::
+        _min_facet (signed char v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const byte_sskel::facets& byte_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const byte_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // unsigned_byte_sskel
         //
@@ -224,19 +256,51 @@ namespace xsde
 
         // int_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline int_sskel::
         int_sskel ()
-            : int_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          int_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline int_sskel::
         int_sskel (int_sskel* impl, void*)
             : simple_content (impl, 0), int_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void int_sskel::
+        _max_facet (int v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void int_sskel::
+        _min_facet (int v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const int_sskel::facets& int_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const int_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // unsigned_int_sskel
         //
@@ -289,163 +353,508 @@ namespace xsde
 
         // long_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline long_sskel::
         long_sskel ()
-            : long_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          long_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline long_sskel::
         long_sskel (long_sskel* impl, void*)
             : simple_content (impl, 0), long_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
 
-        // unsigned_long_sskel
-        //
-#ifdef XSDE_REUSE_STYLE_TIEIN
-        inline unsigned_long_sskel::
-        unsigned_long_sskel ()
-            : unsigned_long_impl_ (0)
+        inline void long_sskel::
+#ifdef XSDE_LONGLONG
+        _max_facet (long long v, bool inc)
+#else
+        _max_facet (long v, bool inc)
+#endif
+
         {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
         }
 
+        inline void long_sskel::
+#ifdef XSDE_LONGLONG
+        _min_facet (long long v, bool inc)
+#else
+        _min_facet (long v, bool inc)
+#endif
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const long_sskel::facets& long_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const long_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
+
+        // unsigned_long_sskel
+        //
+        inline unsigned_long_sskel::
+        unsigned_long_sskel ()
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          unsigned_long_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
+        }
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline unsigned_long_sskel::
         unsigned_long_sskel (unsigned_long_sskel* impl, void*)
             : simple_content (impl, 0), unsigned_long_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
 
-        // integer_sskel
-        //
-#ifdef XSDE_REUSE_STYLE_TIEIN
-        inline integer_sskel::
-        integer_sskel ()
-            : integer_impl_ (0)
+        inline void unsigned_long_sskel::
+#ifdef XSDE_LONGLONG
+        _max_facet (unsigned long long v, bool inc)
+#else
+        _max_facet (unsigned long v, bool inc)
+#endif
         {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
         }
 
+        inline void unsigned_long_sskel::
+#ifdef XSDE_LONGLONG
+        _min_facet (unsigned long long v, bool inc)
+#else
+        _min_facet (unsigned long v, bool inc)
+#endif
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const unsigned_long_sskel::facets& unsigned_long_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const unsigned_long_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
+
+        // integer_sskel
+        //
+        inline integer_sskel::
+        integer_sskel ()
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          integer_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
+        }
+
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline integer_sskel::
         integer_sskel (integer_sskel* impl, void*)
             : simple_content (impl, 0), integer_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void integer_sskel::
+        _max_facet (long v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void integer_sskel::
+        _min_facet (long v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const integer_sskel::facets& integer_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const integer_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // negative_integer_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline negative_integer_sskel::
         negative_integer_sskel ()
-            : negative_integer_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          negative_integer_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline negative_integer_sskel::
         negative_integer_sskel (negative_integer_sskel* impl, void*)
             : simple_content (impl, 0), negative_integer_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void negative_integer_sskel::
+        _max_facet (long v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void negative_integer_sskel::
+        _min_facet (long v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const negative_integer_sskel::facets& negative_integer_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const negative_integer_sskel&> (
+              *parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // non_positive_integer_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline non_positive_integer_sskel::
         non_positive_integer_sskel ()
-            : non_positive_integer_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          non_positive_integer_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline non_positive_integer_sskel::
         non_positive_integer_sskel (non_positive_integer_sskel* impl, void*)
             : simple_content (impl, 0), non_positive_integer_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+                inline void non_positive_integer_sskel::
+        _max_facet (long v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void non_positive_integer_sskel::
+        _min_facet (long v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const non_positive_integer_sskel::facets&
+        non_positive_integer_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const non_positive_integer_sskel&> (
+              *parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // positive_integer_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline positive_integer_sskel::
         positive_integer_sskel ()
-            : positive_integer_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          positive_integer_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline positive_integer_sskel::
         positive_integer_sskel (positive_integer_sskel* impl, void*)
             : simple_content (impl, 0), positive_integer_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void positive_integer_sskel::
+        _max_facet (unsigned long v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void positive_integer_sskel::
+        _min_facet (unsigned long v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const positive_integer_sskel::facets& positive_integer_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const positive_integer_sskel&> (
+              *parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // non_negative_integer_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline non_negative_integer_sskel::
         non_negative_integer_sskel ()
-            : non_negative_integer_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          non_negative_integer_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline non_negative_integer_sskel::
         non_negative_integer_sskel (non_negative_integer_sskel* impl, void*)
             : simple_content (impl, 0), non_negative_integer_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void non_negative_integer_sskel::
+        _max_facet (unsigned long v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void non_negative_integer_sskel::
+        _min_facet (unsigned long v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const non_negative_integer_sskel::facets&
+        non_negative_integer_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const non_negative_integer_sskel&> (
+              *parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // float_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline float_sskel::
         float_sskel ()
-            : float_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          float_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline float_sskel::
         float_sskel (float_sskel* impl, void*)
             : simple_content (impl, 0), float_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void float_sskel::
+        _max_facet (float v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void float_sskel::
+        _min_facet (float v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const float_sskel::facets& float_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const float_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // double_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline double_sskel::
         double_sskel ()
-            : double_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          double_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline double_sskel::
         double_sskel (double_sskel* impl, void*)
             : simple_content (impl, 0), double_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void double_sskel::
+        _max_facet (double v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void double_sskel::
+        _min_facet (double v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const double_sskel::facets& double_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const double_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // decimal_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline decimal_sskel::
         decimal_sskel ()
-            : decimal_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          decimal_impl_ = 0;
+#endif
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline decimal_sskel::
         decimal_sskel (decimal_sskel* impl, void*)
             : simple_content (impl, 0), decimal_impl_ (impl)
         {
+          facets_.min_set_ = 0;
+          facets_.max_set_ = 0;
         }
 #endif
+        inline void decimal_sskel::
+        _max_facet (double v, bool inc)
+        {
+          facets_.max_ = v;
+          facets_.max_set_ = 1;
+          facets_.max_inc_ = inc;
+        }
+
+        inline void decimal_sskel::
+        _min_facet (double v, bool inc)
+        {
+          facets_.min_ = v;
+          facets_.min_set_ = 1;
+          facets_.min_inc_ = inc;
+        }
+
+        inline const decimal_sskel::facets& decimal_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const decimal_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // string_facets
         //

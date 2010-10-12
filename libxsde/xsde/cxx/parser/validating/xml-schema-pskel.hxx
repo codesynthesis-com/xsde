@@ -140,14 +140,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          byte_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          byte_pskel ();
           byte_pskel (byte_pskel* impl, void*);
 
         protected:
           byte_pskel* byte_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (signed char, bool inclusive);
+
+          void
+          _min_facet (signed char, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            signed char min_;
+            signed char max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct unsigned_byte_pskel: simple_content
@@ -317,14 +343,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          int_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          int_pskel ();
           int_pskel (int_pskel* impl, void*);
 
         protected:
           int_pskel* int_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (int, bool inclusive);
+
+          void
+          _min_facet (int, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            int min_;
+            int max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct unsigned_int_pskel: simple_content
@@ -393,14 +445,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          long_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          long_pskel ();
           long_pskel (long_pskel* impl, void*);
 
         protected:
           long_pskel* long_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (long long, bool inclusive);
+
+          void
+          _min_facet (long long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            long long min_;
+            long long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct unsigned_long_pskel: simple_content
@@ -415,14 +493,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          unsigned_long_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          unsigned_long_pskel ();
           unsigned_long_pskel (unsigned_long_pskel* impl, void*);
 
         protected:
           unsigned_long_pskel* unsigned_long_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned long long, bool inclusive);
+
+          void
+          _min_facet (unsigned long long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned long long min_;
+            unsigned long long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 #else
@@ -439,14 +543,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          long_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          long_pskel ();
           long_pskel (long_pskel* impl, void*);
 
         protected:
           long_pskel* long_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (long, bool inclusive);
+
+          void
+          _min_facet (long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            long min_;
+            long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct unsigned_long_pskel: simple_content
@@ -461,14 +591,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          unsigned_long_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          unsigned_long_pskel ();
           unsigned_long_pskel (unsigned_long_pskel* impl, void*);
 
         protected:
           unsigned_long_pskel* unsigned_long_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned long, bool inclusive);
+
+          void
+          _min_facet (unsigned long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned long min_;
+            unsigned long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 #endif
 
@@ -488,14 +644,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          integer_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          integer_pskel ();
           integer_pskel (integer_pskel* impl, void*);
 
         protected:
           integer_pskel* integer_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (long, bool inclusive);
+
+          void
+          _min_facet (long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            long min_;
+            long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct negative_integer_pskel: simple_content
@@ -510,14 +692,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          negative_integer_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          negative_integer_pskel ();
           negative_integer_pskel (negative_integer_pskel* impl, void*);
 
         protected:
           negative_integer_pskel* negative_integer_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (long, bool inclusive);
+
+          void
+          _min_facet (long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            long min_;
+            long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct non_positive_integer_pskel: simple_content
@@ -532,14 +740,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          non_positive_integer_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          non_positive_integer_pskel ();
           non_positive_integer_pskel (non_positive_integer_pskel* impl, void*);
 
         protected:
           non_positive_integer_pskel* non_positive_integer_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (long, bool inclusive);
+
+          void
+          _min_facet (long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            long min_;
+            long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct positive_integer_pskel: simple_content
@@ -554,14 +788,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          positive_integer_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          positive_integer_pskel ();
           positive_integer_pskel (positive_integer_pskel* impl, void*);
 
         protected:
           positive_integer_pskel* positive_integer_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned long, bool inclusive);
+
+          void
+          _min_facet (unsigned long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned long min_;
+            unsigned long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct non_negative_integer_pskel: simple_content
@@ -576,14 +836,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          non_negative_integer_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          non_negative_integer_pskel ();
           non_negative_integer_pskel (non_negative_integer_pskel* impl, void*);
 
         protected:
           non_negative_integer_pskel* non_negative_integer_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (unsigned long, bool inclusive);
+
+          void
+          _min_facet (unsigned long, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            unsigned long min_;
+            unsigned long max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 
@@ -602,14 +888,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          float_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          float_pskel ();
           float_pskel (float_pskel* impl, void*);
 
         protected:
           float_pskel* float_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (float, bool inclusive);
+
+          void
+          _min_facet (float, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            float min_;
+            float max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct double_pskel: simple_content
@@ -624,14 +936,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          double_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          double_pskel ();
           double_pskel (double_pskel* impl, void*);
 
         protected:
           double_pskel* double_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (double, bool inclusive);
+
+          void
+          _min_facet (double, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            double min_;
+            double max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         struct decimal_pskel: simple_content
@@ -646,14 +984,40 @@ namespace xsde
           virtual const char*
           _dynamic_type () const;
 #endif
+          decimal_pskel ();
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
-          decimal_pskel ();
           decimal_pskel (decimal_pskel* impl, void*);
 
         protected:
           decimal_pskel* decimal_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _max_facet (double, bool inclusive);
+
+          void
+          _min_facet (double, bool inclusive);
+
+        protected:
+          struct facets
+          {
+            double min_;
+            double max_;
+
+            unsigned int min_set_ : 1;
+            unsigned int min_inc_ : 1;
+            unsigned int max_set_ : 1;
+            unsigned int max_inc_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
 

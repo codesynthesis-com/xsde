@@ -33,6 +33,7 @@ namespace CXX
                         ops.value<CLI::include_regex_trace> (),
                         ops.value<CLI::generate_inline> (),
                         ops.value<CLI::custom_allocator> (),
+                        !ops.value<CLI::no_long_long> (),
                         ops.value<CLI::reserved_name> ()),
           options (ops),
           xml_parser (xml_parser_),
@@ -223,10 +224,22 @@ namespace CXX
           }
         }
 
-        if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ())
+        if (ub.is_a<SemanticGraph::Fundamental::Byte> ()               ||
+            ub.is_a<SemanticGraph::Fundamental::Short> ()              ||
+            ub.is_a<SemanticGraph::Fundamental::Int> ()                ||
+            ub.is_a<SemanticGraph::Fundamental::Long> ()               ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()       ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedShort> ()      ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()        ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedLong> ()       ||
+            ub.is_a<SemanticGraph::Fundamental::Integer> ()            ||
+            ub.is_a<SemanticGraph::Fundamental::NonPositiveInteger> () ||
+            ub.is_a<SemanticGraph::Fundamental::NonNegativeInteger> () ||
+            ub.is_a<SemanticGraph::Fundamental::PositiveInteger> ()    ||
+            ub.is_a<SemanticGraph::Fundamental::NegativeInteger> ()    ||
+            ub.is_a<SemanticGraph::Fundamental::Float> ()              ||
+            ub.is_a<SemanticGraph::Fundamental::Double> ()             ||
+            ub.is_a<SemanticGraph::Fundamental::Decimal> ())
         {
           if (validation)
           {

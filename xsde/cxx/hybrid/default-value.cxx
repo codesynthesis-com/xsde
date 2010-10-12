@@ -9,421 +9,6 @@ namespace CXX
 {
   namespace Hybrid
   {
-    namespace
-    {
-      Void
-      normalize (String& s)
-      {
-        Size n (s.size ());
-
-        for (Size i (0); i < n; ++i)
-        {
-          WideChar& c (s[i]);
-
-          if (c == 0x0D || // carriage return
-              c == 0x09 || // tab
-              c == 0x0A)
-            c = 0x20;
-        }
-      }
-
-      Void
-      collapse (String& s)
-      {
-        Size n (s.size ()), j (0);
-        Boolean subs (false), trim (true);
-
-        for (Size i (0); i < n; ++i)
-        {
-          WideChar c (s[i]);
-
-          if (c == 0x20 || c == 0x09 || c == 0x0A)
-            subs = true;
-          else
-          {
-            if (subs)
-            {
-              subs = false;
-
-              if (!trim)
-                s[j++] = 0x20;
-            }
-
-            if (trim)
-              trim = false;
-
-            s[j++] = c;
-          }
-        }
-
-        s.resize (j);
-      }
-
-      Void
-      strip_zeros (String& s)
-      {
-        Size n (s.size ()), i (0);
-
-        if (n > 0 && (s[i] == '-' || s[i] == '+'))
-          i++;
-
-        Size j (i);
-
-        Boolean strip (true);
-
-        for (; i < n; ++i)
-        {
-          WideChar c (s[i]);
-
-          if (c == '0')
-          {
-            if (!strip)
-              s[j++] = c;
-          }
-          else
-          {
-            s[j++] = c;
-
-            if (strip)
-              strip = false;
-          }
-        }
-
-        if (strip && j < n)
-          s[j++] = '0'; // There was nothing except zeros so add one back.
-
-        s.resize (j);
-      }
-
-      Void
-      make_float (String& s)
-      {
-        if (s.find ('.') == String::npos &&
-            s.find ('e') == String::npos &&
-            s.find ('E') == String::npos)
-          s += L".0";
-      }
-
-    }
-
-    //
-    // LiteralValue
-    //
-    LiteralValue::
-    LiteralValue (Context& c)
-        : Context (c), str_ (!stl)
-    {
-    }
-
-    LiteralValue::
-    LiteralValue (Context& c, Boolean str)
-        : Context (c), str_ (str)
-    {
-    }
-
-    String LiteralValue::
-    dispatch (SemanticGraph::Node& type, String const& value)
-    {
-      literal_.clear ();
-      value_ = value;
-      Traversal::NodeBase::dispatch (type);
-      return literal_;
-    }
-
-    // Boolean.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Boolean&)
-    {
-      collapse (value_);
-      literal_ = (value_ == L"true" || value_ == L"1") ? "true" : "false";
-    }
-
-    // Integral types.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Byte&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_;
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::UnsignedByte&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"U";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Short&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_;
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::UnsignedShort&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"U";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Int&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_;
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::UnsignedInt&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"U";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Long&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_;
-      literal_ += options.value<CLI::no_long_long> () ? L"L" : L"LL";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::UnsignedLong&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_;
-      literal_ += options.value<CLI::no_long_long> () ? L"UL" : L"ULL";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Integer&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"L";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NonPositiveInteger&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"L";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NonNegativeInteger&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"UL";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::PositiveInteger&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"UL";
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NegativeInteger&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      literal_ = value_ + L"L";
-    }
-
-    // Floats.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Float&)
-    {
-      collapse (value_);
-
-      if (value_ == L"NaN")
-      {
-        literal_ = "static_cast< float > (strtod (\"NAN\", 0))";
-      }
-      else if (value_ == L"INF")
-      {
-        literal_ = "static_cast< float > (strtod (\"INF\", 0))";
-      }
-      else if (value_ == L"-INF")
-      {
-        literal_ = "static_cast< float > (strtod (\"-INF\", 0))";
-      }
-      else
-      {
-        strip_zeros (value_);
-        make_float (value_);
-        literal_ = value_ + L"F";
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Double&)
-    {
-      collapse (value_);
-
-      if (value_ == L"NaN")
-      {
-        literal_ = "strtod (\"NAN\", 0)";
-      }
-      else if (value_ == L"INF")
-      {
-        literal_ = "strtod (\"INF\", 0)";
-      }
-      else if (value_ == L"-INF")
-      {
-        literal_ = "strtod (\"-INF\", 0)";
-      }
-      else
-      {
-        strip_zeros (value_);
-        make_float (value_);
-        literal_ = value_;
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Decimal&)
-    {
-      collapse (value_);
-      strip_zeros (value_);
-      make_float (value_);
-      literal_ = value_;
-    }
-
-    // Strings.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::String&)
-    {
-      if (str_)
-        literal_ = strlit (value_);
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NormalizedString&)
-    {
-      if (str_)
-      {
-        normalize (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Token&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NameToken&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Name&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::NCName&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Language&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-
-    // ID/IDREF.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Id&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::IdRef&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    // URI.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::AnyURI&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
-    // Entity.
-    //
-    Void LiteralValue::
-    traverse (SemanticGraph::Fundamental::Entity&)
-    {
-      if (str_)
-      {
-        collapse (value_);
-        literal_ = strlit (value_);
-      }
-    }
-
     //
     // InitValue
     //
@@ -435,7 +20,7 @@ namespace CXX
           var_ (c, TypeName::var),
           var_value_ (c, TypeName::var_value),
           literal_value_ (c, true),
-          literal_value_list_ (c)
+          literal_value_list_ (c, !stl)
     {
     }
 
@@ -452,7 +37,7 @@ namespace CXX
       SemanticGraph::Type& t (l.argumented ().type ());
       Boolean fl (fixed_length (t));
 
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       if (!value_)
         return;
@@ -710,7 +295,7 @@ namespace CXX
       if (p != String::npos)
         value_ = String (value_, p + 1, value_.size () - p - 1);
 
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       String prefix, name;
       p = value_.find (':');
@@ -776,7 +361,7 @@ namespace CXX
     Void InitValue::
     traverse (SemanticGraph::Fundamental::Base64Binary&)
     {
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       if (value_)
         os << "#error base64Binary default values are not yet supported"
@@ -786,7 +371,7 @@ namespace CXX
     Void InitValue::
     traverse (SemanticGraph::Fundamental::HexBinary&)
     {
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       if (value_)
         os << "#error hexBinary default values are not yet supported"
@@ -801,7 +386,7 @@ namespace CXX
     {
       // date := [-]CCYY[N]*-MM-DD[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       Size b (0);
       Size e (value_.find ('-', value_[0] == '-' ? 5 : 4));
@@ -813,9 +398,9 @@ namespace CXX
       b += 3;
       String day (value_, b, 2);
 
-      strip_zeros (year);
-      strip_zeros (month);
-      strip_zeros (day);
+      LiteralValue::strip_zeros (year);
+      LiteralValue::strip_zeros (month);
+      LiteralValue::strip_zeros (day);
 
       os << member_ << "year (" << year << ");"
          << member_ << "month (" << month << ");"
@@ -829,7 +414,7 @@ namespace CXX
     {
       // date_time := [-]CCYY[N]*-MM-DDTHH:MM:SS[.S+][Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       Size b (0);
       Size e (value_.find ('-', value_[0] == '-' ? 5 : 4));
@@ -859,13 +444,13 @@ namespace CXX
 
       String seconds (value_, b, e - b);
 
-      strip_zeros (year);
-      strip_zeros (month);
-      strip_zeros (day);
-      strip_zeros (hours);
-      strip_zeros (minutes);
-      strip_zeros (seconds);
-      make_float (seconds);
+      LiteralValue::strip_zeros (year);
+      LiteralValue::strip_zeros (month);
+      LiteralValue::strip_zeros (day);
+      LiteralValue::strip_zeros (hours);
+      LiteralValue::strip_zeros (minutes);
+      LiteralValue::strip_zeros (seconds);
+      LiteralValue::make_float (seconds);
 
       os << member_ << "year (" << year << ");"
          << member_ << "month (" << month << ");"
@@ -900,7 +485,7 @@ namespace CXX
     {
       // duration := [-]P[nY][nM][nD][TnHnMn[.n+]S]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       Size b (1), e, n (value_.size ());
 
@@ -915,7 +500,7 @@ namespace CXX
       if (e < n && value_[e] == 'Y')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
+        LiteralValue::strip_zeros (v);
         os << member_ << "years (" << v << ");";
 
         b = e + 1;
@@ -925,7 +510,7 @@ namespace CXX
       if (e < n && value_[e] == 'M')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
+        LiteralValue::strip_zeros (v);
         os << member_ << "months (" << v << ");";
 
         b = e + 1;
@@ -935,7 +520,7 @@ namespace CXX
       if (e < n && value_[e] == 'D')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
+        LiteralValue::strip_zeros (v);
         os << member_ << "days (" << v << ");";
 
         b = e + 1;
@@ -951,7 +536,7 @@ namespace CXX
       if (e < n && value_[e] == 'H')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
+        LiteralValue::strip_zeros (v);
         os << member_ << "hours (" << v << ");";
 
         b = e + 1;
@@ -961,7 +546,7 @@ namespace CXX
       if (e < n && value_[e] == 'M')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
+        LiteralValue::strip_zeros (v);
         os << member_ << "minutes (" << v << ");";
 
         b = e + 1;
@@ -971,8 +556,8 @@ namespace CXX
       if (e < n && value_[e] == 'S')
       {
         String v (value_, b, e - b);
-        strip_zeros (v);
-        make_float (v);
+        LiteralValue::strip_zeros (v);
+        LiteralValue::make_float (v);
         os << member_ << "seconds (" << v << ");";
 
         b = e + 1;
@@ -985,10 +570,10 @@ namespace CXX
     {
       // gday := ---DD[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       String day (value_, 3, 2);
-      strip_zeros (day);
+      LiteralValue::strip_zeros (day);
 
       os << member_ << "day (" << day << ");";
 
@@ -1000,10 +585,10 @@ namespace CXX
     {
       // gmonth := --MM[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       String month (value_, 2, 2);
-      strip_zeros (month);
+      LiteralValue::strip_zeros (month);
 
       os << member_ << "month (" << month << ");";
 
@@ -1015,13 +600,13 @@ namespace CXX
     {
       // gmonth_day := --MM-DD[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       String month (value_, 2, 2);
       String day (value_, 5, 2);
 
-      strip_zeros (month);
-      strip_zeros (day);
+      LiteralValue::strip_zeros (month);
+      LiteralValue::strip_zeros (day);
 
       os << member_ << "month (" << month << ");";
       os << member_ << "day (" << day << ");";
@@ -1034,7 +619,7 @@ namespace CXX
     {
       // gyear := [-]CCYY[N]*[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       Size pos (value_[0] == '-' ? 5 : 4);
       for (; pos < value_.size (); ++pos)
@@ -1046,7 +631,7 @@ namespace CXX
       }
 
       String year (value_, 0, pos);
-      strip_zeros (year);
+      LiteralValue::strip_zeros (year);
 
       os << member_ << "year (" << year << ");";
 
@@ -1058,15 +643,15 @@ namespace CXX
     {
       // gyear_month := [-]CCYY[N]*-MM[Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       Size pos (value_.find ('-', value_[0] == '-' ? 5 : 4));
 
       String year (value_, 0, pos);
       String month (value_, pos + 1, 2);
 
-      strip_zeros (year);
-      strip_zeros (month);
+      LiteralValue::strip_zeros (year);
+      LiteralValue::strip_zeros (month);
 
       os << member_ << "year (" << year << ");";
       os << member_ << "month (" << month << ");";
@@ -1079,7 +664,7 @@ namespace CXX
     {
       // time := HH:MM:SS[.S+][Z|(+|-)HH:MM]
       //
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       String hours (value_, 0, 2);
       String minutes (value_, 3, 2);
@@ -1095,10 +680,10 @@ namespace CXX
 
       String seconds (value_, 6, e - 6);
 
-      strip_zeros (hours);
-      strip_zeros (minutes);
-      strip_zeros (seconds);
-      make_float (seconds);
+      LiteralValue::strip_zeros (hours);
+      LiteralValue::strip_zeros (minutes);
+      LiteralValue::strip_zeros (seconds);
+      LiteralValue::make_float (seconds);
 
       os << member_ << "hours (" << hours << ");"
          << member_ << "minutes (" << minutes << ");"
@@ -1132,8 +717,8 @@ namespace CXX
           h.append (value_, pos + 1, 2);
           m.append (value_, pos + 4, 2);
 
-          strip_zeros (h);
-          strip_zeros (m);
+          LiteralValue::strip_zeros (h);
+          LiteralValue::strip_zeros (m);
         }
 
         os << member_ << "zone_hours (" << h << ");"
@@ -1195,7 +780,7 @@ namespace CXX
     Void InitValue::
     string_sequence_type ()
     {
-      collapse (value_);
+      LiteralValue::collapse (value_);
 
       if (!value_)
         return;

@@ -15,7 +15,7 @@ dirs = $(dirs) iterator
 !endif
 
 !if "$(XSDE_IOSTREAM)" == "y"
-dirs = $(dirs) built-in default enumeration list test-template union pattern
+dirs = $(dirs) built-in default enumeration list test-template union facets pattern
 
 !if "$(XSDE_ENCODING)" == "iso8859-1"
 dirs = $(dirs) iso8859-1

@@ -68,15 +68,44 @@ Version 3.2.0
 
  C++/Parser
 
-  * Support for validation of the pattern XML Schema facet on string-base
-    types. See the XSDE_REGEXP parameter in the configuration files for 
-    details.
+  * Support for the following XML Schema facets:
+
+    String-based types:
+      - length
+      - minLength
+      - maxLength
+      - pattern
+      - whiteSpace
+      - enumeration
+
+    Integer and floating-point types:
+      - minExclusive
+      - minInclusive
+      - maxExclusive
+      - maxInclusive
+
+    For more information on the pattern facet validation, see the XSDE_REGEXP
+    parameter in the configuration files.
 
  C++/Serializer
 
-  * Support for validation of the pattern XML Schema facet on string-base
-    types. See the XSDE_REGEXP parameter in the configuration files for 
-    details.
+  * Support for the following XML Schema facets:
+
+    String-based types:
+      - length
+      - minLength
+      - maxLength
+      - pattern
+      - enumeration
+
+    Integer and floating-point types:
+      - minExclusive
+      - minInclusive
+      - maxExclusive
+      - maxInclusive
+
+    For more information on the pattern facet validation, see the XSDE_REGEXP
+    parameter in the configuration files.
 
 Version 3.1.0
 

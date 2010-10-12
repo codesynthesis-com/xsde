@@ -26,7 +26,8 @@ endif
 endif
 
 ifeq ($(xsde_iostream),y)
-build_tests += built-in default enumeration list test-template union pattern
+build_tests += built-in default enumeration list test-template union facets \
+pattern
 
 ifeq ($(xsde_encoding),iso8859-1)
 build_tests += iso8859-1

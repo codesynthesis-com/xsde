@@ -24,6 +24,24 @@ namespace xsde
         void unsigned_long_simpl::
         _serialize_content ()
         {
+          // Check facets.
+          //
+          const facets& f = _facets ();
+
+          if (f.min_set_ &&
+              (value_ < f.min_ || (!f.min_inc_ && value_ == f.min_)))
+          {
+            _schema_error (schema_error::value_less_than_min);
+            return;
+          }
+
+          if (f.max_set_ &&
+              (value_ > f.max_ || (!f.max_inc_ && value_ == f.max_)))
+          {
+            _schema_error (schema_error::value_greater_than_max);
+            return;
+          }
+
           // We only need strlen("18446744073709551615") + 1 characters to
           // hold all representations of unsigned long long.
           //

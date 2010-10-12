@@ -126,6 +126,7 @@ namespace CXX
            Boolean trace_include_regex_,
            Boolean inline_,
            Boolean custom_allocator,
+           Boolean ll,
            Containers::Vector<NarrowString> const& reserved_name)
       : os (o),
         schema_root (root),
@@ -141,6 +142,7 @@ namespace CXX
         inst_exp (inst_exp_),
         inl (inl_),
         custom_alloc (custom_allocator),
+        long_long (ll),
         ns_mapping_cache (ns_mapping_cache_),
         schema_path_ (path),
         xs_ns_ (0),
@@ -1222,5 +1224,412 @@ namespace CXX
 
     if (st_)
       st_->leave ();
+  }
+
+
+  //
+  // LiteralValue
+  //
+
+  Void LiteralValue::
+  normalize (String& s)
+  {
+    Size n (s.size ());
+
+    for (Size i (0); i < n; ++i)
+    {
+      WideChar& c (s[i]);
+
+      if (c == 0x0D || // carriage return
+          c == 0x09 || // tab
+          c == 0x0A)
+        c = 0x20;
+    }
+  }
+
+  Void LiteralValue::
+  collapse (String& s)
+  {
+    Size n (s.size ()), j (0);
+    Boolean subs (false), trim (true);
+
+    for (Size i (0); i < n; ++i)
+    {
+      WideChar c (s[i]);
+
+      if (c == 0x20 || c == 0x09 || c == 0x0A)
+        subs = true;
+      else
+      {
+        if (subs)
+        {
+          subs = false;
+
+          if (!trim)
+            s[j++] = 0x20;
+        }
+
+        if (trim)
+          trim = false;
+
+        s[j++] = c;
+      }
+    }
+
+    s.resize (j);
+  }
+
+  Void LiteralValue::
+  strip_zeros (String& s)
+  {
+    Size n (s.size ()), i (0);
+
+    if (n > 0 && (s[i] == '-' || s[i] == '+'))
+      i++;
+
+    Size j (i);
+
+    Boolean strip (true);
+
+    for (; i < n; ++i)
+    {
+      WideChar c (s[i]);
+
+      if (c == '0')
+      {
+        if (!strip)
+          s[j++] = c;
+      }
+      else
+      {
+        s[j++] = c;
+
+        if (strip)
+          strip = false;
+      }
+    }
+
+    if (strip && j < n)
+      s[j++] = '0'; // There was nothing except zeros so add one back.
+
+    s.resize (j);
+  }
+
+  Void LiteralValue::
+  make_float (String& s)
+  {
+    if (s.find ('.') == String::npos &&
+        s.find ('e') == String::npos &&
+        s.find ('E') == String::npos)
+      s += L".0";
+  }
+
+  LiteralValue::
+  LiteralValue (Context& c, Boolean str)
+      : Context (c), str_ (str)
+  {
+  }
+
+  String LiteralValue::
+  dispatch (SemanticGraph::Node& type, String const& value)
+  {
+    literal_.clear ();
+    value_ = value;
+    Traversal::NodeBase::dispatch (type);
+    return literal_;
+  }
+
+  // Boolean.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Boolean&)
+  {
+    collapse (value_);
+    literal_ = (value_ == L"true" || value_ == L"1") ? "true" : "false";
+  }
+
+  // Integral types.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Byte&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_;
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::UnsignedByte&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"U";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Short&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_;
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::UnsignedShort&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"U";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Int&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_;
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::UnsignedInt&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"U";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Long&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_;
+    literal_ += long_long ? L"LL" : L"L";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::UnsignedLong&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_;
+    literal_ += long_long ? L"ULL" : L"UL";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Integer&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"L";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NonPositiveInteger&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"L";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NonNegativeInteger&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"UL";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::PositiveInteger&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"UL";
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NegativeInteger&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    literal_ = value_ + L"L";
+  }
+
+  // Floats.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Float&)
+  {
+    collapse (value_);
+
+    if (value_ == L"NaN")
+    {
+      literal_ = "static_cast< float > (strtod (\"NAN\", 0))";
+    }
+    else if (value_ == L"INF")
+    {
+      literal_ = "static_cast< float > (strtod (\"INF\", 0))";
+    }
+    else if (value_ == L"-INF")
+    {
+      literal_ = "static_cast< float > (strtod (\"-INF\", 0))";
+    }
+    else
+    {
+      strip_zeros (value_);
+      make_float (value_);
+      literal_ = value_ + L"F";
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Double&)
+  {
+    collapse (value_);
+
+    if (value_ == L"NaN")
+    {
+      literal_ = "strtod (\"NAN\", 0)";
+    }
+    else if (value_ == L"INF")
+    {
+      literal_ = "strtod (\"INF\", 0)";
+    }
+    else if (value_ == L"-INF")
+    {
+      literal_ = "strtod (\"-INF\", 0)";
+    }
+    else
+    {
+      strip_zeros (value_);
+      make_float (value_);
+      literal_ = value_;
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Decimal&)
+  {
+    collapse (value_);
+    strip_zeros (value_);
+    make_float (value_);
+    literal_ = value_;
+  }
+
+  // Strings.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::String&)
+  {
+    if (str_)
+      literal_ = strlit (value_);
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NormalizedString&)
+  {
+    if (str_)
+    {
+      normalize (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Token&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NameToken&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Name&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::NCName&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Language&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+
+  // ID/IDREF.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Id&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::IdRef&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  // URI.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::AnyURI&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
+  }
+
+  // Entity.
+  //
+  Void LiteralValue::
+  traverse (SemanticGraph::Fundamental::Entity&)
+  {
+    if (str_)
+    {
+      collapse (value_);
+      literal_ = strlit (value_);
+    }
   }
 }

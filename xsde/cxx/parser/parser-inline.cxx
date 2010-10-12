@@ -67,11 +67,25 @@ namespace CXX
           }
         }
 
-        if (ub.is_a<SemanticGraph::Fundamental::Short> ()         ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()  ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedShort> () ||
-            ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ())
+        if (ub.is_a<SemanticGraph::Fundamental::Byte> ()               ||
+            ub.is_a<SemanticGraph::Fundamental::Short> ()              ||
+            ub.is_a<SemanticGraph::Fundamental::Int> ()                ||
+            ub.is_a<SemanticGraph::Fundamental::Long> ()               ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedByte> ()       ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedShort> ()      ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedInt> ()        ||
+            ub.is_a<SemanticGraph::Fundamental::UnsignedLong> ()       ||
+            ub.is_a<SemanticGraph::Fundamental::Integer> ()            ||
+            ub.is_a<SemanticGraph::Fundamental::NonPositiveInteger> () ||
+            ub.is_a<SemanticGraph::Fundamental::NonNegativeInteger> () ||
+            ub.is_a<SemanticGraph::Fundamental::PositiveInteger> ()    ||
+            ub.is_a<SemanticGraph::Fundamental::NegativeInteger> ()    ||
+            ub.is_a<SemanticGraph::Fundamental::Float> ()              ||
+            ub.is_a<SemanticGraph::Fundamental::Double> ()             ||
+            ub.is_a<SemanticGraph::Fundamental::Decimal> ())
         {
+          LiteralValue lv (ctx, false);
+
           for (Restricts::FacetIterator i (r.facet_begin ());
                i != r.facet_end (); ++i)
           {
@@ -80,19 +94,23 @@ namespace CXX
 
             if (i->first == L"minInclusive")
             {
-              os << "this->_min_facet (" << i->second << ", true);";
+              os << "this->_min_facet (" << lv.dispatch (ub, i->second) <<
+                ", true);";
             }
             else if (i->first == L"minExclusive")
             {
-              os << "this->_min_facet (" << i->second << ", false);";
+              os << "this->_min_facet (" << lv.dispatch (ub, i->second) <<
+                ", false);";
             }
             else if (i->first == L"maxInclusive")
             {
-              os << "this->_max_facet (" << i->second << ", true);";
+              os << "this->_max_facet (" << lv.dispatch (ub, i->second) <<
+                ", true);";
             }
             else if (i->first == L"maxExclusive")
             {
-              os << "this->_max_facet (" << i->second << ", false);";
+              os << "this->_max_facet (" << lv.dispatch (ub, i->second) <<
+                ", false);";
             }
           }
         }
