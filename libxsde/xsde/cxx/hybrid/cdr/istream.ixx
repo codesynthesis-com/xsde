@@ -187,11 +187,6 @@ namespace xsde
       {
       }
 
-      inline void
-      operator>> (icdrstream&, any_simple_type&)
-      {
-      }
-
 #else // XSDE_EXCEPTIONS
 
       inline bool icdrstream::
@@ -369,12 +364,6 @@ namespace xsde
 
       inline bool
       operator>> (icdrstream&, any_type&)
-      {
-        return true;
-      }
-
-      inline bool
-      operator>> (icdrstream&, any_simple_type&)
       {
         return true;
       }

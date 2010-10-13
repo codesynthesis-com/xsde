@@ -103,8 +103,3 @@ inline void
 operator>> (irawstream&, xml_schema::any_type&)
 {
 }
-
-inline void
-operator>> (irawstream&, xml_schema::any_simple_type&)
-{
-}

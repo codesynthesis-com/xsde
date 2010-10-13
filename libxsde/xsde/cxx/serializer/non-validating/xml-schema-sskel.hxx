@@ -61,14 +61,11 @@ namespace xsde
         struct any_simple_type_sskel: simple_content
         {
           virtual void
-          pre ();
-
-          // Override the following function to implement your
-          // logic.
-          //
-
-          // virtual void
-          // _serialize_content ();
+#ifdef XSDE_STL
+          pre (const std::string&) = 0;
+#else
+          pre (const char*) = 0;
+#endif
 
 #ifdef XSDE_POLYMORPHIC
           static const char*

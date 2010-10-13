@@ -1,7 +1,4 @@
-{
-  any text: '123abc'
-}
-
+'123abc'
 {
   any text: '
 '
@@ -106,8 +103,5 @@
   any text: '  '
 }
 
-{
   x = x
-  any text: 'abc123'
-}
-
+'abc123'

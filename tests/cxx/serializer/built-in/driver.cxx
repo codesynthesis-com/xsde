@@ -33,7 +33,7 @@ struct any_type_simpl: xml_schema::any_type_simpl
     _end_element ();
   }
 };
-
+/*
 struct any_simple_type_simpl: xml_schema::any_simple_type_simpl
 {
   virtual void
@@ -42,6 +42,7 @@ struct any_simple_type_simpl: xml_schema::any_simple_type_simpl
     _characters ("hello");
   }
 };
+*/
 
 struct root_simpl: root_sskel
 {
@@ -401,6 +402,12 @@ struct root_simpl: root_sskel
 
 #ifdef XSDE_STL
 
+  virtual std::string
+  any_simple_type ()
+  {
+    return "hello";
+  }
+
   virtual bool
   string_next ()
   {
@@ -614,6 +621,12 @@ struct root_simpl: root_sskel
   }
 
 #else
+
+  virtual const char*
+  any_simple_type ()
+  {
+    return "hello";
+  }
 
   virtual bool
   string_next ()
@@ -1242,7 +1255,7 @@ main (int argc, char* argv[])
   }
 
   any_type_simpl any_type_s;
-  any_simple_type_simpl any_simple_type_s;
+  xml_schema::any_simple_type_simpl any_simple_type_s;
 
   xml_schema::boolean_simpl boolean_s;
 

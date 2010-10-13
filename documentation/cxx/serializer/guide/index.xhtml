@@ -1789,6 +1789,8 @@ namespace http://www.w3.org/2001/XMLSchema
 {
   include &lt;string>;
 
+  anySimpleType std::string;
+
   string std::string;
   normalizedString std::string;
   token std::string;
@@ -1809,6 +1811,8 @@ namespace http://www.w3.org/2001/XMLSchema
   <pre class="type-map">
 namespace http://www.w3.org/2001/XMLSchema
 {
+  anySimpleType "const char*";
+
   string "const char*";
   normalizedString "const char*";
   token "const char*";
@@ -4057,7 +4061,8 @@ main ()
     <tr>
       <td><code>anySimpleType</code></td>
       <td><code>any_simple_type_simpl</code></td>
-      <td><code>void</code></td>
+      <td><code>const std::string&amp;</code> or<br/> <code>const char*</code><br/>
+          <a href="#7.2">Section 7.2, "String-Based Type Serializers"</a></td>
     </tr>
 
     <tr>
@@ -4428,7 +4433,8 @@ namespace xml_schema
      <code>normalizedString</code>, <code>token</code>,
      <code>Name</code>, <code>NMTOKEN</code>, <code>NCName</code>,
      <code>ID</code>, <code>IDREF</code>, <code>language</code>,
-     and <code>anyURI</code> built-in XML Schema types is
+     <code>anyURI</code>, and <code>anySimpleType</code> built-in XML Schema
+     types is
      <code>const std::string&amp;</code>. When STL is disabled, the value
      is passed as a constant C-string: <code>const char*</code>.
      In this case, you can also instruct the serializer

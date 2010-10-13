@@ -559,7 +559,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnySimpleType& t)
         {
-          set (t, true);
+          set (t, stl);
         }
 
         // Boolean.

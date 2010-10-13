@@ -1234,11 +1234,10 @@ namespace CXX
                  << endl;
             }
 
-            // Call base pre(). Default serializer implementations for
-            // anyType and anySimpleType return void.
+            // Call base pre(). Default serializer implementation for
+            // anyType takes void.
             //
-            if (!b.is_a<SemanticGraph::AnyType> () &&
-                !b.is_a<SemanticGraph::AnySimpleType> ())
+            if (!b.is_a<SemanticGraph::AnyType> ())
             {
               if (tiein)
                 os << "this->base_impl_.pre (";

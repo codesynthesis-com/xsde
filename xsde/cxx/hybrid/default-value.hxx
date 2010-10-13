@@ -177,7 +177,7 @@ namespace CXX
 
     private:
       Void
-      string_type (SemanticGraph::Fundamental::Type&);
+      string_type (SemanticGraph::Type&);
 
       Void
       string_sequence_type ();

@@ -718,6 +718,8 @@ namespace CXX
           String qname (xns + L"::qname*");
           String string_seq (xns + L"::string_sequence*");
 
+          xsd_std.types_push_back ("anySimpleType", "char*", "char*");
+
           xsd_std.types_push_back ("string", "char*", "char*");
           xsd_std.types_push_back ("normalizedString", "char*", "char*");
           xsd_std.types_push_back ("token", "char*", "char*");
@@ -742,6 +744,8 @@ namespace CXX
 
           String qname (xns + L"::qname");
           String string_seq (xns + L"::string_sequence*");
+
+          xsd_std.types_push_back ("anySimpleType", "::std::string");
 
           xsd_std.types_push_back ("string", "::std::string");
           xsd_std.types_push_back ("normalizedString", "::std::string");

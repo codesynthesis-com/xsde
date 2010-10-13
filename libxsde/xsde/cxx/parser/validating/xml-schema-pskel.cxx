@@ -73,24 +73,6 @@ namespace xsde
 #endif
         }
 
-        // any_simple_type
-        //
-        bool any_simple_type_pskel::
-        _characters_impl (const ro_string& s)
-        {
-          _any_characters (s);
-          return true;
-        }
-
-        void any_simple_type_pskel::
-        post_any_simple_type ()
-        {
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          if (any_simple_type_impl_)
-            any_simple_type_impl_->post_any_simple_type ();
-#endif
-        }
-
         // static/dynamic_type function implementations.
         //
 #ifdef XSDE_POLYMORPHIC
@@ -614,4 +596,3 @@ namespace xsde
     }
   }
 }
-

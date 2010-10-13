@@ -43,22 +43,6 @@ namespace xsde
 #endif
         */
       };
-
-      struct any_simple_type
-      {
-      };
-
-      inline bool
-      operator== (const any_simple_type&, const any_simple_type&)
-      {
-        return true;
-      }
-
-      inline bool
-      operator!= (const any_simple_type&, const any_simple_type&)
-      {
-        return false;
-      }
     }
   }
 }

@@ -25,16 +25,6 @@ namespace xsde
 #endif
         {
         };
-
-        // any_simple_type
-        //
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct any_simple_type_simpl: virtual any_simple_type_sskel
-#else
-        struct any_simple_type_simpl: any_simple_type_sskel
-#endif
-        {
-        };
       }
     }
   }

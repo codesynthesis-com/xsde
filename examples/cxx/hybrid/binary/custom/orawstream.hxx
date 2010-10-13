@@ -61,7 +61,6 @@ private:
 };
 
 void operator<< (orawstream&, const xml_schema::any_type&);
-void operator<< (orawstream&, const xml_schema::any_simple_type&);
 void operator<< (orawstream&, const xml_schema::qname&);
 void operator<< (orawstream&, const xml_schema::time_zone&);
 void operator<< (orawstream&, const xml_schema::date&);

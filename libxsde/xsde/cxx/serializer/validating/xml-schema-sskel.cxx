@@ -24,17 +24,6 @@ namespace xsde
 #endif
         }
 
-        // any_simple_type_sskel
-        //
-        void any_simple_type_sskel::
-        pre ()
-        {
-#ifdef XSDE_REUSE_STYLE_TIEIN
-          if (any_simple_type_impl_)
-            any_simple_type_impl_->pre ();
-#endif
-        }
-
         // static/dynamic_type function implementations.
         //
 #ifdef XSDE_POLYMORPHIC

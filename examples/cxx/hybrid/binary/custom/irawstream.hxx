@@ -62,7 +62,6 @@ private:
 };
 
 void operator>> (irawstream&, xml_schema::any_type&);
-void operator>> (irawstream&, xml_schema::any_simple_type&);
 void operator>> (irawstream&, xml_schema::qname&);
 void operator>> (irawstream&, xml_schema::time_zone&);
 void operator>> (irawstream&, xml_schema::date&);

@@ -17,6 +17,8 @@ namespace CXX
   {
     struct PrintCall: Traversal::Type,
 
+                      Traversal::AnySimpleType,
+
                       Traversal::Fundamental::Boolean,
 
                       Traversal::Fundamental::Byte,
@@ -78,6 +80,12 @@ namespace CXX
       traverse (SemanticGraph::Type&)
       {
         gen_user_type ();
+      }
+
+      virtual Void
+      traverse (SemanticGraph::AnySimpleType& t)
+      {
+        gen_string (t);
       }
 
       // Boolean.
@@ -885,7 +893,9 @@ namespace CXX
       String arg_;
     };
 
-    struct DeleteCall: Traversal::Fundamental::String,
+    struct DeleteCall: Traversal::AnySimpleType,
+
+                       Traversal::Fundamental::String,
                        Traversal::Fundamental::NormalizedString,
                        Traversal::Fundamental::Token,
                        Traversal::Fundamental::Name,
@@ -910,6 +920,12 @@ namespace CXX
       DeleteCall (Context& c, String const& arg)
           : Context (c), arg_ (arg)
       {
+      }
+
+      virtual Void
+      traverse (SemanticGraph::AnySimpleType& t)
+      {
+        gen_string (t);
       }
 
       // Strings.

@@ -61,28 +61,6 @@ struct any_type_pimpl: xml_schema::any_type_pimpl
   }
 };
 
-struct any_simple_type_pimpl: xml_schema::any_simple_type_pimpl
-{
-  virtual void
-  pre ()
-  {
-    cout << "{" << endl;
-  }
-
-  virtual void
-  _any_characters (ro_string const& s)
-  {
-    cout << "  any text: '" << s << "'" << endl;
-  }
-
-  virtual void
-  post_any_simple_type ()
-  {
-    cout << "}" << endl
-         << endl;
-  }
-};
-
 struct any_extension_pimpl: any_extension_pskel
 {
   any_extension_pimpl ()
@@ -103,7 +81,7 @@ struct any_extension_pimpl: any_extension_pskel
     cout << "  x = " << v << endl;
     delete[] v;
   }
-#endif  
+#endif
 
 private:
   any_type_pimpl base_impl_;
@@ -122,6 +100,12 @@ struct any_simple_extension_pimpl: any_simple_extension_pskel
   {
     cout << "  x = " << v << endl;
   }
+
+  virtual void
+  post_any_simple_extension ()
+  {
+    cout << "'" << post_any_simple_type () << "'" << endl;
+  }
 #else
   virtual void
   x (char* v)
@@ -129,14 +113,36 @@ struct any_simple_extension_pimpl: any_simple_extension_pskel
     cout << "  x = " << v << endl;
     delete[] v;
   }
-#endif  
+
+  virtual void
+  post_any_simple_extension ()
+  {
+    char& v = post_any_simple_type ();
+    cout << "'" << b << "'" << endl;
+    delete[] v;
+  }
+#endif
 
 private:
-  any_simple_type_pimpl base_impl_;
+  xml_schema::any_simple_type_pimpl base_impl_;
 };
 
 struct type_pimpl: type_pskel
 {
+#ifdef XSDE_STL
+  virtual void
+  as (std::string const& v)
+  {
+    cout << "'" << v << "'" << endl;
+  }
+#else // XSDE_STL
+  virtual void
+  as (char* v)
+  {
+    cout << "'" << v << "'" << endl;
+    delete[] v;
+  }
+#endif
 };
 
 int
@@ -153,7 +159,7 @@ main (int argc, char* argv[])
     xml_schema::string_pimpl string_p;
 
     any_type_pimpl any_type_p;
-    any_simple_type_pimpl any_simple_type_p;
+    xml_schema::any_simple_type_pimpl any_simple_type_p;
 
     any_extension_pimpl any_extension_p;
     any_simple_extension_pimpl any_simple_extension_p;

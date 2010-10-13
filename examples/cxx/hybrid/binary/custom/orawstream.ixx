@@ -103,8 +103,3 @@ inline void
 operator<< (orawstream&, const xml_schema::any_type&)
 {
 }
-
-inline void
-operator<< (orawstream&, const xml_schema::any_simple_type&)
-{
-}

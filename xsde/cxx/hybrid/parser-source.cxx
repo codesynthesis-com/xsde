@@ -1836,11 +1836,9 @@ namespace CXX
                 // The following code is similar to what we have in post().
                 //
 
-                // Default parser implementations for anyType and
-                // anySimpleType return void.
+                // Default parser implementation for anyType returns void.
                 //
-                if (!b.is_a<SemanticGraph::AnyType> () &&
-                    !b.is_a<SemanticGraph::AnySimpleType> ())
+                if (!b.is_a<SemanticGraph::AnyType> ())
                 {
                   // If our base is a fixed-length type then copy the data
                   // over. Note that it cannot be a C-string.
@@ -1999,11 +1997,9 @@ namespace CXX
           {
             SemanticGraph::Type& b (c.inherits ().base ());
 
-            // Default parser implementations for anyType and
-            // anySimpleType return void.
+            // Default parser implementation for anyType returns void.
             //
-            if (!b.is_a<SemanticGraph::AnyType> () &&
-                !b.is_a<SemanticGraph::AnySimpleType> ())
+            if (!b.is_a<SemanticGraph::AnyType> ())
             {
               // If we are recursive but our base is not, we only call
               // base post() if it is the first post call.

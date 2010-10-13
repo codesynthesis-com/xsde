@@ -9,6 +9,13 @@
 #include <xsde/cxx/parser/validating/xml-schema-pskel.hxx>
 
 #include <xsde/cxx/parser/validating/any-type.hxx>
+
+#ifdef XSDE_STL
+#  include <xsde/cxx/parser/validating/any-simple-type-stl.hxx>
+#else
+#  include <xsde/cxx/parser/validating/any-simple-type.hxx>
+#endif
+
 #include <xsde/cxx/parser/validating/boolean.hxx>
 #include <xsde/cxx/parser/validating/byte.hxx>
 #include <xsde/cxx/parser/validating/unsigned-byte.hxx>

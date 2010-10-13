@@ -157,6 +157,7 @@ endif
 ifeq ($(XSDE_STL),y)
 
 src +=                                          \
+cxx/parser/validating/any-simple-type-stl.cxx   \
 cxx/parser/validating/string-stl.cxx            \
 cxx/parser/validating/normalized-string-stl.cxx \
 cxx/parser/validating/token-stl.cxx             \
@@ -174,6 +175,7 @@ cxx/parser/validating/qname-stl.cxx
 else
 
 src +=                                       \
+cxx/parser/validating/any-simple-type.cxx    \
 cxx/parser/validating/string.cxx             \
 cxx/parser/validating/normalized-string.cxx  \
 cxx/parser/validating/token.cxx              \
@@ -242,6 +244,7 @@ endif
 ifeq ($(XSDE_STL),y)
 
 src +=                                              \
+cxx/parser/non-validating/any-simple-type-stl.cxx   \
 cxx/parser/non-validating/string-stl.cxx            \
 cxx/parser/non-validating/normalized-string-stl.cxx \
 cxx/parser/non-validating/token-stl.cxx             \
@@ -259,6 +262,7 @@ cxx/parser/non-validating/qname-stl.cxx
 else
 
 src +=                                           \
+cxx/parser/non-validating/any-simple-type.cxx    \
 cxx/parser/non-validating/string.cxx             \
 cxx/parser/non-validating/normalized-string.cxx  \
 cxx/parser/non-validating/token.cxx              \
@@ -350,6 +354,7 @@ endif
 ifeq ($(XSDE_STL),y)
 
 src +=                                              \
+cxx/serializer/validating/any-simple-type-stl.cxx   \
 cxx/serializer/validating/string-stl.cxx            \
 cxx/serializer/validating/normalized-string-stl.cxx \
 cxx/serializer/validating/token-stl.cxx             \
@@ -367,6 +372,7 @@ cxx/serializer/validating/qname-stl.cxx
 else
 
 src +=                                           \
+cxx/serializer/validating/any-simple-type.cxx    \
 cxx/serializer/validating/string.cxx             \
 cxx/serializer/validating/normalized-string.cxx  \
 cxx/serializer/validating/token.cxx              \
@@ -433,6 +439,7 @@ endif
 ifeq ($(XSDE_STL),y)
 
 src +=                                                  \
+cxx/serializer/non-validating/any-simple-type-stl.cxx   \
 cxx/serializer/non-validating/string-stl.cxx            \
 cxx/serializer/non-validating/normalized-string-stl.cxx \
 cxx/serializer/non-validating/token-stl.cxx             \
@@ -450,6 +457,7 @@ cxx/serializer/non-validating/qname-stl.cxx
 else
 
 src +=                                               \
+cxx/serializer/non-validating/any-simple-type.cxx    \
 cxx/serializer/non-validating/string.cxx             \
 cxx/serializer/non-validating/normalized-string.cxx  \
 cxx/serializer/non-validating/token.cxx              \

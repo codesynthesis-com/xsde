@@ -617,7 +617,9 @@ namespace CXX
     }
   };
 
-  struct LiteralValue: Traversal::Fundamental::Byte,
+  struct LiteralValue: Traversal::AnySimpleType,
+
+                       Traversal::Fundamental::Byte,
                        Traversal::Fundamental::UnsignedByte,
                        Traversal::Fundamental::Short,
                        Traversal::Fundamental::UnsignedShort,
@@ -656,6 +658,9 @@ namespace CXX
 
     String
     dispatch (SemanticGraph::Node& type, String const& value);
+
+    virtual Void
+    traverse (SemanticGraph::AnySimpleType&);
 
     // Boolean.
     //

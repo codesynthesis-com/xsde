@@ -1222,7 +1222,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnySimpleType& t)
         {
-          gen_typedef (t, "void");
+          gen_typedef (t, string_type_);
         }
 
         // Boolean.

@@ -740,7 +740,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnySimpleType&)
         {
-          align_type ("char", 1);
+          align_type ("size_t", 5); // std::string
         }
 
         // Boolean.

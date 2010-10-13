@@ -798,7 +798,9 @@ namespace CXX
 
     //
     //
-    struct StringType: Traversal::Fundamental::String,
+    struct StringType: Traversal::AnySimpleType,
+
+                       Traversal::Fundamental::String,
                        Traversal::Fundamental::NormalizedString,
                        Traversal::Fundamental::Token,
                        Traversal::Fundamental::Name,
@@ -813,6 +815,12 @@ namespace CXX
       StringType (Boolean& result)
           : r_ (result)
       {
+      }
+
+      virtual Void
+      traverse (SemanticGraph::AnySimpleType&)
+      {
+        r_ = true;
       }
 
       virtual Void
@@ -1098,9 +1106,12 @@ namespace CXX
       }
 
       virtual Void
-      traverse (SemanticGraph::AnySimpleType& t)
+      traverse (SemanticGraph::AnySimpleType&)
       {
-        type (t);
+        if (stl || use_ != base)
+          string_type ();
+        else
+          os << xs_ns_ << "::any_simple_type_base";
       }
 
       // Boolean.
@@ -1688,7 +1699,7 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::AnySimpleType& t)
       {
-        type (t);
+        string_type (t);
       }
 
       // Boolean.

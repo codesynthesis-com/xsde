@@ -74,11 +74,12 @@ namespace xsde
 
         struct any_simple_type_pskel: simple_content
         {
-          virtual bool
-          _characters_impl (const ro_string&);
-
-          virtual void
-          post_any_simple_type ();
+#ifdef XSDE_STL
+          virtual std::string
+#else
+          virtual char*
+#endif
+          post_any_simple_type () = 0;
 
 #ifdef XSDE_POLYMORPHIC
           static const char*
@@ -96,7 +97,6 @@ namespace xsde
           any_simple_type_pskel* any_simple_type_impl_;
 #endif
         };
-
 
         // Boolean.
         //

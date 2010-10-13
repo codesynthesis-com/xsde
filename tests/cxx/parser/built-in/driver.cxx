@@ -64,28 +64,6 @@ struct any_type_pimpl: xml_schema::any_type_pimpl
   }
 };
 
-struct any_simple_type_pimpl: xml_schema::any_simple_type_pimpl
-{
-  virtual void
-  pre ()
-  {
-    cout << "{" << endl;
-  }
-
-  virtual void
-  _any_characters (ro_string const& s)
-  {
-    cout << "  any text: '" << s << "'" << endl;
-  }
-
-  virtual void
-  post_any_simple_type ()
-  {
-    cout << "}" << endl
-         << endl;
-  }
-};
-
 struct type_pimpl: type_pskel
 {
   virtual void
@@ -208,6 +186,12 @@ struct type_pimpl: type_pskel
 
 #ifdef XSDE_STL
   virtual void
+  any_simple_type (std::string const& v)
+  {
+    cout << "'" << v << "'" << endl;
+  }
+
+  virtual void
   string (std::string const& v)
   {
     cout << "'" << v << "'" << endl;
@@ -300,6 +284,13 @@ struct type_pimpl: type_pskel
   }
 
 #else // XSDE_STL
+
+  virtual void
+  any_simple_type (char* v)
+  {
+    cout << "'" << v << "'" << endl;
+    delete[] v;
+  }
 
   virtual void
   string (char* v)
@@ -571,7 +562,7 @@ main (int argc, char* argv[])
   try
   {
     any_type_pimpl any_type_p;
-    any_simple_type_pimpl any_simple_type_p;
+    xml_schema::any_simple_type_pimpl any_simple_type_p;
 
     xml_schema::boolean_pimpl boolean_p;
 

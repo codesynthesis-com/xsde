@@ -16,22 +16,10 @@ namespace xsde
     {
       namespace validating
       {
-        // any_type
-        //
 #ifdef XSDE_REUSE_STYLE_MIXIN
         struct any_type_pimpl: virtual any_type_pskel
 #else
         struct any_type_pimpl: any_type_pskel
-#endif
-        {
-        };
-
-        // any_simple_type
-        //
-#ifdef XSDE_REUSE_STYLE_MIXIN
-        struct any_simple_type_pimpl: virtual any_simple_type_pskel
-#else
-        struct any_simple_type_pimpl: any_simple_type_pskel
 #endif
         {
         };

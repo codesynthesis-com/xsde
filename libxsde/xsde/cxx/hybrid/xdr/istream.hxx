@@ -124,7 +124,6 @@ namespace xsde
 
 #ifdef XSDE_EXCEPTIONS
       void operator>> (ixdrstream&, any_type&);
-      void operator>> (ixdrstream&, any_simple_type&);
       void operator>> (ixdrstream&, qname&);
       void operator>> (ixdrstream&, string_sequence&);
       void operator>> (ixdrstream&, time_zone&);
@@ -139,7 +138,6 @@ namespace xsde
       void operator>> (ixdrstream&, time&);
 #else
       bool operator>> (ixdrstream&, any_type&);
-      bool operator>> (ixdrstream&, any_simple_type&);
       bool operator>> (ixdrstream&, qname&);
       bool operator>> (ixdrstream&, string_sequence&);
       bool operator>> (ixdrstream&, time_zone&);

@@ -9,6 +9,13 @@
 #include <xsde/cxx/serializer/non-validating/xml-schema-sskel.hxx>
 
 #include <xsde/cxx/serializer/non-validating/any-type.hxx>
+
+#ifdef XSDE_STL
+#  include <xsde/cxx/serializer/non-validating/any-simple-type-stl.hxx>
+#else
+#  include <xsde/cxx/serializer/non-validating/any-simple-type.hxx>
+#endif
+
 #include <xsde/cxx/serializer/non-validating/boolean.hxx>
 #include <xsde/cxx/serializer/non-validating/byte.hxx>
 #include <xsde/cxx/serializer/non-validating/unsigned-byte.hxx>

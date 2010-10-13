@@ -703,6 +703,8 @@ namespace CXX
           String qname (L"const " + xns + L"::qname*");
           String string_seq (L"const " + xns + L"::string_sequence*");
 
+          xsd_std.types_push_back ("anySimpleType", "const char*", "const char*");
+
           xsd_std.types_push_back ("string", "const char*", "const char*");
           xsd_std.types_push_back ("normalizedString", "const char*", "const char*");
           xsd_std.types_push_back ("token", "const char*", "const char*");
@@ -727,6 +729,8 @@ namespace CXX
 
           String qname (xns + L"::qname");
           String string_seq (L"const " + xns + L"::string_sequence*");
+
+          xsd_std.types_push_back ("anySimpleType", "::std::string");
 
           xsd_std.types_push_back ("string", "::std::string");
           xsd_std.types_push_back ("normalizedString", "::std::string");

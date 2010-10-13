@@ -1712,6 +1712,8 @@ namespace http://www.w3.org/2001/XMLSchema
 {
   include &lt;string>;
 
+  anySimpleType std::string;
+
   string std::string;
   normalizedString std::string;
   token std::string;
@@ -1732,6 +1734,8 @@ namespace http://www.w3.org/2001/XMLSchema
   <pre class="type-map">
 namespace http://www.w3.org/2001/XMLSchema
 {
+  anySimpleType char*;
+
   string char*;
   normalizedString char*;
   token char*;
@@ -3169,7 +3173,8 @@ main (int argc, char* argv[])
     <tr>
       <td><code>anySimpleType</code></td>
       <td><code>any_simple_type_pimpl</code></td>
-      <td><code>void</code></td>
+      <td><code>std::string</code> or <code>char*</code><br/>
+          <a href="#5.1">Section 5.1, "Standard Template Library"</a></td>
     </tr>
 
     <tr>

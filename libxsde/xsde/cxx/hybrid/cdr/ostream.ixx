@@ -131,11 +131,6 @@ namespace xsde
       {
       }
 
-      inline void
-      operator<< (ocdrstream&, const any_simple_type&)
-      {
-      }
-
 #else // XSDE_EXCEPTIONS
 
       inline bool ocdrstream::
@@ -229,12 +224,6 @@ namespace xsde
 
       inline bool
       operator<< (ocdrstream&, const any_type&)
-      {
-        return true;
-      }
-
-      inline bool
-      operator<< (ocdrstream&, const any_simple_type&)
       {
         return true;
       }

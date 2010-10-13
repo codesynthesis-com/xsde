@@ -243,7 +243,12 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnySimpleType&)
         {
-          gen_using ("::xsde::cxx::hybrid::any_simple_type");
+          gen_typedef ("any_simple_type", string_type_);
+
+          if (!stl)
+            gen_typedef ("any_simple_type_base",
+                         "::xsde::cxx::hybrid::string_base");
+          os << endl;
         }
 
         // Boolean.

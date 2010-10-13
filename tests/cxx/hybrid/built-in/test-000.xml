@@ -1,10 +1,10 @@
-<t:root xmlns:t="test" any-simple-attr="">
+<t:root xmlns:t="test" any-simple-attr="abc123">
 
   <any></any>
   <any-res x="x"><a>123</a><b>abc</b></any-res>
 
-  <any-simple></any-simple>
-  <any-simple-ext x="x"></any-simple-ext>
+  <any-simple>abc123</any-simple>
+  <any-simple-ext x="x">abc123</any-simple-ext>
 
   <int>123</int>
   <simple-int>456</simple-int>

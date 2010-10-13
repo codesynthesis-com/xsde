@@ -229,8 +229,9 @@ namespace CXX
     // anySimpleType.
     //
     Void InitValue::
-    traverse (SemanticGraph::AnySimpleType&)
+    traverse (SemanticGraph::AnySimpleType& t)
     {
+      string_type (t);
     }
 
     // Strings.
@@ -741,7 +742,7 @@ namespace CXX
     }
 
     Void InitValue::
-    string_type (SemanticGraph::Fundamental::Type& t)
+    string_type (SemanticGraph::Type& t)
     {
       // In case STL is disabled, strings are returned as literals
       // so we end up here only if the type is derived from a string.

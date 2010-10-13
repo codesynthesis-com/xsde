@@ -1339,6 +1339,13 @@ namespace CXX
     return literal_;
   }
 
+  Void LiteralValue::
+  traverse (SemanticGraph::AnySimpleType&)
+  {
+    if (str_)
+      literal_ = strlit (value_);
+  }
+
   // Boolean.
   //
   Void LiteralValue::

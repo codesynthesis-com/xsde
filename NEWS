@@ -48,6 +48,9 @@ Version 3.2.0
     for variable-length types. These functions allow you to make dynamically-
     allocated copies of variable-length objects.
 
+  * The anySimpleType build-in type is now mapped to std::string or a C-string,
+    depending on whether STL is enabled or not.
+
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
     provided by the mapping conform to the STL requirements. This feature
     requires working <iterator> header and allows you to use the standard
@@ -87,6 +90,9 @@ Version 3.2.0
     For more information on the pattern facet validation, see the XSDE_REGEXP
     parameter in the configuration files.
 
+  * The anySimpleType build-in type is now mapped to std::string or a C-string,
+    depending on whether STL is enabled or not.
+
  C++/Serializer
 
   * Support for the following XML Schema facets:
@@ -106,6 +112,9 @@ Version 3.2.0
 
     For more information on the pattern facet validation, see the XSDE_REGEXP
     parameter in the configuration files.
+
+  * The anySimpleType build-in type is now mapped to std::string or a C-string,
+    depending on whether STL is enabled or not.
 
 Version 3.1.0
 

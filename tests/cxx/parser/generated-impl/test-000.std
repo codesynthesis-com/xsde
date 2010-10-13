@@ -19,6 +19,7 @@ x: x
 y: y
 a: aaa
 b: bbb
+any-simple-type: abc123
 boolean: 1
 boolean: 0
 boolean: 1
