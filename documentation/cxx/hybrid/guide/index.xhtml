@@ -3737,12 +3737,16 @@ namespace xml_schema
     typedef const void* const* const_iterator;
 
     typedef void (*destroy_func) (void* data, size_t pos);
+    typedef void* (*clone_func) (void* data, size_t pos);
 
   public:
     data_sequence ();
 
     void
     destructor (destroy_func);
+
+    void
+    clone (clone_func);
 
     void
     swap (data_sequence&amp;);
@@ -3821,14 +3825,17 @@ namespace xml_schema
 
   <p>The <code>destructor()</code> modifier allows you to specify
      the clean up function used to free the sequence elements.
-     The second argument in this clean up function is the position
-     of the element in the sequence that is being freed. This allows
-     you to store objects of different types in the same custom
-     data sequence. The <code>push_back()</code> and <code>insert()</code>
-     functions free the passed object if the reallocation of the
-     underlying sequence buffer fails.</p>
+     Similarly, the <code>clone()</code> modifier allows you to specify
+     the cloning function used to copy the sequence elements.
+     The second argument in these functions is the position
+     of the element in the sequence. This allows you to store objects
+     of different types in the same custom
+     data sequence.</p>
 
-  <p>When exceptions are disabled, the <code>push_back()</code>,
+  <p>The <code>push_back()</code> and <code>insert()</code> functions
+     free the passed object if the reallocation of the underlying
+     sequence buffer fails. When exceptions are disabled, the
+     <code>push_back()</code>,
      <code>insert()</code>, and <code>reserve()</code> functions
      return an error code to signal the out of memory condition:</p>
 
