@@ -907,11 +907,20 @@ main (Int argc, Char* argv[])
             if (gen_serializer)
               CXX::Serializer::Generator::process_names (*s_ops, s, f);
 
-            if (gen_hybrid && gen_parser)
-              CXX::Hybrid::Generator::process_parser_names (*h_ops, s, f);
+            try
+            {
+              if (gen_hybrid && gen_parser)
+                CXX::Hybrid::Generator::process_parser_names (*h_ops, s, f);
 
-            if (gen_hybrid && gen_serializer)
-              CXX::Hybrid::Generator::process_serializer_names (*h_ops, s, f);
+              if (gen_hybrid && gen_serializer)
+                CXX::Hybrid::Generator::process_serializer_names (*h_ops, s, f);
+            }
+            catch (CXX::Hybrid::Generator::Failed const&)
+            {
+              // Diagnostics has already been issued.
+              //
+              return 1;
+            }
           }
         }
         else

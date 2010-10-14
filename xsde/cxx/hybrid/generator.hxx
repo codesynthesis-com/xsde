@@ -32,6 +32,8 @@ namespace CXX
     class Generator
     {
     public:
+      struct Failed {};
+
       static Void
       usage ();
 
@@ -79,8 +81,6 @@ namespace CXX
 
       // Generate code.
       //
-      struct Failed {};
-
       static UnsignedLong
       generate_tree (
         CLI::Options const&,

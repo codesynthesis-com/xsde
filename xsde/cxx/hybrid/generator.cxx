@@ -1125,7 +1125,8 @@ namespace CXX
                         XSDFrontend::SemanticGraph::Path const& file)
   {
     ParserNameProcessor proc;
-    proc.process (ops, schema, file, false);
+    if (!proc.process (ops, schema, file, false))
+      throw Failed ();
   }
 
   Void Hybrid::Generator::
@@ -1134,7 +1135,8 @@ namespace CXX
                             XSDFrontend::SemanticGraph::Path const& file)
   {
     SerializerNameProcessor proc;
-    proc.process (ops, schema, file, false);
+    if (!proc.process (ops, schema, file, false))
+      throw Failed ();
   }
 
   namespace
@@ -2104,7 +2106,9 @@ namespace CXX
       //
       {
         ParserNameProcessor proc;
-        proc.process (ops, schema, file_path, true);
+
+        if (!proc.process (ops, schema, file_path, true))
+          throw Failed ();
       }
 
       NarrowString name (file_path.leaf ());
@@ -2524,7 +2528,9 @@ namespace CXX
       //
       {
         SerializerNameProcessor proc;
-        proc.process (ops, schema, file_path, true);
+
+        if (!proc.process (ops, schema, file_path, true))
+          throw Failed ();
       }
 
       NarrowString name (file_path.leaf ());

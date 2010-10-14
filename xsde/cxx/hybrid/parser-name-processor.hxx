@@ -21,7 +21,7 @@ namespace CXX
     class ParserNameProcessor
     {
     public:
-      Void
+      Boolean
       process (CLI::Options const& options,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const& file,

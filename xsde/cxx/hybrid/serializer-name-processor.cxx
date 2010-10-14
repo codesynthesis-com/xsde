@@ -25,6 +25,8 @@ namespace CXX
       //
       typedef Cult::Containers::Set<String> NameSet;
 
+      struct Failed {};
+
       class Context: public CXX::Context
       {
       public:
@@ -502,6 +504,7 @@ namespace CXX
 
           // See if this serializer is being customized.
           //
+          Boolean custom (false);
           CustomSerializerMap::ConstIterator i (
             custom_serializer_map.find (name));
 
@@ -511,8 +514,26 @@ namespace CXX
                     ? find_name (i->second.base, set_)
                     : i->second.base);
 
+            custom = i->second.base.empty ();
+
             if (i->second.include)
               tc.set ("s:impl-include", i->second.include);
+          }
+
+          // If this type is completely customized then we cannot generate
+          // a serializer implementation for it.
+          //
+          if (!custom && tc.count ("name-base") && !tc.get<String> ("name-base"))
+          {
+            os << t.file () << ":" << t.line () << ":" << t.column ()
+               << ": error: unable to generate serializer implementation for "
+               << "customized object model type '" << t.name () << "'" << endl;
+
+            os << t.file () << ":" << t.line () << ":" << t.column ()
+               << ": info: provide custom serializer implementation for this "
+               << "type with the --custom-serializer option" << endl;
+
+            throw Failed ();
           }
 
           if (aggregate)
@@ -780,13 +801,21 @@ namespace CXX
       }
     }
 
-    Void SerializerNameProcessor::
+    Boolean SerializerNameProcessor::
     process (CLI::Options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              Boolean deep)
     {
-      process_impl (ops, tu, file, deep);
+      try
+      {
+        process_impl (ops, tu, file, deep);
+        return true;
+      }
+      catch (Failed const&)
+      {
+        return false;
+      }
     }
   }
 }

@@ -26,6 +26,8 @@ namespace CXX
       //
       typedef Cult::Containers::Set<String> NameSet;
 
+      struct Failed {};
+
       class Context: public CXX::Context
       {
       public:
@@ -495,6 +497,7 @@ namespace CXX
 
           // See if this parser is being customized.
           //
+          Boolean custom (false);
           CustomParserMap::ConstIterator i (custom_parser_map.find (name));
 
           if (i != custom_parser_map.end ())
@@ -503,8 +506,26 @@ namespace CXX
                     ? find_name (i->second.base, set_)
                     : i->second.base);
 
+            custom = i->second.base.empty ();
+
             if (i->second.include)
               tc.set ("p:impl-include", i->second.include);
+          }
+
+          // If this type is completely customized then we cannot generate
+          // a parser implementation for it.
+          //
+          if (!custom && tc.count ("name-base") && !tc.get<String> ("name-base"))
+          {
+            os << t.file () << ":" << t.line () << ":" << t.column ()
+               << ": error: unable to generate parser implementation for "
+               << "customized object model type '" << t.name () << "'" << endl;
+
+            os << t.file () << ":" << t.line () << ":" << t.column ()
+               << ": info: provide custom parser implementation for this "
+               << "type with the --custom-parser option" << endl;
+
+            throw Failed ();
           }
 
           if (aggregate)
@@ -772,13 +793,21 @@ namespace CXX
       }
     }
 
-    Void ParserNameProcessor::
+    Boolean ParserNameProcessor::
     process (CLI::Options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              Boolean deep)
     {
-      process_impl (ops, tu, file, deep);
+      try
+      {
+        process_impl (ops, tu, file, deep);
+        return true;
+      }
+      catch (Failed const&)
+      {
+        return false;
+      }
     }
   }
 }
