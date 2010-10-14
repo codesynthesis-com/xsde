@@ -13,8 +13,8 @@ copyright : not copyrighted - public domain
   <xsd:complexType name="simple_choice">
     <xsd:choice>
       <xsd:element name="a" type="xsd:int"/>
-      <xsd:element name="b" type="xsd:string" minOccurs="0"/>
-      <xsd:element name="c" type="xsd:boolean" maxOccurs="unbounded"/>
+      <xsd:element name="b" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="c" type="xsd:int" maxOccurs="unbounded"/>
     </xsd:choice>
   </xsd:complexType>
 

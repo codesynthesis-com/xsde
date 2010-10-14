@@ -2267,8 +2267,8 @@ class person
   </pre>
 
   <p>Compared to the <em>one</em> cardinality class, <em>optional</em> adds
-     two extra functions for querying and modifying the element's presence
-     status. The following example shows how we can use these functions:</p>
+     functions for querying and modifying the member's presence status.
+     The following example shows how we can use these functions:</p>
 
   <pre class="c++">
 person&amp; p = ...
@@ -2279,6 +2279,33 @@ if (p.middle_name_present ())
   p.middle_name_present (false); // Reset to the "not present" state.
 }
   </pre>
+
+  <p>If an optional member is of a variable-length type, then the second
+     <code>_present()</code> function is omitted. This is done to help
+     detect programming errors that result from a type becoming
+     variable-length due to schema changes. In this situation, before
+     the type becomes variable-length, calling the presence function
+     with <code>true</code> as its argument and then accessing the
+     member is valid. Once the type becomes variable-length, the
+     same sequence of calls would lead to a runtime error. By
+     omitting the second <code>_present()</code> function for
+     variable-length types, this kind of errors can be detected
+     at compile time. To reset an optional member of a variable-length
+     type you can call the member modifier function with <code>NULL</code>
+     as its argument. For example, if the <code>middle_name</code>
+     member was of a variable-length type, then the above code fragment
+     would look like this:</p>
+
+  <pre class="c++">
+person&amp; p = ...
+
+if (p.middle_name_present ())
+{
+  cout &lt;&lt; *p.middle_name () &lt;&lt; endl;
+  p.middle_name (0); // Reset to the "not present" state.
+}
+  </pre>
+
 
   <p>There are two cases in the <em>optional</em> cardinality class that
      are handled differently. These are optional attributes with default
@@ -3020,9 +3047,6 @@ public:
 
   bool
   sequence_present () const;
-
-  void
-  sequence_present (bool);
 
   const sequence_type&amp;
   sequence () const;

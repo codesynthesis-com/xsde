@@ -1358,6 +1358,7 @@ namespace CXX
 
           String const& name (ename (a));
           SemanticGraph::Type& t (a.type ());
+          Boolean fl (fixed_length (t));
 
 
           if (a.optional_p () && !fix)
@@ -1368,9 +1369,10 @@ namespace CXX
                << name << " () const;"
                << endl;
 
-            os << "void" << endl
-               << name << " (bool);"
-               << endl;
+            if (fl)
+              os << "void" << endl
+                 << name << " (bool);"
+                 << endl;
           }
 
           // const type&
@@ -1406,7 +1408,7 @@ namespace CXX
             // type*
             // detach ()
             //
-            if (detach && !fixed_length (t))
+            if (detach && !fl)
             {
               arg_.dispatch (t);
               os << endl
@@ -1453,6 +1455,7 @@ namespace CXX
 
           String const& name (ename (e));
           SemanticGraph::Type& t (e.type ());
+          Boolean fl (fixed_length (t));
 
           if (e.max () != 1)
           {
@@ -1496,9 +1499,10 @@ namespace CXX
                  << present << " () const;"
                  << endl;
 
-              os << "void" << endl
-                 << present << " (bool);"
-                 << endl;
+              if (fl)
+                os << "void" << endl
+                   << present << " (bool);"
+                   << endl;
             }
 
             // const type&
@@ -1530,7 +1534,7 @@ namespace CXX
             // type*
             // detach ()
             //
-            if (detach && !fixed_length (t))
+            if (detach && !fl)
             {
               arg_.dispatch (t);
               os << endl
@@ -1667,9 +1671,10 @@ namespace CXX
                << present << " () const;"
                << endl;
 
-            os << "void" << endl
-               << present << " (bool);"
-               << endl;
+            if (fl)
+              os << "void" << endl
+                 << present << " (bool);"
+                 << endl;
 
             // const type&
             // name () const
@@ -1967,9 +1972,10 @@ namespace CXX
                << present << " () const;"
                << endl;
 
-            os << "void" << endl
-               << present << " (bool);"
-               << endl;
+            if (fl)
+              os << "void" << endl
+                 << present << " (bool);"
+                 << endl;
 
             // const type&
             // name () const
@@ -2203,9 +2209,10 @@ namespace CXX
                  << present << " () const;"
                  << endl;
 
-              os << "void" << endl
-                 << present << " (bool);"
-                 << endl;
+              if (fl)
+                os << "void" << endl
+                   << present << " (bool);"
+                   << endl;
             }
 
             // const type&
@@ -2410,9 +2417,10 @@ namespace CXX
                << present << " () const;"
                << endl;
 
-            os << "void" << endl
-               << present << " (bool);"
-               << endl;
+            if (fl)
+              os << "void" << endl
+                 << present << " (bool);"
+                 << endl;
 
             // const type&
             // name () const
@@ -2610,9 +2618,10 @@ namespace CXX
                  << present << " () const;"
                  << endl;
 
-              os << "void" << endl
-                 << present << " (bool);"
-                 << endl;
+              if (fl)
+                os << "void" << endl
+                   << present << " (bool);"
+                   << endl;
             }
 
             // const type&

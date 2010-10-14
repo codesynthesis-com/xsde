@@ -277,14 +277,23 @@ namespace CXX
             if (!a.default_p ())
             {
               os << "}"
-                 << "else" << endl
-                 << "x." << epresent (a) << " (false);";
+                 << "else" << endl;
+
+              if (fl)
+                os << "x." << epresent (a) << " (false);";
+              else
+                os << "x." << name << " (0);";
+
             }
             else
             {
               os << "}"
-                 << "else" << endl
-                 << "x." << edefault (a) << " (true);";
+                 << "else" << endl;
+
+              if (fl)
+                os << "x." << edefault (a) << " (true);";
+              else
+                os << "x." << name << " (0);";
             }
           }
 
@@ -403,9 +412,15 @@ namespace CXX
             }
 
             if (e.min () == 0)
+            {
               os << "}"
-                 << "else" << endl
-                 << "x." << epresent (e) << " (false);";
+                 << "else" << endl;
+
+              if (fl)
+                os << "x." << epresent (e) << " (false);";
+              else
+                os << "x." << name << " (0);";
+            }
 
             os << "}";
           }
@@ -486,9 +501,14 @@ namespace CXX
                  << "return false;";
 
             os << "}"
-               << "else" << endl
-               << "x." << present << " (false);"
-               << "}";
+               << "else" << endl;
+
+            if (fl)
+              os << "x." << present << " (false);";
+            else
+              os << "x." << name << " (0);";
+
+            os << "}";
           }
           else
             All::contains (a);
@@ -608,9 +628,15 @@ namespace CXX
             }
 
             if (e.min () == 0)
+            {
               os << "}"
-                 << "else" << endl
-                 << "x." << epresent (e) << " (false);";
+                 << "else" << endl;
+
+              if (fl)
+                os << "x." << epresent (e) << " (false);";
+              else
+                os << "x." << name << " (0);";
+            }
           }
 
           os << "break;"
@@ -697,9 +723,15 @@ namespace CXX
                  << "return false;";
 
             if (c.min () == 0)
+            {
               os << "}"
-                 << "else" << endl
-                 << "x." << epresent (c) << " (false);";
+                 << "else" << endl;
+
+              if (fl)
+                os << "x." << epresent (c) << " (false);";
+              else
+                os << "x." << name << " (0);";
+            }
           }
 
           os << "break;"
@@ -789,9 +821,14 @@ namespace CXX
                  << "return false;";
 
             os << "}"
-               << "else" << endl
-               << "x." << present << " (false);"
-               << "}";
+               << "else" << endl;
+
+            if (fl)
+              os << "x." << present << " (false);";
+            else
+              os << "x." << name << " (0);";
+
+            os << "}";
           }
           else
           {
@@ -907,9 +944,14 @@ namespace CXX
                  << "return false;";
 
             os << "}"
-               << "else" << endl
-               << "x." << present << " (false);"
-               << "}";
+               << "else" << endl;
+
+            if (fl)
+              os << "x." << present << " (false);";
+            else
+              os << "x." << name << " (0);";
+
+            os << "}";
           }
           else
             Sequence::contains (s);

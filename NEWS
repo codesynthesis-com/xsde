@@ -55,6 +55,12 @@ Version 3.2.0
     information, see Section 5.14, "Mapping for anyType" in the Embedded
     C++/Hybrid Mapping Getting Started Guide.
 
+  * The object model interface for optional members of variable-length
+    types now omits the _present modifier function. This is done to help
+    detect programming errors that result from a type becoming variable-
+    length due to schema changes. To reset such optional members you can
+    call the member modifier function with NULL as its argument.
+
   * New configuration parameter, XSDE_STL_ITERATOR, makes iterators
     provided by the mapping conform to the STL requirements. This feature
     requires working <iterator> header and allows you to use the standard

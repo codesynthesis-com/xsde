@@ -117,8 +117,8 @@ struct any_simple_extension_pimpl: any_simple_extension_pskel
   virtual void
   post_any_simple_extension ()
   {
-    char& v = post_any_simple_type ();
-    cout << "'" << b << "'" << endl;
+    char* v = post_any_simple_type ();
+    cout << "'" << v << "'" << endl;
     delete[] v;
   }
 #endif

@@ -414,44 +414,25 @@ namespace CXX
             // void
             // preset (bool);
             //
-            os << inl
-               << "void " << scope << "::" << endl
-               << name << " (bool x)"
-               << "{";
-
-            if (def)
+            if (fl)
             {
-              os << "if (x)";
+              os << inl
+                 << "void " << scope << "::" << endl
+                 << name << " (bool x)"
+                 << "{";
 
-              if (fl)
+              if (def)
               {
-                os << endl
-                   << "this->" << member << " = " << edefault_value (a) <<
-                  " ();";
+                os << "if (x)" << endl
+                   << "this->" << member << " = " << edefault_value (a) << " ();";
               }
               else
               {
-                os << "{";
-                delete_.dispatch (t, L"this->" + member);
-                os << "this->" << member << " = 0;"
-                   << "}";
-              }
-            }
-            else
-            {
-              if (fl)
                 os << "this->" << epresent_member (a) << " = x;";
-              else
-              {
-                os << "if (!x)"
-                   << "{";
-                delete_.dispatch (t, L"this->" + member);
-                os << "this->" << member << " = 0;"
-                   << "}";
               }
-            }
 
-            os << "}";
+              os << "}";
+            }
           }
 
           // const type&
@@ -644,23 +625,13 @@ namespace CXX
               // void
               // preset (bool);
               //
-              os << inl
-                 << "void " << scope << "::" << endl
-                 << present << " (bool x)"
-                 << "{";
-
               if (fl)
-                os << "this->" << epresent_member (e) << " = x;";
-              else
-              {
-                os << "if (!x)"
-                   << "{";
-                delete_.dispatch (t, L"this->" + member);
-                os << "this->" << member << " = 0;"
+                os << inl
+                   << "void " << scope << "::" << endl
+                   << present << " (bool x)"
+                   << "{"
+                   << "this->" << epresent_member (e) << " = x;"
                    << "}";
-              }
-
-              os << "}";
             }
 
             // const type&
@@ -828,31 +799,20 @@ namespace CXX
               // void
               // preset (bool);
               //
-              os << inl
-                 << "void " << scope << "::" << endl
-                 << present << " (bool x)"
-                 << "{"
-                 << "if (this->" << arm_member << " != " << tag << ")" << endl
-                 << "this->" << arm << " (" << tag << ");";
-
               if (fl)
               {
-                os << endl
-                   << "this->" << umember << "." << member <<
-                  ".data_[sizeof (";
+                os << inl
+                   << "void " << scope << "::" << endl
+                   << present << " (bool x)"
+                   << "{"
+                   << "if (this->" << arm_member << " != " << tag << ")" << endl
+                   << "this->" << arm << " (" << tag << ");"
+                   << endl
+                   << "this->" << umember << "." << member << ".data_[sizeof (";
                 var_.dispatch (t);
-                os << ")] = x;";
-              }
-              else
-              {
-                os << "else if (!x)"
-                   << "{";
-                delete_.dispatch (t, L"this->" + umember + L"." + member);
-                os << "this->" << umember << "." << member << " = 0;"
+                os << ")] = x;"
                    << "}";
               }
-
-              os << "}";
             }
 
             // const type&
@@ -1012,34 +972,13 @@ namespace CXX
             // void
             // present (bool);
             //
-            os << inl
-               << "void " << scope << "::" << endl
-               << present << " (bool x)"
-               << "{";
-
             if (fl)
-              os << "this->" << epresent_member (a) << " = x;";
-            else
-            {
-              String p (L"this->" + member);
-
-              os << "if (!x)"
-                 << "{";
-
-              if (!custom_alloc)
-                os << "delete " << p << ";";
-              else
-                os << "if (" << p << ")"
-                   << "{"
-                   << p << "->~" << type << " ();"
-                   << "::xsde::cxx::free (" << p << ");"
-                   << "}";
-
-              os << p << " = 0;"
+              os << inl
+                 << "void " << scope << "::" << endl
+                 << present << " (bool x)"
+                 << "{"
+                 << "this->" << epresent_member (a) << " = x;"
                  << "}";
-            }
-
-            os << "}";
 
 
             // const type&
@@ -1216,34 +1155,13 @@ namespace CXX
             // void
             // preset (bool);
             //
-            os << inl
-               << "void " << scope << "::" << endl
-               << present << " (bool x)"
-               << "{";
-
             if (fl)
-              os << "this->" << epresent_member (c) << " = x;";
-            else
-            {
-              String p (L"this->" + member);
-
-              os << "if (!x)"
-                 << "{";
-
-              if (!custom_alloc)
-                os << "delete " << p << ";";
-              else
-                os << "if (" << p << ")"
-                   << "{"
-                   << p << "->~" << type << " ();"
-                   << "::xsde::cxx::free (" << p << ");"
-                   << "}";
-
-              os << p << " = 0;"
+              os << inl
+                 << "void " << scope << "::" << endl
+                 << present << " (bool x)"
+                 << "{"
+                 << "this->" << epresent_member (c) << " = x;"
                  << "}";
-            }
-
-            os << "}";
 
 
             // const type&
@@ -1406,34 +1324,13 @@ namespace CXX
             // void
             // preset (bool);
             //
-            os << inl
-               << "void " << scope << "::" << endl
-               << present << " (bool x)"
-               << "{";
-
             if (fl)
-              os << "this->" << epresent_member (s) << " = x;";
-            else
-            {
-              String p (L"this->" + member);
-
-              os << "if (!x)"
-                 << "{";
-
-              if (!custom_alloc)
-                os << "delete " << p << ";";
-              else
-                os << "if (" << p << ")"
-                   << "{"
-                   << p << "->~" << type << " ();"
-                   << "::xsde::cxx::free (" << p << ");"
-                   << "}";
-
-              os << p << " = 0;"
+              os << inl
+                 << "void " << scope << "::" << endl
+                 << present << " (bool x)"
+                 << "{"
+                 << "this->" << epresent_member (s) << " = x;"
                  << "}";
-            }
-
-            os << "}";
 
 
             // const type&
@@ -1610,40 +1507,17 @@ namespace CXX
               // void
               // preset (bool);
               //
-              os << inl
-                 << "void " << scope << "::" << endl
-                 << present << " (bool x)"
-                 << "{"
-                 << "if (this->" << arm_member << " != " << tag << ")" << endl
-                 << "this->" << arm << " (" << tag << ");";
-
               if (fl)
-              {
-                os << endl
+                os << inl
+                   << "void " << scope << "::" << endl
+                   << present << " (bool x)"
+                   << "{"
+                   << "if (this->" << arm_member << " != " << tag << ")" << endl
+                   << "this->" << arm << " (" << tag << ");"
+                   << endl
                    << "this->" << umember << "." << member <<
-                  ".data_[sizeof (" << type << ")] = x;";
-              }
-              else
-              {
-                String p (L"this->" + umember + L"." + member);
-
-                os << "else if (!x)"
-                   << "{";
-
-                if (!custom_alloc)
-                  os << "delete " << p << ";";
-                else
-                  os << "if (" << p << ")"
-                     << "{"
-                     << p << "->~" << type << " ();"
-                     << "::xsde::cxx::free (" << p << ");"
-                     << "}";
-
-                os << p << " = 0;"
+                  ".data_[sizeof (" << type << ")] = x;"
                    << "}";
-              }
-
-              os << "}";
             }
 
             // const type&

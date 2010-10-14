@@ -40,7 +40,7 @@ main (int, char*[])
 
       for (simple_choice::c_iterator i = s.begin (); i != s.end(); ++i)
       {
-        *i = !*i;
+        *i += 10;
       }
 
       break;
