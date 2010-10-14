@@ -4,7 +4,7 @@
 #
 # Note that iostream support requires static initialization so
 # you will need to 'munch' the examples (and your application)
-# before you can run them. Here are the sample step that are
+# before you can run them. Here are the sample steps that are
 # needed to run the C++/Hybrid 'library' example:
 #
 # $ cd examples/cxx/hybrid/library/
@@ -14,6 +14,9 @@
 # $ nmpentium *.o | tclsh $WIND_BASE/host/resource/hutils/tcl/munch.tcl -c pentium > ctdt.c
 # $ ccpentium -O3 -c -fdollars-in-identifiers -fno-zero-initialized-in-bss -I$WIND_BASE/target/h -I$WIND_BASE/target/h/wrn/coreip ctdt.c -o ctdt.o
 # $ ccpentium -O3 partial-image.o ctdt.o -o driver
+#
+# You could also wrap the last three steps into a script and use
+# is as a post-link command (see POSTLD below).
 #
 
 # Toolchain.
@@ -28,6 +31,12 @@ CXXFLAGS := -W -Wall -O3
 LD       := $(CXX)
 LDFLAGS  := $(CXXFLAGS)
 LIBS     :=
+
+# Optional post-link command. The first argument to this command is
+# the executable name and the rest of the arguments are the object
+# files and libraries that were used to link this executable.
+#
+POSTLD   :=
 
 # Set RANLIB to empty if your system does not need ranlib.
 #

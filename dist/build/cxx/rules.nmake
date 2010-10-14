@@ -14,3 +14,6 @@
 
 .obj.exe:
 	$(LD) $(LDFLAGS) /OUT:$@ $** $(LIBS)
+!if "$(POSTLD)" != ""
+	$(POSTLD) $@ $** $(LIBS)
+!endif

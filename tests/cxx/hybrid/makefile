@@ -11,7 +11,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
 
 all_tests := sequences polymorphism iterator built-in default enumeration \
 iso8859-1 list recursive test-template union binary/cdr binary/xdr choice \
-clone pattern
+clone pattern facets
 
 build_tests := sequences
 

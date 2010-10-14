@@ -16,6 +16,12 @@ LD       := $(CXX)
 LDFLAGS  := $(CXXFLAGS)
 LIBS     :=
 
+# Optional post-link command. The first argument to this command is
+# the executable name and the rest of the arguments are the object
+# files and libraries that were used to link this executable.
+#
+POSTLD   :=
+
 # Set RANLIB to empty if your system does not need ranlib.
 #
 AR       := ntox86-ar

@@ -12,3 +12,6 @@ include $(root)/build/config.make
 
 %: %.o
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+ifneq ($(POSTLD),)
+	$(POSTLD) $@ $^ $(LIBS)
+endif
