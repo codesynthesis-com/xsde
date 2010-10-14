@@ -1686,14 +1686,20 @@ namespace CXX
             String const& real_name (c.get<String> ("s:real-name"));
             String const& name (c.get<String> ("s:name"));
 
-            os << "typedef " << real_name << " " << name << ";";
-
             String const& real_impl (c.get<String> ("s:real-impl"));
             String const& impl (c.get<String> ("s:impl"));
 
-            os << "typedef " << real_impl << " " << impl << ";"
-               << endl;
+            if (options.value<CLI::skel_type_suffix> () == "_sskel")
+              os << "using " << real_name << ";";
+            else
+              os << "typedef " << real_name << " " << name << ";";
 
+            if (options.value<CLI::impl_type_suffix> () == "_simpl")
+              os << "using " << real_impl << ";";
+            else
+              os << "typedef " << real_impl << " " << impl << ";";
+
+            os << endl;
             return true;
           }
 

@@ -69,7 +69,13 @@ endif
 
 ## C++/Hybrid
 ##
-src += cxx/hybrid/sequence.cxx
+src +=                         \
+cxx/hybrid/any-type.cxx        \
+cxx/hybrid/any-type-pimpl.cxx  \
+cxx/hybrid/any-type-pskel.cxx  \
+cxx/hybrid/any-type-simpl.cxx  \
+cxx/hybrid/any-type-sskel.cxx  \
+cxx/hybrid/sequence.cxx
 
 ifeq ($(XSDE_POLYMORPHIC),y)
 src +=                        \

@@ -1836,30 +1836,25 @@ namespace CXX
                 // The following code is similar to what we have in post().
                 //
 
-                // Default parser implementation for anyType returns void.
+                // If our base is a fixed-length type then copy the data
+                // over. Note that it cannot be a C-string.
                 //
-                if (!b.is_a<SemanticGraph::AnyType> ())
+                if (fixed_length (b))
                 {
-                  // If our base is a fixed-length type then copy the data
-                  // over. Note that it cannot be a C-string.
-                  //
-                  if (fixed_length (b))
-                  {
-                    os << "static_cast< ";
+                  os << "static_cast< ";
 
-                    base_name_.dispatch (b);
+                  base_name_.dispatch (b);
 
-                    os << "& > (" << endl
-                       << "*" << top_member << ") = " << endl;
-                  }
-
-                  if (tiein)
-                    os << "this->base_impl_.";
-                  else
-                    os << epimpl (b) << "::"; //@@ fq-name.
-
-                  os << post_name (b) << " ();";
+                  os << "& > (" << endl
+                     << "*" << top_member << ") = " << endl;
                 }
+
+                if (tiein)
+                  os << "this->base_impl_.";
+                else
+                  os << epimpl (b) << "::"; //@@ fq-name.
+
+                os << post_name (b) << " ();";
 
                 os << "}"
                    << "else" << endl
@@ -1997,72 +1992,67 @@ namespace CXX
           {
             SemanticGraph::Type& b (c.inherits ().base ());
 
-            // Default parser implementation for anyType returns void.
+            // If we are recursive but our base is not, we only call
+            // base post() if it is the first post call.
             //
-            if (!b.is_a<SemanticGraph::AnyType> ())
+            if (rec && !recursive (b))
             {
-              // If we are recursive but our base is not, we only call
-              // base post() if it is the first post call.
-              //
-              if (rec && !recursive (b))
-              {
-                os << "if (this->" << epstate_top (c) << ")"
-                   << "{"
-                   << "this->" << epstate_top (c) << " = false;";
-              }
-
-              // If our base is a fixed-length type or C-string-base, then
-              // copy the data over.
-              //
-              if (fixed_length (b))
-              {
-                os << "static_cast< ";
-
-                base_name_.dispatch (b);
-
-                os << "& > (";
-
-                if (!rec)
-                  os << (fixed ? "" : "*") << "this->" << state << "." <<
-                    member;
-                else
-                  os << endl
-                     << "*" << top_member;
-
-                os << ") = " << endl;
-              }
-
-              if (c_string_base)
-              {
-                os << "static_cast< ";
-
-                base_name_.dispatch (b);
-
-                os << "* > (";
-
-                if (!rec)
-                  os << "this->" << state << "." << member;
-                else
-                  os << top_member;
-
-                os << ")->base_value (" << endl;
-              }
-
-              if (tiein)
-                os << "this->base_impl_.";
-              else
-                os << epimpl (b) << "::"; //@@ fq-name.
-
-              os << post_name (b) << " ()";
-
-              if (c_string_base)
-                os << ")";
-
-              os << ";";
-
-              if (rec && !recursive (b))
-                os << "}";
+              os << "if (this->" << epstate_top (c) << ")"
+                 << "{"
+                 << "this->" << epstate_top (c) << " = false;";
             }
+
+            // If our base is a fixed-length type or C-string-base, then
+            // copy the data over.
+            //
+            if (fixed_length (b))
+            {
+              os << "static_cast< ";
+
+              base_name_.dispatch (b);
+
+              os << "& > (";
+
+              if (!rec)
+                os << (fixed ? "" : "*") << "this->" << state << "." <<
+                  member;
+              else
+                os << endl
+                   << "*" << top_member;
+
+              os << ") = " << endl;
+            }
+
+            if (c_string_base)
+            {
+              os << "static_cast< ";
+
+              base_name_.dispatch (b);
+
+              os << "* > (";
+
+              if (!rec)
+                os << "this->" << state << "." << member;
+              else
+                os << top_member;
+
+              os << ")->base_value (" << endl;
+            }
+
+            if (tiein)
+              os << "this->base_impl_.";
+            else
+              os << epimpl (b) << "::"; //@@ fq-name.
+
+            os << post_name (b) << " ()";
+
+            if (c_string_base)
+              os << ")";
+
+            os << ";";
+
+            if (rec && !recursive (b))
+              os << "}";
           }
 
           if (fixed)

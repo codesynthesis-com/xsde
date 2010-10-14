@@ -75,7 +75,13 @@ src = $(src) cxx\xml\char-table.cxx cxx\xml\ncname.cxx
 
 ## C++/Hybrid
 ##
-src = $(src) cxx\hybrid\sequence.cxx
+src = $(src)                   \
+cxx\hybrid\any-type.cxx        \
+cxx\hybrid\any-type-pimpl.cxx  \
+cxx\hybrid\any-type-pskel.cxx  \
+cxx\hybrid\any-type-simpl.cxx  \
+cxx\hybrid\any-type-sskel.cxx  \
+cxx\hybrid\sequence.cxx
 
 !if "$(XSDE_POLYMORPHIC)" == "y"
 src = $(src)                  \

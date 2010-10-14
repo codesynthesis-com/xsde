@@ -8,11 +8,11 @@
 
 #include <xsde/cxx/config.hxx>
 
-/*
 #ifdef XSDE_STL
 #  include <string>
 #endif
-*/
+
+#include <xsde/cxx/hybrid/sequence.hxx>
 
 namespace xsde
 {
@@ -22,10 +22,54 @@ namespace xsde
     {
       struct any_type
       {
-        /*
-#ifdef XSDE_POLYMORPHIC
+        any_type ()
+            : data_ (0)
+        {
+        }
+
+        // Custom data.
+        //
+        typedef data_sequence custom_data_sequence;
+        typedef custom_data_sequence::iterator custom_data_iterator;
+        typedef custom_data_sequence::const_iterator custom_data_const_iterator;
+
+#ifndef XSDE_EXCEPTIONS
+        bool
+#else
+        void
+#endif
+        allocate_custom_data ();
+
+        const custom_data_sequence&
+        custom_data () const
+        {
+          return *data_;
+        }
+
+        custom_data_sequence&
+        custom_data ()
+        {
+          return *data_;
+        }
+
+#ifndef XSDE_EXCEPTIONS
+        bool
+#else
+        void
+#endif
+        _copy (any_type&) const;
+
+#ifndef XSDE_POLYMORPHIC
+        ~any_type ();
+
+        any_type*
+        _clone () const;
+#else
         virtual
         ~any_type ();
+
+        virtual any_type*
+        _clone () const;
 
 #ifdef XSDE_STL
         virtual const std::string&
@@ -41,7 +85,9 @@ namespace xsde
         _static_type ();
 #endif
 #endif
-        */
+
+      private:
+        data_sequence* data_;
       };
     }
   }

@@ -154,12 +154,11 @@ namespace CXX
             //
             SemanticGraph::Type& base (e.inherits ().base ());
             String fq_base (fq_name (base));
-            String real_fq_base (real_fq_name (base));
 
             os << inl
                << name << "::" << endl
                << name << " (" << fq_base << "* tiein)" << endl
-               << ": " << real_fq_base << " (tiein, 0)," << endl
+               << ": " << fq_base << " (tiein, 0)," << endl
                << "  " << impl << " (0)"
                << "{";
 
@@ -171,7 +170,7 @@ namespace CXX
             os << inl
                << name << "::" << endl
                << name << " (" << name << "* impl, void*)" << endl
-               << ": " << real_fq_base << " (impl, 0)," << endl
+               << ": " << fq_base << " (impl, 0)," << endl
                << "  " << impl << " (impl)"
                << "{";
 
@@ -575,13 +574,10 @@ namespace CXX
             os << "}";
           }
 
-          // We have to use "real" (non-typedef) base name in base
-          // initializer because of some broken compilers (EVC 4.0).
-          //
-          String real_fq_base;
+          String fq_base;
 
           if (hb && tiein)
-            real_fq_base = real_fq_name (c.inherits ().base ());
+            fq_base = fq_name (c.inherits ().base ());
 
           // Default c-tor.
           //
@@ -589,8 +585,7 @@ namespace CXX
              << name << "::" << endl;
 
           if (hb && tiein)
-            os << name << " (" << fq_name (c.inherits ().base ()) <<
-              "* tiein)" << endl;
+            os << name << " (" << fq_base << "* tiein)" << endl;
           else
             os << name << " ()" << endl;
 
@@ -601,7 +596,7 @@ namespace CXX
 
           if (hb && tiein)
           {
-            os << real_fq_base << " (tiein, 0)";
+            os << fq_base << " (tiein, 0)";
             comma = true;
           }
 
@@ -661,7 +656,7 @@ namespace CXX
                << ": ";
 
             if (hb)
-              os << real_fq_base << " (impl, 0)," << endl;
+              os << fq_base << " (impl, 0)," << endl;
             else
               os << complex_base << " (impl, 0)," << endl;
 

@@ -1,22 +1,10 @@
 <t:root xmlns:t="test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-  <t:any>
-    <x>abc</x>
-    junk
-    <y>123</y>
-  </t:any>
-
-  <t:any1>
-    <x>abc</x>
-    junk
-    <y>123</y>
-  </t:any1>
-
+  <t:any></t:any>
+  <t:any></t:any>
   <t:base x="abc">
     <a>123</a>
     <b>abc</b>
   </t:base>
-
   <t:any x="xyz" xsi:type="t:derived">
     <a>123</a>
     <b>abc</b>
@@ -24,5 +12,4 @@
     <c>8</c>
     <c>7</c>
   </t:any>
-
 </t:root>

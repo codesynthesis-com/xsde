@@ -46,6 +46,7 @@
 
 #include <boost/filesystem/fstream.hpp>
 
+#include <sstream>
 #include <iostream>
 
 #include <usage.hxx>
@@ -56,6 +57,7 @@ using std::endl;
 using std::wcerr;
 
 using namespace XSDFrontend::SemanticGraph;
+namespace Indentation = BackendElements::Indentation;
 
 //
 //
@@ -825,10 +827,67 @@ namespace CXX
             *i, p == NarrowString::npos ? 0 : p + 1, NarrowString::npos));
       }
     }
+
+    struct FundNamespace: Namespace, Hybrid::Context
+    {
+      FundNamespace (Hybrid::Context& c, Char type)
+          : Namespace (c), Hybrid::Context (c), type_ (type)
+      {
+      }
+
+      void
+      traverse (Type& ns)
+      {
+        namespace CLI = Hybrid::CLI;
+
+        pre (ns);
+
+        os << "using ::xsde::cxx::hybrid::any_type;"
+           << endl;
+
+        Boolean us, ui;
+        String skel, impl;
+
+        if (type_ == 'p')
+        {
+          skel = options.value<CLI::pskel_type_suffix> ();
+          impl = options.value<CLI::pimpl_type_suffix> ();
+
+          us = skel == L"_pskel";
+          ui = impl == L"_pimpl";
+        }
+        else
+        {
+          skel = options.value<CLI::sskel_type_suffix> ();
+          impl = options.value<CLI::simpl_type_suffix> ();
+
+          us = skel == L"_sskel";
+          ui = impl == L"_simpl";
+        }
+
+        if (us)
+          os << "using ::xsde::cxx::hybrid::any_type_" << type_ << "skel;";
+        else
+          os << "using ::xsde::cxx::hybrid::any_type_" << type_ << "skel " <<
+            "any_type" << skel << ";";
+
+        if (ui)
+          os << "using ::xsde::cxx::hybrid::any_type_" << type_ << "impl;";
+        else
+          os << "using ::xsde::cxx::hybrid::any_type_" << type_ << "impl " <<
+            "any_type" << impl << ";";
+
+        post (ns);
+      }
+
+    private:
+      Char type_;
+    };
   }
 
+
   Parser::CLI::Options* Hybrid::Generator::
-  parser_options (CLI::Options const& h)
+  parser_options (CLI::Options const& h, Schema& schema, Path const& path)
   {
     namespace H = CLI;
     namespace P = Parser::CLI;
@@ -907,11 +966,33 @@ namespace CXX
     r->value<P::show_sloc> ()             = h.value<H::show_sloc> ();
     r->value<P::proprietary_license> ()   = h.value<H::proprietary_license> ();
 
+    // Add the anyType parser.
+    //
+    {
+      std::wostringstream os;
+      Context ctx (os, schema, path, h, 0, 0, 0);
+
+      os << endl
+         << "#include <xsde/cxx/hybrid/any-type.hxx>" << endl
+         << "#include <xsde/cxx/hybrid/any-type-pskel.hxx>" << endl
+         << "#include <xsde/cxx/hybrid/any-type-pimpl.hxx>" << endl
+         << endl;
+
+      {
+        Indentation::Clip<Indentation::CXX, WideChar> clip (os);
+
+        FundNamespace ns (ctx, 'p');
+        ns.dispatch (ctx.xs_ns ());
+      }
+
+      r->value<P::hxx_prologue> ().push_back (String (os.str ()).to_narrow ());
+    }
+
     return r.release ();
   }
 
   Serializer::CLI::Options* Hybrid::Generator::
-  serializer_options (CLI::Options const& h)
+  serializer_options (CLI::Options const& h, Schema& schema, Path const& path)
   {
     namespace H = CLI;
     namespace S = Serializer::CLI;
@@ -989,6 +1070,28 @@ namespace CXX
 
     r->value<S::show_sloc> ()             = h.value<H::show_sloc> ();
     r->value<S::proprietary_license> ()   = h.value<H::proprietary_license> ();
+
+    // Add the anyType parser.
+    //
+    {
+      std::wostringstream os;
+      Context ctx (os, schema, path, h, 0, 0, 0);
+
+      os << endl
+         << "#include <xsde/cxx/hybrid/any-type.hxx>" << endl
+         << "#include <xsde/cxx/hybrid/any-type-sskel.hxx>" << endl
+         << "#include <xsde/cxx/hybrid/any-type-simpl.hxx>" << endl
+         << endl;
+
+      {
+        Indentation::Clip<Indentation::CXX, WideChar> clip (os);
+
+        FundNamespace ns (ctx, 's');
+        ns.dispatch (ctx.xs_ns ());
+      }
+
+      r->value<S::hxx_prologue> ().push_back (String (os.str ()).to_narrow ());
+    }
 
     return r.release ();
   }
@@ -1162,8 +1265,6 @@ namespace CXX
                  AutoUnlinks& unlinks)
   {
     using std::ios_base;
-    namespace Indentation = BackendElements::Indentation;
-
     typedef Context::Regex Regex;
 
     try
@@ -1454,6 +1555,18 @@ namespace CXX
             << "#define " << guard << endl
             << endl;
 
+        // Version check.
+        //
+        fwd << "#include <xsde/cxx/version.hxx>" << endl
+            << endl
+            << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
+            << "#error XSD/e runtime version mismatch" << endl
+            << "#endif" << endl
+            << endl;
+
+        fwd << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         // Copy prologue.
         //
         fwd << "// Begin prologue." << endl
@@ -1471,18 +1584,6 @@ namespace CXX
             << endl;
 
         {
-          // Version check.
-          //
-          fwd << "#include <xsde/cxx/version.hxx>" << endl
-              << endl
-              << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
-              << "#error XSD/e runtime version mismatch" << endl
-              << "#endif" << endl
-              << endl;
-
-          fwd << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> fwd_clip (fwd);
@@ -1490,9 +1591,6 @@ namespace CXX
           // Generate.
           //
           generate_tree_forward (ctx, false);
-
-          fwd << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -1511,6 +1609,9 @@ namespace CXX
             << "// End epilogue." << endl
             << endl;
 
+        fwd << "#include <xsde/cxx/post.hxx>" << endl
+            << endl;
+
         fwd << "#endif // " << guard << endl;
 
         if (show_sloc)
@@ -1522,12 +1623,17 @@ namespace CXX
         }
       }
 
+      // C++ namespace mapping for the XML Schema namespace.
+      //
+      String xs_ns;
 
       // HXX
       //
       {
         Context ctx (
           hxx, schema, file_path, ops, &fwd_expr, &hxx_expr, &ixx_expr);
+
+        xs_ns = ctx.xs_ns_name ();
 
         Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
 
@@ -1537,6 +1643,122 @@ namespace CXX
 
         hxx << "#ifndef " << guard << endl
             << "#define " << guard << endl
+            << endl;
+
+        // Version check.
+        //
+        hxx << "#include <xsde/cxx/version.hxx>" << endl
+            << endl
+            << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
+            << "#error XSD/e runtime version mismatch" << endl
+            << "#endif" << endl
+            << endl;
+
+        // Runtime/generated code compatibility checks.
+        //
+
+        hxx << "#include <xsde/cxx/config.hxx>" << endl
+            << endl;
+
+        if (ops.value<CLI::char_encoding> () == "iso8859-1")
+        {
+          hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
+              << "#error the generated code uses the ISO-8859-1 encoding" <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or change the --char-encoding value)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
+              << "#error the generated code uses the UTF-8 encoding" <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or change the --char-encoding value)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_stl> ())
+        {
+          hxx << "#ifdef XSDE_STL" << endl
+              << "#error the XSD/e runtime uses STL while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-stl)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_STL" << endl
+              << "#error the generated code uses STL while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-stl)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_exceptions> ())
+        {
+          hxx << "#ifdef XSDE_EXCEPTIONS" << endl
+              << "#error the XSD/e runtime uses exceptions while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-exceptions)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_EXCEPTIONS" << endl
+              << "#error the generated code uses exceptions while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-exceptions)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_long_long> ())
+        {
+          hxx << "#ifdef XSDE_LONGLONG" << endl
+              << "#error the XSD/e runtime uses long long while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-long-long)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_LONGLONG" << endl
+              << "#error the generated code uses long long while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-long-long)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::custom_allocator> ())
+        {
+          hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
+              << "#error the generated code uses custom allocator while " <<
+            "the XSD/e runtime does not (reconfigure the runtime or " <<
+            "remove --custom-allocator)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
+              << "#error the XSD/e runtime uses custom allocator while " <<
+            "the generated code does not (reconfigure the runtime or " <<
+            "add --custom-allocator)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        //
+        //
+
+        hxx << "#include <xsde/cxx/pre.hxx>" << endl
             << endl;
 
         // Copy prologue.
@@ -1557,122 +1779,6 @@ namespace CXX
             << endl;
 
         {
-          // Version check.
-          //
-          hxx << "#include <xsde/cxx/version.hxx>" << endl
-              << endl
-              << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
-              << "#error XSD/e runtime version mismatch" << endl
-              << "#endif" << endl
-              << endl;
-
-          // Runtime/generated code compatibility checks.
-          //
-
-          hxx << "#include <xsde/cxx/config.hxx>" << endl
-              << endl;
-
-          if (ops.value<CLI::char_encoding> () == "iso8859-1")
-          {
-            hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
-                << "#error the generated code uses the ISO-8859-1 encoding" <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or change the --char-encoding value)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
-                << "#error the generated code uses the UTF-8 encoding" <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or change the --char-encoding value)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_stl> ())
-          {
-            hxx << "#ifdef XSDE_STL" << endl
-                << "#error the XSD/e runtime uses STL while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-stl)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_STL" << endl
-                << "#error the generated code uses STL while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-stl)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_exceptions> ())
-          {
-            hxx << "#ifdef XSDE_EXCEPTIONS" << endl
-                << "#error the XSD/e runtime uses exceptions while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-exceptions)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_EXCEPTIONS" << endl
-                << "#error the generated code uses exceptions while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-exceptions)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_long_long> ())
-          {
-            hxx << "#ifdef XSDE_LONGLONG" << endl
-                << "#error the XSD/e runtime uses long long while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-long-long)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_LONGLONG" << endl
-                << "#error the generated code uses long long while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-long-long)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::custom_allocator> ())
-          {
-            hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
-                << "#error the generated code uses custom allocator while " <<
-              "the XSD/e runtime does not (reconfigure the runtime or " <<
-              "remove --custom-allocator)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
-                << "#error the XSD/e runtime uses custom allocator while " <<
-              "the generated code does not (reconfigure the runtime or " <<
-              "add --custom-allocator)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          //
-          //
-
-          hxx << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> hxx_clip (hxx);
@@ -1705,9 +1811,6 @@ namespace CXX
                 << "#endif // XSDE_DONT_INCLUDE_INLINE" << endl
                 << endl;
           }
-
-          hxx << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -1726,6 +1829,9 @@ namespace CXX
         hxx << "//" << endl
             << "// End epilogue." << endl
             << endl;
+
+        hxx << "#include <xsde/cxx/post.hxx>" << endl
+              << endl;
 
         hxx << "#endif // " << guard << endl;
 
@@ -1822,6 +1928,9 @@ namespace CXX
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 
+        cxx << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         // Copy prologue.
         //
         cxx << "// Begin prologue." << endl
@@ -1840,9 +1949,6 @@ namespace CXX
             << endl;
 
         {
-          cxx << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> cxx_clip (cxx);
@@ -1860,9 +1966,6 @@ namespace CXX
 
           if (!ops.value<CLI::generate_extraction> ().empty ())
             generate_extraction_source (ctx);
-
-          cxx << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -1882,6 +1985,9 @@ namespace CXX
             << "// End epilogue." << endl
             << endl;
 
+        cxx << "#include <xsde/cxx/post.hxx>" << endl
+            << endl;
+
         if (show_sloc)
         {
           wcerr << cxx_path << ": "
@@ -1899,6 +2005,26 @@ namespace CXX
       {
         generate_tree_type_map (ops, schema, file_path, hxx_name,
                                 parser_type_map, serializer_type_map);
+
+        // Re-map anyType.
+        //
+        if (ops.value<CLI::generate_parser> ())
+        {
+          parser_type_map.push_back (
+            TypeMap::Namespace ("http://www.w3.org/2001/XMLSchema"));
+
+          TypeMap::Namespace& xs (parser_type_map.back ());
+          xs.types_push_back ("anyType", xs_ns + L"::any_type*");
+        }
+
+        if (ops.value<CLI::generate_serializer> ())
+        {
+          serializer_type_map.push_back (
+            TypeMap::Namespace ("http://www.w3.org/2001/XMLSchema"));
+
+          TypeMap::Namespace& xs (serializer_type_map.back ());
+          xs.types_push_back ("anyType", L"const " + xs_ns + L"::any_type&");
+        }
       }
 
       return sloc;
@@ -1949,8 +2075,6 @@ namespace CXX
                    AutoUnlinks& unlinks)
   {
     using std::ios_base;
-    namespace Indentation = BackendElements::Indentation;
-
     typedef BackendElements::Regex::Expression<Char> Regex;
 
     try
@@ -2171,6 +2295,9 @@ namespace CXX
             << "#define " << guard << endl
             << endl;
 
+        hxx << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         // Copy prologue.
         //
         hxx << "// Begin prologue." << endl
@@ -2189,9 +2316,6 @@ namespace CXX
             << endl;
 
         {
-          hxx << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Define omit aggregate macro.
           //
           hxx << "#ifndef XSDE_OMIT_PAGGR" << endl
@@ -2226,9 +2350,6 @@ namespace CXX
             hxx << "#endif // XSDE_OMIT_PAGGR" << endl
                 << endl;
           }
-
-          hxx << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -2246,6 +2367,9 @@ namespace CXX
 
         hxx << "//" << endl
             << "// End epilogue." << endl
+            << endl;
+
+        hxx << "#include <xsde/cxx/post.hxx>" << endl
             << endl;
 
         hxx << "#endif // " << guard << endl;
@@ -2371,8 +2495,6 @@ namespace CXX
                        AutoUnlinks& unlinks)
   {
     using std::ios_base;
-    namespace Indentation = BackendElements::Indentation;
-
     typedef BackendElements::Regex::Expression<Char> Regex;
 
     try
@@ -2580,6 +2702,9 @@ namespace CXX
             << "#define " << guard << endl
             << endl;
 
+        hxx << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         // Copy prologue.
         //
         hxx << "// Begin prologue." << endl
@@ -2598,9 +2723,6 @@ namespace CXX
             << endl;
 
         {
-          hxx << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Define omit aggregate macro.
           //
           hxx << "#ifndef XSDE_OMIT_SAGGR" << endl
@@ -2635,9 +2757,6 @@ namespace CXX
             hxx << "#endif // XSDE_OMIT_SAGGR" << endl
                 << endl;
           }
-
-          hxx << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -2655,6 +2774,9 @@ namespace CXX
 
         hxx << "//" << endl
             << "// End epilogue." << endl
+            << endl;
+
+        hxx << "#include <xsde/cxx/post.hxx>" << endl
             << endl;
 
         hxx << "#endif // " << guard << endl;

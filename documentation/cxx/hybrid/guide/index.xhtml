@@ -270,6 +270,7 @@
 	  <tr><th>5.11</th><td><a href="#5.11">Mapping for <code>gYear</code></a></td></tr>
 	  <tr><th>5.12</th><td><a href="#5.12">Mapping for <code>gYearMonth</code></a></td></tr>
 	  <tr><th>5.13</th><td><a href="#5.13">Mapping for <code>time</code></a></td></tr>
+	  <tr><th>5.14</th><td><a href="#5.14">Mapping for <code>anyType</code></a></td></tr>
         </table>
       </td>
     </tr>
@@ -4599,6 +4600,21 @@ for (supermen::person_iterator i = sm->person ().begin ();
       <td><code>time</code></td>
       <td><a href="#5.13">Section 5.13, "Mapping for <code>time</code>"</a></td>
     </tr>
+
+    <tr>
+      <th colspan="3">anyType and anySimpleType</th>
+    </tr>
+    <tr>
+      <td><code>anyType</code></td>
+      <td><code>any_type</code></td>
+      <td><a href="#5.14">Section 5.14, "Mapping for <code>anyType</code>"</a></td>
+    </tr>
+    <tr>
+      <td><code>anySimpleType</code></td>
+      <td><code>any_simple_type</code></td>
+      <td><code>std::string</code> or <code>char*</code><br/>
+          <a href="#3.1">Section 3.1, "Standard Template Library"</a></td>
+    </tr>
   </table>
 
   <p>As you can see from the table above a number of built-in
@@ -5643,6 +5659,77 @@ namespace xml_schema
   operator!= (const time&amp;, const time&amp;);
 }
   </pre>
+
+  <h2><a name="5.14">5.14 Mapping for <code>anyType</code></a></h2>
+
+  <p>The <code>anyType</code> built-in XML Schema type is mapped to
+     the <code>any_type</code> class in the <code>xml_schema</code>
+     namespace. With C++ exceptions enabled (<a href="#3.3">Section 3.3,
+     "C++ Exceptions"</a>), it has the following interface:</p>
+
+  <pre class="c++">
+namespace xml_schema
+{
+  class any_type
+  {
+  public:
+    // Custom data.
+    //
+    typedef xml_schema::data_sequence custom_data_sequence;
+    typedef custom_data_sequence::iterator custom_data_iterator;
+    typedef custom_data_sequence::const_iterator custom_data_const_iterator;
+
+    void
+    allocate_custom_data ();
+
+    const custom_data_sequence&amp;
+    custom_data () const;
+
+    custom_data_sequence&amp;
+    custom_data ();
+  };
+}
+  </pre>
+
+  <p>If C++ exceptions are disabled, the <code>any_type</code> class has
+     the following interface:</p>
+
+  <pre class="c++">
+namespace xml_schema
+{
+  class any_type
+  {
+  public:
+    // Custom data.
+    //
+    typedef xml_schema::data_sequence custom_data_sequence;
+    typedef custom_data_sequence::iterator custom_data_iterator;
+    typedef custom_data_sequence::const_iterator custom_data_const_iterator;
+
+    bool
+    allocate_custom_data ();
+
+    const custom_data_sequence&amp;
+    custom_data () const;
+
+    custom_data_sequence&amp;
+    custom_data ();
+  };
+}
+  </pre>
+
+  <p>The <code>allocate_custom_data()</code> function allocates the
+     custom data sequence. With C++ exceptions disabled, it returns
+     <code>false</code> if memory allocation has failed and <code>true</code>
+     otherwise. For more information on custom data, refer to
+     <a href="#4.9">Section 4.9, "Customizing the Object Model"</a>.</p>
+
+  <p>The default parser and serializer implementations for the
+     <code>anyType</code> built-in type ignore all its content and
+     return an empty <code>any_type</code> instance. If your application
+     needs to access this content, then you will need to provide your
+     own implementations of these parser and serializer and use the
+     custom data sequence to store the extracted data.</p>
 
   <!-- Parsing and Serialization -->
 

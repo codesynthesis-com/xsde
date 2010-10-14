@@ -542,18 +542,12 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnyType& t)
         {
-          /*
-            @@ disabled
+          set (t, false);
+
           // Check if this type is marked polymorphic.
           //
           if (poly_types_.find (t.name ()) != poly_types_.end ())
-          {
             t.context ().set ("polymorphic", true);
-            set (t, false);
-          }
-          else
-          */
-            set (t, true);
         }
 
         virtual Void
@@ -880,14 +874,8 @@ namespace CXX
 
           // Only user-defined and anyType can be declared polymorphic.
           //
-          /*
-            @@ disabled
           if (rt.is_a<SemanticGraph::Fundamental::Type> () ||
               rt.is_a<SemanticGraph::AnySimpleType> ())
-          */
-          if (rt.is_a<SemanticGraph::Fundamental::Type> () ||
-              rt.is_a<SemanticGraph::AnySimpleType> () ||
-              rt.is_a<SemanticGraph::AnyType> ())
           {
             wcerr << r.file () << ":" << r.line () << ":" << r.column ()
                   << ": error: built-in type '" << rt.name () << "' "
@@ -897,15 +885,8 @@ namespace CXX
                   << ": info: because type '" << rt.name () << "' is "
                   << "used in a substitution group declared here" << endl;
 
-            /*
-            @@ disabled
             wcerr << r.file () << ":" << r.line () << ":" << r.column ()
                   << ": info: only user-defined types and anyType can "
-                  << "be polymorphic in this mapping" << endl;
-            */
-
-            wcerr << r.file () << ":" << r.line () << ":" << r.column ()
-                  << ": info: only user-defined types can "
                   << "be polymorphic in this mapping" << endl;
 
             valid_ = false;

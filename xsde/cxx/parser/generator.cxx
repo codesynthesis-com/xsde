@@ -1215,6 +1215,208 @@ namespace CXX
             << "#define " << guard << endl
             << endl;
 
+        // Version check.
+        //
+        hxx << "#include <xsde/cxx/version.hxx>" << endl
+            << endl
+            << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
+            << "#error XSD/e runtime version mismatch" << endl
+            << "#endif" << endl
+            << endl;
+
+        // Runtime/generated code compatibility checks.
+        //
+
+        hxx << "#include <xsde/cxx/config.hxx>" << endl
+            << endl;
+
+        if (ops.value<CLI::char_encoding> () == "iso8859-1")
+        {
+          hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
+              << "#error the generated code uses the ISO-8859-1 encoding" <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or change the --char-encoding value)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
+              << "#error the generated code uses the UTF-8 encoding" <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or change the --char-encoding value)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_stl> ())
+        {
+          hxx << "#ifdef XSDE_STL" << endl
+              << "#error the XSD/e runtime uses STL while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-stl)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_STL" << endl
+              << "#error the generated code uses STL while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-stl)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_iostream> ())
+        {
+          hxx << "#ifdef XSDE_IOSTREAM" << endl
+              << "#error the XSD/e runtime uses iostream while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-iostream)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_IOSTREAM" << endl
+              << "#error the generated code uses iostream while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-iostream)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_exceptions> ())
+        {
+          hxx << "#ifdef XSDE_EXCEPTIONS" << endl
+              << "#error the XSD/e runtime uses exceptions while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-exceptions)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_EXCEPTIONS" << endl
+              << "#error the generated code uses exceptions while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-exceptions)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::no_long_long> ())
+        {
+          hxx << "#ifdef XSDE_LONGLONG" << endl
+              << "#error the XSD/e runtime uses long long while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --no-long-long)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_LONGLONG" << endl
+              << "#error the generated code uses long long while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --no-long-long)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::suppress_validation> ())
+        {
+          hxx << "#ifdef XSDE_PARSER_VALIDATION" << endl
+              << "#error the XSD/e runtime uses validation while the " <<
+            "generated code does not (reconfigure the runtime or " <<
+            "remove --suppress-validation)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_PARSER_VALIDATION" << endl
+              << "#error the generated code uses validation while the " <<
+            "XSD/e runtime does not (reconfigure the runtime or " <<
+            "add --suppress-validation)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::generate_polymorphic> () ||
+            ops.value<CLI::runtime_polymorphic> ())
+        {
+          hxx << "#ifndef XSDE_POLYMORPHIC" << endl
+              << "#error the generated code expects XSD/e runtime with " <<
+            "polymorphism support (reconfigure the runtime or remove " <<
+            "--generate-polymorphic/--runtime-polymorphic)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifdef XSDE_POLYMORPHIC" << endl
+              << "#error the generated code expects XSD/e runtime " <<
+            "without polymorphism support (reconfigure the runtime or " <<
+            "add --generate-polymorphic/--runtime-polymorphic)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::reuse_style_mixin> ())
+        {
+          hxx << "#ifndef XSDE_REUSE_STYLE_MIXIN" << endl
+              << "#error the generated code uses the mixin reuse style " <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or remove --reuse-style-mixin)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else if (ops.value<CLI::reuse_style_none> ())
+        {
+          hxx << "#ifndef XSDE_REUSE_STYLE_NONE" << endl
+              << "#error the generated code does not provide support " <<
+            "for parser reuse while the XSD/e runtime does (reconfigure " <<
+            "the runtime or remove --reuse-style-none)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifndef XSDE_REUSE_STYLE_TIEIN" << endl
+              << "#error the generated code uses the tiein reuse style " <<
+            "while the XSD/e runtime does not (reconfigure the runtime " <<
+            "or add --reuse-style-mixin or --reuse-style-none)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        if (ops.value<CLI::custom_allocator> ())
+        {
+          hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
+              << "#error the generated code uses custom allocator while " <<
+            "the XSD/e runtime does not (reconfigure the runtime or " <<
+            "remove --custom-allocator)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+        else
+        {
+          hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
+              << "#error the XSD/e runtime uses custom allocator while " <<
+            "the generated code does not (reconfigure the runtime or " <<
+            "add --custom-allocator)" << endl
+              << "#endif" << endl
+              << endl;
+        }
+
+        //
+        //
+
+        hxx << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         // Copy prologue.
         //
         hxx << "// Begin prologue." << endl
@@ -1229,208 +1431,6 @@ namespace CXX
             << endl;
 
         {
-          // Version check.
-          //
-          hxx << "#include <xsde/cxx/version.hxx>" << endl
-              << endl
-              << "#if (XSDE_INT_VERSION != " << XSDE_INT_VERSION << "L)" << endl
-              << "#error XSD/e runtime version mismatch" << endl
-              << "#endif" << endl
-              << endl;
-
-          // Runtime/generated code compatibility checks.
-          //
-
-          hxx << "#include <xsde/cxx/config.hxx>" << endl
-              << endl;
-
-          if (ops.value<CLI::char_encoding> () == "iso8859-1")
-          {
-            hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
-                << "#error the generated code uses the ISO-8859-1 encoding" <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or change the --char-encoding value)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
-                << "#error the generated code uses the UTF-8 encoding" <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or change the --char-encoding value)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_stl> ())
-          {
-            hxx << "#ifdef XSDE_STL" << endl
-                << "#error the XSD/e runtime uses STL while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-stl)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_STL" << endl
-                << "#error the generated code uses STL while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-stl)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_iostream> ())
-          {
-            hxx << "#ifdef XSDE_IOSTREAM" << endl
-                << "#error the XSD/e runtime uses iostream while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-iostream)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_IOSTREAM" << endl
-                << "#error the generated code uses iostream while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-iostream)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_exceptions> ())
-          {
-            hxx << "#ifdef XSDE_EXCEPTIONS" << endl
-                << "#error the XSD/e runtime uses exceptions while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-exceptions)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_EXCEPTIONS" << endl
-                << "#error the generated code uses exceptions while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-exceptions)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::no_long_long> ())
-          {
-            hxx << "#ifdef XSDE_LONGLONG" << endl
-                << "#error the XSD/e runtime uses long long while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --no-long-long)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_LONGLONG" << endl
-                << "#error the generated code uses long long while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --no-long-long)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::suppress_validation> ())
-          {
-            hxx << "#ifdef XSDE_PARSER_VALIDATION" << endl
-                << "#error the XSD/e runtime uses validation while the " <<
-              "generated code does not (reconfigure the runtime or " <<
-              "remove --suppress-validation)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_PARSER_VALIDATION" << endl
-                << "#error the generated code uses validation while the " <<
-              "XSD/e runtime does not (reconfigure the runtime or " <<
-              "add --suppress-validation)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::generate_polymorphic> () ||
-              ops.value<CLI::runtime_polymorphic> ())
-          {
-            hxx << "#ifndef XSDE_POLYMORPHIC" << endl
-                << "#error the generated code expects XSD/e runtime with " <<
-              "polymorphism support (reconfigure the runtime or remove " <<
-              "--generate-polymorphic/--runtime-polymorphic)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifdef XSDE_POLYMORPHIC" << endl
-                << "#error the generated code expects XSD/e runtime " <<
-              "without polymorphism support (reconfigure the runtime or " <<
-              "add --generate-polymorphic/--runtime-polymorphic)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::reuse_style_mixin> ())
-          {
-            hxx << "#ifndef XSDE_REUSE_STYLE_MIXIN" << endl
-                << "#error the generated code uses the mixin reuse style " <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or remove --reuse-style-mixin)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else if (ops.value<CLI::reuse_style_none> ())
-          {
-            hxx << "#ifndef XSDE_REUSE_STYLE_NONE" << endl
-                << "#error the generated code does not provide support " <<
-              "for parser reuse while the XSD/e runtime does (reconfigure " <<
-              "the runtime or remove --reuse-style-none)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifndef XSDE_REUSE_STYLE_TIEIN" << endl
-                << "#error the generated code uses the tiein reuse style " <<
-              "while the XSD/e runtime does not (reconfigure the runtime " <<
-              "or add --reuse-style-mixin or --reuse-style-none)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          if (ops.value<CLI::custom_allocator> ())
-          {
-            hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
-                << "#error the generated code uses custom allocator while " <<
-              "the XSD/e runtime does not (reconfigure the runtime or " <<
-              "remove --custom-allocator)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-          else
-          {
-            hxx << "#ifdef XSDE_CUSTOM_ALLOCATOR" << endl
-                << "#error the XSD/e runtime uses custom allocator while " <<
-              "the generated code does not (reconfigure the runtime or " <<
-              "add --custom-allocator)" << endl
-                << "#endif" << endl
-                << endl;
-          }
-
-          //
-          //
-
-          hxx << "#include <xsde/cxx/pre.hxx>" << endl
-              << endl;
-
           // Set auto-indentation.
           //
           Indentation::Clip<Indentation::CXX, WideChar> hxx_clip (hxx);
@@ -1445,9 +1445,6 @@ namespace CXX
           if (inline_)
             hxx << "#include " << ctx.process_include_path (ixx_name) << endl
                 << endl;
-
-          hxx << "#include <xsde/cxx/post.hxx>" << endl
-              << endl;
         }
 
         // Copy epilogue.
@@ -1461,6 +1458,9 @@ namespace CXX
 
         hxx << "//" << endl
             << "// End epilogue." << endl
+            << endl;
+
+        hxx << "#include <xsde/cxx/post.hxx>" << endl
             << endl;
 
         hxx << "#endif // " << guard << endl;

@@ -947,11 +947,13 @@ namespace CXX
 
             if (polymorphic (t))
             {
+              String skel (fq_name (t, "s:impl"));
+
               if (stl)
               {
                 os << "const ::std::string& dt = " << access << iter <<
                   "->_dynamic_type ();"
-                   << "if (dt != " << esskel (t) << "::_static_type ())" << endl
+                   << "if (dt != " << skel << "::_static_type ())" << endl
                    << "this->_context ().type_id (dt.c_str ());"
                    << endl;
               }
@@ -959,7 +961,7 @@ namespace CXX
               {
                 os << "const char* dt = " << access << iter <<
                   "->_dynamic_type ();"
-                   << "if (strcmp (dt, " << esskel (t) <<
+                   << "if (strcmp (dt, " << skel <<
                   "::_static_type ()) != 0)" << endl
                    << "this->_context ().type_id (dt);"
                    << endl;
@@ -994,11 +996,13 @@ namespace CXX
 
             if (polymorphic (t))
             {
+              String skel (fq_name (t, "s:impl"));
+
               if (stl)
               {
                 os << "const ::std::string& dt = " << access << ename (e) <<
                   " ()._dynamic_type ();"
-                   << "if (dt != " << esskel (t) << "::_static_type ())" << endl
+                   << "if (dt != " << skel << "::_static_type ())" << endl
                    << "this->_context ().type_id (dt.c_str ());"
                    << endl;
               }
@@ -1006,7 +1010,7 @@ namespace CXX
               {
                 os << "const char* dt = " << access << ename (e) <<
                   " ()._dynamic_type ();"
-                   << "if (strcmp (dt, " << esskel (t) <<
+                   << "if (strcmp (dt, " << skel <<
                   "::_static_type ()) != 0)" << endl
                    << "this->_context ().type_id (dt);"
                    << endl;
@@ -1163,7 +1167,7 @@ namespace CXX
           if (rec || (tiein && hb))
           {
             os << name << "::" << endl
-               << name << " ()" << endl;
+               << name << " ()";
 
             String d ("\n: ");
 
@@ -1234,20 +1238,16 @@ namespace CXX
                  << endl;
             }
 
-            // Call base pre(). Default serializer implementation for
-            // anyType takes void.
+            // Call base pre().
             //
-            if (!b.is_a<SemanticGraph::AnyType> ())
-            {
-              if (tiein)
-                os << "this->base_impl_.pre (";
-              else
-                os << esimpl (b) << "::pre (";
+            if (tiein)
+              os << "this->base_impl_.pre (";
+            else
+              os << esimpl (b) << "::pre (";
 
-              type_pass_.dispatch (b);
+            type_pass_.dispatch (b);
 
-              os << "x);";
-            }
+            os << "x);";
           }
 
           if (!restriction)

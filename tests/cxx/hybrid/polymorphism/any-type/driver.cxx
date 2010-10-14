@@ -52,7 +52,7 @@ main (int argc, char* argv[])
   doc_s.add_prefix ("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
   root_s.pre (*r);
-  doc_s.serialize (cout);
+  doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   root_s.post ();
 
   delete r;

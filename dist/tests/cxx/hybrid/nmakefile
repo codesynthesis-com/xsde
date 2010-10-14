@@ -5,7 +5,7 @@ root = ..\..\..
 dirs = sequences
 
 !if "$(XSDE_POLYMORPHIC)" == "y"
-dirs = $(dirs) polymorphism\enumeration polymorphism\multischema
+dirs = $(dirs) polymorphism\any-type polymorphism\enumeration polymorphism\multischema
 !endif
 
 !if "$(XSDE_STL)" == "y"

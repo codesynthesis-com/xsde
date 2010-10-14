@@ -105,7 +105,6 @@ namespace CXX
     };
   }
 
-
   // Context
   //
 

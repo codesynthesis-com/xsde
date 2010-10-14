@@ -608,7 +608,6 @@ namespace CXX
                         Traversal::Union,
                         Traversal::Complex,
 
-                        Traversal::AnyType,
                         Traversal::AnySimpleType,
 
                         Traversal::Fundamental::Byte,
@@ -729,14 +728,8 @@ namespace CXX
             Complex::contains_compositor (c, contains_compositor_);
         }
 
-        // anyType & anySimpleType.
+        // anySimpleType
         //
-        virtual Void
-        traverse (SemanticGraph::AnyType&)
-        {
-          align_type ("char", 1);
-        }
-
         virtual Void
         traverse (SemanticGraph::AnySimpleType&)
         {

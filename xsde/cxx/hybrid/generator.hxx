@@ -39,10 +39,14 @@ namespace CXX
       options_spec ();
 
       static Parser::CLI::Options*
-      parser_options (CLI::Options const&);
+      parser_options (CLI::Options const&,
+                      XSDFrontend::SemanticGraph::Schema&,
+                      XSDFrontend::SemanticGraph::Path const&);
 
       static Serializer::CLI::Options*
-      serializer_options (CLI::Options const&);
+      serializer_options (CLI::Options const&,
+                          XSDFrontend::SemanticGraph::Schema&,
+                          XSDFrontend::SemanticGraph::Path const&);
 
       // Calculate type sizes.
       //

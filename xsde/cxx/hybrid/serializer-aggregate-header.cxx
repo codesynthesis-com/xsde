@@ -219,7 +219,11 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::AnyType& t)
         {
-          fund_type (t, "any_type");
+          if (fund_type (t, "any_type"))
+          {
+            if (polymorphic (t))
+              collect (t);
+          }
         }
 
         virtual Void
@@ -510,11 +514,16 @@ namespace CXX
         }
 
       private:
-        virtual Void
+        virtual Boolean
         fund_type (SemanticGraph::Type& t, String const& name)
         {
           if (map_.find (&t) == map_.end ())
+          {
             map_[&t] = find_instance_name (name);
+            return true;
+          }
+
+          return false;
         }
 
         String

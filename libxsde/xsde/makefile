@@ -77,7 +77,13 @@ endif
 
 ## C++/Hybrid
 ##
-cxx_tun += cxx/hybrid/sequence.cxx
+cxx_tun +=                     \
+cxx/hybrid/any-type.cxx        \
+cxx/hybrid/any-type-pimpl.cxx  \
+cxx/hybrid/any-type-pskel.cxx  \
+cxx/hybrid/any-type-simpl.cxx  \
+cxx/hybrid/any-type-sskel.cxx  \
+cxx/hybrid/sequence.cxx
 
 ifeq ($(xsde_polymorphic),y)
 cxx_tun +=                    \

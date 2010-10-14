@@ -499,12 +499,6 @@ main (Int argc, Char* argv[])
       h_ops = new CXX::Hybrid::CLI::Options (
         CLI::parse (CXX::Hybrid::Generator::options_spec (), args));
 
-      if (h_ops->value<CXX::Hybrid::CLI::generate_parser> ())
-        p_ops = CXX::Hybrid::Generator::parser_options (*h_ops);
-
-      if (h_ops->value<CXX::Hybrid::CLI::generate_serializer> ())
-        s_ops = CXX::Hybrid::Generator::serializer_options (*h_ops);
-
       show_sloc = h_ops->value<CXX::Hybrid::CLI::show_sloc> ();
     }
 
@@ -885,6 +879,18 @@ main (Int argc, Char* argv[])
           // The first schema. Will be handled later.
           //
           root = &b->schema ();
+
+          // Create parser/serializer options (we need a schema, any
+          // schema to do this).
+          //
+          if (gen_parser && !p_ops)
+            p_ops = CXX::Hybrid::Generator::parser_options (
+              *h_ops, *root, b->path ());
+
+          if (gen_serializer && !s_ops)
+            s_ops = CXX::Hybrid::Generator::serializer_options (
+              *h_ops, *root, b->path ());
+
           ++b;
 
           for (Schema::UsesIterator e (schema->uses_end ()); b != e; ++b)
@@ -909,7 +915,20 @@ main (Int argc, Char* argv[])
           }
         }
         else
+        {
           root = schema.get ();
+
+          // Create parser/serializer options (we need a schema, any
+          // schema to do this).
+          //
+          if (gen_parser && !p_ops)
+            p_ops = CXX::Hybrid::Generator::parser_options (
+              *h_ops, *root, tu);
+
+          if (gen_serializer && !s_ops)
+            s_ops = CXX::Hybrid::Generator::serializer_options (
+              *h_ops, *root, tu);
+        }
 
         // Generate mapping.
         //
@@ -1156,6 +1175,17 @@ main (Int argc, Char* argv[])
           s.context ().count ("renamed")
           ? s.context ().get<SemanticGraph::Path> ("renamed")
           : s.used_begin ()->path ());
+
+        // Create parser/serializer options (we need a schema, any
+        // schema to do this).
+        //
+        if (gen_parser && !p_ops)
+          p_ops = CXX::Hybrid::Generator::parser_options (
+            *h_ops, s, path);
+
+        if (gen_serializer && !s_ops)
+          s_ops = CXX::Hybrid::Generator::serializer_options (
+            *h_ops, s, path);
 
         TypeMap::Namespaces parser_type_map, serializer_type_map;
 
