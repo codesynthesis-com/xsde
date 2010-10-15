@@ -34,6 +34,10 @@ namespace xsde
       public:
         context (genxWriter xml_serializer);
 
+      private:
+        context (const context&);
+        context& operator= (const context&);
+
       public:
         genxWriter
         xml_serializer ();
