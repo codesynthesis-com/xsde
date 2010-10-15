@@ -76,6 +76,9 @@ namespace xsde
       assign (const char*, size_t);
 
       void
+      assign (const ro_string&);
+
+      void
       assign (const string&);
 
 #ifdef XSDE_STL

@@ -92,6 +92,13 @@ namespace xsde
     }
 
     inline void ro_string::
+    assign (const ro_string& s)
+    {
+      data_ = s.data ();
+      size_ = s.size ();
+    }
+
+    inline void ro_string::
     assign (const string& s)
     {
       data_ = s.data ();
@@ -123,7 +130,7 @@ namespace xsde
     compare (const char* str, size_t n) const
     {
       size_t s = size_ < n ? size_ : n;
-      
+
       int r = s != 0 ? strncmp (data_, str, s) : 0;
 
       if (!r && size_ != n)
