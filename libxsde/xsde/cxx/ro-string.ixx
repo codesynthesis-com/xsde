@@ -17,7 +17,7 @@ namespace xsde
 
     inline ro_string::
     ro_string (const char* s)
-        : data_ (s), size_ (strlen (s))
+        : data_ (s), size_ (s ? strlen (s) : 0)
     {
     }
 
@@ -81,7 +81,7 @@ namespace xsde
     assign (const char* s)
     {
       data_ = s;
-      size_ = strlen (s);
+      size_ = s ? strlen (s) : 0;
     }
 
     inline void ro_string::
@@ -123,7 +123,7 @@ namespace xsde
     inline int ro_string::
     compare (const char* str) const
     {
-      return compare (str, strlen (str));
+      return compare (str, str ? strlen (str) : 0);
     }
 
     inline int ro_string::
