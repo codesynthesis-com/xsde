@@ -20,8 +20,8 @@ namespace xsde
       // context
       //
       inline context::
-      context (XML_Parser xml_parser)
-          : xml_parser_ (xml_parser)
+      context ()
+          : xml_parser_ (0)
       {
 #if defined(XSDE_PARSER_VALIDATION) || !defined(XSDE_EXCEPTIONS)
         error_type_ = error_none;
@@ -32,6 +32,41 @@ namespace xsde
       xml_parser ()
       {
         return xml_parser_;
+      }
+
+      inline const ro_string& context::
+      element_namespace () const
+      {
+        return ns_;
+      }
+
+      inline const ro_string& context::
+      element_name () const
+      {
+        return name_;
+      }
+
+      inline void context::
+      reset (XML_Parser parser)
+      {
+        xml_parser_ = parser;
+        current_ = parser_state ();
+
+#if defined(XSDE_PARSER_VALIDATION) || !defined(XSDE_EXCEPTIONS)
+        error_type_ = error_none;
+#endif
+      }
+
+      inline void context::
+      element_namespace (const ro_string& ns)
+      {
+        ns_.assign (ns);
+      }
+
+      inline void context::
+      element_name (const ro_string& name)
+      {
+        name_.assign (name);
       }
 
       //

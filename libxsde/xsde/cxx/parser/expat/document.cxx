@@ -64,7 +64,7 @@ namespace xsde
 #else
         document_pimpl (parser_base& p, const std::string& n)
 #endif
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
+            : first_ (true), xml_parser_ (0), parser_ (&p)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
           xml_error_ = 0;
@@ -86,7 +86,7 @@ namespace xsde
                         const std::string& ns,
                         const std::string& n)
 #endif
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
+            : first_ (true), xml_parser_ (0), parser_ (&p)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
           xml_error_ = 0;
@@ -105,7 +105,7 @@ namespace xsde
 #else
         document_pimpl (parser_base& p, const char* n)
 #endif
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
+            : first_ (true), xml_parser_ (0), parser_ (&p)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
           xml_error_ = 0;
@@ -125,7 +125,7 @@ namespace xsde
 #else
         document_pimpl (parser_base& p, const char* ns, const char* n)
 #endif
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (&p)
+            : first_ (true), xml_parser_ (0), parser_ (&p)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
           xml_error_ = 0;
@@ -138,7 +138,7 @@ namespace xsde
 
         document_pimpl::
         document_pimpl ()
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (0)
+            : first_ (true), xml_parser_ (0), parser_ (0)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
           xml_error_ = 0;
@@ -151,7 +151,7 @@ namespace xsde
 #ifdef XSDE_POLYMORPHIC
         document_pimpl::
         document_pimpl (const char* n)
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
+            : first_ (true), xml_parser_ (0), parser_ (0),
               polymorphic_ (true)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
@@ -162,7 +162,7 @@ namespace xsde
 
         document_pimpl::
         document_pimpl (const char* ns, const char* n)
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
+            : first_ (true), xml_parser_ (0), parser_ (0),
               polymorphic_ (true)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
@@ -174,7 +174,7 @@ namespace xsde
 #ifdef XSDE_STL
         document_pimpl::
         document_pimpl (const std::string& n)
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
+            : first_ (true), xml_parser_ (0), parser_ (0),
               polymorphic_ (true)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
@@ -185,7 +185,7 @@ namespace xsde
 
         document_pimpl::
         document_pimpl (const std::string& ns, const std::string& n)
-            : first_ (true), xml_parser_ (0), context_ (0), parser_ (0),
+            : first_ (true), xml_parser_ (0), parser_ (0),
               polymorphic_ (true)
         {
 #ifdef XSDE_ENCODING_ISO8859_1
@@ -416,8 +416,7 @@ namespace xsde
         void document_pimpl::
         parse_begin (XML_Parser parser)
         {
-          context_ = context (parser);
-
+          context_.reset (parser);
           xml_parser_ = parser;
           set ();
         }
@@ -670,6 +669,9 @@ namespace xsde
           {
             const ro_string ns (ns_p, ns_s);
             const ro_string name (name_p, name_s);
+
+            context_.element_namespace (ns);
+            context_.element_name (name);
 
 #ifdef XSDE_POLYMORPHIC
             const char* type = 0;
@@ -1045,6 +1047,9 @@ namespace xsde
 
           const ro_string ns (ns_p, ns_s);
           const ro_string name (name_p, name_s);
+
+          context_.element_namespace (ns);
+          context_.element_name (name);
 
           parser_state& cur = context_.current_;
 

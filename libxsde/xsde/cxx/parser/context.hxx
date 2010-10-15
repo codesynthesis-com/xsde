@@ -12,6 +12,8 @@
 
 #include <xsde/c/expat/expat.h>
 
+#include <xsde/cxx/ro-string.hxx>
+
 #ifndef XSDE_EXCEPTIONS
 #  include <xsde/cxx/sys-error.hxx>
 #endif
@@ -44,11 +46,23 @@ namespace xsde
       class context
       {
       public:
-        context (XML_Parser xml_parser);
+        context ();
+
+      private:
+        context (const context&);
+        context& operator= (const context&);
 
       public:
         XML_Parser
         xml_parser ();
+
+        // Return namespace and name of the current element being parsed.
+        //
+        const ro_string&
+        element_namespace () const;
+
+        const ro_string&
+        element_name () const;
 
         // Error handling via codes.
         //
@@ -125,10 +139,23 @@ namespace xsde
 #endif // XSDE_PARSER_VALIDATION || !XSDE_EXCEPTIONS
 
       public:
+        void
+        reset (XML_Parser);
+
+        void
+        element_namespace (const ro_string&);
+
+        void
+        element_name (const ro_string&);
+
+      public:
         parser_state current_;
 
       protected:
         XML_Parser xml_parser_;
+
+        ro_string ns_;
+        ro_string name_;
       };
     }
   }
