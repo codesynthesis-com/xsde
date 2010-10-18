@@ -5,6 +5,8 @@
 
 #include <cxx/serializer/serializer-header.hxx>
 
+#include <cult/containers/set.hxx>
+
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
@@ -366,16 +368,20 @@ namespace CXX
 
           if (enum_facets)
           {
-            UnsignedLong enum_count (0);
+            // Some schemas have duplicate enumerators so we have to create
+            // a set out of them in order get the accurate count.
+            //
+            typedef Cult::Containers::Set<String> Enums;
+            Enums enums;
 
-            for (Type::NamesIterator i (e.names_begin ()), end (e.names_end ());
-                 i != end; ++i)
-              ++enum_count;
+            for (Type::NamesIterator i (e.names_begin ()),
+                   end (e.names_end ()); i != end; ++i)
+              enums.insert (i->name ());
 
             os << endl
                << "protected:" << endl
                << "static const char* const _xsde_" << name << "_enums_[" <<
-              enum_count << "UL];";
+              enums.size () << "UL];";
           }
 
           os << "};";
