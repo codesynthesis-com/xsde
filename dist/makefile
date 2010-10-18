@@ -1,9 +1,5 @@
 dirs := libxsde examples
 
-ifneq ($(filter $(MAKECMDGOALS),gen clean cleanobj),)
-dirs += tests
-endif
-
 .PHONY: all $(dirs)
 all: $(dirs)
 
