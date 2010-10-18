@@ -24,7 +24,7 @@ main ()
   // float
   //
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -34,7 +34,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -44,7 +44,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -54,7 +54,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -64,7 +64,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -74,7 +74,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -84,7 +84,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -96,7 +96,7 @@ main ()
   // double
   //
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -106,7 +106,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -116,7 +116,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -126,7 +126,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -136,7 +136,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -146,7 +146,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -156,7 +156,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -168,7 +168,7 @@ main ()
   // decimal
   //
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -178,7 +178,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -188,7 +188,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -198,7 +198,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -214,7 +214,7 @@ main ()
   // float
   //
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -224,7 +224,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     float_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -236,7 +236,7 @@ main ()
   // double
   //
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -246,7 +246,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     double_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -258,7 +258,7 @@ main ()
   // decimal
   //
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -268,7 +268,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -278,7 +278,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -288,7 +288,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -298,7 +298,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     decimal_pimpl p;
     p.pre ();
     p._pre_impl (c);

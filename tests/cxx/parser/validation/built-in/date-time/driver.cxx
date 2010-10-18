@@ -24,7 +24,7 @@ main ()
   // gday & time zone parsing
   //
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -36,7 +36,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -46,7 +46,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -56,7 +56,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -66,7 +66,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -76,7 +76,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -88,7 +88,7 @@ main ()
   // gmonth
   //
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -100,7 +100,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -110,7 +110,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -122,7 +122,7 @@ main ()
   // gyear
   //
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -134,7 +134,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -144,7 +144,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -156,7 +156,7 @@ main ()
   // gmonth_day
   //
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -168,7 +168,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -178,7 +178,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -190,7 +190,7 @@ main ()
   // gyear_month
   //
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -202,7 +202,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -212,7 +212,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -222,7 +222,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -234,7 +234,7 @@ main ()
   // date
   //
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -246,7 +246,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -256,7 +256,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -266,7 +266,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -278,7 +278,7 @@ main ()
   // time
   //
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -290,7 +290,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -300,7 +300,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -312,7 +312,7 @@ main ()
   // date_time
   //
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -325,7 +325,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -335,7 +335,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -346,7 +346,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -358,7 +358,7 @@ main ()
   // duration
   //
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -371,7 +371,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -381,7 +381,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -391,7 +391,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -401,7 +401,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -411,7 +411,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -421,7 +421,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -431,7 +431,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -446,7 +446,7 @@ main ()
   // gday & time zone parsing
   //
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -456,7 +456,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -466,7 +466,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -476,7 +476,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -486,7 +486,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -496,7 +496,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -506,7 +506,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -516,7 +516,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -526,7 +526,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -536,7 +536,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -546,7 +546,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -556,7 +556,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -566,7 +566,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -576,7 +576,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gday_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -588,7 +588,7 @@ main ()
   // gmonth
   //
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -598,7 +598,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -608,7 +608,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -618,7 +618,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -628,7 +628,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -638,7 +638,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -650,7 +650,7 @@ main ()
   // gyear
   //
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -660,7 +660,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -670,7 +670,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -680,7 +680,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -690,7 +690,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -700,7 +700,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -712,7 +712,7 @@ main ()
   // gmonth_day
   //
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -722,7 +722,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -732,7 +732,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -742,7 +742,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -752,7 +752,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -762,7 +762,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -772,7 +772,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -782,7 +782,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -792,7 +792,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -802,7 +802,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -812,7 +812,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gmonth_day_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -824,7 +824,7 @@ main ()
   // gyear_month
   //
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -834,7 +834,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -844,7 +844,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -854,7 +854,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -864,7 +864,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -874,7 +874,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -884,7 +884,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -894,7 +894,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -904,7 +904,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -914,7 +914,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -924,7 +924,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -934,7 +934,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     gyear_month_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -946,7 +946,7 @@ main ()
   // date
   //
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -956,7 +956,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -966,7 +966,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -976,7 +976,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -986,7 +986,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -996,7 +996,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1006,7 +1006,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1016,7 +1016,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1026,7 +1026,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1036,7 +1036,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1046,7 +1046,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1056,7 +1056,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1066,7 +1066,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1076,7 +1076,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1086,7 +1086,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1096,7 +1096,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1106,7 +1106,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1116,7 +1116,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1126,7 +1126,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1138,7 +1138,7 @@ main ()
   // time
   //
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1148,7 +1148,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1158,7 +1158,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1168,7 +1168,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1178,7 +1178,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1188,7 +1188,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1198,7 +1198,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1208,7 +1208,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1218,7 +1218,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1228,7 +1228,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1238,7 +1238,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1248,7 +1248,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1258,7 +1258,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1268,7 +1268,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1278,7 +1278,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1288,7 +1288,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1298,7 +1298,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1308,7 +1308,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1320,7 +1320,7 @@ main ()
   // date_time
   //
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1330,7 +1330,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1340,7 +1340,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1350,7 +1350,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1360,7 +1360,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1370,7 +1370,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1380,7 +1380,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1390,7 +1390,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1400,7 +1400,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1410,7 +1410,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1420,7 +1420,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1430,7 +1430,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1440,7 +1440,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1450,7 +1450,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1460,7 +1460,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1470,7 +1470,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1480,7 +1480,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1490,7 +1490,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1500,7 +1500,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1510,7 +1510,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1520,7 +1520,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1530,7 +1530,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1540,7 +1540,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1550,7 +1550,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1560,7 +1560,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1570,7 +1570,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1580,7 +1580,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1590,7 +1590,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1600,7 +1600,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1610,7 +1610,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1620,7 +1620,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1630,7 +1630,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1640,7 +1640,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1650,7 +1650,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1660,7 +1660,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1670,7 +1670,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     date_time_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1682,7 +1682,7 @@ main ()
   // duration
   //
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1692,7 +1692,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1702,7 +1702,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1712,7 +1712,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1722,7 +1722,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1732,7 +1732,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1742,7 +1742,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1752,7 +1752,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1762,7 +1762,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1772,7 +1772,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1782,7 +1782,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1792,7 +1792,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1802,7 +1802,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1812,7 +1812,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -1822,7 +1822,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     duration_pimpl p;
     p.pre ();
     p._pre_impl (c);

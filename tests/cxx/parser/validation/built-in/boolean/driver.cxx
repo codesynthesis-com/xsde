@@ -18,7 +18,7 @@ main ()
   // Good.
   //
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -28,7 +28,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -38,7 +38,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -48,7 +48,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -59,7 +59,7 @@ main ()
 
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -69,7 +69,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -87,7 +87,7 @@ main ()
   // Bad
   //
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -97,7 +97,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -107,7 +107,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -117,7 +117,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -127,7 +127,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -139,7 +139,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     boolean_pimpl p;
     p.pre ();
     p._pre_impl (c);

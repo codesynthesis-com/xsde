@@ -52,7 +52,7 @@ main ()
   // integer
   //
   {
-    context c (0);
+    context c;
     integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -62,7 +62,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -72,7 +72,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -84,7 +84,7 @@ main ()
   // negative_integer
   //
   {
-    context c (0);
+    context c;
     negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -94,7 +94,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -106,7 +106,7 @@ main ()
   // non_positive_integer
   //
   {
-    context c (0);
+    context c;
     non_positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -116,7 +116,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     non_positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -128,7 +128,7 @@ main ()
   // positive_integer
   //
   {
-    context c (0);
+    context c;
     positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -138,7 +138,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -150,7 +150,7 @@ main ()
   // non_negative_integer
   //
   {
-    context c (0);
+    context c;
     non_negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -160,7 +160,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     non_negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -188,7 +188,7 @@ main ()
   // integer
   //
   {
-    context c (0);
+    context c;
     integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -198,7 +198,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -210,7 +210,7 @@ main ()
   // negative_integer
   //
   {
-    context c (0);
+    context c;
     negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -220,7 +220,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -230,7 +230,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -242,7 +242,7 @@ main ()
   // non_positive_integer
   //
   {
-    context c (0);
+    context c;
     non_positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -252,7 +252,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     non_positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -264,7 +264,7 @@ main ()
   // positive_integer
   //
   {
-    context c (0);
+    context c;
     positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -274,7 +274,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -284,7 +284,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     positive_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -296,7 +296,7 @@ main ()
   // non_negative_integer
   //
   {
-    context c (0);
+    context c;
     non_negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -306,7 +306,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     non_negative_integer_pimpl p;
     p.pre ();
     p._pre_impl (c);

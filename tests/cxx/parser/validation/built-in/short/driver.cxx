@@ -19,7 +19,7 @@ main ()
   // Good.
   //
   {
-    context c (0);
+    context c;
     short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -29,7 +29,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -39,7 +39,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -49,7 +49,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     unsigned_short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -59,7 +59,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     unsigned_short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -72,7 +72,7 @@ main ()
   //
 
   {
-    context c (0);
+    context c;
     unsigned_short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -85,7 +85,7 @@ main ()
   // Ranges
   //
   {
-    context c (0);
+    context c;
     short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -95,7 +95,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     short_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -105,7 +105,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     unsigned_short_pimpl p;
     p.pre ();
     p._pre_impl (c);

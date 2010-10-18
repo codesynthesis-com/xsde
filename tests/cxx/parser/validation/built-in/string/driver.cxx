@@ -40,7 +40,7 @@ main ()
   // string
   //
   {
-    context c (0);
+    context c;
     string_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -56,7 +56,7 @@ main ()
   // normalized_string
   //
   {
-    context c (0);
+    context c;
     normalized_string_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -72,7 +72,7 @@ main ()
   // token
   //
   {
-    context c (0);
+    context c;
     token_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -88,7 +88,7 @@ main ()
   // name
   //
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -101,7 +101,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -114,7 +114,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -129,7 +129,7 @@ main ()
   // nmtoken
   //
   {
-    context c (0);
+    context c;
     nmtoken_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -145,7 +145,7 @@ main ()
   // nmtokens
   //
   {
-    context c (0);
+    context c;
     string_sequence s;
 #ifdef XSDE_STL    
     s.push_back ("123");
@@ -169,7 +169,7 @@ main ()
   // ncname
   //
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -184,7 +184,7 @@ main ()
   // id
   //
   {
-    context c (0);
+    context c;
     id_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -199,7 +199,7 @@ main ()
   // idref
   //
   {
-    context c (0);
+    context c;
     idref_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -214,7 +214,7 @@ main ()
   // idrefs
   //
   {
-    context c (0);
+    context c;
     string_sequence s;
 #ifdef XSDE_STL    
     s.push_back ("a123");
@@ -238,7 +238,7 @@ main ()
   // language
   //
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -248,7 +248,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -258,7 +258,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -269,7 +269,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -286,7 +286,7 @@ main ()
   // name
   //
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -296,7 +296,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -306,7 +306,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -316,7 +316,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -326,7 +326,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -336,7 +336,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -346,7 +346,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     name_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -358,7 +358,7 @@ main ()
   // nmtoken
   //
   {
-    context c (0);
+    context c;
     nmtoken_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -368,7 +368,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     nmtoken_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -378,7 +378,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     nmtoken_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -388,7 +388,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     nmtoken_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -400,7 +400,7 @@ main ()
   // nmtokens
   //
   {
-    context c (0);
+    context c;
     nmtokens_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -411,7 +411,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     nmtokens_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -423,7 +423,7 @@ main ()
   // ncname
   //
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -433,7 +433,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -443,7 +443,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -453,7 +453,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -463,7 +463,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -473,7 +473,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -483,7 +483,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -493,7 +493,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -503,7 +503,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     ncname_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -515,7 +515,7 @@ main ()
   // id
   //
   {
-    context c (0);
+    context c;
     id_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -527,7 +527,7 @@ main ()
   // idref
   //
   {
-    context c (0);
+    context c;
     idref_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -539,7 +539,7 @@ main ()
   // idrefs
   //
   {
-    context c (0);
+    context c;
     idrefs_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -550,7 +550,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     idrefs_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -562,7 +562,7 @@ main ()
   // language
   //
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -572,7 +572,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -582,7 +582,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -592,7 +592,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
@@ -602,7 +602,7 @@ main ()
   }
 
   {
-    context c (0);
+    context c;
     language_pimpl p;
     p.pre ();
     p._pre_impl (c);
