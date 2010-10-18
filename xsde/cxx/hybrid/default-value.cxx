@@ -203,14 +203,31 @@ namespace CXX
 
       Enumeration& x (base_enum ? *base_enum : e);
 
-      os << member_ << x.context ().get<String> ("value") << "(";
+      os << member_ << x.context ().get<String> ("value") << "(" << endl;
 
       Enumeration::NamesIteratorPair ip (x.find (value_));
 
       if (ip.first != ip.second)
       {
-        Enumerator& er (dynamic_cast<Enumerator&> (ip.first->named ()));
-        os << fq_name (e) << "::" << ename (er);
+        // Use the numerical value instead of the symbolic enumerator
+        // because the enumerator names might not have been assigned
+        // (included/imported schemas).
+        //
+        String const& vt (e.context ().get<String> ("value-type"));
+
+        Size n (0);
+        {
+          Enumeration const& tmp (x);
+          for (Enumeration::NamesConstIterator i (tmp.names_begin ());
+               &i->named () != &ip.first->named (); ++i)
+            n++;
+        }
+
+        os << "static_cast< " << fq_name (e) << "::" << vt << " > (" <<
+          n << "UL)";
+
+        //Enumerator& er (dynamic_cast<Enumerator&> (ip.first->named ()));
+        //os << fq_name (e) << "::" << ename (er);
       }
 
       os << ");";
