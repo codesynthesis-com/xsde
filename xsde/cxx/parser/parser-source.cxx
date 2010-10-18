@@ -116,16 +116,21 @@ namespace CXX
               if (!gen)
               {
                 // The first instance that this anonymous type classifies
-                // is the prototype for others if any.
+                // is the prototype for others if any. If this type does
+                // not classify anything (e.g., it is a base), then we
+                // don't need to do anything.
                 //
-                SemanticGraph::Instance& i (
-                  e.classifies_begin ()->instance ());
-
-                if (SemanticGraph::Element* e =
-                    dynamic_cast<SemanticGraph::Element*> (&i))
+                if (e.classifies_begin () != e.classifies_end ())
                 {
-                  if (e->substitutes_p ())
-                    gen = true;
+                  SemanticGraph::Instance& i (
+                    e.classifies_begin ()->instance ());
+
+                  if (SemanticGraph::Element* e =
+                      dynamic_cast<SemanticGraph::Element*> (&i))
+                  {
+                    if (e->substitutes_p ())
+                      gen = true;
+                  }
                 }
               }
 
@@ -1293,16 +1298,21 @@ namespace CXX
               if (!gen)
               {
                 // The first instance that this anonymous type classifies
-                // is the prototype for others if any.
+                // is the prototype for others if any. If this type does
+                // not classify anything (e.g., it is a base), then we
+                // don't need to do anything.
                 //
-                SemanticGraph::Instance& i (
-                  c.classifies_begin ()->instance ());
-
-                if (SemanticGraph::Element* e =
-                    dynamic_cast<SemanticGraph::Element*> (&i))
+                if (c.classifies_begin () != c.classifies_end ())
                 {
-                  if (e->substitutes_p ())
-                    gen = true;
+                  SemanticGraph::Instance& i (
+                    c.classifies_begin ()->instance ());
+
+                  if (SemanticGraph::Element* e =
+                      dynamic_cast<SemanticGraph::Element*> (&i))
+                  {
+                    if (e->substitutes_p ())
+                      gen = true;
+                  }
                 }
               }
 
