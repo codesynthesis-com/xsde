@@ -195,11 +195,7 @@ namespace xsde
         {
           if (!_start_element_impl (ns, name, type))
           {
-            context& c = _context ();
-
-            c.current_.any_ = true;
-            c.current_.depth_++;
-
+            _context ().start_wildcard_content ();
             _start_any_element (ns, name, type);
           }
         }
@@ -210,11 +206,7 @@ namespace xsde
         {
           if (!_start_element_impl (ns, name))
           {
-            context& c = _context ();
-
-            c.current_.any_ = true;
-            c.current_.depth_++;
-
+            _context ().start_wildcard_content ();
             _start_any_element (ns, name);
           }
         }

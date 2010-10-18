@@ -11,7 +11,7 @@ namespace xsde
     {
       inline substitution_map::
       substitution_map (size_t buckets)
-          : hashmap (buckets, sizeof (value))
+          : hashmap (buckets, sizeof (value)), callback_ (0)
       {
       }
 
@@ -26,6 +26,12 @@ namespace xsde
         hashmap::insert (member, &v);
       }
 
+      inline void substitution_map::
+      callback (callback_func c)
+      {
+        callback_ = c;
+      }
+
       inline bool substitution_map::
       check (const ro_string& member_ns,
              const ro_string& member_name,
@@ -33,9 +39,9 @@ namespace xsde
              const char*& type) const
       {
 
-        return empty ()
-          ? false
-          : check_ (member_ns, member_name, root, &type);
+        return !empty () || callback_ != 0
+          ? check_ (member_ns, member_name, root, &type)
+          : false;
       }
 
       inline bool substitution_map::
@@ -45,9 +51,9 @@ namespace xsde
              const char* root_name,
              const char*& type) const
       {
-        return empty ()
-          ? false
-          : check_ (member_ns, member_name, root_ns, root_name, &type);
+        return !empty () || callback_ != 0
+          ? check_ (member_ns, member_name, root_ns, root_name, &type)
+          : false;
       }
 
       inline bool substitution_map::
@@ -56,9 +62,9 @@ namespace xsde
              const char* root) const
       {
 
-        return empty ()
-          ? false
-          : check_ (member_ns, member_name, root, 0);
+        return !empty () || callback_ != 0
+          ? check_ (member_ns, member_name, root, 0)
+          : false;
       }
 
       inline substitution_map&

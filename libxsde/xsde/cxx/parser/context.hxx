@@ -140,6 +140,9 @@ namespace xsde
 
       public:
         void
+        start_wildcard_content ();
+
+        void
         reset (XML_Parser);
 
         void

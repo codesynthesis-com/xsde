@@ -17,6 +17,7 @@
 #endif
 
 #include <xsde/cxx/serializer/substitution-map.hxx>
+#include <xsde/cxx/serializer/substitution-map-callback.hxx>
 #include <xsde/cxx/serializer/substitution-map-load.hxx>
 
 namespace xsde
@@ -103,8 +104,19 @@ namespace xsde
       bool substitution_map::
       check_ (const char*& ns,
               const char*& name,
-              const char* type) const
+              const char* type,
+              const void* obj,
+              bool top) const
       {
+        // Call the callback first to allow the user to provide a custom
+        // substitution group mapping.
+        //
+        if (top && callback_ != 0)
+        {
+          if (callback_ (type, obj, ns, name))
+            return true;
+        }
+
         size_t h = hash (name);
 
         if (ns)
@@ -115,70 +127,70 @@ namespace xsde
 
         const bucket* p = find (h);
 
-        if (p == 0)
-          return false;
-
-        // Search for the entry in the bucket.
-        //
-        const size_t el_size = sizeof (element) + sizeof (hashmap*);
-        const char* b = reinterpret_cast<const char*> (p) + sizeof (bucket);
-        const char* e = b + p->size_ * el_size;
-
-        size_t nl = ns ? strlen (name) : 0;
-
-        for (; b < e; b += el_size)
+        if (p != 0)
         {
-          const element* e = reinterpret_cast<const element*> (b);
+          // Search for the entry in the bucket.
+          //
+          const size_t el_size = sizeof (element) + sizeof (hashmap*);
+          const char* b = reinterpret_cast<const char*> (p) + sizeof (bucket);
+          const char* e = b + p->size_ * el_size;
 
-          if (e->hash_ == h)
+          size_t nl = ns ? strlen (name) : 0;
+
+          for (; b < e; b += el_size)
           {
-            if (ns == 0)
+            const element* e = reinterpret_cast<const element*> (b);
+
+            if (e->hash_ == h)
             {
-              if (strcmp (e->key_, name) == 0)
-                break;
-            }
-            else
-            {
-              if (strncmp (e->key_, name, nl) == 0 &&
-                  e->key_[nl] == ' ' &&
-                  strcmp (e->key_ + nl + 1, ns) == 0)
-                break;
+              if (ns == 0)
+              {
+                if (strcmp (e->key_, name) == 0)
+                  break;
+              }
+              else
+              {
+                if (strncmp (e->key_, name, nl) == 0 &&
+                    e->key_[nl] == ' ' &&
+                    strcmp (e->key_ + nl + 1, ns) == 0)
+                  break;
+              }
             }
           }
-        }
 
-        if (b == e)
-          return false;
-
-        const hashmap* map = *reinterpret_cast<const hashmap* const*> (
-          b + sizeof (element));
-
-        // See if we have a direct substitution.
-        //
-        if (const value* v = static_cast<const value*> (map->find (type)))
-        {
-          ns = v->ns_;
-          name = v->name_;
-          return true;
-        }
-
-        // Otherwise we have to iterate over possible substitutions and
-        // see if any of them can in turn be substituted with something
-        // that we can use.
-        //
-        for (const_iterator i (map->begin ()), end (map->end ());
-             i != end; ++i)
-        {
-          const value* v = static_cast<const value*> (*i);
-
-          const char* tns = v->ns_;
-          const char* tn = v->name_;
-
-          if (check_ (tns, tn, type))
+          if (b != e)
           {
-            ns = tns;
-            name = tn;
-            return true;
+            const hashmap* map = *reinterpret_cast<const hashmap* const*> (
+              b + sizeof (element));
+
+            // See if we have a direct substitution.
+            //
+            if (const value* v = static_cast<const value*> (map->find (type)))
+            {
+              ns = v->ns_;
+              name = v->name_;
+              return true;
+            }
+
+            // Otherwise we have to iterate over possible substitutions and
+            // see if any of them can in turn be substituted with something
+            // that we can use.
+            //
+            for (const_iterator i (map->begin ()), end (map->end ());
+                 i != end; ++i)
+            {
+              const value* v = static_cast<const value*> (*i);
+
+              const char* tns = v->ns_;
+              const char* tn = v->name_;
+
+              if (check_ (tns, tn, type, obj, false))
+              {
+                ns = tns;
+                name = tn;
+                return true;
+              }
+            }
           }
         }
 
@@ -264,7 +276,20 @@ namespace xsde
 #endif
       }
 
+      // Callback.
       //
+      void
+      serializer_smap_callback (
+        bool (*callback) (
+          const char* type,
+          const void* obj,
+          const char*& ns,
+          const char*& name))
+      {
+        substitution_map_instance ().callback (callback);
+      }
+
+      // Load.
       //
       size_t
       serializer_smap_elements ()

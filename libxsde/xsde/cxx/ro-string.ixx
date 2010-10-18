@@ -43,7 +43,7 @@ namespace xsde
     inline ro_string::
     operator std::string () const
     {
-      return std::string (data (), size ());
+      return size () ? std::string (data (), size ()) : std::string ();
     }
 #endif
 

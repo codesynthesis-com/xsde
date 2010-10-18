@@ -30,21 +30,34 @@ namespace xsde
                 const char* member_name,
                 const char* member_type);
 
+        typedef bool (*callback_func) (
+          const char* type,
+          const void* obj,
+          const char*& ns,
+          const char*& name);
+
+        void
+        callback (callback_func);
+
         // Check whether there is a substitution available for this
         // root element with the specified type. If so, return true
         // and override namespace and name (ns is 0 if there is no
-        // namespace).
+        // namespace). The obj argument is an opaque pointer to the
+        // instance being serialized or 0 if there is none.
         //
         bool
         check (const char*& ns,
                const char*& name,
-               const char* type) const;
+               const char* type,
+               const void* obj) const;
 
       private:
         bool
         check_ (const char*& ns,
                 const char*& name,
-                const char* type) const;
+                const char* type,
+                const void* obj,
+                bool top) const;
 
       private:
         struct value
@@ -52,6 +65,9 @@ namespace xsde
           const char* ns_;
           const char* name_;
         };
+
+      private:
+        callback_func callback_;
       };
 
 
@@ -85,4 +101,3 @@ namespace xsde
 #include <xsde/cxx/serializer/substitution-map.ixx>
 
 #endif  // XSDE_CXX_SERIALIZER_SUBSTITUTION_MAP_HXX
-

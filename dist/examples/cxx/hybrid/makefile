@@ -6,7 +6,7 @@ dirs :=
 
 ifeq ($(XSDE_CUSTOM_ALLOCATOR),n)
 
-dirs += binary compositors custom
+dirs += binary compositors custom evolution
 
 ifeq ($(XSDE_IOSTREAM),y)
 ifeq ($(XSDE_EXCEPTIONS),y)

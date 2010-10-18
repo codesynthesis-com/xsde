@@ -48,6 +48,13 @@ Version 3.2.0
     for variable-length types. These functions allow you to make dynamically-
     allocated copies of variable-length objects.
 
+  * Support for schema evolution using substitution groups. The 'ignore' and
+    'passthrough' examples in the examples/cxx/hybrid/evolution/ directory
+    show how the new mechanism work. The 'ignore' example shows how to
+    ignores unknown elements. The 'passthrough' example shows how to pass
+    the unknown content through parsing and serialization so that the output
+    XML contains all the unknown elements.
+
   * The anySimpleType build-in type is now mapped to std::string or a C-string,
     depending on whether STL is enabled or not.
 

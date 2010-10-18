@@ -47,6 +47,13 @@ namespace xsde
       }
 
       inline void context::
+      start_wildcard_content ()
+      {
+        current_.any_ = true;
+        current_.depth_++;
+      }
+
+      inline void context::
       reset (XML_Parser parser)
       {
         xml_parser_ = parser;

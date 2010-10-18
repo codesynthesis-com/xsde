@@ -494,9 +494,7 @@ namespace CXX
           }
           else
           {
-            os << "ctx.current_.any_ = true;"
-               << "ctx.current_.depth_++;"
-               << endl
+            os << "ctx.start_wildcard_content ();"
                << "this->_start_any_element (ns, n" <<
               (poly_runtime ? (poly_code ? ", t" : ", 0") : "") << ");"
                << "}"

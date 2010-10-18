@@ -1,55 +1,22 @@
-# file      : examples/cxx/hybrid/makefile
+# file      : examples/cxx/hybrid/evolution/makefile
 # author    : Boris Kolpackov <boris@codesynthesis.com>
 # copyright : Copyright (c) 2006-2010 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-include $(dir $(lastword $(MAKEFILE_LIST)))../../../build/bootstrap.make
+include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 
-all_examples := \
-allocator       \
-binary          \
-compositors     \
-custom          \
-evolution       \
-hello           \
-multiroot       \
-polymorphism    \
-polyroot        \
-streaming       \
-library         \
-wildcard        \
-filter          \
-minimal
-
-build_examples := binary compositors custom evolution
+all_examples := ignore passthrough
+build_examples :=
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
 
-build_examples += hello multiroot streaming
-
 ifeq ($(xsde_stl),y)
-build_examples += library wildcard filter
-endif
-
-ifeq ($(xsde_polymorphic),y)
-build_examples += polymorphism polyroot
+build_examples += ignore passthrough
 endif
 
 endif
 endif
-
-ifeq ($(xsde_stl),n)
-ifeq ($(xsde_exceptions),n)
-build_examples += minimal
-
-ifeq ($(xsde_custom_allocator),y)
-build_examples += allocator
-endif
-
-endif
-endif
-
 
 default  := $(out_base)/
 dist     := $(out_base)/.dist

@@ -5,7 +5,7 @@
 
 #include <xsde/cxx/config.hxx>
 
-#include <string.h> // strlen, strcmp, strncmp
+#include <string.h> // strlen, strcmp, strncmp, strchr
 
 #ifndef XSDE_EXCEPTIONS
 #  include <assert.h> // assert
@@ -17,6 +17,7 @@
 #endif
 
 #include <xsde/cxx/parser/substitution-map.hxx>
+#include <xsde/cxx/parser/substitution-map-callback.hxx>
 #include <xsde/cxx/parser/substitution-map-load.hxx>
 
 namespace xsde
@@ -45,6 +46,22 @@ namespace xsde
 
           if (r && type != 0 && *type == 0)
             *type = v->type_;
+        }
+
+        // Call the callback.
+        //
+        if (!r && callback_ != 0)
+        {
+          const char* t;
+          const char* p = strchr (root, ' ');
+
+          ro_string rname (p ? root : 0, p ? p - root : 0);
+          ro_string rns (p ? p + 1 : root);
+
+          r = callback_ (rns, rname, ns, name, t);
+
+          if (r && type != 0 && *type == 0)
+            *type = t;
         }
 
         return r;
@@ -76,6 +93,20 @@ namespace xsde
 
           if (r && type != 0 && *type == 0)
             *type = v->type_;
+        }
+
+        // Call the callback.
+        //
+        if (!r && callback_ != 0)
+        {
+          const char* t;
+          ro_string rns (root_ns);
+          ro_string rname (root_name);
+
+          r = callback_ (rns, rname, ns, name, t);
+
+          if (r && type != 0 && *type == 0)
+            *type = t;
         }
 
         return r;
@@ -249,7 +280,21 @@ namespace xsde
 #endif
       }
 
+      // Callback.
       //
+      void
+      parser_smap_callback (
+        bool (*callback) (
+          const ro_string& root_ns,
+          const ro_string& root_name,
+          const ro_string& member_ns,
+          const ro_string& member_name,
+          const char*& type))
+      {
+        substitution_map_instance ().callback (callback);
+      }
+
+      // Load.
       //
       size_t
       parser_smap_elements ()

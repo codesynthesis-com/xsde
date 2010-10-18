@@ -1787,6 +1787,11 @@ namespace CXX
                << "using ::xsde::cxx::serializer::serializer_map_impl;"
                << endl;
 
+            os << "// Serializer substitution map callack." << endl
+               << "//" << endl
+               << "using ::xsde::cxx::serializer::serializer_smap_callback;"
+               << endl;
+
             os << "// Substitution and inheritance hashmaps load querying." << endl
                << "//" << endl
                << "using ::xsde::cxx::serializer::serializer_smap_buckets;"
@@ -1938,6 +1943,7 @@ namespace CXX
         if (ctx.poly_code)
         {
           ctx.os << "#include <xsde/cxx/serializer/map.hxx>" << endl
+                 << "#include <xsde/cxx/serializer/substitution-map-callback.hxx>" << endl
                  << "#include <xsde/cxx/serializer/substitution-map-load.hxx>" << endl;
 
           if (ctx.validation)

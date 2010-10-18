@@ -514,7 +514,7 @@ namespace xsde
             // Call to check sets ns and n if successful.
             //
             if (strcmp (dt, root_static_type_) == 0 ||
-                substitution_map_instance ().check (ns, n, dt))
+                substitution_map_instance ().check (ns, n, dt, 0))
               dt = 0;
           }
 

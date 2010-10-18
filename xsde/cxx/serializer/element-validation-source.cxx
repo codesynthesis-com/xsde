@@ -447,7 +447,8 @@ namespace CXX
 
             os << "if (dt != 0 && " <<
               "::xsde::cxx::serializer::substitution_map_instance ()" <<
-              ".check (ns, n, dt))" << endl
+              ".check (ns, n, dt, " << (ret == L"void" ? "0" : "&r") <<
+              "))" << endl
                << "dt = 0;"
                << endl;
 

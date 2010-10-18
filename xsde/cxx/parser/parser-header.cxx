@@ -1625,6 +1625,11 @@ namespace CXX
                << "using ::xsde::cxx::parser::parser_map_impl;"
                << endl;
 
+            os << "// Parser substitution map callack." << endl
+               << "//" << endl
+               << "using ::xsde::cxx::parser::parser_smap_callback;"
+               << endl;
+
             os << "// Substitution and inheritance hashmaps load querying." << endl
                << "//" << endl
                << "using ::xsde::cxx::parser::parser_smap_buckets;"
@@ -1775,6 +1780,7 @@ namespace CXX
         if (ctx.poly_code)
         {
           ctx.os << "#include <xsde/cxx/parser/map.hxx>" << endl
+                 << "#include <xsde/cxx/parser/substitution-map-callback.hxx>" << endl
                  << "#include <xsde/cxx/parser/substitution-map-load.hxx>" << endl;
 
           if (ctx.validation)

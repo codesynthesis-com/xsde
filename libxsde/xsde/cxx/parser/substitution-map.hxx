@@ -27,6 +27,16 @@ namespace xsde
                 const char* root,
                 const char* type);
 
+        typedef bool (*callback_func) (
+          const ro_string& root_ns,
+          const ro_string& root_name,
+          const ro_string& member_ns,
+          const ro_string& member_name,
+          const char*& type);
+
+        void
+        callback (callback_func);
+
         // Check and have the type set if found.
         //
         bool
@@ -81,6 +91,9 @@ namespace xsde
         const value*
         find_ (const ro_string& member_ns,
                const ro_string& member_name) const;
+
+      private:
+        callback_func callback_;
       };
 
 

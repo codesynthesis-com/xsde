@@ -21,23 +21,26 @@ namespace xsde
         if (size_ == 0)
           return 0;
 
+        int r (1);
+        size_t m;
         size_t l = 0;
         size_t h = size_ - 1;
 
         while (l <= h)
         {
-          size_t m = l + (h - l)/2;
-          int r = strcmp (entries_[m].type_id, tid);
+          m = l + (h - l)/2;
+          r = strcmp (entries_[m].type_id, tid);
 
-          if (r > 0)
-            h = m - 1;
-          else if (r < 0)
+          if (r == 0 || l == h)
+            break;
+
+          if (r < 0)
             l = m + 1;
           else
-            return entries_[m].parser;
+            h = (m == 0 ? 0 : m - 1);
         }
 
-        return 0;
+        return r == 0 ? entries_[m].parser : 0;
       }
 
       void parser_map_impl::

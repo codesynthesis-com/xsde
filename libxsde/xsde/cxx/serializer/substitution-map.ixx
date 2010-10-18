@@ -15,12 +15,21 @@ namespace xsde
       {
       }
 
+      inline void substitution_map::
+      callback (callback_func c)
+      {
+        callback_ = c;
+      }
+
       inline bool substitution_map::
       check (const char*& ns,
              const char*& name,
-             const char* type) const
+             const char* type,
+             const void* obj) const
       {
-        return empty () ? false : check_ (ns, name, type);
+        return !empty () || callback_ != 0
+          ? check_ (ns, name, type, obj, true)
+          : false;
       }
 
       inline substitution_map&

@@ -13,15 +13,16 @@ namespace xsde
     {
 #ifdef XSDE_POLYMORPHIC
       bool any_type_pskel::
-      _start_element_impl (const ro_string& ns,
-                           const ro_string& name,
-                           const char* type)
+      _start_element_impl (
+#ifdef XSDE_PARSER_VALIDATION
+        const ro_string& ns, const ro_string& name, const char* type
+#else
+        const ro_string&, const ro_string&, const char*
+#endif
+      )
       {
 #ifdef XSDE_PARSER_VALIDATION
-        parser::context& ctx = _context ();
-        ctx.current_.any_ = true;
-        ctx.current_.depth_++;
-
+        _context ().start_wildcard_content ();
         _start_any_element (ns, name, type);
         return true;
 #else
@@ -30,13 +31,16 @@ namespace xsde
       }
 #else
       bool any_type_pskel::
-      _start_element_impl (const ro_string& ns, const ro_string& name)
+      _start_element_impl (
+#ifdef XSDE_PARSER_VALIDATION
+        const ro_string& ns, const ro_string& name
+#else
+        const ro_string&, const ro_string&
+#endif
+      )
       {
 #ifdef XSDE_PARSER_VALIDATION
-        parser::context& ctx = _context ();
-        ctx.current_.any_ = true;
-        ctx.current_.depth_++;
-
+        _context ().start_wildcard_content ();
         _start_any_element (ns, name);
         return true;
 #else
@@ -46,7 +50,13 @@ namespace xsde
 #endif
 
       bool any_type_pskel::
-      _end_element_impl (const ro_string& ns, const ro_string& name)
+      _end_element_impl (
+#ifdef XSDE_PARSER_VALIDATION
+        const ro_string& ns, const ro_string& name
+#else
+        const ro_string&, const ro_string&
+#endif
+      )
       {
 #ifdef XSDE_PARSER_VALIDATION
         _end_any_element (ns, name);
@@ -76,7 +86,13 @@ namespace xsde
 #endif
 
       bool any_type_pskel::
-      _characters_impl (const ro_string& s)
+      _characters_impl (
+#ifdef XSDE_PARSER_VALIDATION
+        const ro_string& s
+#else
+        const ro_string&
+#endif
+      )
       {
 #ifdef XSDE_PARSER_VALIDATION
         _any_characters (s);

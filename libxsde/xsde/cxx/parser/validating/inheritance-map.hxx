@@ -60,4 +60,3 @@ namespace xsde
 #include <xsde/cxx/parser/validating/inheritance-map.ixx>
 
 #endif  // XSDE_CXX_PARSER_VALIDATING_INHERITANCE_MAP_HXX
-

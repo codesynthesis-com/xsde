@@ -33,6 +33,11 @@ namespace xsde
         bool inheritance_map::
         check (const char* derived, const char* base) const
         {
+          // Check for the special match-anything marker.
+          //
+          if (derived[0] == '*')
+            return true;
+
           if (strcmp (derived, base) == 0)
             return true;
 

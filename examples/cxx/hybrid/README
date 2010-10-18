@@ -53,6 +53,9 @@ custom/
   to the generated ones. See the accompanying README file for an
   overview of each example in this directory.
 
+evolution/
+  A collection of examples that show how to handle schema evolution.
+
 binary/
   A collection of examples that show how to serialize the object model
   into a number of predefined and custom binary formats.
