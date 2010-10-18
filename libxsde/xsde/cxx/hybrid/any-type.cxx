@@ -123,13 +123,13 @@ namespace xsde
         return true;
       }
 
-      bool
-      _copy (any_type&) const
+      bool any_type::
+      _copy (any_type& c) const
       {
         if (data_ != 0)
         {
           if (!c.allocate_custom_data () ||
-              !data_.copy (c.custom_data ()))
+              !data_->copy (c.custom_data ()))
             return false;
         }
 
