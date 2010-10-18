@@ -6,11 +6,13 @@ dirs =
 
 !if "$(XSDE_IOSTREAM)" == "y"
 !if "$(XSDE_EXCEPTIONS)" == "y"
-
 !if "$(XSDE_STL)" == "y"
+
+!if "$(XSDE_POLYMORPHIC)" == "y"
 dirs = $(dirs) ignore passthrough
 !endif
 
+!endif
 !endif
 !endif
 

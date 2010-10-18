@@ -10,11 +10,13 @@ build_examples :=
 
 ifeq ($(xsde_iostream),y)
 ifeq ($(xsde_exceptions),y)
-
 ifeq ($(xsde_stl),y)
+
+ifeq ($(xsde_polymorphic),y)
 build_examples += ignore passthrough
 endif
 
+endif
 endif
 endif
 
