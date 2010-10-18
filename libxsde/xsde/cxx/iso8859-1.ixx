@@ -20,7 +20,7 @@ namespace xsde
 
       for (; *s != 0; ++s, ++l)
       {
-        unsigned char c (*s);
+        unsigned char c = *s;
 
         if (c > 0x7F)
         {
@@ -53,7 +53,7 @@ namespace xsde
 
       for (; s != end; ++s, ++l)
       {
-        unsigned char c (*s);
+        unsigned char c = *s;
 
         if (c > 0x7F)
         {
@@ -85,7 +85,7 @@ namespace xsde
 
       for (; *s != 0; ++s, ++l)
       {
-        unsigned char c (*s);
+        unsigned char c = *s;
 
         if (c > 0x7F)
         {
@@ -112,7 +112,7 @@ namespace xsde
 
       for (; s != end; ++s, ++l)
       {
-        unsigned char c (*s);
+        unsigned char c = *s;
 
         if (c > 0x7F)
         {

@@ -21,7 +21,7 @@ namespace xsde
         if (size_ == 0)
           return 0;
 
-        int r (1);
+        int r = 1;
         size_t m;
         size_t l = 0;
         size_t h = size_ - 1;

@@ -1394,8 +1394,8 @@ namespace CXX
                 os << "delete[] ns;"
                    << "delete[] name;";
               else
-                os << "::xsde::cxx::free (const_cast<char*> (ns));"
-                   << "::xsde::cxx::free (const_cast<char*> (name));";
+                os << "::xsde::cxx::free (const_cast< char* > (ns));"
+                   << "::xsde::cxx::free (const_cast< char* > (name));";
 
               os << "}"
                  << "if (!r)" << endl
@@ -1654,8 +1654,8 @@ namespace CXX
                 os << "delete[] ns;"
                    << "delete[] name;";
               else
-                os << "::xsde::cxx::free (const_cast<char*> (ns));"
-                   << "::xsde::cxx::free (const_cast<char*> (name));";
+                os << "::xsde::cxx::free (const_cast< char* > (ns));"
+                   << "::xsde::cxx::free (const_cast< char* > (name));";
 
               os << "}"
                  << "if (!r)" << endl
