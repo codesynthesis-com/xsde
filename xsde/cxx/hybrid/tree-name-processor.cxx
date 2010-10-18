@@ -1200,18 +1200,20 @@ namespace CXX
             NameSet& set (ec.get<NameSet> (member_set_key));
             set.insert (name);
 
-            String v (ec.get<String> ("value-type")); // Set by GlobalTypeName.
+            // These are set by GlobalTypeName.
+            //
+            String v (ec.get<String> ("value-type"));
             set.insert (v);
+
+            if (!base_enum)
+              set.insert (ec.get<String> ("value"));
 
             Enumerator enumerator (*this, set);
             Traversal::Names names (enumerator);
             Enumeration::names (e, names);
 
             if (!base_enum)
-            {
-              ec.set ("value", find_name ("value", set));
               ec.set ("string", find_name ("string", set));
-            }
 
             // Check if this type has custom data.
             //
@@ -1693,12 +1695,17 @@ namespace CXX
         {
           traverse (static_cast<SemanticGraph::Type&> (e));
 
-          if (enum_ && Hybrid::Context::enum_mapping (e))
+          // First see if we should delegate this one to Complex.
+          //
+          SemanticGraph::Enumeration* base_enum (0);
+
+          if (enum_ && Hybrid::Context::enum_mapping (e, &base_enum))
           {
-            // We need to assign the value type name for enumerations
-            // even in included/imported schemas since we may need this
-            // information when generating derived enums. We need to do
-            // this even if the type is completely customized.
+            // We need to assign the value type and accessor names for
+            // enumerations even in included/imported schemas since we
+            // may need this information when generating derived enums
+            // or initializing a default value of this enum type. We
+            // need to do this even if the type is completely customized.
             //
             SemanticGraph::Context& ec (e.context ());
             String name (ec.count ("name-base")
@@ -1711,6 +1718,9 @@ namespace CXX
             NameSet set;
             set.insert (name);
             ec.set ("value-type", find_name ("value_type", set));
+
+            if (!base_enum)
+              ec.set ("value", find_name ("value", set));
           }
         }
 
