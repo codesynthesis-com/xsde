@@ -22,10 +22,7 @@
   any text: '  '
 }
 
-{
-  any text: '123abc'
-}
-
+'123abc'
 1
 0
 1
