@@ -121,4 +121,6 @@ main (int argc, char* argv[])
     return 1;
   }
 #endif
+
+  return 0;
 }

@@ -56,4 +56,6 @@ main (int argc, char* argv[])
   root_s.post ();
 
   delete r;
+
+  return 0;
 }

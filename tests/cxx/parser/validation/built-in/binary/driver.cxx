@@ -173,4 +173,6 @@ main ()
     p._post ();
     assert (c.schema_error () == schema_error::invalid_base64_binary_value);
   }
+
+  return 0;
 }

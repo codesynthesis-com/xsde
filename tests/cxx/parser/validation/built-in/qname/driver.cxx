@@ -129,4 +129,6 @@ main ()
     p._post ();
     assert (c.schema_error () == schema_error::invalid_qname_value);
   }
+
+  return 0;
 }

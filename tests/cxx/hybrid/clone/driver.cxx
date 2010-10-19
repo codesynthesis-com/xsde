@@ -76,4 +76,6 @@ main (int argc, char* argv[])
   root_s.post ();
 
   delete c;
+
+  return 0;
 }

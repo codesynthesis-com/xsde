@@ -200,4 +200,6 @@ main ()
     return 1;
   }
 #endif
+
+  return 0;
 }

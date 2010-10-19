@@ -115,4 +115,6 @@ main ()
     p._post ();
     assert (c.schema_error ());
   }
+
+  return 0;
 }

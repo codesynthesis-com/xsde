@@ -250,4 +250,6 @@ main ()
   root_s.pre ();
   doc_s.serialize (cout);
   root_s.post ();
+
+  return 0;
 }

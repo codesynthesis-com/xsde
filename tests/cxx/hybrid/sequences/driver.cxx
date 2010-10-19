@@ -474,4 +474,6 @@ main ()
     assert (*static_cast<string*> (s[0]) == "aaa" &&
             *static_cast<int*> (s[1]) == 5);
   }
+
+  return 0;
 }

@@ -395,4 +395,6 @@ main ()
     s._serialize_content ();
     assert (c.schema_error () == schema_error::invalid_duration_value);
   }
+
+  return 0;
 }

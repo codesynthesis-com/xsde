@@ -63,4 +63,6 @@ main ()
     assert (!c.error_type () &&
             p.post_uri () == string ("http://www.example.com/foo#bar"));
   }
+
+  return 0;
 }

@@ -43,4 +43,6 @@ main ()
     s._serialize_content ();
     assert (c.schema_error () == schema_error::invalid_decimal_value);
   }
+
+  return 0;
 }

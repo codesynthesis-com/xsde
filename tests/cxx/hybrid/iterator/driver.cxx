@@ -59,4 +59,6 @@ main ()
   vs.push_back (v);
 
   assert (find_if (vs.begin (), vs.end (), var_pred ("b"))->a () == "b");
+
+  return 0;
 }

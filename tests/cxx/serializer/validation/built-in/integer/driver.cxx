@@ -60,4 +60,6 @@ main ()
     s._serialize_content ();
     assert (c.schema_error ());
   }
+
+  return 0;
 }

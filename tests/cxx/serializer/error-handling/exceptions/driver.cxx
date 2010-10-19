@@ -282,4 +282,6 @@ main ()
       cout << "app: " << e.code () << endl;
     }
   }
+
+  return 0;
 }

@@ -190,4 +190,6 @@ main (int argc, char* argv[])
     cerr << "io failure" << endl;
     return 1;
   }
+
+  return 0;
 }

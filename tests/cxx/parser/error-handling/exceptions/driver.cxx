@@ -251,4 +251,6 @@ main (int argc, char* argv[])
       cout << "app: " << e.code () << endl;
     }
   }
+
+  return 0;
 }

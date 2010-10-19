@@ -103,4 +103,6 @@ main ()
 
     cout << "no error" << endl;
   }
+
+  return 0;
 }

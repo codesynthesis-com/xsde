@@ -132,4 +132,6 @@ main ()
   // Test serializer resetting.
   //
   doc_s.reset ();
+
+  return 0;
 }

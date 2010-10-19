@@ -99,4 +99,6 @@ main ()
     s.append (&v[3]);
     assert (s.size () == 160 && s == v && s.capacity () == 162);
   }
+
+  return 0;
 }
