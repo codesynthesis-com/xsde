@@ -24,7 +24,7 @@ namespace xsde
           return 0;
 
         int r = 1;
-        size_t m;
+        size_t m = 0;
         size_t l = 0;
         size_t h = size_ - 1;
 
