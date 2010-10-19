@@ -3,7 +3,7 @@ Version 3.2.0
   * Support for ISO-8859-1 in addition to UTF-8 as application encoding.
     Note that this encoding is not the same as the XML document encoding 
     that is being parsed or serialized. Rather, it is the encoding that 
-    is used inside the application. When an XML document is parsed the
+    is used inside the application. When an XML document is parsed, the
     character data is automatically converted to the application encoding.
     Similarly, when an XML document is serialized, the data in the
     application encoding is automatically converted to the resulting
@@ -21,7 +21,7 @@ Version 3.2.0
 
   * When built with Xerces-C++ 3-series, enable handling of multiple imports
     for the same namespace. Before, all subsequent imports for a namespace
-    were ignored which caused error in some schemas.
+    were ignored which caused errors in some schemas.
 
   * Automatic mapping for the urn-style XML namespaces. The last component
     in the urn name is used to derive the C++ namespace name.
@@ -50,8 +50,8 @@ Version 3.2.0
 
   * Support for schema evolution using substitution groups. The 'ignore' and
     'passthrough' examples in the examples/cxx/hybrid/evolution/ directory
-    show how the new mechanism work. The 'ignore' example shows how to
-    ignores unknown elements. The 'passthrough' example shows how to pass
+    show how the new mechanism works. The 'ignore' example shows how to
+    ignore unknown elements. The 'passthrough' example shows how to pass
     the unknown content through parsing and serialization so that the output
     XML contains all the unknown elements.
 
