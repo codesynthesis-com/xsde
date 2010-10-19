@@ -39,7 +39,7 @@ xsde_realloc (void* p, size_t n)
 extern "C" void
 xsde_free (void* p)
 {
-  return xsde_arena->free (p);
+  xsde_arena->free (p);
 }
 
 //
