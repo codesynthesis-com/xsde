@@ -210,6 +210,28 @@ namespace CXX
 
       //
       //
+      struct BaseHierarchy: Traversal::Complex
+      {
+        BaseHierarchy (Serializer::Type& type)
+            : type_ (type)
+        {
+          *this >> inherits_ >> *this;
+        }
+
+        virtual Void
+        traverse (SemanticGraph::Complex& c)
+        {
+          type_.dispatch (c);
+          Complex::inherits (c);
+        }
+
+      private:
+        Serializer::Type& type_;
+        Traversal::Inherits inherits_;
+      };
+
+      //
+      //
       struct GlobalType: Traversal::Type,
                          Traversal::List,
                          Traversal::Complex,
@@ -219,7 +241,7 @@ namespace CXX
                     TypeMap::Namespaces& type_map,
                     Boolean add_includes,
                     Boolean tiein)
-            : type_ (schema, type_map, add_includes)
+            : type_ (schema, type_map, add_includes), base_hierarchy_ (type_)
         {
           inherits_ >> type_;
           names_ >> instance_ >> belongs_ >> type_;
@@ -231,6 +253,11 @@ namespace CXX
             // members to assign ret/arg types.
             //
             inherits_base_ >> base_type_ >> names_;
+
+            // As well as assign ret/arg types to each type in the
+            // inheritance hierarchy.
+            //
+            inherits_base_ >> base_hierarchy_;
           }
         }
 
@@ -266,6 +293,7 @@ namespace CXX
       private:
         Serializer::Type type_;
         BaseType base_type_;
+        BaseHierarchy base_hierarchy_;
         Traversal::Names names_;
         Traversal::Instance instance_;
         Traversal::Inherits inherits_;
