@@ -10,7 +10,7 @@ dirs = $(dirs) all any attribute choice restriction sequence
 !endif
 !endif
 
-all:
+_all:
 	@for %i in ( $(dirs) ) do \
 @cmd /c "echo entering %i && cd %i && $(MAKE) /nologo /f nmakefile" || exit 1
 
