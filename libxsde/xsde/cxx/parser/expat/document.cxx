@@ -509,7 +509,7 @@ namespace xsde
 #ifdef XSDE_EXCEPTIONS
               throw xml (e, l, c);
 #else
-              error_ = error (e, l, c);
+              error_ = error (static_cast<xml_error> (e), l, c);
 #endif
             }
           }
