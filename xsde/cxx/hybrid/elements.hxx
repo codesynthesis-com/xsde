@@ -967,7 +967,8 @@ namespace CXX
     };
 
 
-    // Check whether this is a enumeration-based type.
+    // Check whether this is a enumeration-based type. Return ultimate
+    // enumeration base of 0.
     //
     struct EnumBasedType: Traversal::Complex
     {
@@ -992,17 +993,19 @@ namespace CXX
         Enumeration (SemanticGraph::Enumeration*& e)
             : e_ (e)
         {
+          *this >> inherits_ >> *this;
         }
 
         virtual Void
         traverse (Type& e)
         {
-          if (e_ == 0)
-            e_ = &e;
+          e_ = &e;
+          inherits (e, inherits_);
         }
 
       private:
         SemanticGraph::Enumeration*& e_;
+        Traversal::Inherits inherits_;
       };
 
 
