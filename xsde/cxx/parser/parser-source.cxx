@@ -258,7 +258,7 @@ namespace CXX
             os << "void " << name << "::" << endl
                << "_reset ()"
                << "{"
-               << list_base << "::_reset ();"
+               << "list_base::_reset ();" // @@ fq-name
                << endl
                << "if (this->" << inst << ")" << endl
                << "this->" << inst << "->_reset ();"
