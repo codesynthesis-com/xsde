@@ -108,6 +108,15 @@ check other configuration parameters (e.g., the use of iostream,
 STL, C++ exceptions, etc; they are all enabled by default).
 
 
+Notes on Android NDK
+--------------------
+
+You can find a sample configuration file as well as the Android NDK
+makefiles in the etc/android/ directory. The accompanying README
+file provides step-by-step instructions on how to use XSD/e with
+Android.
+
+
 Notes on eMbedded Visual C++ 4.0
 --------------------------------
 
