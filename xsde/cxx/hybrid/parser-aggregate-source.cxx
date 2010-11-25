@@ -21,60 +21,110 @@ namespace CXX
       //
       struct ParticleArg: Traversal::Element, Context
       {
-        ParticleArg (Context& c, TypeInstanceMap& map, Boolean& first)
-            : Context (c), map_ (map), first_ (first)
+        ParticleArg (Context& c,
+                     TypeInstanceMap& map,
+                     Boolean& first,
+                     Boolean poly,
+                     String const& arg)
+            : Context (c),
+              poly_ (poly),
+              map_ (&map),
+              first_ (&first),
+              result_ (0),
+              arg_ (arg)
+        {
+        }
+
+        ParticleArg (Context& c, Boolean& result, Boolean poly)
+            : Context (c),
+              poly_ (poly),
+              map_ (0),
+              first_ (0),
+              result_ (&result)
         {
         }
 
         virtual Void
         traverse (SemanticGraph::Element& e)
         {
-          if (!first_)
+          if (poly_ && anonymous (e.type ()))
+            return;
+
+          if (result_ != 0)
+          {
+            *result_ = true;
+            return;
+          }
+
+          if (!*first_)
             os << "," << endl;
           else
-            first_ = false;
+            *first_ = false;
 
-          os << "this->" << map_[&e.type ()];
+          if (poly_)
+            os << "this->" << arg_;
+          else
+            os << "this->" << (*map_)[&e.type ()];
         }
 
       private:
-        TypeInstanceMap& map_;
-        Boolean& first_;
+        Boolean poly_;
+        TypeInstanceMap* map_;
+        Boolean* first_;
+        Boolean* result_;
+        String arg_;
       };
 
       struct AttributeArg: Traversal::Attribute, Context
       {
         AttributeArg (Context& c, TypeInstanceMap& map, Boolean& first)
-            : Context (c), map_ (map), first_ (first)
+            : Context (c), map_ (&map), first_ (&first), result_ (0)
+        {
+        }
+
+        AttributeArg (Context& c, Boolean& result)
+            : Context (c), map_ (0), first_ (0), result_ (&result)
         {
         }
 
         virtual Void
         traverse (Type& a)
         {
-          if (!first_)
+          if (result_ != 0)
+          {
+            *result_ = true;
+            return;
+          }
+
+          if (!*first_)
             os << "," << endl;
           else
-            first_ = false;
+            *first_ = false;
 
-          os << "this->" << map_[&a.type ()];
+          os << "this->" << (*map_)[&a.type ()];
         }
 
       private:
-        TypeInstanceMap& map_;
-        Boolean& first_;
+        TypeInstanceMap* map_;
+        Boolean* first_;
+        Boolean* result_;
       };
 
       struct ArgList : Traversal::Complex,
                        Traversal::List,
                        Context
       {
-        ArgList (Context& c, TypeInstanceMap& map)
+        ArgList (Context& c,
+                 TypeInstanceMap& map,
+                 Boolean poly,
+                 String const& arg)
             : Context (c),
-              map_ (map),
-              particle_ (c, map, first_),
+              poly_ (poly),
+              map_ (&map),
+              particle_ (c, map, first_, poly, arg),
               attribute_ (c, map, first_),
-              first_ (true)
+              first_ (true),
+              result_ (0)
         {
           inherits_ >> *this;
 
@@ -83,7 +133,27 @@ namespace CXX
           contains_particle_ >> compositor_;
           contains_particle_ >> particle_;
 
-          names_ >> attribute_;
+          if (!poly_)
+            names_ >> attribute_;
+        }
+
+        ArgList (Context& c, Boolean& result, Boolean poly)
+            : Context (c),
+              poly_ (poly),
+              map_ (0),
+              particle_ (c, result, poly),
+              attribute_ (c, result),
+              result_ (&result)
+        {
+          inherits_ >> *this;
+
+          contains_compositor_ >> compositor_;
+          compositor_ >> contains_particle_;
+          contains_particle_ >> compositor_;
+          contains_particle_ >> particle_;
+
+          if (!poly_)
+            names_ >> attribute_;
         }
 
         virtual Void
@@ -101,16 +171,26 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::List& l)
         {
+          if (poly_)
+            return;
+
+          if (result_ != 0)
+          {
+            *result_ = true;
+            return;
+          }
+
           if (!first_)
             os << "," << endl;
           else
             first_ = false;
 
-          os << "this->" << map_[&l.argumented ().type ()];
+          os << "this->" << (*map_)[&l.argumented ().type ()];
         }
 
       private:
-        TypeInstanceMap& map_;
+        Boolean poly_;
+        TypeInstanceMap* map_;
 
         Traversal::Inherits inherits_;
 
@@ -123,20 +203,27 @@ namespace CXX
         AttributeArg attribute_;
 
         Boolean first_;
+        Boolean* result_;
       };
 
       struct ParserConnect: Traversal::List,
                             Traversal::Complex,
                             Context
       {
-        ParserConnect (Context& c, TypeInstanceMap& map)
-            : Context (c), map_ (map)
+        ParserConnect (Context& c,
+                       TypeInstanceMap& map,
+                       Boolean poly,
+                       String const& map_inst = String ())
+            : Context (c), poly_ (poly), map_ (map), map_inst_ (map_inst)
         {
         }
 
         virtual Void
         traverse (SemanticGraph::List& l)
         {
+          if (poly_)
+            return;
+
           os << "this->" << map_[&l] << ".parsers (this->" <<
             map_[&l.argumented ().type ()] << ");"
              << endl;
@@ -147,9 +234,10 @@ namespace CXX
         {
           if (has_members (c))
           {
-            os << "this->" << map_[&c] << ".parsers (";
+            os << "this->" << map_[&c] << "." <<
+              (poly_ ? "parser_maps" : "parsers") << " (";
 
-            ArgList args (*this, map_);
+            ArgList args (*this, map_, poly_, map_inst_);
             args.dispatch (c);
 
             os << ");"
@@ -161,79 +249,21 @@ namespace CXX
         Boolean
         has_members (SemanticGraph::Complex& c)
         {
-          using SemanticGraph::Complex;
-
-          if (has<Traversal::Member> (c))
-            return true;
-
-          if (c.inherits_p ())
-          {
-            SemanticGraph::Type& b (c.inherits ().base ());
-
-            if (Complex* cb = dynamic_cast<Complex*> (&b))
-              return has_members (*cb);
-
-            return b.is_a<SemanticGraph::List> ();
-          }
-
-          return false;
+          Boolean r (false);
+          ArgList test (*this, r, poly_);
+          test.traverse (c);
+          return r;
         }
 
       private:
+        Boolean poly_;
         TypeInstanceMap& map_;
+        String map_inst_;
       };
+
 
       //
       //
-      struct ParserMapConnect: Traversal::Complex,
-                               Traversal::Element,
-                               Context
-      {
-        ParserMapConnect (Context& c, String const& inst, String const& map)
-            : Context (c), inst_ (inst), map_ (map)
-        {
-          *this >> inherits_ >> *this;
-
-          *this >> contains_compositor_;
-          contains_compositor_ >> compositor_;
-          compositor_ >> contains_particle_;
-          contains_particle_ >> compositor_;
-          contains_particle_ >> *this;
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Complex& c)
-        {
-          inherits (c);
-
-          if (!restriction_p (c))
-            contains_compositor (c);
-        }
-
-        virtual Void
-        traverse (SemanticGraph::Element& e)
-        {
-          SemanticGraph::Type& t (e.type ());
-
-          if (polymorphic (t))
-          {
-            os << "this->" << inst_ << "." <<
-              e.context ().get<String> ("p:parser") << " (" << map_ << ");";
-          }
-        }
-
-      private:
-        String const& inst_;
-        String const& map_;
-
-        Traversal::Inherits inherits_;
-
-        Traversal::Compositor compositor_;
-        Traversal::Element particle_;
-        Traversal::ContainsCompositor contains_compositor_;
-        Traversal::ContainsParticle contains_particle_;
-      };
-
       struct GlobalType: Traversal::Type, Context
       {
         GlobalType (Context& c)
@@ -298,7 +328,7 @@ namespace CXX
 
           // Connect parsers.
           //
-          ParserConnect connect (*this, map);
+          ParserConnect connect (*this, map, false);
 
           for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
                i != end; ++i)
@@ -308,13 +338,12 @@ namespace CXX
           //
           if (tid_map)
           {
+            ParserConnect connect (
+              *this, map, true, tc.get<String> ("paggr-parser-map"));
+
             for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
                  i != end; ++i)
-            {
-              ParserMapConnect t (
-                *this, i->second, tc.get<String> ("paggr-parser-map"));
-              t.dispatch (*i->first);
-            }
+              connect.dispatch (*i->first);
           }
 
           os << "}";
@@ -385,7 +414,7 @@ namespace CXX
 
           // Connect parsers.
           //
-          ParserConnect connect (*this, map);
+          ParserConnect connect (*this, map, false);
 
           for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
                i != end; ++i)
@@ -395,13 +424,12 @@ namespace CXX
           //
           if (tid_map)
           {
+            ParserConnect connect (
+              *this, map, true, ec.get<String> ("paggr-parser-map"));
+
             for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
                  i != end; ++i)
-            {
-              ParserMapConnect t (
-                *this, i->second, ec.get<String> ("paggr-parser-map"));
-              t.dispatch (*i->first);
-            }
+              connect.dispatch (*i->first);
           }
 
           os << "}";

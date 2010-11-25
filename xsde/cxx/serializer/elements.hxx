@@ -336,20 +336,44 @@ namespace CXX
     //
     struct ParticleParamDecl: Traversal::Element, Context
     {
-      ParticleParamDecl (Context& c, Boolean& first, Boolean name_arg)
-          : Context (c), first_ (first), name_arg_ (name_arg)
+      ParticleParamDecl (Context& c,
+                         Boolean& first,
+                         Boolean name_arg,
+                         Boolean poly)
+          : Context (c),
+            first_ (first),
+            name_arg_ (name_arg),
+            poly_ (poly),
+            result_ (0)
+      {
+      }
+
+      ParticleParamDecl (Context& c, Boolean* result, Boolean poly)
+          : Context (c), first_ (name_arg_), poly_ (poly), result_ (result)
       {
       }
 
       virtual Void
       traverse (SemanticGraph::Element& e)
       {
+        if (poly_ && anonymous (e.type ()))
+          return;
+
+        if (result_ != 0)
+        {
+          *result_ = true;
+          return;
+        }
+
         if (!first_)
           os << "," << endl;
         else
           first_ = false;
 
-        os << fq_name (e.type ()) << "&";
+        if (poly_)
+          os << serializer_map << "&";
+        else
+          os << fq_name (e.type ()) << "&";
 
         if (name_arg_)
           os << " " << ename (e);
@@ -360,18 +384,34 @@ namespace CXX
     private:
       Boolean& first_;
       Boolean name_arg_;
+      Boolean poly_;
+      Boolean* result_;
     };
 
     struct AttributeParamDecl: Traversal::Attribute, Context
     {
       AttributeParamDecl (Context& c, Boolean& first, Boolean name_arg)
-          : Context (c), first_ (first), name_arg_ (name_arg)
+          : Context (c),
+            first_ (first),
+            name_arg_ (name_arg),
+            result_ (0)
+      {
+      }
+
+      AttributeParamDecl (Context& c, Boolean* result)
+          : Context (c), first_ (name_arg_), result_ (result)
       {
       }
 
       virtual Void
       traverse (Type& a)
       {
+        if (result_ != 0)
+        {
+          *result_ = true;
+          return;
+        }
+
         if (!first_)
           os << "," << endl;
         else
@@ -388,18 +428,21 @@ namespace CXX
     private:
       Boolean& first_;
       Boolean name_arg_;
+      Boolean* result_;
     };
 
     struct SerializerParamDecl : Traversal::Complex,
-                                 Traversal::List,
-                                 Context
+                             Traversal::List,
+                             Context
     {
-      SerializerParamDecl (Context& c, Boolean name_arg)
+      SerializerParamDecl (Context& c, Boolean name_arg, Boolean poly)
           : Context (c),
-            particle_ (c, first_, name_arg),
+            particle_ (c, first_, name_arg, poly),
             attribute_ (c, first_, name_arg),
             first_ (true),
-            name_arg_ (name_arg)
+            name_arg_ (name_arg),
+            poly_ (poly),
+            result_ (0)
       {
         inherits_ >> *this;
 
@@ -407,7 +450,25 @@ namespace CXX
         contains_particle_ >> particle_;
         contains_particle_ >> compositor_;
 
-        names_ >> attribute_;
+        if (!poly_)
+          names_ >> attribute_;
+      }
+
+      SerializerParamDecl (Context& c, Boolean* result, Boolean poly)
+          : Context (c),
+            particle_ (c, result, poly),
+            attribute_ (c, result),
+            poly_ (poly),
+            result_ (result)
+      {
+        inherits_ >> *this;
+
+        contains_compositor_ >> compositor_ >> contains_particle_;
+        contains_particle_ >> particle_;
+        contains_particle_ >> compositor_;
+
+        if (!poly_)
+          names_ >> attribute_;
       }
 
       virtual Void
@@ -425,6 +486,15 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::List& l)
       {
+        if (poly_)
+          return;
+
+        if (result_ != 0)
+        {
+          *result_ = true;
+          return;
+        }
+
         if (!first_)
           os << "," << endl;
         else
@@ -451,6 +521,25 @@ namespace CXX
 
       Boolean first_;
       Boolean name_arg_;
+      Boolean poly_;
+      Boolean* result_;
+    };
+
+    struct SerializerParamTest
+    {
+      SerializerParamTest (Context& c, Boolean& result, Boolean poly)
+          : impl_ (c, &result, poly)
+      {
+      }
+
+      Void
+      traverse (SemanticGraph::Complex& c)
+      {
+        impl_.traverse (c);
+      }
+
+    private:
+      SerializerParamDecl impl_;
     };
 
     //

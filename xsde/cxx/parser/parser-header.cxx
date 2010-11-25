@@ -824,16 +824,43 @@ namespace CXX
             os << "// Parser construction API." << endl
                << "//" << endl;
 
+            // parsers ()
+            //
             os << "void" << endl
                << "parsers (";
 
             {
-              ParserParamDecl decl (*this, false);
+              ParserParamDecl decl (*this, false, false);
               decl.traverse (c);
             }
 
             os << ");"
                << endl;
+
+            // parser_maps ()
+            //
+            if (poly_code && he)
+            {
+              Boolean r (false);
+              ParserParamTest test (*this, r, true);
+              test.traverse (c);
+
+              // Have potentially polymorphic elements.
+              //
+              if (r)
+              {
+                os << "void" << endl
+                   << "parser_maps (";
+
+                {
+                  ParserParamDecl decl (*this, false, true);
+                  decl.traverse (c);
+                }
+
+                os << ");"
+                   << endl;
+              }
+            }
 
             if (ha)
             {

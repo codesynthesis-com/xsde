@@ -376,16 +376,22 @@ namespace CXX
       //
       struct ParticleMemberSet: Traversal::Element, Context
       {
-        ParticleMemberSet (Context& c)
-            : Context (c)
+        ParticleMemberSet (Context& c, Boolean poly)
+            : Context (c), poly_ (poly)
         {
         }
 
         virtual Void
         traverse (SemanticGraph::Element& e)
         {
-          os << "this->" << emember (e) << " = &" << ename (e) << ";";
+          if (poly_)
+            os << "this->" << emember_map (e) << " = &" << ename (e) << ";";
+          else
+            os << "this->" << emember (e) << " = &" << ename (e) << ";";
         }
+
+      private:
+        Boolean poly_;
       };
 
       struct AttributeMemberSet: Traversal::Attribute, Context
@@ -406,8 +412,8 @@ namespace CXX
                             Traversal::List,
                             Context
       {
-        BaseMemberSet (Context& c)
-            : Context (c)
+        BaseMemberSet (Context& c, Boolean poly)
+            : Context (c), poly_ (poly)
         {
           inherits_ >> *this;
         }
@@ -427,6 +433,9 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::List& l)
         {
+          if (poly_)
+            return;
+
           String const& name (ename (l));
           String item (unclash (name, "item"));
 
@@ -435,6 +444,7 @@ namespace CXX
 
       private:
         Traversal::Inherits inherits_;
+        Boolean poly_;
       };
 
       //
@@ -533,9 +543,11 @@ namespace CXX
             : Context (c),
               particle_accessor_ (c),
               attribute_accessor_ (c),
-              base_set_ (c),
-              particle_set_ (c),
+              base_set_ (c, false),
+              particle_set_ (c, false),
               attribute_set_ (c),
+              base_set_poly_ (c, true),
+              particle_set_poly_ (c, true),
               particle_ (c)
         {
           // Accessor.
@@ -559,6 +571,16 @@ namespace CXX
           contains_particle_set_ >> particle_set_;
 
           names_attribute_set_ >> attribute_set_;
+
+          // Member set polymorphic.
+          //
+          inherits_base_set_poly_ >> base_set_poly_;
+          base_set_poly_ >> contains_compositor_set_poly_;
+
+          contains_compositor_set_poly_ >> compositor_set_poly_;
+          compositor_set_poly_ >> contains_particle_set_poly_;
+          contains_particle_set_poly_ >> compositor_set_poly_;
+          contains_particle_set_poly_ >> particle_set_poly_;
         }
 
         virtual Void
@@ -611,7 +633,7 @@ namespace CXX
                << "parsers (";
 
             {
-              ParserParamDecl decl (*this, true);
+              ParserParamDecl decl (*this, true, false);
               decl.traverse (c);
             }
 
@@ -627,6 +649,37 @@ namespace CXX
               contains_compositor (c, contains_compositor_set_);
 
             os << "}";
+
+            // parser_maps ()
+            //
+            if (poly_code && he)
+            {
+              Boolean r (false);
+              ParserParamTest test (*this, r, true);
+              test.traverse (c);
+
+              // Have potentially polymorphic elements.
+              //
+              if (r)
+              {
+                os << inl
+                   << "void " << name << "::" << endl
+                   << "parser_maps (";
+
+                {
+                  ParserParamDecl decl (*this, true, true);
+                  decl.traverse (c);
+                }
+
+                os << ")"
+                   << "{";
+
+                inherits (c, inherits_base_set_poly_);
+                contains_compositor (c, contains_compositor_set_poly_);
+
+                os << "}";
+              }
+            }
           }
 
           String fq_base;
@@ -829,6 +882,16 @@ namespace CXX
 
         AttributeMemberSet attribute_set_;
         Traversal::Names names_attribute_set_;
+
+        //
+        //
+        BaseMemberSet base_set_poly_;
+        Traversal::Inherits inherits_base_set_poly_;
+
+        Traversal::Compositor compositor_set_poly_;
+        ParticleMemberSet particle_set_poly_;
+        Traversal::ContainsCompositor contains_compositor_set_poly_;
+        Traversal::ContainsParticle contains_particle_set_poly_;
 
         //
         //

@@ -1147,16 +1147,43 @@ namespace CXX
             os << "// Serializer construction API." << endl
                << "//" << endl;
 
+            // serializers ()
+            //
             os << "void" << endl
                << "serializers (";
 
             {
-              SerializerParamDecl decl (*this, false);
+              SerializerParamDecl decl (*this, false, false);
               decl.traverse (c);
             }
 
             os << ");"
                << endl;
+
+            // serializer_maps ()
+            //
+            if (poly_code && he)
+            {
+              Boolean r (false);
+              SerializerParamTest test (*this, r, true);
+              test.traverse (c);
+
+              // Have potentially polymorphic elements.
+              //
+              if (r)
+              {
+                os << "void" << endl
+                   << "serializer_maps (";
+
+                {
+                  SerializerParamDecl decl (*this, false, true);
+                  decl.traverse (c);
+                }
+
+                os << ");"
+                   << endl;
+              }
+            }
 
             if (ha)
             {
