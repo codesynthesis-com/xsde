@@ -2390,7 +2390,7 @@ namespace CXX
       // CXX
       //
       {
-        Context ctx (cxx, schema, file_path, ops, 0, &hxx_obj_expr, 0);
+        Context ctx (cxx, schema, file_path, ops, 0, &hxx_expr, 0);
 
         Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
 
@@ -2419,7 +2419,7 @@ namespace CXX
           cxx << "#include " << ctx.process_include_path (hxx_name) << endl
               << endl;
 
-          generate_parser_source (ctx);
+          generate_parser_source (ctx, hxx_obj_expr);
 
           if (aggr)
             generate_parser_aggregate_source (ctx);
@@ -2540,12 +2540,23 @@ namespace CXX
       NarrowString hxx_suffix (ops.value <CLI::hxx_suffix> ());
       NarrowString cxx_suffix (ops.value <CLI::cxx_suffix> ());
 
+      NarrowString hxx_obj_regex (
+        find_value (ops.value <CLI::hxx_regex> (), ""));
+
       NarrowString hxx_skel_regex (
         find_value (ops.value <CLI::hxx_regex> (), "sskel"));
       NarrowString hxx_regex (
         find_value (ops.value <CLI::hxx_regex> (), "simpl"));
       NarrowString cxx_regex (
         find_value (ops.value <CLI::cxx_regex> (), "simpl"));
+
+      // Here we need to make sure that hxx_obj_expr is the same
+      // as in generate().
+      //
+      Regex hxx_obj_expr (
+        hxx_obj_regex.empty ()
+        ? "#^(.+?)(\\.[^./\\\\]+)?$#$1" + hxx_suffix + "#"
+        : hxx_obj_regex);
 
       // Here we need to make sure that hxx_skel_expr is the same
       // as in the C++/Serializer generator.
@@ -2828,7 +2839,7 @@ namespace CXX
           cxx << "#include " << ctx.process_include_path (hxx_name) << endl
               << endl;
 
-          generate_serializer_source (ctx);
+          generate_serializer_source (ctx, hxx_obj_expr);
 
           if (aggr)
             generate_serializer_aggregate_source (ctx);

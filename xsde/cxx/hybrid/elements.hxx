@@ -20,12 +20,14 @@ namespace CXX
 {
   namespace Hybrid
   {
+    typedef BackendElements::Regex::Expression<Char> Regex;
+
     //
     //
     class Context: public CXX::Context
     {
     public:
-      typedef BackendElements::Regex::Expression<Char> Regex;
+      typedef Hybrid::Regex Regex;
 
     public:
       Context (std::wostream&,
@@ -2167,10 +2169,11 @@ namespace CXX
         source
       };
 
-      Includes (Context& c, Type type)
+      Includes (Context& c, Type type, Regex const* r = 0)
           : ctx_ (c),
             type_ (type),
             forward_ (c.options.value<CLI::generate_forward> ()),
+            regex_ (r),
             namespace_ (c),
             type_forward_ (c)
       {
@@ -2197,6 +2200,7 @@ namespace CXX
       Context& ctx_;
       Type type_;
       Boolean forward_;
+      Regex const* regex_;
 
       Traversal::Schema schema_;
       Traversal::Names schema_names_;

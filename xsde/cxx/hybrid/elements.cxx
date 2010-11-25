@@ -630,26 +630,26 @@ namespace CXX
       {
       case forward:
         {
-          inc_path = ctx_.fwd_expr->merge (path_str);
+          inc_path = (regex_ ? regex_ : ctx_.fwd_expr)->merge (path_str);
           break;
         }
       case header:
       case impl_header:
       case source:
         {
-          inc_path = ctx_.hxx_expr->merge (path_str);
+          inc_path = (regex_ ? regex_ : ctx_.hxx_expr)->merge (path_str);
           break;
         }
       case inline_:
         {
           if (weak)
           {
-            inc_path = ctx_.hxx_expr->merge (path_str);
+            inc_path = (regex_ ? regex_ : ctx_.hxx_expr)->merge (path_str);
             ctx_.os << "#include " << ctx_.process_include_path (inc_path)
                     << endl;
           }
 
-          inc_path = ctx_.ixx_expr->merge (path_str);
+          inc_path = (regex_ ? regex_ : ctx_.ixx_expr)->merge (path_str);
           break;
         }
       }

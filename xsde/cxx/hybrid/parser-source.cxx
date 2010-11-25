@@ -2087,7 +2087,7 @@ namespace CXX
     }
 
     Void
-    generate_parser_source (Context& ctx)
+    generate_parser_source (Context& ctx, Regex const& hxx_obj_expr)
     {
       if (ctx.enum_)
       {
@@ -2104,11 +2104,11 @@ namespace CXX
 
       {
         // Emit "weak" header includes for the object model types.
-        // Otherwise we cannot delete the objects of forward-declared
-        // classes in the parser implementations.
+        // Otherwise they will only be forward-declared and we won't
+        // be able to call delete on them.
         //
         Traversal::Schema schema;
-        Includes includes (ctx, Includes::source);
+        Includes includes (ctx, Includes::source, &hxx_obj_expr);
 
         schema >> includes;
 

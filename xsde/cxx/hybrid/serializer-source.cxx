@@ -1383,7 +1383,7 @@ namespace CXX
     }
 
     Void
-    generate_serializer_source (Context& ctx)
+    generate_serializer_source (Context& ctx, Regex const& hxx_obj_expr)
     {
       if (ctx.poly_code && !ctx.stl)
         ctx.os << "#include <string.h>" << endl
@@ -1397,6 +1397,32 @@ namespace CXX
         //
         ctx.os << "#include <xsde/cxx/serializer/validating/string-common.hxx>" << endl
                << endl;
+      }
+
+      {
+        // Emit "weak" header includes for the object model types.
+        // Otherwise they will only be forward-declared.
+        //
+        Traversal::Schema schema;
+        Includes includes (ctx, Includes::source, &hxx_obj_expr);
+
+        schema >> includes;
+
+        schema.dispatch (ctx.schema_root);
+      }
+
+      if (ctx.poly_code)
+      {
+        // Also emit "weak" header includes for the serializer
+        // implementations. These are needed for the _static_type if we are
+        // generating polymorphic code.
+        //
+        Traversal::Schema schema;
+        Includes includes (ctx, Includes::source);
+
+        schema >> includes;
+
+        schema.dispatch (ctx.schema_root);
       }
 
       Traversal::Schema schema;
