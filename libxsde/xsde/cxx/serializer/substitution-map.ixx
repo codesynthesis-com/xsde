@@ -11,7 +11,7 @@ namespace xsde
     {
       inline substitution_map::
       substitution_map (size_t buckets)
-          : hashmap (buckets, sizeof (hashmap*))
+          : hashmap (buckets, sizeof (hashmap*)), callback_ (0)
       {
       }
 
