@@ -1,6 +1,6 @@
 # file      : build/import/libboost/filesystem/rules.make
 # author    : Boris Kolpackov <boris@kolpackov.net>
-# copyright : Copyright (c) 2005-2010 Boris Kolpackov
+# copyright : Copyright (c) 2005-2011 Boris Kolpackov
 # license   : GNU GPL v2; see accompanying LICENSE file
 
 #@@ Should use message everywhere.

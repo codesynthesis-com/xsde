@@ -1,6 +1,6 @@
 # file      : tests/cxx/parser/validation/sequence/makefile
 # author    : Boris Kolpackov <boris@codesynthesis.com>
-# copyright : Copyright (c) 2006-2010 Code Synthesis Tools CC
+# copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../../../build/bootstrap.make

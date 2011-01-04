@@ -1,6 +1,6 @@
 // file      : tests/cxx/hybrid/iso8859-1/driver.cxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2006-2010 Code Synthesis Tools CC
+// copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test support for the ISO-8859-1 encoding.

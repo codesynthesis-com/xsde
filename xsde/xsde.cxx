@@ -1,6 +1,6 @@
 // file      : xsde/xsde.cxx
 // author    : Boris Kolpackov <boris@codesynthesis.com>
-// copyright : Copyright (c) 2005-2010 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <iostream>
@@ -235,7 +235,7 @@ main (Int argc, Char* argv[])
     {
       e << "CodeSynthesis XSD/e XML Schema to C++ compiler " <<
         "for embedded systems " << XSDE_STR_VERSION << endl
-        << "Copyright (C) 2005-2010 Code Synthesis Tools CC" << endl;
+        << "Copyright (c) 2005-2011 Code Synthesis Tools CC" << endl;
 
       if (!help_ops.value<CLI::proprietary_license> () &&
           cmd == "version")
