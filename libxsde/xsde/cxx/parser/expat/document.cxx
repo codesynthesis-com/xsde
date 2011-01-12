@@ -426,7 +426,18 @@ namespace xsde
         {
           XML_Error e (XML_GetErrorCode (xml_parser_));
 
+          // While we always stop the parser in case of an error, there
+          // is a situation where the parsing is by then finished
+          // (specifically, the end event for the root element for XML
+          // that does not contain any characters after the root element).
+          // For this reason we have to check both the XML error code and
+          // the context.
+          //
+#if defined(XSDE_PARSER_VALIDATION) || !defined (XSDE_EXCEPTIONS)
+          if (e == XML_ERROR_NONE && !context_.error_type ())
+#else
           if (e == XML_ERROR_NONE)
+#endif
           {
             clear ();
             xml_parser_ = 0;
@@ -441,7 +452,11 @@ namespace xsde
 
             // See if the parser was aborted.
             //
+#if defined(XSDE_PARSER_VALIDATION) || !defined (XSDE_EXCEPTIONS)
+            if (e == XML_ERROR_ABORTED || context_.error_type ())
+#else
             if (e == XML_ERROR_ABORTED)
+#endif
             {
 #ifdef XSDE_ENCODING_ISO8859_1
               if (xml_error_ != 0)
