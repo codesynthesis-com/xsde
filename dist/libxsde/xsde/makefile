@@ -520,7 +520,7 @@ endif
 
 $(obj): config.h
 
-config.h:
+config.h: $(root)/config/config.make
 	@echo generating config.h
 ifeq ($(shell_type),windows)
 	@echo /* Generated - do not edit. */      >$@
