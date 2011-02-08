@@ -22,9 +22,9 @@
 #  include <xsde/allocator.h>
 #endif
 
-#include "xmlregexp.h"
-#include "xmlunicode.h"
-#include "chvalid.h"
+#include <xsde/c/regexp/xmlregexp.h>
+#include <xsde/c/regexp/xmlunicode.h>
+#include <xsde/c/regexp/chvalid.h>
 
 #ifndef INT_MAX
 #define INT_MAX 123456789 /* easy to flag and big enough for our needs */

@@ -6,12 +6,12 @@
 
 #include <stddef.h>
 
-#include "config.h"
+#include <xsde/c/expat/config.h>
 
-#include "expat_external.h"
-#include "internal.h"
-#include "xmlrole.h"
-#include "ascii.h"
+#include <xsde/c/expat/expat_external.h>
+#include <xsde/c/expat/internal.h>
+#include <xsde/c/expat/xmlrole.h>
+#include <xsde/c/expat/ascii.h>
 
 /* Doesn't check:
 

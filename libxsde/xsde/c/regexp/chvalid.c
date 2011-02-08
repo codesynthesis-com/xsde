@@ -11,7 +11,8 @@
 #include <xsde/c/pre.h>
 
 #include <stddef.h>
-#include "chvalid.h"
+
+#include <xsde/c/regexp/chvalid.h>
 
 /*
  * The initial tables ({func_name}_tab) are used to validate whether a

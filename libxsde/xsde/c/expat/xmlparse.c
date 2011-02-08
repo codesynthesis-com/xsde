@@ -10,9 +10,9 @@
 
 #define XML_BUILDING_EXPAT 1
 
-#include "config.h"
+#include <xsde/c/expat/config.h>
 
-#include "expat.h"
+#include <xsde/c/expat/expat.h>
 
 #ifdef XSDE_CUSTOM_ALLOCATOR
 #  include <xsde/allocator.h>
@@ -76,9 +76,9 @@ typedef char ICHAR;
 #endif /* HAVE_BCOPY */
 #endif /* HAVE_MEMMOVE */
 
-#include "internal.h"
-#include "xmltok.h"
-#include "xmlrole.h"
+#include <xsde/c/expat/internal.h>
+#include <xsde/c/expat/xmltok.h>
+#include <xsde/c/expat/xmlrole.h>
 
 typedef const XML_Char *KEY;
 

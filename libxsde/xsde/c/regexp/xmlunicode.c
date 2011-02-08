@@ -13,8 +13,8 @@
 
 #include <string.h>
 
-#include "xmlunicode.h"
-#include "chvalid.h"
+#include <xsde/c/regexp/xmlunicode.h>
+#include <xsde/c/regexp/chvalid.h>
 
 typedef int (xmlIntFunc)(int);	/* just to keep one's mind untwisted */
 

@@ -15,7 +15,7 @@
 
 #include <xsde/config.h>
 
-#include "genx.h"
+#include <xsde/c/genx/genx.h>
 
 #ifdef XSDE_CUSTOM_ALLOCATOR
 #  include <xsde/allocator.h>

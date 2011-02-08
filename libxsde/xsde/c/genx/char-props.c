@@ -13,7 +13,7 @@
  */
 #include <xsde/c/pre.h>
 
-#include "genx.h"
+#include <xsde/c/genx/genx.h>
 
 static void charProp(char * p, int c, int prop)
 {
