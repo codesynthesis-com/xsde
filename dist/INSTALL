@@ -12,8 +12,8 @@ GNU make
 
 This section provides general instructions for building the XSD/e
 runtime and examples with GNU make. For additional information on
-building with XCode 3.1 iPhone SDK see the corresponding notes at
-the end of this document.
+building for iPhone/iOS and Android NDK see the corresponding notes
+at the end of this document.
 
 The first step in building the source code with GNU make is to
 configure the runtime library by editing the config/config.make
@@ -91,21 +91,12 @@ and link your executables with the libxsde\xsde\xsde.lib
 library.
 
 
-Notes on XCode 3.1.x iPhone SDK
--------------------------------
+Notes on XCode and iPhone/iOS SDK
+---------------------------------
 
-You can find two sample configuration files for this development
-environment in the etc/iphone/ directory. The first configuration
-file is for the device and the other is for the simulator. You will
-need to copy one of these files to the config/ directory and rename
-it to config.make. If your iPhone SDK is installed in a location
-other than the default (/Developer) then you will need to adjust
-the paths at the beginning of the configuration file. You may also
-need to adjust the iPhone SDK version (e.g., 2.1 or 2.2 instead of
-2.0) as well as the C and C++ compiler executable names if you are
-using newer versions of XCode. Additionally, you may also want to
-check other configuration parameters (e.g., the use of iostream,
-STL, C++ exceptions, etc; they are all enabled by default).
+You can find sample configuration files for iPhone/iOS in the
+etc/ios/ directory. The accompanying README file provides step-by-
+step instructions on how to use XSD/e with iOS.
 
 
 Notes on Android NDK
