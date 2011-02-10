@@ -12,8 +12,8 @@ GNU make
 
 This section provides general instructions for building the XSD/e
 runtime and examples with GNU make. For additional information on
-building for iPhone/iOS and Android NDK see the corresponding notes
-at the end of this document.
+building for iPhone/iOS, Android NDK, and Symbian SDK see the
+corresponding notes at the end of this document.
 
 The first step in building the source code with GNU make is to
 configure the runtime library by editing the config/config.make
@@ -106,6 +106,13 @@ You can find a sample configuration file as well as the Android NDK
 makefiles in the etc/android/ directory. The accompanying README
 file provides step-by-step instructions on how to use XSD/e with
 Android.
+
+Notes on Symbian SDK
+--------------------
+
+You can find sample configuration files for Symbian SDK in the
+etc/symbian/ directory. The accompanying README file provides 
+step-by-step instructions on how to use XSD/e with Symbian.
 
 
 Notes on eMbedded Visual C++ 4.0
