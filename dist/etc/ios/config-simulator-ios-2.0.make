@@ -1,4 +1,4 @@
-# Sample configuration file for iPhone Simulator 2.x using XCode 3.1.x
+# Sample configuration file for iPhone OS 2.0 simulator using XCode 3.1.x
 # iPhone SDK.
 #
 XCODE           := /Developer

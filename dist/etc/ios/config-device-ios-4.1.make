@@ -1,18 +1,17 @@
-# Sample configuration file for iPhone OS 2.x using XCode 3.1.x iPhone
-# SDK.
+# Sample configuration file for iOS 4.1 device using XCode 3.2.x iOS SDK.
 #
 XCODE           := /Developer
 IPHONE_PLATFORM := $(XCODE)/Platforms/iPhoneOS.platform/Developer
-IPHONE_SDK      := $(IPHONE_PLATFORM)/SDKs/iPhoneOS2.0.sdk
+IPHONE_SDK      := $(IPHONE_PLATFORM)/SDKs/iPhoneOS4.1.sdk
 
 # Toolchain.
 #
-CC       := $(IPHONE_PLATFORM)/usr/bin/arm-apple-darwin9-gcc-4.0.1
-CFLAGS   := -W -Wall -arch armv6 -O3 -isysroot $(IPHONE_SDK)
+CC       := $(IPHONE_PLATFORM)/usr/bin/gcc-4.2
+CFLAGS   := -W -Wall -arch armv6 -fpascal-strings -Os -mthumb -isysroot $(IPHONE_SDK)
 CPPFLAGS :=
 
-CXX      := $(IPHONE_PLATFORM)/usr/bin/arm-apple-darwin9-g++-4.0.1
-CXXFLAGS := -W -Wall -arch armv6 -O3 -isysroot $(IPHONE_SDK)
+CXX      := $(IPHONE_PLATFORM)/usr/bin/g++-4.2
+CXXFLAGS := -W -Wall -arch armv6 -fpascal-strings -Os -mthumb -isysroot $(IPHONE_SDK)
 
 LD       := $(CXX)
 LDFLAGS  := $(CXXFLAGS)
