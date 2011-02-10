@@ -22,13 +22,13 @@ namespace xsde
         struct duration_simpl: duration_sskel
 #endif
         {
-          duration_simpl ();
-
           virtual void
           pre (const duration&);
 
           virtual void
           _serialize_content ();
+
+          duration_simpl (); // Keep it last.
 
         protected:
           duration value_;

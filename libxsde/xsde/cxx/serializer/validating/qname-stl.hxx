@@ -22,13 +22,13 @@ namespace xsde
         struct qname_simpl: qname_sskel
 #endif
         {
-          qname_simpl ();
-
           virtual void
           pre (const qname&);
 
           virtual void
           _serialize_content ();
+
+          qname_simpl (); // Keep it last.
 
         protected:
           qname value_;

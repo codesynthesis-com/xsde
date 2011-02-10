@@ -18,9 +18,6 @@ namespace xsde
       {
         namespace bits
         {
-          bool
-          valid_time_zone (const time_zone&);
-
           // Returns 0 in case of a failure and the number of
           // characters written otherwise. The buffer should
           // have space for at least 7 characters. Note that
@@ -29,6 +26,9 @@ namespace xsde
           //
           int
           serialize_time_zone (char* s, const time_zone&);
+
+          bool
+          valid_time_zone (const time_zone&);
         }
       }
     }

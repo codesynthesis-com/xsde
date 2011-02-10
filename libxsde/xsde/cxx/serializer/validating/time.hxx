@@ -22,13 +22,13 @@ namespace xsde
         struct time_simpl: time_sskel
 #endif
         {
-          time_simpl ();
-
           virtual void
           pre (const time&);
 
           virtual void
           _serialize_content ();
+
+          time_simpl ();
 
         protected:
           time value_;

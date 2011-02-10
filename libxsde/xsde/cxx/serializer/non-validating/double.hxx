@@ -24,6 +24,12 @@ namespace xsde
         struct double_simpl: double_sskel
 #endif
         {
+          virtual void
+          pre (double);
+
+          virtual void
+          _serialize_content ();
+
           enum notation
           {
             notation_auto,
@@ -33,17 +39,11 @@ namespace xsde
 
 #ifdef DBL_DIG
           double_simpl (notation = notation_auto,
-                        unsigned int precision = DBL_DIG);
+                        unsigned int precision = DBL_DIG); // Keep it last.
 #else
           double_simpl (notation = notation_auto,
                         unsigned int precision = 15)
 #endif
-
-          virtual void
-          pre (double);
-
-          virtual void
-          _serialize_content ();
 
         protected:
           notation notation_;

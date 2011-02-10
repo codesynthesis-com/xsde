@@ -22,13 +22,13 @@ namespace xsde
         struct gday_simpl: gday_sskel
 #endif
         {
-          gday_simpl ();
-
           virtual void
           pre (const gday&);
 
           virtual void
           _serialize_content ();
+
+          gday_simpl (); // Keep it last.
 
         protected:
           gday value_;

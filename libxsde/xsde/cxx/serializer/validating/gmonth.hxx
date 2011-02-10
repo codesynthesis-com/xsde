@@ -22,13 +22,13 @@ namespace xsde
         struct gmonth_simpl: gmonth_sskel
 #endif
         {
-          gmonth_simpl ();
-
           virtual void
           pre (const gmonth&);
 
           virtual void
           _serialize_content ();
+
+          gmonth_simpl (); // Keep it last.
 
         protected:
           gmonth value_;

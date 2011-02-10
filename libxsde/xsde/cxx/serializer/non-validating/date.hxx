@@ -22,13 +22,13 @@ namespace xsde
         struct date_simpl: date_sskel
 #endif
         {
-          date_simpl ();
-
           virtual void
           pre (const date&);
 
           virtual void
           _serialize_content ();
+
+          date_simpl (); // Keep it last.
 
         protected:
           date value_;

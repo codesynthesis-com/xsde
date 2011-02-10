@@ -24,18 +24,17 @@ namespace xsde
         struct decimal_simpl: decimal_sskel
 #endif
         {
-#ifdef DBL_DIG
-          decimal_simpl (unsigned int precision = DBL_DIG);
-#else
-          decimal_simpl (unsigned int precision = 15)
-#endif
-
           virtual void
           pre (double);
 
           virtual void
           _serialize_content ();
 
+#ifdef DBL_DIG
+          decimal_simpl (unsigned int precision = DBL_DIG); // Keep it last.
+#else
+          decimal_simpl (unsigned int precision = 15)
+#endif
         protected:
           unsigned int precision_;
           double value_;

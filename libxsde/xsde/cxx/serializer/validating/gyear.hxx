@@ -22,13 +22,13 @@ namespace xsde
         struct gyear_simpl: gyear_sskel
 #endif
         {
-          gyear_simpl ();
-
           virtual void
           pre (const gyear&);
 
           virtual void
           _serialize_content ();
+
+          gyear_simpl (); // Keep it last.
 
         protected:
           gyear value_;

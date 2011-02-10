@@ -24,6 +24,12 @@ namespace xsde
         struct float_simpl: float_sskel
 #endif
         {
+          virtual void
+          pre (float);
+
+          virtual void
+          _serialize_content ();
+
           enum notation
           {
             notation_auto,
@@ -33,18 +39,11 @@ namespace xsde
 
 #ifdef FLT_DIG
           float_simpl (notation = notation_auto,
-                       unsigned int precision = FLT_DIG);
+                       unsigned int precision = FLT_DIG); // Keep it last.
 #else
           float_simpl (notation = notation_auto,
                        unsigned int precision = 6)
 #endif
-
-          virtual void
-          pre (float);
-
-          virtual void
-          _serialize_content ();
-
         protected:
           notation notation_;
           unsigned int precision_;
