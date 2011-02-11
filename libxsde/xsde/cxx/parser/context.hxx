@@ -142,6 +142,18 @@ namespace xsde
         void
         start_wildcard_content ();
 
+        parser_base*
+        nested_parser () const
+        {
+          return nested_parser_;
+        }
+
+        void
+        nested_parser (parser_base* p)
+        {
+          nested_parser_ = p;
+        }
+
         void
         reset (XML_Parser);
 
@@ -153,6 +165,12 @@ namespace xsde
 
       public:
         parser_state current_;
+
+      private:
+        // Nested parser when transitioning from outer to inner or from
+        // inner to outer parsers.
+        //
+        parser_base* nested_parser_;
 
       protected:
         XML_Parser xml_parser_;

@@ -1,0 +1,22 @@
+root start
+recursive start
+value_a begin
+value->constant
+value: post_expression override
+value_a: post_value override
+value_a end
+recursive->expression event
+recursive start
+value_b begin
+value->constant
+value: post_expression override
+value_b: post_value override
+value_b end
+recursive->expression event
+recursive: post_expression override
+recursive end
+recursive->expression event
+recursive: post_expression override
+recursive end
+root->expression
+root end

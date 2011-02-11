@@ -61,7 +61,7 @@ namespace email
           //
           xml_schema::parser_context& ctx = _context ();
           p->pre ();
-          p->_pre_impl (ctx);
+          ctx.nested_parser (p);
         }
       }
     }
@@ -75,10 +75,6 @@ namespace email
     {
       if (ns == "http://www.codesynthesis.com/email")
       {
-        // Note that we don't call _post_impl() (corresponding to
-        // _pre_impl()) here. It is called automatically by the
-        // infrastructure.
-        //
         envelope* env = envelope_base_pimpl_state_.envelope_;
 
         if (name == "text")

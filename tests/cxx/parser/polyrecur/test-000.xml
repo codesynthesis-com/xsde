@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="test"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="test test.xsd">
+  <recursive>
+    <value-a>
+      <constant>1</constant>
+    </value-a>
+    <recursive>
+      <value-b>
+        <constant>2</constant>
+      </value-b>
+    </recursive>
+  </recursive>
+</root>

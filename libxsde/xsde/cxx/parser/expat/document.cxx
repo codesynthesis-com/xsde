@@ -875,14 +875,30 @@ namespace xsde
             else if (cur.parser_)
             {
               // The "normal" case: call _start_element which will
-              // call pre() and _pre_impl() (which will push the
-              // new parser).
+              // call pre() and set the nested parser. We then call
+              // _pre_impl on that (which will push the new parser).
               //
+
+              context_.nested_parser (0);
+
 #ifdef XSDE_POLYMORPHIC
               cur.parser_->_start_element (ns, name, type);
 #else
               cur.parser_->_start_element (ns, name);
 #endif
+
+#if defined(XSDE_PARSER_VALIDATION) || !defined(XSDE_EXCEPTIONS)
+              if (context_.error_type ())
+              {
+                XML_StopParser (xml_parser_, false);
+                return;
+              }
+#endif
+              if (parser_base* p = context_.nested_parser ())
+                p->_pre_impl (context_);
+              else
+                if (!cur.any_)
+                  cur.depth_++; // Ignoring.
             }
             else
             {
@@ -1073,7 +1089,7 @@ namespace xsde
             // The "normal" case: call _post to pop the parser and then
             // call _end_element on the "outer" parser which calls post().
             //
-            parser_base* p = cur.parser_;
+            context_.nested_parser (cur.parser_);
             cur.parser_->_post_impl ();
 
 #if defined(XSDE_PARSER_VALIDATION) || !defined(XSDE_EXCEPTIONS)
@@ -1091,7 +1107,7 @@ namespace xsde
                 {
                   // End of the root element. post() is called by the user.
                   //
-                  end_root_element (ns, name, p);
+                  end_root_element (ns, name, context_.nested_parser ());
                 }
               }
               else
@@ -1113,6 +1129,8 @@ namespace xsde
           }
           else
           {
+            context_.nested_parser (0);
+
             if (cur.any_)
             {
               // Handling content matched by a wildcard.

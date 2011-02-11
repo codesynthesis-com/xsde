@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:t="test"
+        targetNamespace="test"
+        elementFormDefault="qualified">
+
+  <element name="root" type="t:root"/>
+  <complexType name="root">
+    <sequence>
+      <element ref="t:expression" minOccurs="0" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <element name="expression" type="t:expression" abstract="true"/>
+  <complexType name="expression" abstract="true"/>
+
+  <element name="recursive" type="t:recursive" substitutionGroup="t:expression"/>
+  <complexType name="recursive">
+    <complexContent>
+      <extension base="t:expression">
+        <sequence minOccurs="0" maxOccurs="unbounded">
+          <element ref="t:expression"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element name="value" type="t:value" abstract="true" substitutionGroup="t:expression"/>
+  <complexType name="value" abstract="true">
+    <complexContent>
+      <extension base="t:expression">
+        <sequence>
+          <element name="constant" type="int"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <element name="value-a" type="t:value-a" substitutionGroup="t:expression"/>
+  <complexType name="value-a">
+    <complexContent>
+      <extension base="t:value"/>
+    </complexContent>
+  </complexType>
+
+  <element name="value-b" type="t:value-b" substitutionGroup="t:expression"/>
+  <complexType name="value-b">
+    <complexContent>
+      <extension base="t:value"/>
+    </complexContent>
+  </complexType>
+
+</schema>

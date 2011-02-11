@@ -104,7 +104,7 @@ namespace email
 #ifndef XSDE_POLYMORPHIC
     _start_any_element (const ro_string& ns, const ro_string& name)
 #else
-    _start_any_element (const ro_string& ns, 
+    _start_any_element (const ro_string& ns,
                         const ro_string& name,
                         const char*)
 #endif
@@ -147,7 +147,9 @@ namespace email
               return;
             }
 #endif
-            p->_pre_impl (ctx);
+            // Indicate transition to the nested parser.
+            //
+            ctx.nested_parser (p);
           }
         }
 
@@ -167,11 +169,6 @@ namespace email
         {
           if (name == "text")
           {
-            // Note that we don't call _post_impl() (corresponding to
-            // _pre_impl()) here. It is called automatically by the
-            // infrastructure.
-            //
-
             string text (string_p_.post_string ());
 
 #ifndef XSDE_EXCEPTIONS
@@ -188,11 +185,6 @@ namespace email
           }
           else if (name == "binary")
           {
-            // Note that we don't call _post_impl() (corresponding to
-            // _pre_impl()) here. It is called automatically by the
-            // infrastructure.
-            //
-
             binary_p_.post_binary ();
 
 #ifndef XSDE_EXCEPTIONS

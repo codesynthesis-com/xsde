@@ -417,13 +417,8 @@ namespace CXX
             ec.set ("p:member", find_name (base + L"_parser_", set_));
 
             if (poly)
-            {
-              ec.set (
-                "p:member-cache", find_name (base + L"_parser_cache_", set_));
-
               ec.set (
                 "p:member-map", find_name (base + L"_parser_map_", set_));
-            }
           }
           else
           {
@@ -435,10 +430,7 @@ namespace CXX
             ec.set ("p:member", bc.get<String> ("p:member"));
 
             if (poly)
-            {
-              ec.set ("p:member-cache", bc.get<String> ("p:member-cache"));
               ec.set ("p:member-map", bc.get<String> ("p:member-map"));
-            }
           }
         }
 

@@ -33,7 +33,7 @@ endif # exceptions
 
 ifeq ($(xsde_polymorphic),y)
 ifeq ($(xsde_reuse_style),tiein)
-build_tests += polymorphism
+build_tests += polymorphism polyrecur
 endif
 endif
 

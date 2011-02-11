@@ -386,23 +386,27 @@ namespace CXX
             Boolean poly (poly_code && !anonymous (type));
 
             String const& name (ename (*e));
-            String inst (poly ? emember_cache (*e) : emember (*e));
+            String fq_type (fq_name (type));
 
-            String def_parser, map;
+            String def_parser, map, inst;
 
             if (poly)
             {
               def_parser = emember (*e);
               map = emember_map (*e);
+              inst = "p";
             }
+            else
+              inst = L"this->" +  emember (*e);
 
             if (poly)
             {
               String cast (mixin ? L"dynamic_cast" : L"static_cast");
-              String fq_type (fq_name (type));
 
-              os << "if (t == 0 && this->" << def_parser << " != 0)" << endl
-                 << "this->" << inst << " = this->" << def_parser << ";"
+              os << fq_type << "* p = 0;"
+                 << endl
+                 << "if (t == 0 && this->" << def_parser << " != 0)" << endl
+                 << inst << " = this->" << def_parser << ";"
                  << "else"
                  << "{"
                  << "const char* ts = " << fq_type << "::_static_type ();"
@@ -412,7 +416,7 @@ namespace CXX
                  << endl
                  << "if (this->" << def_parser << " != 0 && " <<
                 "strcmp (t, ts) == 0)" << endl
-                 << "this->" << inst << " = this->" << def_parser << ";"
+                 << inst << " = this->" << def_parser << ";"
                  << "else"
                  << "{";
 
@@ -427,50 +431,46 @@ namespace CXX
                  << "}";
 
               os << "if (this->" << map << " != 0)" << endl
-                 << "this->" << inst << " = " << cast << "< " <<
-                fq_type << "* > (" << endl
+                 << inst << " = " << cast << "< " << fq_type << "* > (" << endl
                  << "this->" << map << "->find (t));"
-                 << "else" << endl
-                 << "this->" << inst << " = 0;"
                  << "}"
                  << "}";
             }
 
             String const& post (post_name (type));
 
-            os << "if (this->" << inst << ")"
+            os << "if (" << inst << ")"
                << "{"
-               << "this->" << inst << "->pre ();";
+               << inst << "->pre ();";
 
             if (!exceptions)
             {
-              // Note that after pre() we need to check both parser and
-              // context error states because of the recursive parsing.
-              //
               os << endl
-                 << "if (this->" << inst << "->_error_type ())" << endl
-                 << "this->" << inst << "->_copy_error (ctx);"
-                 << endl
-                 << "if (!ctx.error_type ())" << endl;
+                 << "if (" << inst << "->_error_type ())" << endl
+                 << inst << "->_copy_error (ctx);"
+                 << endl;
             }
 
-            os << "this->" << inst << "->_pre_impl (ctx);"
+            os << "ctx.nested_parser (" << inst << ");" << endl
                << "}"
-               << "else" << endl
-               << "ctx.current_.depth_++;" // Ignoring document fragment.
-               << endl
                << "}"
                << "else" // start
-               << "{"
-               << "if (this->" << inst << ")"
+               << "{";
+
+            if (poly)
+              os << fq_type << "* p =" << endl
+                 << "static_cast< " << fq_type << "* > (ctx.nested_parser ());"
+                 << endl;
+
+            os << "if (" << inst << " != 0)"
                << "{";
 
             String const& ret (ret_type (type));
 
             if (ret == L"void")
-              os << "this->" << inst << "->" << post << " ();";
+              os << inst << "->" << post << " ();";
             else
-              os << arg_type (type) << " tmp = this->" << inst << "->" <<
+              os << arg_type (type) << " tmp = " << inst << "->" <<
                 post << " ();";
 
             if (!exceptions)
@@ -479,8 +479,8 @@ namespace CXX
               // context error states because of the recursive parsing.
               //
               os << endl
-                 << "if (this->" << inst << "->_error_type ())" << endl
-                 << "this->" << inst << "->_copy_error (ctx);"
+                 << "if (" << inst << "->_error_type ())" << endl
+                 << inst << "->_copy_error (ctx);"
                  << endl
                  << "if (!ctx.error_type ())" << endl;
             }

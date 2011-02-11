@@ -493,7 +493,6 @@ namespace CXX
         {
           Boolean poly (poly_code && !anonymous (e.type ()));
           Boolean subst (poly && e.global_p ());
-          String const& inst (poly ? emember_cache (e) : emember (e));
 
           if (e.qualified_p () && e.namespace_ ().name ())
           {
@@ -528,6 +527,8 @@ namespace CXX
           os << ")"
              << "{";
 
+          String inst;
+
           if (poly)
           {
             // In case of mixin we use virtual inheritance and only
@@ -537,9 +538,12 @@ namespace CXX
             String fq_type (fq_name (e.type ()));
             String const& member (emember (e));
             String const& member_map (emember_map (e));
+            inst = "p";
 
-            os << "if (t == 0 && this->" << member << " != 0)" << endl
-               << "this->" << inst << " = this->" << member << ";"
+            os << fq_type << "* p = 0;"
+               << endl
+               << "if (t == 0 && this->" << member << " != 0)" << endl
+               << inst << " = this->" << member << ";"
                << "else"
                << "{"
                << "const char* ts = " << fq_type << "::_static_type ();"
@@ -549,42 +553,30 @@ namespace CXX
                << endl
                << "if (this->" << member << " != 0 && " <<
               "strcmp (t, ts) == 0)" << endl
-               << "this->" << inst << " = this->" << member << ";"
+               << inst << " = this->" << member << ";"
                << "else if (this->" << member_map << " != 0)" << endl
-               << "this->" << inst << " = " << cast << "< " << fq_type <<
+               << inst << " = " << cast << "< " << fq_type <<
               "* > (" << endl
                << "this->" << member_map << "->find (t));"
-               << "else" << endl
-               << "this->" << inst << " = 0;"
                << "}";
           }
-
-          os << "if (this->" << inst << ")"
-             << "{";
-
-          if (exceptions)
-          {
-            os << "this->" << inst << "->pre ();"
-               << "this->" << inst << "->_pre_impl (ctx);";
-          }
           else
+            inst = L"this->" + emember (e);
+
+          os << "if (" << inst << ")"
+             << "{"
+             << inst << "->pre ();";
+
+          if (!exceptions)
           {
-            // Note that after pre() we need to check both parser and
-            // context error states because of the recursive parsing.
-            //
-            os << "this->" << inst << "->pre ();"
-               << endl
-               << "if (this->" << inst << "->_error_type ())" << endl
-               << "this->" << inst << "->_copy_error (ctx);"
-               << endl
-               << "if (!ctx.error_type ())" << endl
-               << "this->" << inst << "->_pre_impl (ctx);";
+            os << endl
+               << "if (" << inst << "->_error_type ())" << endl
+               << inst << "->_copy_error (ctx);"
+               << endl;
           }
 
-          os << "}"
-             << "else" << endl
-             << "ctx.current_.depth_++;" // Ignoring document fragment.
-             << endl
+          os << "ctx.nested_parser (" << inst << ");" << endl
+             << "}"
              << "return true;"
              << "}";
         }
@@ -606,7 +598,6 @@ namespace CXX
           String const& name (ename (e));
           Boolean poly (poly_code && !anonymous (e.type ()));
           Boolean subst (poly && e.global_p ());
-          String const& inst (poly ? emember_cache (e) : emember (e));
 
           if (e.qualified_p () && e.namespace_ ().name ())
           {
@@ -643,17 +634,31 @@ namespace CXX
 
           SemanticGraph::Type& type (e.type ());
           String const& post (post_name (type));
+          String inst;
 
-          os << "if (this->" << inst << ")"
+          if (poly)
+          {
+            String fq_type (fq_name (e.type ()));
+            inst = "p";
+
+            os << fq_type << "* p =" << endl
+               << "static_cast< " << fq_type << "* > (" <<
+              "this->_context ().nested_parser ());"
+               << endl;
+          }
+          else
+            inst = L"this->" + emember (e);
+
+          os << "if (" << inst << ")"
              << "{";
 
           if (exceptions)
           {
             if (ret_type (type) == L"void")
-              os << "this->" << inst << "->" << post << " ();"
+              os << inst << "->" << post << " ();"
                  << "this->" << name << " ();";
             else
-              os << "this->" << name << " (this->" << inst << "->" <<
+              os << "this->" << name << " (" << inst << "->" <<
                 post << " ());";
           }
           else
@@ -663,21 +668,21 @@ namespace CXX
             //
             if (ret_type (type) == L"void")
             {
-              os << "this->" << inst << "->" << post << " ();"
+              os << inst << "->" << post << " ();"
                  << endl
-                 << "if (this->" << inst << "->_error_type ())" << endl
-                 << "this->" << inst << "->_copy_error (ctx);"
+                 << "if (" << inst << "->_error_type ())" << endl
+                 << inst << "->_copy_error (ctx);"
                  << endl
                  << "if (!ctx.error_type ())" << endl
                  << "this->" << name << " ();";
             }
             else
             {
-              os << arg_type (type) << " tmp = this->" << inst << "->" <<
+              os << arg_type (type) << " tmp = " << inst << "->" <<
                 post << " ();"
                  << endl
-                 << "if (this->" << inst << "->_error_type ())" << endl
-                 << "this->" << inst << "->_copy_error (ctx);"
+                 << "if (" << inst << "->_error_type ())" << endl
+                 << inst << "->_copy_error (ctx);"
                  << endl
                  << "if (!ctx.error_type ())" << endl
                  << "this->" << name << " (tmp);";

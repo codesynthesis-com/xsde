@@ -547,8 +547,7 @@ namespace CXX
 
           if (poly_code && !anonymous (e.type ()))
           {
-            os << type << "* " << emember_cache (e) << ";"
-               << parser_map << "* " << emember_map (e) << ";"
+            os << parser_map << "* " << emember_map (e) << ";"
                << endl;
           }
         }
