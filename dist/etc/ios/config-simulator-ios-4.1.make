@@ -7,11 +7,11 @@ IPHONE_SDK      := $(IPHONE_PLATFORM)/SDKs/iPhoneSimulator4.1.sdk
 # Toolchain.
 #
 CC       := $(IPHONE_PLATFORM)/usr/bin/gcc-4.2
-CFLAGS   := -W -Wall -arch i386 -fpascal-strings -fasm-blocks -Os -isysroot $(IPHONE_SDK)
+CFLAGS   := -W -Wall -arch i386 -fpascal-strings -fasm-blocks -Os -fvisibility=hidden -isysroot $(IPHONE_SDK)
 CPPFLAGS :=
 
 CXX      := $(IPHONE_PLATFORM)/usr/bin/g++-4.2
-CXXFLAGS := -W -Wall -arch i386 -fpascal-strings -fasm-blocks -Os -isysroot $(IPHONE_SDK)
+CXXFLAGS := -W -Wall -arch i386 -fpascal-strings -fasm-blocks -Os -fvisibility=hidden -fvisibility-inlines-hidden -isysroot $(IPHONE_SDK)
 
 LD       := $(CXX)
 LDFLAGS  := $(CXXFLAGS)

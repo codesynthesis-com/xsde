@@ -94,7 +94,13 @@ To build the XSD/e runtime library (libxsde.a), perform the following steps:
     5.9 Scroll down to the "Search Paths" section and add . (dot) to the
         "Header Search Paths" field.
 
-    5.10 Build the project for all the desired configurations (for example,
+    5.10 Scroll down to the "GCC 4.2 - Language" section and add the
+         -fvisibility=hidden flag to the "Other C Flags" field as well
+         as the -fvisibility=hidden and -fvisibility-inlines-hidden flags
+         to the "Other C++ Flags" field. If you set any extra C/C++ flags
+         in your application's project, you may also want to add them here.
+
+    5.11 Build the project for all the desired configurations (for example,
          Debug/Release, Device/Simulator, ARMv6/ARMv7, etc).
 
 6.  In the terminal window create "fat" libraries by running the following
