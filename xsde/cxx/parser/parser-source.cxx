@@ -639,10 +639,11 @@ namespace CXX
           if (poly)
           {
             String fq_type (fq_name (e.type ()));
+            String cast (mixin ? L"dynamic_cast" : L"static_cast");
             inst = "p";
 
             os << fq_type << "* p =" << endl
-               << "static_cast< " << fq_type << "* > (" <<
+               << cast << "< " << fq_type << "* > (" <<
               "this->_context ().nested_parser ());"
                << endl;
           }

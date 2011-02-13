@@ -388,7 +388,7 @@ namespace CXX
             String const& name (ename (*e));
             String fq_type (fq_name (type));
 
-            String def_parser, map, inst;
+            String def_parser, map, inst, cast;
 
             if (poly)
             {
@@ -401,7 +401,7 @@ namespace CXX
 
             if (poly)
             {
-              String cast (mixin ? L"dynamic_cast" : L"static_cast");
+              cast  = mixin ? L"dynamic_cast" : L"static_cast";
 
               os << fq_type << "* p = 0;"
                  << endl
@@ -459,7 +459,7 @@ namespace CXX
 
             if (poly)
               os << fq_type << "* p =" << endl
-                 << "static_cast< " << fq_type << "* > (ctx.nested_parser ());"
+                 << cast << "< " << fq_type << "* > (ctx.nested_parser ());"
                  << endl;
 
             os << "if (" << inst << " != 0)"
