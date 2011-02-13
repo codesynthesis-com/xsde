@@ -62,8 +62,10 @@ namespace CXX
       //
       struct Particle: Traversal::Element
       {
-        Particle (Boolean& fixed, Traversal::NodeBase& type_traverser)
-            : fixed_ (fixed), type_traverser_ (type_traverser)
+        Particle (Boolean& fixed,
+                  Boolean& poly,
+                  Traversal::NodeBase& type_traverser)
+            : fixed_ (fixed), poly_ (poly), type_traverser_ (type_traverser)
         {
         }
 
@@ -75,6 +77,9 @@ namespace CXX
           //
           SemanticGraph::Type& t (e.type ());
           type_traverser_.dispatch (t);
+
+          if (t.context ().count ("polymorphic"))
+            poly_ = true;
 
           if (fixed_)
           {
@@ -98,6 +103,7 @@ namespace CXX
 
       private:
         Boolean& fixed_;
+        Boolean& poly_;
         Traversal::NodeBase& type_traverser_;
       };
 
@@ -105,8 +111,10 @@ namespace CXX
                          Traversal::Choice,
                          Traversal::Sequence
       {
-        Compositor (Boolean& fixed, Traversal::NodeBase& type_traverser)
-            : fixed_ (fixed), type_traverser_ (type_traverser)
+        Compositor (Boolean& fixed,
+                    Boolean& poly,
+                    Traversal::NodeBase& type_traverser)
+            : fixed_ (fixed), poly_ (poly), type_traverser_ (type_traverser)
         {
         }
 
@@ -122,7 +130,7 @@ namespace CXX
             Boolean fixed = true;
 
             {
-              Particle particle (fixed, type_traverser_);
+              Particle particle (fixed, poly_, type_traverser_);
               Traversal::ContainsParticle contains_particle;
 
               contains_particle >> particle;
@@ -148,8 +156,8 @@ namespace CXX
           Boolean fixed = true;
 
           {
-            Particle particle (fixed, type_traverser_);
-            Compositor compositor (fixed, type_traverser_);
+            Particle particle (fixed, poly_, type_traverser_);
+            Compositor compositor (fixed, poly_, type_traverser_);
             Traversal::ContainsParticle contains_particle;
 
             contains_particle >> compositor >> contains_particle;
@@ -173,8 +181,8 @@ namespace CXX
           Boolean fixed = true;
 
           {
-            Particle particle (fixed, type_traverser_);
-            Compositor compositor (fixed, type_traverser_);
+            Particle particle (fixed, poly_, type_traverser_);
+            Compositor compositor (fixed, poly_, type_traverser_);
             Traversal::ContainsParticle contains_particle;
 
             contains_particle >> compositor >> contains_particle;
@@ -191,6 +199,7 @@ namespace CXX
 
       private:
         Boolean& fixed_;
+        Boolean& poly_;
         Traversal::NodeBase& type_traverser_;
       };
 
@@ -364,8 +373,10 @@ namespace CXX
             //
             if (c.contains_compositor_p ())
             {
-              Particle particle (fixed, *this);
-              Compositor compositor (fixed, *this);
+              Boolean poly (false);
+
+              Particle particle (fixed, poly, *this);
+              Compositor compositor (fixed, poly, *this);
               Traversal::ContainsCompositor contains_compositor;
               Traversal::ContainsParticle contains_particle;
 
@@ -375,6 +386,13 @@ namespace CXX
               contains_particle >> particle;
 
               Complex::contains_compositor (c, contains_compositor);
+
+              // If this element's type is polymorphic then mark this type as
+              // recursive. The set of derived types is open-ended and one of
+              // them may create a cycle involving this type.
+              //
+              if (poly)
+                ctx.set ("recursive", true);
             }
 
             // Check attributes.
