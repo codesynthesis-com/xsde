@@ -385,7 +385,10 @@ namespace CXX
         traverse (SemanticGraph::Element& e)
         {
           if (poly_)
-            os << "this->" << emember_map (e) << " = &" << ename (e) << ";";
+          {
+            if (!anonymous (e.type ()))
+              os << "this->" << emember_map (e) << " = &" << ename (e) << ";";
+          }
           else
             os << "this->" << emember (e) << " = &" << ename (e) << ";";
         }
