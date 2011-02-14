@@ -57,7 +57,7 @@ To set up an application to use XSD/e, follow these steps:
 4.b Alternatively, if you would like to build the 'minimal' example
     from the XSD/e distribution, replace the top-level Android.mk 
     file with xsde/etc/android/minimal/Android.mk. You will also
-    need to copy over the driver.cxx and person.xsd files from the
+    need to copy over the driver.cxx and people.xsd files from the
     xsde/examples/cxx/hybrid/minimal/ directory.
 
 5.  Run ndk-build in the jni/ directory which should build the libxsde
