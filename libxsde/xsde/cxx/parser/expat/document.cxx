@@ -358,7 +358,7 @@ namespace xsde
               break;
             }
 #endif
-            parse (buf, is.gcount (), is.eof ());
+            parse (buf, static_cast<size_t> (is.gcount ()), is.eof ());
 
 #ifndef XSDE_EXCEPTIONS
             if (error_)
