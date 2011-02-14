@@ -2,14 +2,14 @@ Compiler Prerequisites
 
   build-time:
 
-    - build                >= 0.3.4   http://www.codesynthesis.com/projects/build/
+    - build                >= 0.3.7   http://www.codesynthesis.com/projects/build/
     - g++                  >= 3.4.3   http://gcc.gnu.org
 
   run-time:
 
-    - libxsd-frontend      >= 1.16.0  http://www.codesynthesis.com/projects/libxsd-frontend/
-    - libbackend-elements  >= 1.7.0   http://kolpackov.net/projects/libbackend-elements/
-    - libcult              >= 1.4.3   http://kolpackov.net/projects/libcult/
+    - libxsd-frontend      >= 1.18.0  http://www.codesynthesis.com/projects/libxsd-frontend/
+    - libbackend-elements  >= 1.7.2   http://kolpackov.net/projects/libbackend-elements/
+    - libcult              >= 1.4.6   http://kolpackov.net/projects/libcult/
     - libboost_filesystem  >= 1.33.1  http://boost.org
     - libboost_regex       >= 1.33.1  http://boost.org
 
