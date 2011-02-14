@@ -13,7 +13,7 @@
 using namespace std;
 using namespace test;
 
-struct int_bool_union_simpl: virtual int_bool_union_sskel
+struct int_bool_union_simpl: int_bool_union_sskel
 {
   int_bool_union_simpl ()
       : n_ (0)

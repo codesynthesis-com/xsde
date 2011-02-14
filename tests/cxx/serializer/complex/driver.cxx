@@ -13,7 +13,7 @@
 using namespace std;
 using namespace test;
 
-struct base_simpl: virtual base_sskel
+struct base_simpl: base_sskel
 {
   virtual int
   x ()
@@ -63,7 +63,7 @@ private:
   base_simpl base_impl_;
 };
 
-struct root_simpl: virtual root_sskel
+struct root_simpl: root_sskel
 {
 };
 
