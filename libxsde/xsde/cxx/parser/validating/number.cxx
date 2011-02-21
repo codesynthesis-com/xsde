@@ -71,11 +71,10 @@ namespace xsde
               if (sign_ != none)
                 tmp.assign (tmp.data () + 1, --size);
 
-              if (size != 0)
-                state_ = leading_zeros;
-              else
-                break;
+              state_ = leading_zeros;
 
+              if (size == 0)
+                break;
               // Fall through.
             }
           case leading_zeros:
