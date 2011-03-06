@@ -1,11 +1,9 @@
-CodeSynthesis XSD/e is an open-source XML parser/serializer
-generator for mobile and embedded systems. It provides event-
-driven, stream oriented XML parsing, XML serialization, W3C
-XML Schema validation, and C++ data binding while maintaining
-a small footprint and portability.
+CodeSynthesis XSD/e is an open-source, dependency-free XML Schema to C++
+compiler for mobile, embedded, and light-weight applications. It provides XML
+parsing, serialization, XML Schema validation and XML data binding while
+maintaining a small footprint and portability.
 
-See the NEWS file for the user-visible changes from the previous
-release.
+See the NEWS file for the user-visible changes from the previous release.
 
 See the LICENSE file for distribution conditions.
 
