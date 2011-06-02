@@ -807,6 +807,14 @@
         them to do.
     </dd>
 
+    <dt><code><b>--fat-type-file</b></code></dt>
+    <dd>Generate code corresponding to global elements into type files
+        instead of schema files when the <code><b>--type-file-regex</b></code>
+        option is specified. This option is primarily useful when trying
+        to minimize the amount of object code that is linked to an executable
+        by packaging compiled generated code into a static (archive) library.
+    </dd>
+
     <!-- File list options. -->
 
     <dt><code><b>--file-list</b> <i>file</i></code></dt>

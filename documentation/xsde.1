@@ -939,6 +939,14 @@ the
 option. Use this option to find out why your regular expressions
 don't do what you expected them to do.
 
+.IP "\fB\--fat-type-file\fR"
+Generate code corresponding to global elements into type files
+instead of schema files when the
+.B --type-file-regex
+option is specified. This option is primarily useful when trying
+to minimize the amount of object code that is linked to an executable
+by packaging compiled generated code into a static (archive) library.
+
 .IP "\fB\--file-list \fIfile\fR"
 Write a list of generated C++ files to
 .IR file .
