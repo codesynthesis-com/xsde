@@ -37,6 +37,9 @@ namespace xsde
             notation_scientific
           };
 
+          void
+          format (notation, unsigned int precision);
+
 #ifdef DBL_DIG
           double_simpl (notation = notation_auto,
                         unsigned int precision = DBL_DIG); // Keep it last.

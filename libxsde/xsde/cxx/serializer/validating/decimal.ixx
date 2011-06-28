@@ -11,6 +11,12 @@ namespace xsde
     {
       namespace validating
       {
+        inline void decimal_simpl::
+        precision (unsigned int p)
+        {
+          precision_ = p;
+        }
+
         inline decimal_simpl::
         decimal_simpl (unsigned int p)
             : precision_ (p)

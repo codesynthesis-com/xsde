@@ -11,6 +11,13 @@ namespace xsde
     {
       namespace non_validating
       {
+        inline void double_simpl::
+        format (notation n, unsigned int p)
+        {
+          notation_ = n;
+          precision_ = p;
+        }
+
         inline double_simpl::
         double_simpl (notation n, unsigned int p)
             : notation_ (n), precision_ (p)

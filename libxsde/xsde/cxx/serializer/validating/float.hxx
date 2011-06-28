@@ -37,6 +37,9 @@ namespace xsde
             notation_scientific
           };
 
+          void
+          format (notation, unsigned int precision);
+
 #ifdef FLT_DIG
           float_simpl (notation = notation_auto,
                        unsigned int precision = FLT_DIG); // Keep it last.

@@ -11,6 +11,13 @@ namespace xsde
     {
       namespace validating
       {
+        inline void float_simpl::
+        format (notation n, unsigned int p)
+        {
+          notation_ = n;
+          precision_ = p;
+        }
+
         inline float_simpl::
         float_simpl (notation n, unsigned int p)
             : notation_ (n), precision_ (p)

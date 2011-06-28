@@ -30,6 +30,9 @@ namespace xsde
           virtual void
           _serialize_content ();
 
+          void
+          precision (unsigned int);
+
 #ifdef DBL_DIG
           decimal_simpl (unsigned int precision = DBL_DIG); // Keep it last.
 #else
