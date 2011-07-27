@@ -973,7 +973,7 @@ namespace CXX
 
       {
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 
@@ -1011,7 +1011,7 @@ namespace CXX
         if (ctx.poly_code)
         {
           Traversal::Schema schema;
-          Traversal::Sources sources;
+          Sources sources;
 
           schema >> sources >> schema;
 
@@ -1028,7 +1028,7 @@ namespace CXX
         // Generate code.
         //
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 

@@ -697,7 +697,7 @@ namespace CXX
 
       Traversal::Schema schema;
 
-      Traversal::Sources sources;
+      Sources sources;
       Includes includes (ctx, Includes::impl_header);
       Traversal::Names schema_names;
 

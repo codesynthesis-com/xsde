@@ -2090,7 +2090,7 @@ namespace CXX
       }
 
       Traversal::Schema schema;
-      Traversal::Sources sources;
+      Sources sources;
       Traversal::Names names_ns, names;
 
       Namespace ns (ctx);

@@ -422,6 +422,21 @@ namespace Processing
       };
 
 
+      // Sources traverser that goes into each schema only once.
+      //
+      struct Sources: Traversal::Sources
+      {
+        virtual void
+        traverse (SemanticGraph::Sources& s)
+        {
+          if (schemas_.insert (&s.schema ()).second)
+            Traversal::Sources::traverse (s);
+        }
+
+      private:
+        Cult::Containers::Set<SemanticGraph::Schema*> schemas_;
+      };
+
       // Go into included/imported schemas while making sure we don't
       // process the same stuff more than once.
       //
@@ -453,7 +468,7 @@ namespace Processing
           if (!s.context ().count ("processing-inheritance-seen"))
           {
             Traversal::Schema schema;
-            Traversal::Sources sources;
+            Sources sources;
 
             schema >> sources >> schema;
             schema >> *this;
@@ -492,7 +507,7 @@ namespace Processing
       // rely on the order of types in the schema.
       //
       Traversal::Schema schema;
-      Traversal::Sources sources;
+      Sources sources;
       Uses uses (tu, by_value_key, failed);
 
       schema >> sources >> schema;

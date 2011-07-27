@@ -463,7 +463,7 @@ namespace CXX
 
       {
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 
@@ -480,7 +480,7 @@ namespace CXX
       if (gen)
       {
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 

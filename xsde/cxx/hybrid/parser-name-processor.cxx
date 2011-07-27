@@ -768,7 +768,7 @@ namespace CXX
         //
         {
           Traversal::Schema schema;
-          Traversal::Sources sources;
+          Sources sources;
 
           schema >> sources >> schema;
 

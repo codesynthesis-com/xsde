@@ -782,7 +782,7 @@ namespace CXX
       SemanticGraph::Element* root (0);
       {
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 

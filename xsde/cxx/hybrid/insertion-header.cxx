@@ -289,7 +289,7 @@ namespace CXX
     generate_insertion_header (Context& ctx)
     {
       Traversal::Schema schema;
-      Traversal::Sources sources;
+      Sources sources;
       Traversal::Names names_ns, names;
 
       Namespace ns (ctx);

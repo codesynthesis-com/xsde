@@ -380,7 +380,7 @@ namespace CXX
       private:
         Containers::Set<String> types_;
 
-        Traversal::Sources sources_;
+        Sources sources_;
 
         Traversal::Names schema_names_;
         Traversal::Namespace ns_;
@@ -525,7 +525,7 @@ namespace CXX
 
         Containers::Set<String> types_;
 
-        Traversal::Sources sources_;
+        Sources sources_;
 
         Traversal::Names schema_names_;
         Traversal::Namespace ns_;
@@ -688,7 +688,7 @@ namespace CXX
         SemanticGraph::Element* element (0);
 
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 

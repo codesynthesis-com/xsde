@@ -199,7 +199,7 @@ namespace CXX
       private:
         Containers::Set<String> types_;
 
-        Traversal::Sources sources_;
+        Sources sources_;
 
         Traversal::Names schema_names_;
         Traversal::Namespace ns_;
@@ -337,7 +337,7 @@ namespace CXX
 
         Containers::Set<String> types_;
 
-        Traversal::Sources sources_;
+        Sources sources_;
 
         Traversal::Names schema_names_;
         Traversal::Namespace ns_;
@@ -528,7 +528,7 @@ namespace CXX
 
         {
           Traversal::Schema schema;
-          Traversal::Sources sources;
+          Sources sources;
 
           schema >> sources >> schema;
 
@@ -569,7 +569,7 @@ namespace CXX
            options.value<CLI::suppress_parser_val> ()))
       {
         Traversal::Schema schema;
-        Traversal::Sources sources;
+        Sources sources;
 
         schema >> sources >> schema;
 

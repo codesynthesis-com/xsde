@@ -8,6 +8,7 @@
 
 #include <cult/types.hxx>
 #include <cult/containers/map.hxx>
+#include <cult/containers/set.hxx>
 #include <cult/containers/vector.hxx>
 
 #include <backend-elements/regex.hxx>
@@ -431,6 +432,21 @@ namespace CXX
     else
       return 0;
   }
+
+  // Sources traverser that goes into each schema only once.
+  //
+  struct Sources: Traversal::Sources
+  {
+    virtual void
+    traverse (SemanticGraph::Sources& s)
+    {
+      if (schemas_.insert (&s.schema ()).second)
+        Traversal::Sources::traverse (s);
+    }
+
+  private:
+    Cult::Containers::Set<SemanticGraph::Schema*> schemas_;
+  };
 
   // Usual namespace mapping.
   //

@@ -518,7 +518,7 @@ namespace CXX
 
       Traversal::Schema schema;
 
-      Traversal::Sources sources;
+      Sources sources;
       Traversal::Names schema_names;
 
       Namespace ns (ctx);

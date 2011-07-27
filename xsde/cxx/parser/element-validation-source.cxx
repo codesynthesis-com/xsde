@@ -2077,7 +2077,7 @@ namespace CXX
           // In case of an inheritance-by-extension, call our base first.
           // We don't need to generate this code for the 'all' compositor
           // because it can only inherit from the empty content model.
-          // Sattes of the root machine for sequence and choice:
+          // States of the root machine for sequence and choice:
           //
           //  0 - calling base
           //  1 - base returned false
@@ -2292,7 +2292,7 @@ namespace CXX
 
       Traversal::Schema schema;
 
-      Traversal::Sources sources;
+      Sources sources;
       Traversal::Names schema_names;
 
       Namespace ns (ctx);
