@@ -205,8 +205,8 @@ namespace CXX
       };
 
       struct SerializerConnect: Traversal::List,
-                            Traversal::Complex,
-                            Context
+                                Traversal::Complex,
+                                Context
       {
         SerializerConnect (Context& c,
                            TypeInstanceMap& map,

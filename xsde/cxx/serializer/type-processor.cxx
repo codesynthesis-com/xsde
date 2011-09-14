@@ -206,6 +206,8 @@ namespace CXX
         {
           Complex::names (c);
         }
+
+        // @@ What about list?
       };
 
       //
@@ -224,6 +226,8 @@ namespace CXX
           type_.dispatch (c);
           Complex::inherits (c);
         }
+
+        // @@ What about list?
 
       private:
         Serializer::Type& type_;

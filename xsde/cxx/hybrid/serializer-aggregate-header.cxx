@@ -24,10 +24,12 @@ namespace CXX
       // For base types we only want member's types, but not the
       // base itself.
       //
-      struct BaseType: Traversal::Complex, Context
+      struct BaseType: Traversal::Complex,
+                       Traversal::List,
+                       Context
       {
-        BaseType (Context& c)
-            : Context (c)
+        BaseType (Context& c, Traversal::NodeBase& def)
+            : Context (c), def_ (def)
         {
         }
 
@@ -42,6 +44,15 @@ namespace CXX
             contains_compositor (c);
           }
         }
+
+        virtual Void
+        traverse (SemanticGraph::List& l)
+        {
+          def_.dispatch (l.argumented ().type ());
+        }
+
+      private:
+        Traversal::NodeBase& def_;
       };
 
       struct SerializerDef: Traversal::Type,
@@ -114,7 +125,7 @@ namespace CXX
               map_ (map),
               tid_map_ (tid_map),
               set_ (set),
-              base_ (c)
+              base_ (c, *this)
         {
           *this >> inherits_ >> base_ >> inherits_;
 

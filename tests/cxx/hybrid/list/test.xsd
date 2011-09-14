@@ -5,8 +5,14 @@
     <list itemType="int"/>
   </simpleType>
 
-  <simpleType name="qname-list">
+  <simpleType name="qname-list-base">
     <list itemType="QName"/>
+  </simpleType>
+
+  <simpleType name="qname-list">
+    <restriction base="t:qname-list-base">
+      <minLength value="1"/>
+    </restriction>
   </simpleType>
 
   <simpleType name="string-list">
