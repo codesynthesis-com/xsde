@@ -1147,15 +1147,23 @@ namespace CXX
           Boolean validation (!options.value<CLI::suppress_validation> () &&
                               !options.value<CLI::suppress_serializer_val> ());
 
-          String const& state (esstate (c));
-          String const& member (esstate_member (c));
-          String const& state_type (esstate_type (c));
+          String state;
+          String member;
+          String state_type;
 
           String top_member;
-          if (rec)
+
+          if (!restriction)
           {
-            top_member = L"static_cast< " + state_type + L"* > (this->" +
-              state + L".top ())->" + member;
+            state = esstate (c);
+            member = esstate_member (c);
+            state_type = esstate_type (c);
+
+            if (rec)
+            {
+              top_member = L"static_cast< " + state_type + L"* > (this->" +
+                state + L".top ())->" + member;
+            }
           }
 
           os << "// " << name << endl
@@ -1164,7 +1172,7 @@ namespace CXX
 
           // c-tor
           //
-          if (rec || (tiein && hb))
+          if ((rec && !restriction) || (tiein && hb))
           {
             os << name << "::" << endl
                << name << " ()";
@@ -1177,7 +1185,7 @@ namespace CXX
               d = ",\n  ";
             }
 
-            if (rec)
+            if (rec && !restriction)
             {
               os << d << state << " (sizeof (" << state_type <<
                 " ), &" << esstate_first (c) << ")";
@@ -1203,7 +1211,9 @@ namespace CXX
             SemanticGraph::Type& b (c.inherits ().base ());
 
             // If we are recursive but our base is not, we need to call
-            // _post() and post() to end serialization.
+            // _post() and post() to end serialization. Note that if we
+            // are recursive and this is inheritance by restriction, our
+            // base must be recursive.
             //
             if (rec && !recursive (b))
             {
@@ -1279,7 +1289,7 @@ namespace CXX
             contains_compositor (c, contains_compositor_callback_);
           }
 
-          if (rec)
+          if (rec && !restriction)
           {
             // _post
             //
@@ -1339,7 +1349,8 @@ namespace CXX
 
           // reset
           //
-          if (reset && (rec || (mixin && recursive_base (c))))
+          if (reset && ((rec && !restriction) ||
+                        (mixin && recursive_base (c))))
           {
             os << "void " << name << "::" << endl
                << "_reset ()"
@@ -1350,13 +1361,12 @@ namespace CXX
 
             os << esskel (c) << "::_reset ();";
 
-            if (rec)
+            if (rec && !restriction)
               os << "for (; !this->" << state << ".empty (); " <<
                 "this->" << state << ".pop ()) ;"; // Space is for g++-4.3.
 
             os << "}";
           }
-
         }
 
       private:

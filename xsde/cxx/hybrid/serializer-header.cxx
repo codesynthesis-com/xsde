@@ -552,7 +552,7 @@ namespace CXX
 
             // c-tor
             //
-            if (rec || (tiein && hb))
+            if ((rec && !restriction) || (tiein && hb))
               os << name << " ();"
                  << endl;
 
@@ -586,7 +586,7 @@ namespace CXX
               }
             }
 
-            if (rec)
+            if (rec && !restriction)
             {
               // _post
               //
@@ -604,7 +604,8 @@ namespace CXX
 
             // reset
             //
-            if (reset && (rec || (mixin && recursive_base (c))))
+            if (reset && ((rec && !restriction) ||
+                          (mixin && recursive_base (c))))
             {
               // If we are using mixin and this type has a base with _reset(),
               // then we need to provide _reset() in the whole hierarchy to
@@ -614,7 +615,6 @@ namespace CXX
                  << "_reset ();"
                  << endl;
             }
-
 
             if (tiein && hb)
               os << "public:" << endl
