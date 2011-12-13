@@ -23,7 +23,7 @@ install_bin := $(install_prefix)/bin
 install_man := $(install_prefix)/man
 
 .PHONY: install
-install:
+install: $(dirs)
 	./install-sh -d -m 755 $(install_bin)
 	./install-sh -m 755 bin/xsde $(install_bin)/xsde
 	./install-sh -d -m 755 $(install_man)/man1
