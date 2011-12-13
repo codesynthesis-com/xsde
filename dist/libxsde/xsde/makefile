@@ -636,6 +636,23 @@ gen:
 test: libxsde.a
 	@:
 
+# Install.
+#
+install_prefix := /usr/local
+install_lib := $(install_prefix)/lib
+install_include := $(install_prefix)/include
+
+.PHONY: install
+install: libxsde.a
+	../../install-sh -d -m 755 $(install_lib)
+	../../install-sh -m 644 libxsde.a $(install_lib)/libxsde.a
+	../../install-sh -d -m 755 $(install_include)
+	find . -type d | sed -e 's%^\.%$(install_include)%' \
+| xargs -n 1 ../../install-sh -d -m 755 
+	find . -name '*.h' -o -name '*.hxx' -o -name '*.ixx' -o -name '*.txx' \
+| sed -e 's%^\./\(.*\)%\1 $(install_include)/\1%' \
+| xargs -n 2 ../../install-sh -m 644
+
 # Clean.
 #
 .PHONY: clean cleanobj

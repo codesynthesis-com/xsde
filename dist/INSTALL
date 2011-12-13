@@ -38,6 +38,23 @@ need add the libxsde/ directory to your include search paths
 (-I) and link your executables with the libxsde/xsde/libxsde.a
 library.
 
+You can also install the XSD/e compiler as well as the XSD/e
+runtime headers and library by running 'make install'. By
+default the installation directory is /usr/local but this
+can be changed with the 'install_*' command line variables.
+By default they have the following values:
+
+install_prefix  = /usr/local
+install_bin     = install_prefix/bin
+install_man     = install_prefix/man
+install_lib     = install_prefix/lib
+install_include = install_prefix/include
+
+For example, to install XSD/e into /usr with the XSD/e runtime
+library in /usr/lib64, you can use the following command line:
+
+make install install_prefix=/usr install_lib=/usr/lib64
+
 
 Microsoft nmake
 ---------------
@@ -111,7 +128,7 @@ Notes on Symbian SDK
 --------------------
 
 You can find sample configuration files for Symbian SDK in the
-etc/symbian/ directory. The accompanying README file provides 
+etc/symbian/ directory. The accompanying README file provides
 step-by-step instructions on how to use XSD/e with Symbian.
 
 
