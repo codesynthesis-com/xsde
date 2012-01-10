@@ -132,8 +132,8 @@ struct genxWriter_rec
   plist           	   stack;
   struct genxAttribute_rec arec;
   char *                   etext[100];
-  void *       		(* alloc)(void * userData, int bytes);
-  void         		(* dealloc)(void * userData, void * data);
+  genxAlloc                alloc;
+  genxDealloc              dealloc;
 
   /* Pretty-printing state */
   int                      ppIndent;
@@ -545,9 +545,7 @@ static Boolean isNameChar(genxWriter w, int c)
 /*
  * Construct a new genxWriter
  */
-genxWriter genxNew(void * (* alloc)(void * userData, int bytes),
-		   void (* dealloc)(void * userData, void * data),
-		   void * userData)
+genxWriter genxNew(genxAlloc alloc, genxDealloc dealloc, void * userData)
 {
   genxWriter w;
   genxNamespace xml;
@@ -689,20 +687,22 @@ int genxGetPrettyPrint(genxWriter w)
 /*
  * get/set allocator
  */
-void genxSetAlloc(genxWriter w, void * (* alloc)(void * userData, int bytes))
+void genxSetAlloc(genxWriter w, genxAlloc alloc)
 {
   w->alloc = alloc;
 }
-void genxSetDealloc(genxWriter w,
-		    void (* dealloc)(void * userData, void * data))
+
+void genxSetDealloc(genxWriter w, genxDealloc dealloc)
 {
   w->dealloc = dealloc;
 }
-void * (* genxGetAlloc(genxWriter w))(void * userData, int bytes)
+
+genxAlloc genxGetAlloc(genxWriter w)
 {
   return w->alloc;
 }
-void (* genxGetDealloc(genxWriter w))(void * userData, void * data)
+
+genxDealloc genxGetDealloc(genxWriter w)
 {
   return w->dealloc;
 }

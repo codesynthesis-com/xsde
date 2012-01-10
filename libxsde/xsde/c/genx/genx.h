@@ -71,6 +71,9 @@ typedef struct genxNamespace_rec * genxNamespace;
 typedef struct genxElement_rec * genxElement;
 typedef struct genxAttribute_rec * genxAttribute;
 
+typedef void * (*genxAlloc) (void * userData, int bytes);
+typedef void (*genxDealloc) (void * userData, void* data);
+
 /*
  * Constructors, set/get
  */
@@ -81,9 +84,7 @@ typedef struct genxAttribute_rec * genxAttribute;
  *  one document at a time with a writer.
  * Returns NULL if it fails, which can only be due to an allocation failure.
  */
-genxWriter genxNew(void * (*alloc)(void * userData, int bytes),
-		   void (* dealloc)(void * userData, void * data),
-		   void * userData);
+genxWriter genxNew(genxAlloc alloc, genxDealloc dealloc, void * userData);
 
 /*
  * Reset the writer object back into usable state after an error or
@@ -123,12 +124,10 @@ int genxGetPrettyPrint(genxWriter w);
  *  the memory; this would be appropriate in an Apache context.
  * If "alloc" is not provided, genx routines use malloc() to allocate memory
  */
-void genxSetAlloc(genxWriter w,
-		  void * (* alloc)(void * userData, int bytes));
-void genxSetDealloc(genxWriter w,
-		    void (* dealloc)(void * userData, void * data));
-void * (* genxGetAlloc(genxWriter w))(void * userData, int bytes);
-void (* genxGetDealloc(genxWriter w))(void * userData, void * data);
+void genxSetAlloc(genxWriter w, genxAlloc alloc);
+void genxSetDealloc(genxWriter w, genxDealloc dealloc);
+genxAlloc genxGetAlloc(genxWriter w);
+genxDealloc genxGetDealloc(genxWriter w);
 
 /*
  * Get the prefix associated with a namespace
