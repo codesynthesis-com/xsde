@@ -49,6 +49,7 @@ namespace SemanticGraph = XSDFrontend::SemanticGraph;
 namespace Transformations = XSDFrontend::Transformations;
 
 using std::wcerr;
+using std::wcout;
 using std::endl;
 
 namespace CLI
@@ -235,7 +236,9 @@ main (Int argc, Char* argv[])
 
     if (help_ops.value<CLI::version> () || cmd == "version")
     {
-      e << "CodeSynthesis XSD/e XML Schema to C++ compiler " <<
+      std::wostream& o (wcout);
+
+      o << "CodeSynthesis XSD/e XML Schema to C++ compiler " <<
         "for embedded systems " << XSDE_STR_VERSION << endl
         << "Copyright (c) 2005-2011 Code Synthesis Tools CC" << endl;
 
@@ -251,13 +254,13 @@ main (Int argc, Char* argv[])
 
       if (help_ops.value<CLI::proprietary_license> ())
       {
-        e << "The compiler was invoked in the Proprietary License mode. You "
+        o << "The compiler was invoked in the Proprietary License mode. You "
           << "should have\nreceived a proprietary license from Code Synthesis "
           << "Tools CC that entitles\nyou to use it in this mode." << endl;
       }
       else
       {
-        e << "This is free software; see the source for copying conditions. "
+        o << "This is free software; see the source for copying conditions. "
           << "There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS "
           << "FOR A PARTICULAR PURPOSE." << endl;
       }
@@ -267,13 +270,15 @@ main (Int argc, Char* argv[])
 
     if (help_ops.value<CLI::help> () || cmd == "help")
     {
+      std::wostream& o (wcout);
+
       if (cmd == "help" && args.size () > 1)
       {
         NarrowString arg (args[1]);
 
         if (arg == "cxx-parser")
         {
-          e << "Usage: " << args[0] << " cxx-parser [options] file [file ...]"
+          o << "Usage: " << args[0] << " cxx-parser [options] file [file ...]"
             << endl
             << "Options:" << endl;
 
@@ -281,7 +286,7 @@ main (Int argc, Char* argv[])
         }
         else if (arg == "cxx-serializer")
         {
-          e << "Usage: " << args[0] << " cxx-serializer [options] file " <<
+          o << "Usage: " << args[0] << " cxx-serializer [options] file " <<
             "[file ...]" << endl
             << "Options:" << endl;
 
@@ -289,7 +294,7 @@ main (Int argc, Char* argv[])
         }
         else if (arg == "cxx-hybrid")
         {
-          e << "Usage: " << args[0] << " cxx-hybrid [options] file " <<
+          o << "Usage: " << args[0] << " cxx-hybrid [options] file " <<
             "[file ...]" << endl
             << "Options:" << endl;
 
@@ -304,11 +309,11 @@ main (Int argc, Char* argv[])
           return 1;
         }
 
-        ::CLI::Indent::Clip< ::CLI::OptionsUsage, WideChar> clip (e);
+        ::CLI::Indent::Clip< ::CLI::OptionsUsage, WideChar> clip (o);
 
         // Disable warning option.
         //
-        e << "--disable-warning <warn>" << endl
+        o << "--disable-warning <warn>" << endl
           << " Disable printing warning with id <warn>. If 'all'\n"
           << " is specified for the warning id then all warnings\n"
           << " are disabled."
@@ -316,76 +321,76 @@ main (Int argc, Char* argv[])
 
         // Anonymous morphing options.
         //
-        e << "--preserve-anonymous" << endl
+        o << "--preserve-anonymous" << endl
           << " Preserve anonymous types. By default anonymous\n"
           << " types are automatically named with names derived\n"
           << " from the enclosing elements/attributes."
           << endl;
 
-        e << "--anonymous-regex <regex>" << endl
+        o << "--anonymous-regex <regex>" << endl
           << " Add the provided regular expression to the list of\n"
           << " regular expressions used to derive names for\n"
           << " anonymous types from the names of the enclosing\n"
           << " attributes/elements."
           << endl;
 
-        e << "--anonymous-regex-trace" << endl
+        o << "--anonymous-regex-trace" << endl
           << " Trace the process of applying regular expressions\n"
           << " specified with the --anonymous-regex option."
           << endl;
 
         // Location mapping options.
         //
-        e << "--location-map <ol>=<nl>" << endl
+        o << "--location-map <ol>=<nl>" << endl
           << " Map the original schema location <ol> that is\n"
           << " specified in the XML Schema include or import\n"
           << " elements to new schema location <nl>. Repeat\n"
           << " this option to map more than one schema location."
           << endl;
 
-        e << "--location-regex <regex>" << endl
+        o << "--location-regex <regex>" << endl
           << " Add <regex> to the list of regular expressions\n"
           << " used to map schema locations that are specified\n"
           << " in the XML Schema include or import elements."
           << endl;
 
-        e << "--location-regex-trace" << endl
+        o << "--location-regex-trace" << endl
           << " Trace the process of applying regular expressions\n"
           << " specified with the --location-regex option."
           << endl;
 
         // File-per-type compilation mode options.
         //
-        e << "--file-per-type" << endl
+        o << "--file-per-type" << endl
           << " Generate a separate set of C++ files for each\n"
           << " type defined in XML Schema."
           << endl;
 
-        e << "--type-file-regex <regex>" << endl
+        o << "--type-file-regex <regex>" << endl
           << " Add the provided regular expression to the list of\n"
           << " regular expressions used to translate type names\n"
           << " to file names when the --file-per-type option is\n"
           << " specified."
           << endl;
 
-        e << "--type-file-regex-trace" << endl
+        o << "--type-file-regex-trace" << endl
           << " Trace the process of applying regular expressions\n"
           << " specified with the --type-file-regex option."
           << endl;
 
-        e << "--schema-file-regex <regex>" << endl
+        o << "--schema-file-regex <regex>" << endl
           << " Add the provided regular expression to the list\n"
           << " of regular expressions used to translate schema\n"
           << " file names when the --file-per-type option is\n"
           << " specified."
           << endl;
 
-        e << "--schema-file-regex-trace" << endl
+        o << "--schema-file-regex-trace" << endl
           << " Trace the process of applying regular expressions\n"
           << " specified with the --schema-file-regex option."
           << endl;
 
-        e << "--fat-type-file" << endl
+        o << "--fat-type-file" << endl
           << " Generate code corresponding to global elements\n"
           << " into type files instead of schema files when the\n"
           << " --file-per-type option is specified."
@@ -393,23 +398,23 @@ main (Int argc, Char* argv[])
 
         // File list options.
         //
-        e << "--file-list <file>" << endl
+        o << "--file-list <file>" << endl
           << " Write a list of generated C++ files to <file>."
           << endl;
 
-        e << "--file-list-prologue <p>" << endl
+        o << "--file-list-prologue <p>" << endl
           << " Insert <p> at the beginning of the file list. All\n"
           << " occurrences of the \\n character sequence in <p>\n"
           << " are replaced with new lines."
           << endl;
 
-        e << "--file-list-prologue <e>" << endl
+        o << "--file-list-prologue <e>" << endl
           << " Insert <e> at the end of the file list. All\n"
           << " occurrences of the \\n character sequence in <e>\n"
           << " are replaced with new lines."
           << endl;
 
-        e << "--file-list-delim <d>" << endl
+        o << "--file-list-delim <d>" << endl
           << " Delimit file names written to the file list with\n"
           << " <d> instead of new lines. All occurrences of the\n"
           << " \\n character sequence in <d> are replaced with\n"
@@ -418,23 +423,23 @@ main (Int argc, Char* argv[])
       }
       else
       {
-        e << "Usage: " << args[0] << " <cmd> ..." << endl
+        o << "Usage: " << args[0] << " <cmd> ..." << endl
           << "Commands:" << endl;
 
-        e << "  help            Print usage information and exit. Use\n"
+        o << "  help            Print usage information and exit. Use\n"
           << "                  'help <cmd>' for command-specific options."
           << endl;
 
-        e << "  version         Print version and exit."
+        o << "  version         Print version and exit."
           << endl;
 
-        e << "  cxx-parser      Generate Embedded C++/Parser mapping."
+        o << "  cxx-parser      Generate Embedded C++/Parser mapping."
           << endl;
 
-        e << "  cxx-serializer  Generate Embedded C++/Serializer mapping."
+        o << "  cxx-serializer  Generate Embedded C++/Serializer mapping."
           << endl;
 
-        e << "  cxx-hybrid      Generate Embedded C++/Hybrid mapping."
+        o << "  cxx-hybrid      Generate Embedded C++/Hybrid mapping."
           << endl;
       }
 
