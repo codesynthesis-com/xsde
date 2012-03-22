@@ -1,4 +1,4 @@
-This file describes how to build and use XSD/e with XCode and iPhone/iOS. 
+This file describes how to build and use XSD/e with XCode and iPhone/iOS.
 
 It is possible to build the XSD/e runtime library (libxsde) and examples
 using GNU make and the native XSD/e build system. It is also possible to
@@ -32,10 +32,10 @@ XCode Build
 
 For this approach the config-xcode.make configuration file included in
 this directory implements a split build procedure where the XSD/e build
-system is used to generate the XSD/e configuration header 
+system is used to generate the XSD/e configuration header
 (libxsde/xsde/config.h) as well as the list of source files that need to
 be compiled. Then the XCode project is created to compile the source files
-and build the libxsde.a library. 
+and build the libxsde.a library.
 
 The following step-by-step instructions show how to build the XSD/e runtime
 library using this method as well as how to integrate XSD/e into your
@@ -49,7 +49,7 @@ To build the XSD/e runtime library (libxsde.a), perform the following steps:
 2.  Start a new terminal window and run the following commands:
 
     cd xsde-x.y.z
-    cp etc/iphone/config-xcode.make config/config.make
+    cp etc/ios/config-xcode.make config/config.make
 
     Don't close the terminal.
 
@@ -69,7 +69,7 @@ To build the XSD/e runtime library (libxsde.a), perform the following steps:
 
     5.1 Select "File"->"New Project"
 
-    5.2 In the opened dialog select "iOS Library"->"Cocoa Touch Static 
+    5.2 In the opened dialog select "iOS Library"->"Cocoa Touch Static
         Library". Click "Choose...".
 
     5.3 In the next dialog type libxsde in the "Save As" field and navigate
@@ -78,7 +78,7 @@ To build the XSD/e runtime library (libxsde.a), perform the following steps:
     5.4 Next you should see a warning dialog saying that the libxsde directory
         already exists. This is expected so click "Replace".
 
-    5.5 In the project window in the "Groups & Files" list select "Other 
+    5.5 In the project window in the "Groups & Files" list select "Other
         Sources" group, then select "Project"->"Add to Project...".
 
     5.6 In the opened dialog navigate to the xsde-x.y.z/libxsde directory and
