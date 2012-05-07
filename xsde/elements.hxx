@@ -20,18 +20,16 @@ namespace Traversal = XSDFrontend::Traversal;
 
 // Anonymous feedback via belongs edge.
 //
-struct AnonymousBase : Traversal::Element,
-                       Traversal::Attribute
+struct AnonymousBase: Traversal::Element, Traversal::Attribute
 {
-  AnonymousBase (Traversal::NodeDispatcherBase& d1)
+  AnonymousBase (Traversal::NodeDispatcher& d1)
       : complex_ (&d1, 0)
   {
     edge_traverser (belongs_);
     belongs_.node_traverser (complex_);
   }
 
-  AnonymousBase (Traversal::NodeDispatcherBase& d1,
-                 Traversal::NodeDispatcherBase& d2)
+  AnonymousBase (Traversal::NodeDispatcher& d1, Traversal::NodeDispatcher& d2)
       : complex_ (&d1, &d2)
   {
     edge_traverser (belongs_);
@@ -106,8 +104,7 @@ public:
 private:
   struct Complex : Traversal::Complex
   {
-    Complex (Traversal::NodeDispatcherBase* d1,
-             Traversal::NodeDispatcherBase* d2)
+    Complex (Traversal::NodeDispatcher* d1, Traversal::NodeDispatcher* d2)
         : d1_ (d1), d2_ (d2)
     {
     }
@@ -123,8 +120,8 @@ private:
     }
 
   private:
-    Traversal::NodeDispatcherBase* d1_;
-    Traversal::NodeDispatcherBase* d2_;
+    Traversal::NodeDispatcher* d1_;
+    Traversal::NodeDispatcher* d2_;
 
   } complex_;
 

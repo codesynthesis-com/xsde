@@ -125,7 +125,7 @@ namespace Processing
           {
             if (types_seen_.find (&t) == types_seen_.end ())
             {
-              FrontendElements::Context& ctx (t.context ());
+              SemanticGraph::Context& ctx (t.context ());
 
               last_xpath_ = xpath (m);
 
