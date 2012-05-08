@@ -3,6 +3,22 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <iostream>
+
+#include <boost/filesystem/fstream.hpp>
+
+#include <cult/containers/set.hxx>
+#include <cult/containers/vector.hxx>
+
+#include <cutl/compiler/code-stream.hxx>
+#include <cutl/compiler/cxx-indenter.hxx>
+#include <cutl/compiler/sloc-counter.hxx>
+
+#include <backend-elements/regex.hxx>
+#include <backend-elements/indentation/clip.hxx>
+
+#include <xsd-frontend/semantic-graph.hxx>
+
 #include <type-map/lexer.hxx>
 #include <type-map/parser.hxx>
 
@@ -24,20 +40,6 @@
 
 #include <cxx/serializer/element-validation-source.hxx>
 #include <cxx/serializer/attribute-validation-source.hxx>
-
-#include <xsd-frontend/semantic-graph.hxx>
-
-#include <backend-elements/regex.hxx>
-#include <backend-elements/indentation/cxx.hxx>
-#include <backend-elements/indentation/sloc.hxx>
-#include <backend-elements/indentation/clip.hxx>
-
-#include <cult/containers/set.hxx>
-#include <cult/containers/vector.hxx>
-
-#include <boost/filesystem/fstream.hpp>
-
-#include <iostream>
 
 #include <usage.hxx>
 
@@ -1166,12 +1168,18 @@ namespace CXX
           open (epilogue, name);
       }
 
-
       // SLOC counter.
       //
-      UnsignedLong sloc (0);
+      UnsignedLong sloc_total (0);
       Boolean show_sloc (ops.value<CLI::show_sloc> ());
 
+      typedef
+      compiler::ostream_filter<compiler::cxx_indenter, wchar_t>
+      ind_filter;
+
+      typedef
+      compiler::ostream_filter<compiler::sloc_counter, wchar_t>
+      sloc_filter;
 
       //
       //
@@ -1192,7 +1200,7 @@ namespace CXX
         Context ctx (
           hxx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
-        Indentation::Clip<Indentation::SLOC, WideChar> hxx_sloc (hxx);
+        sloc_filter sloc (hxx);
 
         String guard (guard_expr.merge (guard_prefix + hxx_name));
         guard = ctx.escape (guard); // Make it a C++ id.
@@ -1417,23 +1425,20 @@ namespace CXX
             << "// End prologue." << endl
             << endl;
 
+        // Generate.
+        //
         {
-          // Set auto-indentation.
-          //
-          Indentation::Clip<Indentation::CXX, WideChar> hxx_clip (hxx);
+          ind_filter ind (hxx); // We don't want to indent prologues/epilogues.
 
-          // Generate.
-          //
           if (!generate_xml_schema)
             generate_serializer_forward (ctx);
 
           generate_serializer_header (ctx, generate_xml_schema);
-
-
-          if (inline_)
-            hxx << "#include " << ctx.process_include_path (ixx_name) << endl
-                << endl;
         }
+
+        if (inline_)
+          hxx << "#include " << ctx.process_include_path (ixx_name) << endl
+              << endl;
 
         // Copy epilogue.
         //
@@ -1454,9 +1459,9 @@ namespace CXX
         hxx << "#endif // " << guard << endl;
 
         if (show_sloc)
-          wcerr << hxx_path << ": " << hxx_sloc.buffer ().count () << endl;
+          wcerr << hxx_path << ": " << sloc.stream ().count () << endl;
 
-        sloc += hxx_sloc.buffer ().count ();
+        sloc_total += sloc.stream ().count ();
       }
 
 
@@ -1467,8 +1472,7 @@ namespace CXX
         Context ctx (
           ixx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
-        Indentation::Clip<Indentation::SLOC, WideChar> ixx_sloc (ixx);
-
+        sloc_filter sloc (ixx);
 
         // Copy prologue.
         //
@@ -1483,14 +1487,10 @@ namespace CXX
             << "// End prologue." << endl
             << endl;
 
+        // Generate.
+        //
         {
-          // Set auto-indentation.
-          //
-          Indentation::Clip<Indentation::CXX, WideChar> ixx_clip (ixx);
-
-
-          // Generate.
-          //
+          ind_filter ind (ixx); // We don't want to indent prologues/epilogues.
           generate_serializer_inline (ctx);
         }
 
@@ -1508,9 +1508,9 @@ namespace CXX
             << endl;
 
         if (show_sloc)
-          wcerr << ixx_path << ": " << ixx_sloc.buffer ().count () << endl;
+          wcerr << ixx_path << ": " << sloc.stream ().count () << endl;
 
-        sloc += ixx_sloc.buffer ().count ();
+        sloc_total += sloc.stream ().count ();
       }
 
 
@@ -1521,7 +1521,7 @@ namespace CXX
         Context ctx (
           cxx, schema, file_path, ops, &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
-        Indentation::Clip<Indentation::SLOC, WideChar> cxx_sloc (cxx);
+        sloc_filter sloc (cxx);
 
         // Copy prologue.
         //
@@ -1536,13 +1536,13 @@ namespace CXX
             << "// End prologue." << endl
             << endl;
 
-        {
-          // Set auto-indentation.
-          //
-          Indentation::Clip<Indentation::CXX, WideChar> cxx_clip (cxx);
+        cxx << "#include " << ctx.process_include_path (hxx_name) << endl
+            << endl;
 
-          cxx << "#include " << ctx.process_include_path (hxx_name) << endl
-              << endl;
+        // Generate.
+        //
+        {
+          ind_filter ind (cxx); // We don't want to indent prologues/epilogues.
 
           if (!inline_)
             generate_serializer_inline (ctx);
@@ -1570,9 +1570,9 @@ namespace CXX
             << endl;
 
         if (show_sloc)
-          wcerr << cxx_path << ": " << cxx_sloc.buffer ().count () << endl;
+          wcerr << cxx_path << ": " << sloc.stream ().count () << endl;
 
-        sloc += cxx_sloc.buffer ().count ();
+        sloc_total += sloc.stream ().count ();
       }
 
       // HXX impl
@@ -1590,14 +1590,11 @@ namespace CXX
                  << "#define " << guard << endl
                  << endl;
 
+        hxx_impl << "#include " << ctx.process_include_path (hxx_name)
+                 << endl << endl;
+
         {
-          // Set auto-indentation.
-          //
-          Indentation::Clip<Indentation::CXX, WideChar> clip (hxx_impl);
-
-          hxx_impl << "#include " << ctx.process_include_path (hxx_name)
-                   << endl << endl;
-
+          ind_filter ind (hxx_impl);
           generate_impl_header (ctx);
         }
 
@@ -1611,14 +1608,13 @@ namespace CXX
         Context ctx (cxx_impl, schema, file_path, ops,
                      &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
-        // Set auto-indentation.
-        //
-        Indentation::Clip<Indentation::CXX, WideChar> clip (cxx_impl);
-
         cxx_impl << "#include " << ctx.process_include_path (hxx_impl_name)
                  << endl << endl;
 
-        generate_impl_source (ctx);
+        {
+          ind_filter ind (cxx_impl);
+          generate_impl_source (ctx);
+        }
       }
 
       // CXX driver
@@ -1628,17 +1624,16 @@ namespace CXX
         Context ctx (cxx_driver, schema, file_path, ops,
                      &hxx_expr, &ixx_expr, &hxx_impl_expr);
 
-        // Set auto-indentation.
-        //
-        Indentation::Clip<Indentation::CXX, WideChar> clip (cxx_driver);
-
         cxx_driver << "#include " << ctx.process_include_path (hxx_impl_name)
                    << endl << endl;
 
-        generate_driver_source (ctx);
+        {
+          ind_filter ind (cxx_driver);
+          generate_driver_source (ctx);
+        }
       }
 
-      return sloc;
+      return sloc_total;
     }
     catch (UnrepresentableCharacter const& e)
     {
