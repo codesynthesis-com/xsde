@@ -100,6 +100,10 @@ install  := $(out_base)/.install
 # Import.
 #
 $(call import,\
+  $(scf_root)/import/libcutl/stub.make,\
+  l: cutl.l,cpp-options: cutl.l.cpp-options)
+
+$(call import,\
   $(scf_root)/import/libcult/stub.make,\
   l: cult.l,cpp-options: cult.l.cpp-options)
 
@@ -119,19 +123,18 @@ $(call import,\
   $(scf_root)/import/libxsd-frontend/stub.make,\
   l: xsd_fe.l,cpp-options: xsd_fe.l.cpp-options)
 
-
 # Build.
 #
-$(xsde): $(cxx_obj) $(xsd_fe.l) $(be.l) $(cult.l) $(fs.l) $(re.l)
+$(xsde): $(cxx_obj) $(xsd_fe.l) $(be.l) $(cult.l) $(cutl.l) $(fs.l) $(re.l)
 
 $(cxx_obj) $(cxx_od): cpp_options := -I$(src_base)
 $(cxx_obj) $(cxx_od):     \
   $(xsd_fe.l.cpp-options) \
   $(be.l.cpp-options)     \
   $(cult.l.cpp-options)   \
+  $(cutl.l.cpp-options)   \
   $(fs.l.cpp-options)     \
   $(re.l.cpp-options)
-
 
 $(call include-dep,$(cxx_od))
 
