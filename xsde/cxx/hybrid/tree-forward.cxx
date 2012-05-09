@@ -730,7 +730,7 @@ namespace CXX
       //
       if (!generate_xml_schema && xml_schema)
       {
-        String name (ctx.hxx_expr->merge (xml_schema));
+        String name (ctx.hxx_expr->replace (xml_schema));
 
         ctx.os << "#include " << ctx.process_include_path (name) << endl
                << endl;

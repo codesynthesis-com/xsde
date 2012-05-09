@@ -6,12 +6,12 @@
 #ifndef CXX_ELEMENTS_HXX
 #define CXX_ELEMENTS_HXX
 
+#include <cutl/re.hxx>
+
 #include <cult/types.hxx>
 #include <cult/containers/map.hxx>
 #include <cult/containers/set.hxx>
 #include <cult/containers/vector.hxx>
-
-#include <backend-elements/regex.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
@@ -135,8 +135,8 @@ namespace CXX
   class Context
   {
   public:
-    typedef BackendElements::Regex::Pattern<WideChar> RegexPat;
-    typedef BackendElements::Regex::Expression<WideChar> Regex;
+    typedef cutl::re::wregex RegexPat;
+    typedef cutl::re::wregexsub Regex;
     typedef Cult::Containers::Vector<Regex> RegexMapping;
     typedef Cult::Containers::Map<String, String> MapMapping;
     typedef Cult::Containers::Map<String, String> MappingCache;

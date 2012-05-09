@@ -8,7 +8,7 @@
 
 #include <sstream>
 
-#include <backend-elements/regex.hxx>
+#include <cutl/re.hxx>
 
 #include <cxx/elements.hxx>
 
@@ -33,7 +33,7 @@ namespace CXX
     class Context: public CXX::Context
     {
     public:
-      typedef BackendElements::Regex::Expression<Char> Regex;
+      typedef cutl::re::regexsub Regex;
 
     public:
       Context (std::wostream&,

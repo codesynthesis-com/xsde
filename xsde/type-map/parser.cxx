@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <backend-elements/regex.hxx>
+#include <cutl/re.hxx>
 
 #include <type-map/parser.hxx>
 
@@ -14,7 +14,7 @@ using std::endl;
 namespace TypeMap
 {
   typedef Lexer::Token Token;
-  typedef BackendElements::Regex::Format<WideChar> Format;
+  typedef cutl::re::wformat Format;
 
   Parser::Parser (Lexer& lex, String const& path)
       : lex_ (lex), path_ (path), e (std::wcerr)
@@ -99,7 +99,7 @@ namespace TypeMap
     catch (Format const& ex)
     {
       e << path_ << ":" << t.line () << ": invalid namespace pattern: "
-        << ex.description () << endl;
+        << ex.description ().c_str () << endl;
       return false;
     }
 
@@ -234,7 +234,7 @@ namespace TypeMap
     catch (Format const& ex)
     {
       e << path_ << ":" << t.line () << ": invalid namespace pattern: "
-        << ex.description () << endl;
+        << ex.description ().c_str () << endl;
       return false;
     }
 

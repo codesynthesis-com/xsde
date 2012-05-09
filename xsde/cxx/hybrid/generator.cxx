@@ -8,6 +8,8 @@
 
 #include <boost/filesystem/fstream.hpp>
 
+#include <cutl/re.hxx>
+
 #include <cult/containers/set.hxx>
 #include <cult/containers/vector.hxx>
 
@@ -15,7 +17,6 @@
 #include <cutl/compiler/cxx-indenter.hxx>
 #include <cutl/compiler/sloc-counter.hxx>
 
-#include <backend-elements/regex.hxx>
 #include <backend-elements/indentation/clip.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
@@ -1356,7 +1357,7 @@ namespace CXX
       if (!hxx_expr.match (name))
       {
         wcerr << "error: header expression '" <<
-          hxx_expr.pattern () << "' does not match '" <<
+          hxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
@@ -1364,7 +1365,7 @@ namespace CXX
       if (inline_ && !ixx_expr.match (name))
       {
         wcerr << "error: inline expression '" <<
-          ixx_expr.pattern () << "' does not match '" <<
+          ixx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
@@ -1372,7 +1373,7 @@ namespace CXX
       if (source && !cxx_expr.match (name))
       {
         wcerr << "error: source expression '" <<
-          cxx_expr.pattern () << "' does not match '" <<
+          cxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
@@ -1380,15 +1381,15 @@ namespace CXX
       if (forward && !fwd_expr.match (name))
       {
         wcerr << "error: forward expression '" <<
-          fwd_expr.pattern () << "' does not match '" <<
+          fwd_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
 
-      NarrowString hxx_name (hxx_expr.merge (name));
-      NarrowString ixx_name (inline_ ? ixx_expr.merge (name) : NarrowString ());
-      NarrowString cxx_name (source ? cxx_expr.merge (name) : NarrowString ());
-      NarrowString fwd_name (forward ? fwd_expr.merge (name) : NarrowString ());
+      NarrowString hxx_name (hxx_expr.replace (name));
+      NarrowString ixx_name (inline_ ? ixx_expr.replace (name) : NarrowString ());
+      NarrowString cxx_name (source ? cxx_expr.replace (name) : NarrowString ());
+      NarrowString fwd_name (forward ? fwd_expr.replace (name) : NarrowString ());
 
       Path hxx_path (hxx_name, boost::filesystem::native);
       Path ixx_path (ixx_name, boost::filesystem::native);
@@ -1557,7 +1558,7 @@ namespace CXX
 
         sloc_filter sloc (fwd);
 
-        String guard (guard_expr.merge (guard_prefix + fwd_name));
+        String guard (guard_expr.replace (guard_prefix + fwd_name));
         guard = ctx.escape (guard); // Make it a C++ id.
         std::transform (guard.begin (), guard.end(), guard.begin (), upcase);
 
@@ -1641,7 +1642,7 @@ namespace CXX
 
         sloc_filter sloc (hxx);
 
-        String guard (guard_expr.merge (guard_prefix + hxx_name));
+        String guard (guard_expr.replace (guard_prefix + hxx_name));
         guard = ctx.escape (guard); // Make it a C++ id.
         std::transform (guard.begin (), guard.end(), guard.begin (), upcase);
 
@@ -1854,7 +1855,7 @@ namespace CXX
 
         // Guard
         //
-        String guard (guard_expr.merge (guard_prefix + ixx_name));
+        String guard (guard_expr.replace (guard_prefix + ixx_name));
         guard = ctx.escape (guard); // make a c++ id
         std::transform (guard.begin (), guard.end(), guard.begin (), upcase);
 
@@ -2037,18 +2038,18 @@ namespace CXX
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<Char> const& e)
+    catch (cutl::re::format const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression ().c_str () << "': " <<
+        e.regex ().c_str () << "': " <<
         e.description ().c_str () << endl;
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<WideChar> const& e)
+    catch (cutl::re::wformat const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }
@@ -2064,7 +2065,7 @@ namespace CXX
                    AutoUnlinks& unlinks)
   {
     using std::ios_base;
-    typedef BackendElements::Regex::Expression<Char> Regex;
+    typedef cutl::re::regexsub Regex;
 
     try
     {
@@ -2145,7 +2146,7 @@ namespace CXX
       if (!hxx_expr.match (name))
       {
         wcerr << "error: parser implementation header expression '" <<
-          hxx_expr.pattern () << "' does not match '" <<
+          hxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
@@ -2153,14 +2154,14 @@ namespace CXX
       if (!cxx_expr.match (name))
       {
         wcerr << "error: parser implementation source expression '" <<
-          cxx_expr.pattern () << "' does not match '" <<
+          cxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
 
-      NarrowString hxx_skel_name (hxx_skel_expr.merge (name));
-      NarrowString hxx_name (hxx_expr.merge (name));
-      NarrowString cxx_name (cxx_expr.merge (name));
+      NarrowString hxx_skel_name (hxx_skel_expr.replace (name));
+      NarrowString hxx_name (hxx_expr.replace (name));
+      NarrowString cxx_name (cxx_expr.replace (name));
 
       Path hxx_path (hxx_name, boost::filesystem::native);
       Path cxx_path (cxx_name, boost::filesystem::native);
@@ -2277,7 +2278,7 @@ namespace CXX
 
         sloc_filter sloc (hxx);
 
-        String guard (guard_expr.merge (guard_prefix + hxx_name));
+        String guard (guard_expr.replace (guard_prefix + hxx_name));
         guard = ctx.escape (guard); // Make it a C++ id.
         std::transform (guard.begin (), guard.end(), guard.begin (), upcase);
 
@@ -2452,18 +2453,18 @@ namespace CXX
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<Char> const& e)
+    catch (cutl::re::format const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression ().c_str () << "': " <<
+        e.regex ().c_str () << "': " <<
         e.description ().c_str () << endl;
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<WideChar> const& e)
+    catch (cutl::re::wformat const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }
@@ -2479,7 +2480,7 @@ namespace CXX
                        AutoUnlinks& unlinks)
   {
     using std::ios_base;
-    typedef BackendElements::Regex::Expression<Char> Regex;
+    typedef cutl::re::regexsub Regex;
 
     try
     {
@@ -2559,7 +2560,7 @@ namespace CXX
       if (!hxx_expr.match (name))
       {
         wcerr << "error: serializer implementation header expression '" <<
-          hxx_expr.pattern () << "' does not match '" <<
+          hxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
@@ -2567,14 +2568,14 @@ namespace CXX
       if (!cxx_expr.match (name))
       {
         wcerr << "error: serializer implementation source expression '" <<
-          cxx_expr.pattern () << "' does not match '" <<
+          cxx_expr.regex ().str ().c_str () << "' does not match '" <<
           name.c_str () << "'" << endl;
         throw Failed ();
       }
 
-      NarrowString hxx_skel_name (hxx_skel_expr.merge (name));
-      NarrowString hxx_name (hxx_expr.merge (name));
-      NarrowString cxx_name (cxx_expr.merge (name));
+      NarrowString hxx_skel_name (hxx_skel_expr.replace (name));
+      NarrowString hxx_name (hxx_expr.replace (name));
+      NarrowString cxx_name (cxx_expr.replace (name));
 
       Path hxx_path (hxx_name, boost::filesystem::native);
       Path cxx_path (cxx_name, boost::filesystem::native);
@@ -2691,7 +2692,7 @@ namespace CXX
 
         sloc_filter sloc (hxx);
 
-        String guard (guard_expr.merge (guard_prefix + hxx_name));
+        String guard (guard_expr.replace (guard_prefix + hxx_name));
         guard = ctx.escape (guard); // Make it a C++ id.
         std::transform (guard.begin (), guard.end(), guard.begin (), upcase);
 
@@ -2874,18 +2875,18 @@ namespace CXX
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<Char> const& e)
+    catch (cutl::re::format const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression ().c_str () << "': " <<
+        e.regex ().c_str () << "': " <<
         e.description ().c_str () << endl;
 
       throw Failed ();
     }
-    catch (BackendElements::Regex::Format<WideChar> const& e)
+    catch (cutl::re::wformat const& e)
     {
       wcerr << "error: invalid regex: '" <<
-        e.expression () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }

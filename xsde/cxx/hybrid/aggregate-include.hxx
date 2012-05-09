@@ -166,7 +166,7 @@ namespace CXX
             path_str = path.native_file_string ();
           }
 
-          String inc_path (hxx_expr->merge (path_str));
+          String inc_path (hxx_expr->replace (path_str));
           os << "#include " << process_include_path (inc_path) << endl
              << endl;
         }

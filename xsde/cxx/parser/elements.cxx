@@ -305,12 +305,12 @@ namespace CXX
       case header:
       case source:
         {
-          inc_path = ctx_.hxx_expr->merge (path_str);
+          inc_path = ctx_.hxx_expr->replace (path_str);
           break;
         }
       case impl_header:
         {
-          inc_path = ctx_.hxx_impl_expr->merge (path_str);
+          inc_path = ctx_.hxx_impl_expr->replace (path_str);
           break;
         }
       }

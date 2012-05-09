@@ -8,9 +8,9 @@
 
 #include <sstream>
 
-#include <cult/containers/deque.hxx>
+#include <cutl/re.hxx>
 
-#include <backend-elements/regex.hxx>
+#include <cult/containers/deque.hxx>
 
 #include <cxx/elements.hxx>
 
@@ -20,7 +20,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    typedef BackendElements::Regex::Expression<Char> Regex;
+    typedef cutl::re::regexsub Regex;
 
     //
     //

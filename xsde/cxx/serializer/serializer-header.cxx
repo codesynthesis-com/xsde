@@ -1906,7 +1906,7 @@ namespace CXX
 
       if (extern_xml_schema)
       {
-        String name (ctx.hxx_expr->merge (extern_xml_schema));
+        String name (ctx.hxx_expr->replace (extern_xml_schema));
 
         ctx.os << "#include " << ctx.process_include_path (name) << endl
                << endl;

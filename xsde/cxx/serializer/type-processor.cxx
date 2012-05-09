@@ -74,11 +74,6 @@ namespace CXX
           {
             // Check if the namespace matches.
             //
-            //@@ Should probably store precompiled regex somewhere
-            //   instead of doing it every time.
-            //
-            boost::basic_regex<WideChar> ns_expr;
-
             Boolean ns_match;
 
             if (!n->xsd_name ().empty ())
@@ -110,8 +105,8 @@ namespace CXX
                     {
                       if (!n->xsd_name ().empty ())
                       {
-                        cxx_ns = n->xsd_name ().merge (
-                          n->cxx_name (), ns_name, true);
+                        cxx_ns = n->xsd_name ().replace (
+                          ns_name, n->cxx_name (), true);
                       }
                       else
                         cxx_ns = n->cxx_name ();
@@ -123,16 +118,16 @@ namespace CXX
                     //
                     String ret_type (cxx_ns);
 
-                    ret_type += t->xsd_name ().merge (
-                      t->cxx_ret_name (), t_name, true);
+                    ret_type += t->xsd_name ().replace (
+                      t_name, t->cxx_ret_name (), true);
 
                     String arg_type;
 
                     if (t->cxx_arg_name ())
                     {
                       arg_type = cxx_ns;
-                      arg_type += t->xsd_name ().merge (
-                        t->cxx_arg_name (), t_name, true);
+                      arg_type += t->xsd_name ().replace (
+                        t_name, t->cxx_arg_name (), true);
                     }
                     else
                     {

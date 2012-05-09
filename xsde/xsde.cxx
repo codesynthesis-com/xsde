@@ -4,7 +4,10 @@
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <iostream>
+
 #include <boost/filesystem/fstream.hpp>
+
+#include <cutl/re.hxx>
 
 #include <cult/types.hxx>
 
@@ -30,7 +33,6 @@
 #include <usage.hxx>
 #include <type-map/type-map.hxx>
 
-#include <backend-elements/regex.hxx>
 #include <backend-elements/indentation/clip.hxx>
 
 #include <cxx/parser/generator.hxx>
@@ -138,8 +140,8 @@ struct LocationTranslator: XSDFrontend::LocationTranslator
 private:
   typedef Cult::Containers::Map<NarrowString, NarrowString> Map;
 
-  typedef BackendElements::Regex::Expression<Char> Regex;
-  typedef BackendElements::Regex::Format<Char> RegexFormat;
+  typedef cutl::re::regexsub Regex;
+  typedef cutl::re::format RegexFormat;
   typedef Cult::Containers::Vector<Regex> RegexVector;
 
   typedef Cult::Containers::Map<NarrowString, NarrowString> Cache;
@@ -165,8 +167,8 @@ struct AnonymousNameTranslator: Transformations::AnonymousNameTranslator
              WideString const& xpath);
 
 private:
-  typedef BackendElements::Regex::Expression<WideChar> Regex;
-  typedef BackendElements::Regex::Format<WideChar> RegexFormat;
+  typedef cutl::re::wregexsub Regex;
+  typedef cutl::re::wformat RegexFormat;
   typedef Cult::Containers::Vector<Regex> RegexVector;
 
   RegexVector regex_;
@@ -192,15 +194,15 @@ struct SchemaPerTypeTranslator: Transformations::SchemaPerTypeTranslator
   translate_schema (NarrowString const& file);
 
 private:
-  typedef BackendElements::Regex::Expression<WideChar> TypeRegex;
-  typedef BackendElements::Regex::Format<WideChar> TypeRegexFormat;
+  typedef cutl::re::wregexsub TypeRegex;
+  typedef cutl::re::wformat TypeRegexFormat;
   typedef Cult::Containers::Vector<TypeRegex> TypeRegexVector;
 
   TypeRegexVector type_regex_;
   Boolean type_trace_;
 
-  typedef BackendElements::Regex::Expression<Char> SchemaRegex;
-  typedef BackendElements::Regex::Format<Char> SchemaRegexFormat;
+  typedef cutl::re::regexsub SchemaRegex;
+  typedef cutl::re::format SchemaRegexFormat;
   typedef Cult::Containers::Vector<SchemaRegex> SchemaRegexVector;
 
   SchemaRegexVector schema_regex_;
@@ -1487,7 +1489,7 @@ LocationTranslator (NarrowStrings const& map,
     catch (RegexFormat const& e)
     {
       wcerr << "error: invalid location regex: '" <<
-        e.expression ().c_str () << "': " <<
+        e.regex ().c_str () << "': " <<
         e.description ().c_str () << endl;
 
       throw Failed ();
@@ -1524,11 +1526,11 @@ translate (NarrowString const& l)
        i != regex_.rend (); ++i)
   {
     if (trace_)
-      wcerr << "try: '" << i->pattern () << "' : ";
+      wcerr << "try: '" << i->regex ().str ().c_str () << "' : ";
 
     if (i->match (l))
     {
-      NarrowString r (i->merge (l));
+      NarrowString r (i->replace (l));
 
       if (trace_)
         wcerr << "'" << r.c_str () << "' : +" << endl;
@@ -1558,12 +1560,12 @@ AnonymousNameTranslator (NarrowStrings const& regex, Boolean trace)
   {
     try
     {
-      regex_.push_back (Regex (*i));
+      regex_.push_back (Regex (WideString (*i)));
     }
     catch (RegexFormat const& e)
     {
       wcerr << "error: invalid anonymous type regex: '" <<
-        e.expression () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description () << endl;
 
       throw Failed ();
     }
@@ -1585,11 +1587,11 @@ translate (WideString const& file,
        i != regex_.rend (); ++i)
   {
     if (trace_)
-      wcerr << "try: '" << i->pattern () << "' : ";
+      wcerr << "try: '" << i->regex () << "' : ";
 
     if (i->match (s))
     {
-      WideString r (i->merge (s));
+      WideString r (i->replace (s));
 
       if (trace_)
         wcerr << "'" << r << "' : +" << endl;
@@ -1621,12 +1623,12 @@ SchemaPerTypeTranslator (NarrowStrings const& type_regex,
   {
     try
     {
-      type_regex_.push_back (TypeRegex (*i));
+      type_regex_.push_back (TypeRegex (WideString (*i)));
     }
     catch (TypeRegexFormat const& e)
     {
       wcerr << "error: invalid type file regex: '" <<
-        e.expression () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description () << endl;
 
       throw Failed ();
     }
@@ -1642,7 +1644,7 @@ SchemaPerTypeTranslator (NarrowStrings const& type_regex,
     catch (SchemaRegexFormat const& e)
     {
       wcerr << "error: invalid type file regex: '" <<
-        e.expression ().c_str () << "': " << e.description ().c_str () << endl;
+        e.regex ().c_str () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }
@@ -1661,11 +1663,11 @@ translate_type (WideString const& ns, WideString const& name)
        i != type_regex_.rend (); ++i)
   {
     if (type_trace_)
-      wcerr << "try: '" << i->pattern () << "' : ";
+      wcerr << "try: '" << i->regex () << "' : ";
 
     if (i->match (s))
     {
-      WideString r (i->merge (s));
+      WideString r (i->replace (s));
 
       if (type_trace_)
         wcerr << "'" << r << "' : +" << endl;
@@ -1692,11 +1694,11 @@ translate_schema (NarrowString const& file)
        i != schema_regex_.rend (); ++i)
   {
     if (schema_trace_)
-      wcerr << "try: '" << i->pattern () << "' : ";
+      wcerr << "try: '" << i->regex ().str ().c_str () << "' : ";
 
     if (i->match (file))
     {
-      NarrowString r (i->merge (file));
+      NarrowString r (i->replace (file));
 
       if (schema_trace_)
         wcerr << "'" << r.c_str () << "' : +" << endl;

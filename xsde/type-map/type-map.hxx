@@ -6,20 +6,29 @@
 #ifndef XSDE_TYPE_MAP_TYPE_MAP_HXX
 #define XSDE_TYPE_MAP_TYPE_MAP_HXX
 
+#include <cutl/re.hxx>
+
 #include <cult/types.hxx>
 #include <cult/containers/vector.hxx>
-
-#include <backend-elements/regex.hxx>
 
 namespace TypeMap
 {
   using namespace Cult::Types;
   typedef WideString String;
-  typedef BackendElements::Regex::Pattern<WideChar> Pattern;
+  typedef cutl::re::wregex Pattern;
 
   class Type
   {
   public:
+    Type (String const& xsd_name,
+          String const& cxx_ret_name,
+          String const& cxx_arg_name)
+        : xsd_name_ (xsd_name),
+          cxx_ret_name_ (cxx_ret_name),
+          cxx_arg_name_ (cxx_arg_name)
+    {
+    }
+
     Type (Pattern const& xsd_name,
           String const& cxx_ret_name,
           String const& cxx_arg_name)
@@ -56,6 +65,11 @@ namespace TypeMap
   class Namespace
   {
   public:
+    Namespace (String const& xsd_name)
+        : xsd_name_ (xsd_name), has_cxx_name_ (false)
+    {
+    }
+
     Namespace (Pattern const& xsd_name)
         : xsd_name_ (xsd_name), has_cxx_name_ (false)
     {
@@ -116,6 +130,14 @@ namespace TypeMap
     }
 
     Void
+    types_push_back (String const& xsd_type,
+                     String const& cxx_ret_type,
+                     String const& cxx_arg_type = L"")
+    {
+      types_.push_back (Type (xsd_type, cxx_ret_type, cxx_arg_type));
+    }
+
+    Void
     types_push_back (Pattern const& xsd_type,
                      String const& cxx_ret_type,
                      String const& cxx_arg_type = L"")
@@ -157,4 +179,3 @@ namespace TypeMap
 }
 
 #endif // XSDE_TYPE_MAP_TYPE_MAP_HXX
-
