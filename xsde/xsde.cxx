@@ -3,6 +3,8 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <vector>
+#include <memory> // std::auto_ptr
 #include <iostream>
 
 #include <boost/filesystem/fstream.hpp>
@@ -50,9 +52,7 @@ typedef Cult::Containers::Vector<NarrowString> NarrowStrings;
 namespace SemanticGraph = XSDFrontend::SemanticGraph;
 namespace Transformations = XSDFrontend::Transformations;
 
-using std::wcerr;
-using std::wcout;
-using std::endl;
+using namespace std;
 
 namespace CLI
 {
@@ -647,7 +647,7 @@ main (Int argc, Char* argv[])
           loc_translator,
           disabled_w);
 
-        Evptr<SemanticGraph::Schema> schema;
+        auto_ptr<SemanticGraph::Schema> schema;
 
         try
         {
@@ -1112,7 +1112,7 @@ main (Int argc, Char* argv[])
         loc_translator,
         disabled_w);
 
-      Evptr<SemanticGraph::Schema> schema (parser.parse (paths));
+      auto_ptr<SemanticGraph::Schema> schema (parser.parse (paths));
 
       // Morph anonymous types.
       //
@@ -1177,7 +1177,7 @@ main (Int argc, Char* argv[])
       // Rearrange the graph so that each type is in a seperate
       // schema file.
       //
-      typedef Cult::Containers::Vector<SemanticGraph::Schema*> Schemas;
+      typedef std::vector<SemanticGraph::Schema*> Schemas;
 
       SchemaPerTypeTranslator type_translator (
         common_ops.value<CLI::type_file_regex> (),
@@ -1194,7 +1194,7 @@ main (Int argc, Char* argv[])
 
       // Generate code.
       //
-      for (Schemas::Iterator b (schemas.begin ()), i (b), e (schemas.end ());
+      for (Schemas::iterator b (schemas.begin ()), i (b), e (schemas.end ());
            i != e; ++i)
       {
         SemanticGraph::Schema& s (**i);
