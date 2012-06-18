@@ -1,0 +1,365 @@
+  <h1>TYPE MAP</h1>
+
+  <p>Type map files are used to define a mapping between XML Schema
+     and C++ types. For C++/Parser, the compiler uses
+     this information to determine the return types of
+     <code><b>post_*</b></code> functions in parser skeletons
+     corresponding to XML Schema types as well as argument types
+     for callbacks corresponding to elements and attributes of these
+     types. For C++/Serializer, type maps are used to determine
+     the argument type of <code><b>pre</b></code> functions in
+     serializer skeletons corresponding to XML Schema types as
+     well as return types for callbacks corresponding to elements
+     and attributes of these types.</p>
+
+  <p>The compiler has a set of predefined mapping rules that map
+     the built-in XML Schema types to suitable C++ types (discussed
+     in the following sub-sections) and all other types to
+     <code><b>void</b></code>. By providing your own type maps you
+     can override these predefined rules. The format of the type map
+     file is presented below:
+  </p>
+
+  <pre>
+namespace &lt;schema-namespace> [&lt;cxx-namespace>]
+{
+  (include &lt;file-name>;)*
+  ([type] &lt;schema-type> &lt;cxx-ret-type> [&lt;cxx-arg-type>];)*
+}
+  </pre>
+
+  <p>Both <code><i>&lt;schema-namespace></i></code> and
+     <code><i>&lt;schema-type></i></code> are regex patterns while
+     <code><i>&lt;cxx-namespace></i></code>,
+     <code><i>&lt;cxx-ret-type></i></code>, and
+     <code><i>&lt;cxx-arg-type></i></code> are regex pattern
+     substitutions. All names can be optionally enclosed in
+     <code><b>"&nbsp;"</b></code>, for example, to include white-spaces.</p>
+
+  <p><code><i>&lt;schema-namespace></i></code> determines XML
+     Schema namespace. Optional <code><i>&lt;cxx-namespace></i></code>
+     is prefixed to every C++ type name in this namespace declaration.
+     <code><i>&lt;cxx-ret-type></i></code> is a C++ type name that is
+     used as a return type for the <code><b>post_*</b></code> function
+     in C++/Parser or for element/attribute callbacks in C++/Serializer.
+     Optional <code><i>&lt;cxx-arg-type></i></code> is an argument type
+     for element/attribute callbacks in C++/Parser or for the
+     <code><b>pre</b></code> function in C++/Serializer. If
+     <code><i>&lt;cxx-arg-type></i></code> is not specified, it defaults
+     to <code><i>&lt;cxx-ret-type></i></code> if <code><i>&lt;cxx-ret-type></i></code>
+     ends with <code><b>*</b></code> or <code><b>&amp;</b></code> (that is,
+     it is a pointer or a reference) and
+     <code><b>const</b>&nbsp;<i>&lt;cxx-ret-type></i><b>&amp;</b></code>
+     otherwise.
+     <code><i>&lt;file-name></i></code> is a file name either in the
+     <code><b>"&nbsp;"</b></code> or <code><b>&lt;&nbsp;></b></code> format
+     and is added with the <code><b>#include</b></code> directive to
+     the generated code.</p>
+
+  <p>The <code><b>#</b></code> character starts a comment that ends
+     with a new line or end of file. To specify a name that contains
+     <code><b>#</b></code> enclose it in <code><b>"&nbsp;"</b></code>.
+     For example:</p>
+
+  <pre>
+namespace http://www.example.com/xmlns/my my
+{
+  include "my.hxx";
+
+  # Pass apples by value.
+  #
+  apple apple;
+
+  # Pass oranges as pointers.
+  #
+  orange orange_t*;
+}
+  </pre>
+
+  <p>In the example above, for the
+     <code><b>http://www.example.com/xmlns/my#orange</b></code>
+     XML Schema type, the <code><b>my::orange_t*</b></code> C++ type will
+     be used as both return and argument types.</p>
+
+  <p>Several namespace declarations can be specified in a single
+     file. The namespace declaration can also be completely
+     omitted to map types in a schema without a namespace. For
+     instance:</p>
+
+  <pre>
+include "my.hxx";
+apple apple;
+
+namespace http://www.example.com/xmlns/my
+{
+  orange "const orange_t*";
+}
+  </pre>
+
+  <p>The compiler has a number of predefined mapping rules
+     for the built-in XML Schema types that vary depending on
+     the mapping used. They are described in the following
+     subsections. The last predefined rule for all the mappings
+     maps anything that wasn't mapped by previous rules to
+     <code><b>void</b></code>:</p>
+
+  <pre>
+namespace .*
+{
+  .* void void;
+}
+  </pre>
+
+  <p>When you provide your own type maps with the
+     <code><b>--type-map</b></code> option, they are evaluated first.
+     This allows you to selectively override predefined rules.</p>
+
+
+  <h2>Predefined C++/Parser Type Maps</h2>
+
+  <p>The C++/Parser mapping provides a number of predefined type
+     map rules for the built-in XML Schema types. They can be
+     presented as the following map files:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  boolean bool bool;
+
+  byte "signed char" "signed char";
+  unsignedByte "unsigned char" "unsigned char";
+
+  short short short;
+  unsignedShort "unsigned short" "unsigned short";
+
+  int int int;
+  unsignedInt "unsigned int" "unsigned int";
+
+  long "long long" "long long";
+  unsignedLong "unsigned long long" "unsigned long long";
+
+  integer long long;
+
+  negativeInteger long long;
+  nonPositiveInteger long long;
+
+  positiveInteger "unsigned long" "unsigned long";
+  nonNegativeInteger "unsigned long" "unsigned long";
+
+  float float float;
+  double double double;
+  decimal double double;
+
+  NMTOKENS xml_schema::string_sequence*;
+  IDREFS xml_schema::string_sequence*;
+
+  base64Binary xml_schema::buffer*;
+  hexBinary xml_schema::buffer*;
+
+  date xml_schema::date;
+  dateTime xml_schema::date_time;
+  duration xml_schema::duration;
+  gDay xml_schema::gday;
+  gMonth xml_schema::gmonth;
+  gMonthDay xml_schema::gmonth_day;
+  gYear xml_schema::gyear;
+  gYearMonth xml_schema::gyear_month;
+  time xml_schema::time;
+}
+  </pre>
+
+  <p>If the <code><b>--no-stl</b></code> option is not specified,
+     the following mapping is used for the string-based XML Schema
+     built-in types:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  include &lt;string>;
+
+  string std::string;
+  normalizedString std::string;
+  token std::string;
+  Name std::string;
+  NMTOKEN std::string;
+  NCName std::string;
+  ID std::string;
+  IDREF std::string;
+  language std::string;
+  anyURI std::string;
+
+  QName xml_schema::qname;
+}
+  </pre>
+
+  <p>Otherwise, a C string-based mapping is used:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  string char*;
+  normalizedString char*;
+  token char*;
+  Name char*;
+  NMTOKEN char*;
+  NCName char*;
+  ID char*;
+  IDREF char*;
+  language char*;
+  anyURI char*;
+
+  QName xml_schema::qname*;
+}
+  </pre>
+
+  <h2>Predefined C++/Serializer Type Maps</h2>
+
+  <p>The C++/Serializer mapping provides a number of predefined type
+     map rules for the built-in XML Schema types. They can be
+     presented as the following map files:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  boolean bool bool;
+
+  byte "signed char" "signed char";
+  unsignedByte "unsigned char" "unsigned char";
+
+  short short short;
+  unsignedShort "unsigned short" "unsigned short";
+
+  int int int;
+  unsignedInt "unsigned int" "unsigned int";
+
+  long "long long" "long long";
+  unsignedLong "unsigned long long" "unsigned long long";
+
+  integer long long;
+
+  negativeInteger long long;
+  nonPositiveInteger long long;
+
+  positiveInteger "unsigned long" "unsigned long";
+  nonNegativeInteger "unsigned long" "unsigned long";
+
+  float float float;
+  double double double;
+  decimal double double;
+
+  NMTOKENS "const xml_schema::string_sequence*";
+  IDREFS "const xml_schema::string_sequence*";
+
+  base64Binary "const xml_schema::buffer*";
+  hexBinary "const xml_schema::buffer*";
+
+  date xml_schema::date;
+  dateTime xml_schema::date_time;
+  duration xml_schema::duration;
+  gDay xml_schema::gday;
+  gMonth xml_schema::gmonth;
+  gMonthDay xml_schema::gmonth_day;
+  gYear xml_schema::gyear;
+  gYearMonth xml_schema::gyear_month;
+  time xml_schema::time;
+}
+  </pre>
+
+  <p>If the <code><b>--no-stl</b></code> option is not specified,
+     the following mapping is used for the string-based XML Schema
+     built-in types:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  include &lt;string>;
+
+  string std::string;
+  normalizedString std::string;
+  token std::string;
+  Name std::string;
+  NMTOKEN std::string;
+  NCName std::string;
+  ID std::string;
+  IDREF std::string;
+  language std::string;
+  anyURI std::string;
+
+  QName xml_schema::qname;
+}
+  </pre>
+
+  <p>Otherwise, a C string-based mapping is used:</p>
+
+  <pre>
+namespace http://www.w3.org/2001/XMLSchema
+{
+  string "const char*";
+  normalizedString "const char*";
+  token "const char*";
+  Name "const char*";
+  NMTOKEN "const char*";
+  NCName "const char*";
+  ID "const char*";
+  IDREF "const char*";
+  language "const char*";
+  anyURI "const char*";
+
+  QName "const xml_schema::qname*";
+}
+  </pre>
+
+  <h1>REGEX AND SHELL QUOTING</h1>
+
+  <p>When entering a regular expression argument in the shell
+     command line it is often necessary to use quoting (enclosing
+     the argument in <code><b>"&nbsp;"</b></code> or
+     <code><b>'&nbsp;'</b></code>) in order to prevent the shell
+     from interpreting certain characters, for example, spaces as
+     argument separators and <code><b>$</b></code> as variable
+     expansions.</p>
+
+  <p>Unfortunately it is hard to achieve this in a manner that is
+     portable across POSIX shells, such as those found on
+     GNU/Linux and UNIX, and Windows shell. For example, if you
+     use <code><b>"&nbsp;"</b></code> for quoting you will get a
+     wrong result with POSIX shells if your expression contains
+     <code><b>$</b></code>. The standard way of dealing with this
+     on POSIX systems is to use <code><b>'&nbsp;'</b></code> instead.
+     Unfortunately, Windows shell does not remove <code><b>'&nbsp;'</b></code>
+     from arguments when they are passed to applications. As a result you
+     may have to use <code><b>'&nbsp;'</b></code> for POSIX and
+     <code><b>"&nbsp;"</b></code> for Windows (<code><b>$</b></code> is
+     not treated as a special character on Windows).</p>
+
+  <p>Alternatively, you can save regular expression options into
+     a file, one option per line, and use this file with the
+     <code><b>--options-file</b></code> option. With this approach
+     you don't need to worry about shell quoting.</p>
+
+  <h1>DIAGNOSTICS</h1>
+
+  <p>If the input file is not a valid W3C XML Schema definition,
+    <code><b>xsde</b></code> will issue diagnostic messages to STDERR
+    and exit with non-zero exit code.</p>
+
+  <h1>BUGS</h1>
+
+  <p>Send bug reports to the
+     <a href="mailto:xsde-users@codesynthesis.com">xsde-users@codesynthesis.com</a> mailing list.</p>
+
+  </div>
+  <div id="footer">
+    &copy;2005-2011 <a href="http://codesynthesis.com">CODE SYNTHESIS TOOLS CC</a>
+
+    <div id="terms">
+      Permission is granted to copy, distribute and/or modify this
+      document under the terms of the
+      <a href="http://codesynthesis.com/licenses/fdl-1.2.txt">GNU Free
+      Documentation License, version 1.2</a>; with no Invariant Sections,
+      no Front-Cover Texts and no Back-Cover Texts.
+    </div>
+  </div>
+</div>
+</body>
+</html>

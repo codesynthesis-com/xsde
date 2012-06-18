@@ -31,11 +31,10 @@
 #include <xsd-frontend/transformations/schema-per-type.hxx>
 #include <xsd-frontend/transformations/simplifier.hxx>
 
-#include <xsde.hxx>
-#include <usage.hxx>
 #include <type-map/type-map.hxx>
 
-#include <backend-elements/indentation/clip.hxx>
+#include <xsde.hxx>
+#include <options.hxx>
 
 #include <cxx/parser/generator.hxx>
 #include <cxx/serializer/generator.hxx>
@@ -311,117 +310,9 @@ main (Int argc, Char* argv[])
           return 1;
         }
 
-        ::CLI::Indent::Clip< ::CLI::OptionsUsage, WideChar> clip (o);
-
-        // Disable warning option.
+        // Add frontend options at the end.
         //
-        o << "--disable-warning <warn>" << endl
-          << " Disable printing warning with id <warn>. If 'all'\n"
-          << " is specified for the warning id then all warnings\n"
-          << " are disabled."
-          << endl;
-
-        // Anonymous morphing options.
-        //
-        o << "--preserve-anonymous" << endl
-          << " Preserve anonymous types. By default anonymous\n"
-          << " types are automatically named with names derived\n"
-          << " from the enclosing elements/attributes."
-          << endl;
-
-        o << "--anonymous-regex <regex>" << endl
-          << " Add the provided regular expression to the list of\n"
-          << " regular expressions used to derive names for\n"
-          << " anonymous types from the names of the enclosing\n"
-          << " attributes/elements."
-          << endl;
-
-        o << "--anonymous-regex-trace" << endl
-          << " Trace the process of applying regular expressions\n"
-          << " specified with the --anonymous-regex option."
-          << endl;
-
-        // Location mapping options.
-        //
-        o << "--location-map <ol>=<nl>" << endl
-          << " Map the original schema location <ol> that is\n"
-          << " specified in the XML Schema include or import\n"
-          << " elements to new schema location <nl>. Repeat\n"
-          << " this option to map more than one schema location."
-          << endl;
-
-        o << "--location-regex <regex>" << endl
-          << " Add <regex> to the list of regular expressions\n"
-          << " used to map schema locations that are specified\n"
-          << " in the XML Schema include or import elements."
-          << endl;
-
-        o << "--location-regex-trace" << endl
-          << " Trace the process of applying regular expressions\n"
-          << " specified with the --location-regex option."
-          << endl;
-
-        // File-per-type compilation mode options.
-        //
-        o << "--file-per-type" << endl
-          << " Generate a separate set of C++ files for each\n"
-          << " type defined in XML Schema."
-          << endl;
-
-        o << "--type-file-regex <regex>" << endl
-          << " Add the provided regular expression to the list of\n"
-          << " regular expressions used to translate type names\n"
-          << " to file names when the --file-per-type option is\n"
-          << " specified."
-          << endl;
-
-        o << "--type-file-regex-trace" << endl
-          << " Trace the process of applying regular expressions\n"
-          << " specified with the --type-file-regex option."
-          << endl;
-
-        o << "--schema-file-regex <regex>" << endl
-          << " Add the provided regular expression to the list\n"
-          << " of regular expressions used to translate schema\n"
-          << " file names when the --file-per-type option is\n"
-          << " specified."
-          << endl;
-
-        o << "--schema-file-regex-trace" << endl
-          << " Trace the process of applying regular expressions\n"
-          << " specified with the --schema-file-regex option."
-          << endl;
-
-        o << "--fat-type-file" << endl
-          << " Generate code corresponding to global elements\n"
-          << " into type files instead of schema files when the\n"
-          << " --file-per-type option is specified."
-          << endl;
-
-        // File list options.
-        //
-        o << "--file-list <file>" << endl
-          << " Write a list of generated C++ files to <file>."
-          << endl;
-
-        o << "--file-list-prologue <p>" << endl
-          << " Insert <p> at the beginning of the file list. All\n"
-          << " occurrences of the \\n character sequence in <p>\n"
-          << " are replaced with new lines."
-          << endl;
-
-        o << "--file-list-prologue <e>" << endl
-          << " Insert <e> at the end of the file list. All\n"
-          << " occurrences of the \\n character sequence in <e>\n"
-          << " are replaced with new lines."
-          << endl;
-
-        o << "--file-list-delim <d>" << endl
-          << " Delimit file names written to the file list with\n"
-          << " <d> instead of new lines. All occurrences of the\n"
-          << " \\n character sequence in <d> are replaced with\n"
-          << " new lines."
-          << endl;
+        options::print_usage (o);
       }
       else
       {

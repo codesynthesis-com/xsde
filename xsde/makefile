@@ -7,12 +7,11 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../build/bootstrap.make
 
 cxx_tun := xsde.cxx
 
-
-# C++
+# C++.
 #
 cxx_tun += cxx/elements.cxx
 
-# C++/Parser
+# C++/Parser.
 #
 cxx_tun += cxx/parser/elements.cxx                        \
            cxx/parser/validator.cxx                       \
@@ -31,7 +30,7 @@ cxx_tun += cxx/parser/elements.cxx                        \
            cxx/parser/attribute-validation-source.cxx     \
            cxx/parser/characters-validation-source.cxx
 
-# C++/Serializer
+# C++/Serializer.
 #
 cxx_tun += cxx/serializer/elements.cxx                    \
            cxx/serializer/validator.cxx                   \
@@ -48,7 +47,7 @@ cxx_tun += cxx/serializer/elements.cxx                    \
            cxx/serializer/element-validation-source.cxx   \
            cxx/serializer/attribute-validation-source.cxx
 
-# C++/Hybrid
+# C++/Hybrid.
 #
 cxx_tun += cxx/hybrid/elements.cxx                        \
            cxx/hybrid/validator.cxx                       \
@@ -76,19 +75,26 @@ cxx_tun += cxx/hybrid/elements.cxx                        \
            cxx/hybrid/serializer-aggregate-header.cxx     \
            cxx/hybrid/serializer-aggregate-source.cxx
 
-# Type map
+# Type map.
 #
 cxx_tun += type-map/lexer.cxx  \
            type-map/parser.cxx
 
-# Processing
+# Processing.
 #
 cxx_tun += processing/inheritance/processor.cxx
 
+# Options file.
+#
+cli_tun := options.cli                \
+           cxx/options.cli            \
+           cxx/hybrid/options.cli     \
+           cxx/parser/options.cli     \
+           cxx/serializer/options.cli
 
 #
 #
-cxx_obj  := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o))
+cxx_obj  := $(addprefix $(out_base)/,$(cxx_tun:.cxx=.o) $(cli_tun:.cli=.o))
 cxx_od   := $(cxx_obj:.o=.o.d)
 
 xsde     := $(out_base)/xsde
@@ -100,16 +106,16 @@ install  := $(out_base)/.install
 # Import.
 #
 $(call import,\
+  $(scf_root)/import/cli/stub.make,\
+  cli: cli,cli-rules: cli_rules)
+
+$(call import,\
   $(scf_root)/import/libcutl/stub.make,\
   l: cutl.l,cpp-options: cutl.l.cpp-options)
 
 $(call import,\
   $(scf_root)/import/libcult/stub.make,\
   l: cult.l,cpp-options: cult.l.cpp-options)
-
-$(call import,\
-  $(scf_root)/import/libbackend-elements/stub.make,\
-  l: be.l,cpp-options: be.l.cpp-options)
 
 $(call import,\
   $(scf_root)/import/libboost/filesystem/stub.make,\
@@ -121,17 +127,52 @@ $(call import,\
 
 # Build.
 #
-$(xsde): $(cxx_obj) $(xsd_fe.l) $(be.l) $(cult.l) $(cutl.l) $(fs.l)
+$(xsde): $(cxx_obj) $(xsd_fe.l) $(cult.l) $(cutl.l) $(fs.l)
 
 $(cxx_obj) $(cxx_od): cpp_options := -I$(src_base)
 $(cxx_obj) $(cxx_od):     \
   $(xsd_fe.l.cpp-options) \
-  $(be.l.cpp-options)     \
   $(cult.l.cpp-options)   \
   $(cutl.l.cpp-options)   \
   $(fs.l.cpp-options)
 
-$(call include-dep,$(cxx_od))
+genf := $(cli_tun:.cli=.hxx) $(cli_tun:.cli=.ixx) $(cli_tun:.cli=.cxx)
+gen  := $(addprefix $(out_base)/,$(genf))
+
+$(gen): $(cli)
+$(gen): cli := $(cli)
+$(gen): cli_options +=         \
+-I $(src_base)                 \
+--ostream-type ::std::wostream \
+--exclude-base                 \
+--suppress-undocumented        \
+--generate-file-scanner        \
+--include-with-brackets        \
+--option-length 28
+
+#--include-prefix xsde
+#--guard-prefix XSDE
+
+$(addprefix $(out_base)/cxx/options,.hxx .ixx .cxx): $(src_base)/options.cli
+$(addprefix $(out_base)/cxx/options,.hxx .ixx .cxx): cli_options += \
+--include-prefix cxx --guard-prefix CXX
+
+$(addprefix $(out_base)/cxx/hybrid/options,.hxx .ixx .cxx): \
+$(src_base)/options.cli $(src_base)/cxx/options.cli
+$(addprefix $(out_base)/cxx/hybrid/options,.hxx .ixx .cxx): cli_options += \
+--include-prefix cxx/hybrid --guard-prefix CXX_HYBRID
+
+$(addprefix $(out_base)/cxx/parser/options,.hxx .ixx .cxx): \
+$(src_base)/options.cli $(src_base)/cxx/options.cli
+$(addprefix $(out_base)/cxx/parser/options,.hxx .ixx .cxx): cli_options += \
+--include-prefix cxx/parser --guard-prefix CXX_PARSER
+
+$(addprefix $(out_base)/cxx/serializer/options,.hxx .ixx .cxx): \
+$(src_base)/options.cli $(src_base)/cxx/options.cli
+$(addprefix $(out_base)/cxx/serializer/options,.hxx .ixx .cxx): cli_options += \
+--include-prefix cxx/serializer --guard-prefix CXX_SERIALIZER
+
+$(call include-dep,$(cxx_od),$(cxx_obj),$(gen))
 
 # Alias for default target.
 #
@@ -155,7 +196,8 @@ $(install): $(xsde)
 $(clean):                            \
   $(xsde).o.clean                    \
   $(addsuffix .cxx.clean,$(cxx_obj)) \
-  $(addsuffix .cxx.clean,$(cxx_od))
+  $(addsuffix .cxx.clean,$(cxx_od))  \
+  $(addprefix $(out_base)/,$(cli_tun:.cli=.cxx.cli.clean))
 
 
 # Generated .gitignore.
@@ -163,15 +205,15 @@ $(clean):                            \
 ifeq ($(out_base),$(src_base))
 $(xsde): | $(out_base)/.gitignore
 
-$(out_base)/.gitignore: files := xsde
+$(out_base)/.gitignore: files := xsde $(genf)
 $(clean): $(out_base)/.gitignore.clean
 
 $(call include,$(bld_root)/git/gitignore.make)
 endif
 
-
-# how to
+# How to.
 #
+$(call include,$(cli_rules))
 $(call include,$(bld_root)/cxx/o-e.make)
 $(call include,$(bld_root)/cxx/cxx-o.make)
 $(call include,$(bld_root)/cxx/cxx-d.make)

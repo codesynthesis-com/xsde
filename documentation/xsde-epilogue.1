@@ -1,0 +1,540 @@
+.\"
+.\" Type map
+.\"
+.SH TYPE MAP
+
+Type map files are used to define a mapping between XML Schema and
+C++ types. For C++/Parser, the compiler uses this information to
+determine the return types of
+.B post_*
+functions in parser skeletons corresponding to XML Schema types as
+well as argument types for callbacks corresponding to elements and
+attributes of these types. For C++/Serializer, type maps are used
+to determine the argument type of
+.B pre
+functions in serializer skeletons corresponding to XML Schema types
+as well as return types for callbacks corresponding to elements and
+attributes of these types.
+
+The compiler has a set of predefined mapping rules that map the
+built-in XML Schema types to suitable C++ types (discussed in
+the following sub-sections) and all other types to
+.BR void .
+By providing your own type maps you can override these predefined
+rules. The format of the type map file is presented below:
+
+
+.RS
+.B namespace
+.I schema-namespace
+[
+.I cxx-namespace
+]
+.br
+.B {
+.br
+  (
+.B include
+.IB file-name ;
+)*
+.br
+  ([
+.B type
+]
+.I schema-type cxx-ret-type
+[
+.I cxx-arg-type
+.RB ] ;
+)*
+.br
+.B }
+.br
+.RE
+
+Both
+.I schema-namespace
+and
+.I schema-type
+are regex patterns while
+.IR cxx-namespace ,
+.IR cxx-ret-type ,
+and
+.I cxx-arg-type
+are regex pattern substitutions. All names can be optionally enclosed
+in \fR" "\fR, for example, to include white-spaces.
+
+.I schema-namespace
+determines XML Schema namespace. Optional
+.I cxx-namespace
+is prefixed to every C++ type name in this namespace declaration.
+.I cxx-ret-type
+is a C++ type name that is used as a return type for the
+.B post_*
+function in C++/Parser or for element/attribute callbacks in C++/Serializer.
+Optional
+.I cxx-arg-type
+is an argument type for element/attribute callbacks in C++/Parser or for the
+.B pre
+function in C++/Serializer. If
+.I cxx-arg-type
+is not specified, it defaults to
+.I cxx-ret-type
+if
+.I cxx-ret-type
+ends with
+.B *
+or
+.B &
+(that is, it is a pointer or a reference) and
+.B const
+\fIcxx-ret-type\fB&\fR otherwise.
+.I file-name
+is a file name either in the \fR" "\fR or < > format and is added with the
+.B #include
+directive to the generated code.
+
+The \fB#\fR character starts a comment that ends with a new line or end of
+file. To specify a name that contains \fB#\fR enclose it in \fR" "\fR. For
+example:
+
+.RS
+namespace http://www.example.com/xmlns/my my
+.br
+{
+.br
+  include "my.hxx";
+.br
+
+  # Pass apples by value.
+  #
+  apple apple;
+.br
+
+  # Pass oranges as pointers.
+  #
+  orange orange_t*;
+.br
+}
+.br
+.RE
+
+In the example above, for the
+.B http://www.example.com/xmlns/my#orange
+XML Schema type, the
+.B my::orange_t*
+C++ type will be used as both return and argument types.
+
+Several namespace declarations can be specified in a single file.
+The namespace declaration can also be completely omitted to map
+types in a schema without a namespace. For instance:
+
+.RS
+include "my.hxx";
+.br
+apple apple;
+.br
+
+namespace http://www.example.com/xmlns/my
+.br
+{
+.br
+  orange "const orange_t*";
+.br
+}
+.br
+.RE
+
+The compiler has a number of predefined mapping rules for the built-in
+XML Schema types that vary depending on the mapping used. They are
+described in the following subsections. The last predefined rule
+for all the mappings maps anything that wasn't mapped by previous rules to
+.BR void :
+
+.RS
+namespace .*
+.br
+{
+.br
+  .* void void;
+.br
+}
+.br
+.RE
+
+When you provide your own type maps with the
+.B --type-map
+option, they are evaluated first. This allows you to selectively override
+predefined rules.
+
+.\"
+.\" Predefined C++/Parser Type Maps
+.\"
+.SS Predefined C++/Parser Type Maps
+
+The C++/Parser mapping provides a number of predefined type map rules
+for the built-in XML Schema types. They can be presented as the
+following map files:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  boolean bool bool;
+.br
+
+  byte "signed char" "signed char";
+.br
+  unsignedByte "unsigned char" "unsigned char";
+.br
+
+  short short short;
+.br
+  unsignedShort "unsigned short" "unsigned short";
+.br
+
+  int int int;
+.br
+  unsignedInt "unsigned int" "unsigned int";
+.br
+
+  long "long long" "long long";
+.br
+  unsignedLong "unsigned long long" "unsigned long long";
+.br
+
+  integer long long;
+.br
+
+  negativeInteger long long;
+.br
+  nonPositiveInteger long long;
+.br
+
+  positiveInteger "unsigned long" "unsigned long";
+.br
+  nonNegativeInteger "unsigned long" "unsigned long";
+.br
+
+  float float float;
+.br
+  double double double;
+.br
+  decimal double double;
+.br
+
+  NMTOKENS xml_schema::string_sequence*;
+.br
+  IDREFS xml_schema::string_sequence*;
+.br
+
+  base64Binary xml_schema::buffer*;
+.br
+  hexBinary xml_schema::buffer*;
+.br
+
+  date xml_schema::date;
+.br
+  dateTime xml_schema::date_time;
+.br
+  duration xml_schema::duration;
+.br
+  gDay xml_schema::gday;
+.br
+  gMonth xml_schema::gmonth;
+.br
+  gMonthDay xml_schema::gmonth_day;
+.br
+  gYear xml_schema::gyear;
+.br
+  gYearMonth xml_schema::gyear_month;
+.br
+  time xml_schema::time;
+.br
+}
+.br
+.RE
+
+If the
+.B --no-stl
+option is not specified, the following mapping is used for the
+string-based XML Schema built-in types:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  include <string>;
+.br
+
+  string std::string;
+.br
+  normalizedString std::string;
+.br
+  token std::string;
+.br
+  Name std::string;
+.br
+  NMTOKEN std::string;
+.br
+  NCName std::string;
+.br
+  ID std::string;
+.br
+  IDREF std::string;
+.br
+  language std::string;
+.br
+  anyURI std::string;
+.br
+
+  QName xml_schema::qname;
+.br
+}
+.br
+.RE
+
+Otherwise, a C string-based mapping is used:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  string char*;
+.br
+  normalizedString char*;
+.br
+  token char*;
+.br
+  Name char*;
+.br
+  NMTOKEN char*;
+.br
+  NCName char*;
+.br
+  ID char*;
+.br
+  IDREF char*;
+.br
+  language char*;
+.br
+  anyURI char*;
+.br
+
+  QName xml_schema::qname*;
+.br
+}
+.br
+.RE
+
+.\"
+.\" Predefined C++/Serializer Type Maps
+.\"
+.SS Predefined C++/Serializer Type Maps
+
+The C++/Serializer mapping provides a number of predefined type map
+rules for the built-in XML Schema types. They can be presented as the
+following map files:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  boolean bool bool;
+.br
+
+  byte "signed char" "signed char";
+.br
+  unsignedByte "unsigned char" "unsigned char";
+.br
+
+  short short short;
+.br
+  unsignedShort "unsigned short" "unsigned short";
+.br
+
+  int int int;
+.br
+  unsignedInt "unsigned int" "unsigned int";
+.br
+
+  long "long long" "long long";
+.br
+  unsignedLong "unsigned long long" "unsigned long long";
+.br
+
+  integer long long;
+.br
+
+  negativeInteger long long;
+.br
+  nonPositiveInteger long long;
+.br
+
+  positiveInteger "unsigned long" "unsigned long";
+.br
+  nonNegativeInteger "unsigned long" "unsigned long";
+.br
+
+  float float float;
+.br
+  double double double;
+.br
+  decimal double double;
+.br
+
+  NMTOKENS "const xml_schema::string_sequence*";
+.br
+  IDREFS "const xml_schema::string_sequence*";
+.br
+
+  base64Binary "const xml_schema::buffer*";
+.br
+  hexBinary "const xml_schema::buffer*";
+.br
+
+  date xml_schema::date;
+.br
+  dateTime xml_schema::date_time;
+.br
+  duration xml_schema::duration;
+.br
+  gDay xml_schema::gday;
+.br
+  gMonth xml_schema::gmonth;
+.br
+  gMonthDay xml_schema::gmonth_day;
+.br
+  gYear xml_schema::gyear;
+.br
+  gYearMonth xml_schema::gyear_month;
+.br
+  time xml_schema::time;
+.br
+}
+.br
+.RE
+
+If the
+.B --no-stl
+option is not specified, the following mapping is used for the
+string-based XML Schema built-in types:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  include <string>;
+.br
+
+  string std::string;
+.br
+  normalizedString std::string;
+.br
+  token std::string;
+.br
+  Name std::string;
+.br
+  NMTOKEN std::string;
+.br
+  NCName std::string;
+.br
+  ID std::string;
+.br
+  IDREF std::string;
+.br
+  language std::string;
+.br
+  anyURI std::string;
+.br
+
+  QName xml_schema::qname;
+.br
+}
+.br
+.RE
+
+Otherwise, a C string-based mapping is used:
+
+.RS
+namespace http://www.w3.org/2001/XMLSchema
+.br
+{
+.br
+  string "const char*";
+.br
+  normalizedString "const char*";
+.br
+  token "const char*";
+.br
+  Name "const char*";
+.br
+  NMTOKEN "const char*";
+.br
+  NCName "const char*";
+.br
+  ID "const char*";
+.br
+  IDREF "const char*";
+.br
+  language "const char*";
+.br
+  anyURI "const char*";
+.br
+
+  QName "const xml_schema::qname*";
+.br
+}
+.br
+.RE
+
+.\"
+.\" REGEX AND SHELL QUOTING
+.\"
+.SH REGEX AND SHELL QUOTING
+When entering a regular expression argument in the shell command line
+it is often necessary to use quoting (enclosing the argument in " "
+or ' ') in order to prevent the shell from interpreting certain
+characters, for example, spaces as argument separators and $ as
+variable expansions.
+
+Unfortunately it is hard to achieve this in a manner that is portable
+across POSIX shells, such as those found on GNU/Linux and UNIX, and
+Windows shell. For example, if you use " " for quoting you will get
+a wrong result with POSIX shells if your expression contains $. The
+standard way of dealing with this on POSIX systems is to use ' '
+instead. Unfortunately, Windows shell does not remove ' '  from
+arguments when they are passed to applications. As a result you may
+have to use ' ' for POSIX and " " for Windows ($ is not treated as
+a special character on Windows).
+
+Alternatively, you can save regular expression options into a file,
+one option per line, and use this file with the
+.B --options-file
+option. With this approach you don't need to worry about shell quoting.
+
+.\"
+.\" DIAGNOSTICS
+.\"
+.SH DIAGNOSTICS
+If the input file is not a valid W3C XML Schema definition,
+.B xsde
+will issue diagnostic messages to
+.B STDERR
+and exit with non-zero exit code.
+
+.SH BUGS
+Send bug reports to the xsde-users@codesynthesis.com mailing list.
+
+.SH COPYRIGHT
+Copyright (c) 2005-2011 Code Synthesis Tools CC.
+
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+version 1.2; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts. Copy of the license can be obtained from
+http://codesynthesis.com/licenses/fdl-1.2.txt

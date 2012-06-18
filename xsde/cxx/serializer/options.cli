@@ -1,0 +1,148 @@
+// file      : xsde/cxx/serializer/options.cli
+// author    : Boris Kolpackov <boris@codesynthesis.com>
+// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
+// license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+include <vector>;
+include <string>;
+include <cstddef>; // std::size_t
+
+include <cult/types.hxx>; // NarrowString
+
+include <cxx/options.cli>;
+
+namespace CXX
+{
+  namespace Serializer
+  {
+    class options: CXX::options
+    {
+      std::vector<Cult::Types::NarrowString> --type-map
+      {
+        "<mapfile>",
+        "Read XML Schema to C++ type mapping information from <mapfile>.
+         Repeat this option to specify several type maps. Type maps are
+         considered in order of appearance and the first match is used.
+         By default all user-defined types are mapped to \cb{void}. See
+         the TYPE MAP section below for more information."
+      };
+
+      bool --suppress-validation
+      {
+        "Suppress the generation of validation code."
+      };
+
+      // Reuse style.
+      //
+      bool --reuse-style-mixin
+      {
+        "Generate code that supports the mixin base serializer implementation
+         reuse style. Note that this reuse style relies on virtual inheritance
+         and may result in a substantial object code size increase for large
+         vocabularies. By default support for the tiein style is generated."
+      };
+
+      bool --reuse-style-none
+      {
+        "Do not generate any support for base serializer implementation
+         reuse. By default support for the tiein style is generated."
+      };
+
+      // Polymorphism.
+      //
+      bool --generate-polymorphic
+      {
+        "Generate polymorphism-aware code. Specify this option if you use
+         substitution groups or \cb{xsi:type}."
+      };
+
+      bool --runtime-polymorphic
+      {
+        "Generate non-polymorphic code that uses the runtime library
+         configured with polymorphism support."
+      };
+
+      // Implementation/driver.
+      //
+      bool --generate-empty-impl
+      {
+        "Generate a sample serializer implementation with empty function
+         bodies which can then be filled with the application-specific code.
+         For an input file in the form \cb{name.xsd} this option triggers
+         the generation of the two additional C++ files in the form:
+         \cb{name-simpl.hxx} (serializer implementation header file) and
+         \cb{name-simpl.cxx} (serializer implementation source file)."
+      };
+
+      bool --generate-test-driver
+      {
+        "Generate a test driver for the sample serializer implementation.
+         For an input file in the form \cb{name.xsd} this option triggers
+         the generation of an additional C++ file in the form
+         \cb{name-sdriver.cxx}."
+      };
+
+      bool --force-overwrite
+      {
+        "Force overwriting of the existing implementation and test driver
+         files. Use this option only if you do not mind loosing the changes
+         you have made in the sample implementation or test driver files."
+      };
+
+      // Root element.
+      //
+      bool --root-element-first
+      {
+        "Indicate that the first global element is the document root. This
+         information is used to generate the test driver for the sample
+         implementation."
+      };
+
+      bool --root-element-last
+      {
+        "Indicate that the last global element is the document root. This
+         information is used to generate the test driver for the sample
+         implementation."
+      };
+
+      Cult::Types::NarrowString --root-element
+      {
+        "<element>",
+        "Indicate that <element> is the document root. This information is
+         used to generate the test driver for the sample implementation."
+      };
+
+      // Suffixes.
+      //
+      Cult::Types::NarrowString --skel-type-suffix = "_sskel"
+      {
+        "<suffix>",
+        "Use the provided <suffix> instead of the default \cb{_sskel} to
+         construct the names of generated serializer skeletons."
+      };
+
+      Cult::Types::NarrowString --skel-file-suffix = "-sskel"
+      {
+        "<suffix>",
+        "Use the provided <suffix> instead of the default \cb{-sskel} to
+         construct the names of generated serializer skeleton files."
+      };
+
+      Cult::Types::NarrowString --impl-type-suffix = "_simpl"
+      {
+        "<suffix>",
+        "Use the provided <suffix> instead of the default \cb{_simpl} to
+         construct the names of serializer implementations for the built-in
+         XML Schema types and sample serializer implementations."
+      };
+
+      Cult::Types::NarrowString --impl-file-suffix = "-simpl"
+      {
+        "<suffix>",
+        "Use the provided <suffix> instead of the default \cb{-simpl} to
+         construct the names of generated sample serializer implementation
+         files."
+      };
+    };
+  }
+}

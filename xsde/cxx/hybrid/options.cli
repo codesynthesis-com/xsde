@@ -1,0 +1,353 @@
+// file      : xsde/cxx/hybrid/options.cli
+// author    : Boris Kolpackov <boris@codesynthesis.com>
+// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
+// license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+include <vector>;
+include <string>;
+include <cstddef>; // std::size_t
+
+include <cult/types.hxx>; // NarrowString
+
+include <cxx/options.cli>;
+
+namespace CXX
+{
+  namespace Hybrid
+  {
+    class options: CXX::options
+    {
+      // Features.
+      //
+      bool --generate-parser
+      {
+        "Generate XML parsing code."
+      };
+
+      bool --generate-serializer
+      {
+        "Generate XML serialization code."
+      };
+
+      bool --generate-aggregate
+      {
+        "Generate parser/serializer aggregates for root elements and/or types.
+         See also the \cb{--root-element-*} and \cb{--root-type} options."
+      };
+
+      bool --suppress-validation
+      {
+        "Suppress the generation of validation code in parser and serializer."
+      };
+
+      bool --suppress-parser-val
+      {
+        "Suppress the generation of validation code in parser."
+      };
+
+      bool --suppress-serializer-val
+      {
+        "Suppress the generation of validation code in serializer."
+      };
+
+      bool --omit-default-attributes
+      {
+        "Omit attributes with default and fixed values from serialized
+         XML documents."
+      };
+
+      bool --suppress-enum
+      {
+        "Suppress the generation of the XML Schema enumeration to C++
+         \cb{enum} mapping."
+      };
+
+      bool --generate-clone
+      {
+        "Generate clone functions for variable-length types. These
+         functions allow you to make dynamically-allocated copies of
+         variable-length objects."
+      };
+
+      bool --generate-detach
+      {
+        "Generate detach functions for elements and attributes of
+         variable-length types. These functions, for example, allow
+         you to move sub-trees in the object model either within the
+         same tree or between different trees."
+      };
+
+      std::vector<Cult::Types::NarrowString> --generate-insertion
+      {
+        "<os>",
+        "Generate data representation stream insertion operators for the
+         <os> output stream type. Repeat this option to specify more than
+         one stream type. The special \cb{CDR} and \cb{XDR} arguments are
+         recognized as ACE CDR and Sun RPC XDR stream types and the
+         corresponding stream wrappers provided by the XSD/e runtime are
+         automatically used. For custom stream types use the
+         \cb{--hxx-prologue*} options to include the necessary declarations."
+      };
+
+      std::vector<Cult::Types::NarrowString> --generate-extraction
+      {
+        "<is>",
+        "Generate data representation stream extraction operators for the
+         <is> input stream type. Repeat this option to specify more than
+         one stream type. The special \cb{CDR} and \cb{XDR} arguments are
+         recognized as ACE CDR and Sun RPC XDR stream types and the
+         corresponding stream wrappers provided by the XSD/e runtime are
+         automatically used. For custom stream types use the
+         \cb{--hxx-prologue*} options to include the necessary declarations."
+      };
+
+      bool --generate-forward
+      {
+        "Generate forward declaration file."
+      };
+
+      // Polymorphism.
+      //
+      bool --generate-polymorphic
+      {
+        "Generate polymorphism-aware code. Specify this option if you use
+         substitution groups or \cb{xsi:type}. Use the \cb{--polymorphic-type}
+         option to specify which type hierarchies are polymorphic."
+      };
+
+      bool --runtime-polymorphic
+      {
+        "Generate non-polymorphic code that uses the runtime library
+         configured with polymorphism support."
+      };
+
+      std::vector<Cult::Types::NarrowString> --polymorphic-type
+      {
+        "<type>",
+        "Indicate that <type> is a root of a polymorphic type hierarchy. The
+         XSD/e compiler can often automatically determine which types are
+         polymorphic based on the substitution group declarations. However,
+         you may need to use this option if you are not using substitution
+         groups or if substitution groups are defined in another schema.
+         You need to specify this option when compiling every schema file
+         that references <type>."
+      };
+
+      bool --generate-typeinfo
+      {
+        "Generate custom type information querying functions for polymorphic
+         object model types. These functions can be used instead of the
+         standard C++ RTTI mechanism to determine object's type at runtime."
+      };
+
+      std::vector<Cult::Types::NarrowString> --polymorphic-schema
+      {
+        "<file>",
+        "Indicate that <file> contains derivations of polymorphic types that
+         are not otherwise visible from the schema being compiled. This
+         option is used to make sure that during the generation of parser
+         and serializer aggregates the compiler is aware of all possible
+         derivations of polymorphic types. Repeat this option to specify
+         more than one schema file."
+      };
+
+      // Reuse style.
+      //
+      bool --reuse-style-mixin
+      {
+        "Generate code that supports the mixin base parser/serializer
+         implementation reuse style. Note that this reuse style relies on
+         virtual inheritance and may result in a substantial object code
+         size increase for large vocabularies. By default the tiein reuse
+         style is used."
+      };
+
+      // Custom data/type.
+      //
+      std::vector<Cult::Types::NarrowString> --custom-data
+      {
+        "<type>",
+        "Add the ability to store custom data to the C++ class generated for
+         XML Schema type <type>. To add custom data to a nested compositor
+         class use the qualified name starting from the XML Schema type
+         containing the compositor, for example, \cb{foo::sequence::choise1}."
+      };
+
+      std::vector<Cult::Types::NarrowString> --custom-type
+      {
+        "<map>",
+        "Use a custom type implementation instead of the generated version.
+         The <map> argument is in the form
+         \c{\i{name}[\b{=}[\i{flags}][\b{/}[\i{type}][\b{/}[\i{base}][\b{/}\i{include}]]]]},
+         where the \ci{name} component is the XML Schema type name being
+         customized. Optional \ci{flags} allow you to specify whether the
+         custom type is fixed or variable-length. The \cb{f} flag indicates
+         the type is fixed-length and the \cb{v} flag indicates the type is
+         variable-length. If omitted, the default rules are used to determine
+         the type length. Optional \ci{type} is a C++ type name that should
+         be used instead. If specified, the object model type is defined as
+         a \cb{typedef} alias for this C++ type. Optional \ci{base} is a C++
+         name that should be given to the generated version. It is normally
+         used as a base for the custom implementation. Optional \ci{include}
+         is the header file that defines the custom implementation. It is
+         \cb{#include}'ed into the generated code immediately after (if
+         \ci{base} is specified) or instead of the generated version."
+      };
+
+      std::vector<Cult::Types::NarrowString> --custom-parser
+      {
+        "<map>",
+        "Use a custom parser implementation instead of the generated version.
+         The <map> argument is in the form
+         \c{\i{name}[\b{=}[\i{base}][\b{/}\i{include}]]}, where the \ci{name}
+         component is the XML Schema type name being customized. Optional
+         \ci{base} is a C++ name that should be given to the generated
+         version. It is normally used as a base for the custom implementation.
+         Optional \ci{include} is the header file that defines the custom
+         implementation. It is \cb{#include}'ed into the generated code
+         immediately after (if \ci{base} is specified) or instead of the
+         generated version."
+      };
+
+      std::vector<Cult::Types::NarrowString> --custom-serializer
+      {
+        "<map>",
+        "Use a custom serializer implementation instead of the generated
+         version. The <map> argument is in the form
+         \c{\i{name}[\b{=}[\i{base}][\b{/}\i{include}]]}, where The \ci{name}
+         component is the XML Schema type name being customized. Optional
+         \ci{base} is a C++ name that should be given to the generated
+         version. It is normally used as a base for the custom implementation.
+         Optional \ci{include} is the header file that defines the custom
+         implementation. It is \cb{#include}'ed into the generated code
+         immediately after (if \ci{base} is specified) or instead of the
+         generated version."
+      };
+
+      // Root element/type.
+      //
+
+      bool --root-element-first
+      {
+        "Treat only the first global element as a document root. This
+         determines for which elements parser and serializer aggregates
+         are generated. By default all global elements are considered
+         document roots. See also the \cb{--generate-aggregate} option."
+      };
+
+      bool --root-element-last
+      {
+        "Treat only the last global element as a document root. This
+         determines for which elements parser and serializer aggregates
+         are generated. By default all global elements are considered
+         document roots. See also the \cb{--generate-aggregate} option."
+      };
+
+      bool --root-element-all
+      {
+        "Treat all global elements as document roots (the default behavior).
+         This determines for which elements parser and serializer aggregates
+         are generated. By explicitly specifying this option you can suppress
+         the warning that is issued if more than one global element is
+         defined. See also the \cb{--generate-aggregate} option."
+      };
+
+      bool --root-element-none
+      {
+        "Do not treat any global elements as document roots. This determines
+         for which elements parser and serializer aggregates are generated.
+         By default all global elements are considered document roots. See
+         also the \cb{--generate-aggregate} option."
+      };
+
+      std::vector<Cult::Types::NarrowString> --root-element
+      {
+        "<element>",
+        "Treat only <element> as a document root. This determines for which
+         elements parser and serializer aggregates are generated. Repeat
+         this option to specify more than one root element. See also the
+         \cb{--generate-aggregate} option."
+      };
+
+      std::vector<Cult::Types::NarrowString> --root-type
+      {
+        "<type>",
+        "Generate parser/serializer aggregate for <type>. Repeat this option
+         to specify more than one type. See also the \cb{--generate-aggregate}
+         option."
+      };
+
+      // Suffixes.
+      //
+      Cult::Types::NarrowString --pskel-type-suffix = "_pskel"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_pskel} to construct the
+         names of generated parser skeletons."
+      };
+
+      Cult::Types::NarrowString --sskel-type-suffix = "_sskel"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_sskel} to construct the
+         names of generated serializer skeletons."
+      };
+
+      Cult::Types::NarrowString --pskel-file-suffix = "-pskel"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{-pskel} to construct the
+         names of generated parser skeleton files."
+      };
+
+      Cult::Types::NarrowString --sskel-file-suffix = "-sskel"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{-sskel} to construct the
+         names of generated serializer skeleton files."
+      };
+
+      Cult::Types::NarrowString --pimpl-type-suffix = "_pimpl"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_pimpl} to construct the
+         names of generated parser implementations."
+      };
+
+      Cult::Types::NarrowString --simpl-type-suffix = "_simpl"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_simpl} to construct the
+         names of generated serializer implementations."
+      };
+
+      Cult::Types::NarrowString --pimpl-file-suffix = "-pimpl"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{-pimpl} to construct the
+         names of generated parser implementation files."
+      };
+
+      Cult::Types::NarrowString --simpl-file-suffix = "-simpl"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{-simpl} to construct the
+         names of generated serializer implementation files."
+      };
+
+      Cult::Types::NarrowString --paggr-type-suffix = "_paggs"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_paggs} to construct the
+         names of generated parser aggregates."
+      };
+
+      Cult::Types::NarrowString --saggr-type-suffix = "_saggr"
+      {
+        "<suffix>",
+        "Use <suffix> instead of the default \cb{_saggr} to construct the
+         names of generated serializer aggregates."
+      };
+    };
+  }
+}
