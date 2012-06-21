@@ -6,13 +6,15 @@
 #ifndef XSDE_HXX
 #define XSDE_HXX
 
+#include <cstdio> // std::remove
+
+#include <cutl/shared-ptr.hxx>
+
 #include <xsd-frontend/semantic-graph/elements.hxx> // Path
 
 #include <cult/types.hxx>
 #include <cult/containers/set.hxx>
 #include <cult/containers/vector.hxx>
-
-#include <cstdio> // std::remove
 
 using namespace Cult::Types;
 
@@ -36,9 +38,7 @@ struct AutoUnlink
   ~AutoUnlink ()
   {
     if (!canceled_)
-    {
       std::remove (file_.native_file_string ().c_str ());
-    }
   }
 
   void
@@ -59,20 +59,20 @@ struct AutoUnlinks
   Void
   add (XSDFrontend::SemanticGraph::Path const& file)
   {
-    unlinks_.push_back (Evptr<AutoUnlink> (new AutoUnlink (file)));
+    unlinks_.push_back(
+      cutl::shared_ptr<AutoUnlink> (
+        new (shared) AutoUnlink (file)));
   }
 
   Void
   cancel ()
   {
     for (Unlinks::Iterator i (unlinks_.begin ()); i != unlinks_.end (); ++i)
-    {
       (*i)->cancel ();
-    }
   }
 
 private:
-  typedef Cult::Containers::Vector<Evptr<AutoUnlink> > Unlinks;
+  typedef Cult::Containers::Vector<cutl::shared_ptr<AutoUnlink> > Unlinks;
   Unlinks unlinks_;
 };
 
