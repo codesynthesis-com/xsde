@@ -10,7 +10,7 @@
 
 #include <xsd-frontend/semantic-graph.hxx>
 
-#include <cxx/serializer/cli.hxx>
+#include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
@@ -22,7 +22,7 @@ namespace CXX
     {
     public:
       Void
-      process (CLI::Options const&,
+      process (options const&,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const&,
                Boolean deep);

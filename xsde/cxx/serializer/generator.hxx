@@ -10,15 +10,14 @@
 
 #include <cult/containers/vector.hxx>
 
-#include <cult/cli/options.hxx>
-#include <cult/cli/options-spec.hxx>
-
 #include <xsd-frontend/semantic-graph/elements.hxx> // Path
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
 #include <xsde.hxx>
+
 #include <type-map/type-map.hxx>
-#include <cxx/serializer/cli.hxx>
+
+#include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
@@ -32,13 +31,10 @@ namespace CXX
       static Void
       usage ();
 
-      static CLI::OptionsSpec
-      options_spec ();
-
       // Assign names to global declarations.
       //
       static Void
-      process_names (CLI::Options const&,
+      process_names (options const&,
                      XSDFrontend::SemanticGraph::Schema&,
                      XSDFrontend::SemanticGraph::Path const&);
 
@@ -47,7 +43,7 @@ namespace CXX
       struct Failed {};
 
       static UnsignedLong
-      generate (CLI::Options const&,
+      generate (options const&,
                 XSDFrontend::SemanticGraph::Schema&,
                 XSDFrontend::SemanticGraph::Path const&,
                 Boolean file_per_type,

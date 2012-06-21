@@ -1217,7 +1217,7 @@ namespace CXX
           impl_ns_ = "::xsde::cxx::parser::";
           impl_ns_ += (validation ? L"validating" : L"non_validating");
 
-          if (options.value<CLI::no_stl> ())
+          if (options.no_stl ())
           {
             qname_type_ = xs_ns_ + L"::qname*";
             string_type_ = L"char*";
@@ -1231,7 +1231,7 @@ namespace CXX
           string_seq_type_ = xs_ns_ + L"::string_sequence*";
           buffer_type_ = xs_ns_ + L"::buffer*";
 
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
           {
             long_type_ = L"long";
             unsigned_long_type_ = L"unsigned long";
@@ -1558,12 +1558,12 @@ namespace CXX
             String const& real_impl (c.get<String> ("p:real-impl"));
             String const& impl (c.get<String> ("p:impl"));
 
-            if (options.value<CLI::skel_type_suffix> () == "_pskel")
+            if (options.skel_type_suffix () == "_pskel")
               os << "using " << real_name << ";";
             else
               os << "typedef " << real_name << " " << name << ";";
 
-            if (options.value<CLI::impl_type_suffix> () == "_pimpl")
+            if (options.impl_type_suffix () == "_pimpl")
               os << "using " << real_impl << ";";
             else
               os << "typedef " << real_impl << " " << impl << ";";
@@ -1746,7 +1746,7 @@ namespace CXX
       NarrowString extern_xml_schema;
 
       if (!generate_xml_schema)
-        extern_xml_schema = ctx.options.value<CLI::extern_xml_schema> ();
+        extern_xml_schema = ctx.options.extern_xml_schema ();
 
       if (extern_xml_schema)
       {

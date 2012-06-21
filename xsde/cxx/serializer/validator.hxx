@@ -10,7 +10,7 @@
 
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
-#include <cxx/serializer/cli.hxx>
+#include <cxx/serializer/options.hxx>
 
 #include <xsde.hxx>
 
@@ -24,7 +24,7 @@ namespace CXX
     {
     public:
       Boolean
-      validate (CLI::Options const& options,
+      validate (options const&,
                 XSDFrontend::SemanticGraph::Schema&,
                 XSDFrontend::SemanticGraph::Path const& tu,
                 Boolean gen_driver,

@@ -765,12 +765,12 @@ namespace CXX
         virtual Void
         traverse (Type& e)
         {
-          if (options.value<CLI::root_element_first> ())
+          if (options.root_element_first ())
           {
             if (element_ == 0)
               element_ = &e;
           }
-          else if (String name = options.value<CLI::root_element> ())
+          else if (String name = options.root_element ())
           {
             if (e.name () == name)
               element_ = &e;
@@ -816,7 +816,7 @@ namespace CXX
 
       set.insert ("doc_p");
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "#include <stdio.h>" << endl;
       else
         os << "#include <iostream>" << endl;
@@ -831,7 +831,7 @@ namespace CXX
          << "{"
          << "input = \"STDIN\";";
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "fprintf (stderr, \"XML file not specified, reading " <<
           "from STDIN\\n\");";
       else
@@ -843,7 +843,7 @@ namespace CXX
          << "input = argv[1];"
          << endl;
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
       {
         os << "FILE* f = argc > 1 ? fopen (argv[1], \"rb\") : stdin;"
            << endl
@@ -854,12 +854,11 @@ namespace CXX
            << "}";
       }
 
-      if (ctx.options.value<CLI::no_iostream> () ||
-          ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_iostream () || ctx.options.no_exceptions ())
         os << "int r = 0;"
            << endl;
 
-      if (!ctx.options.value<CLI::no_exceptions> ())
+      if (!ctx.options.no_exceptions ())
         os << "try"
            << "{";
 
@@ -888,10 +887,10 @@ namespace CXX
       os << "// Parse the XML document." << endl
          << "//" << endl;
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "bool io_error = false;";
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << xs << "::parser_error e;"
            << endl
            << "do"
@@ -908,20 +907,20 @@ namespace CXX
           ctx.strlit (root->name ()) << ");"
            << endl;
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "if (e = doc_p._error ())" << endl
            << "break;"
            << endl;
 
       os << root_p << ".pre ();";
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << endl
            << "if (e = " << root_p << "._error ())" << endl
            << "break;";
 
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
       {
         os << endl
            << "char buf[4096];"
@@ -936,7 +935,7 @@ namespace CXX
            << "break;"
            << "}";
 
-        if (ctx.options.value<CLI::no_exceptions> ())
+        if (ctx.options.no_exceptions ())
           os << "doc_p.parse (buf, s, feof (f) != 0);"
              << "e = doc_p._error ();"
              << "}"
@@ -962,7 +961,7 @@ namespace CXX
            << "doc_p.parse (argv[1]);"
            << endl;
 
-        if (ctx.options.value<CLI::no_exceptions> ())
+        if (ctx.options.no_exceptions ())
           os << "if (e = doc_p._error ())" << endl
              << "break;"
              << endl;
@@ -975,7 +974,7 @@ namespace CXX
       {
         os << root_p << "." << post << " ();";
 
-        if (ctx.options.value<CLI::no_exceptions> ())
+        if (ctx.options.no_exceptions ())
           os << "e = " << root_p << "._error ();";
       }
       else
@@ -984,12 +983,12 @@ namespace CXX
           root_p << "." << post << " ());"
            << endl;
 
-        if (ctx.options.value<CLI::no_exceptions> ())
+        if (ctx.options.no_exceptions ())
           os << "if (e = " << root_p << "._error ())" << endl
              << "break;"
              << endl;
 
-        if (ctx.options.value<CLI::generate_print_impl> ())
+        if (ctx.options.generate_print_impl ())
         {
           PrintCall t (ctx, root->name (), "v");
           t.dispatch (root_type);
@@ -1006,11 +1005,11 @@ namespace CXX
         }
       }
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "}"
            << "while (false);"
            << endl;
-      else if (ctx.options.value<CLI::no_iostream> ())
+      else if (ctx.options.no_iostream ())
         os << "}" // if (!io_error)
            << "else"
            << "{"
@@ -1021,17 +1020,17 @@ namespace CXX
       // Error handling.
       //
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
       {
         os << "// Handle errors." << endl
            << "//" << endl;
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
         {
           os << "if (io_error)"
              << "{";
 
-          if (ctx.options.value<CLI::no_iostream> ())
+          if (ctx.options.no_iostream ())
             os << "fprintf (stderr, \"%s: read failure\\n\", input);";
           else
             os << "std::cerr << input << \": read failure\" << std::endl;";
@@ -1048,7 +1047,7 @@ namespace CXX
            << "case " << xs << "::parser_error::sys:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s: %s\\n\", input, e.sys_text ());";
         else
           os << "std::cerr << input << \": \" << e.sys_text () << std::endl;";
@@ -1058,7 +1057,7 @@ namespace CXX
            << "case " << xs << "::parser_error::xml:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s:%lu:%lu: %s\\n\"," << endl
              << "input, e.line (), e.column (), e.xml_text ());";
         else
@@ -1068,12 +1067,12 @@ namespace CXX
         os << "break;"
            << "}";
 
-        if (!ctx.options.value<CLI::suppress_validation> ())
+        if (!ctx.options.suppress_validation ())
         {
           os << "case " << xs << "::parser_error::schema:"
              << "{";
 
-          if (ctx.options.value<CLI::no_iostream> ())
+          if (ctx.options.no_iostream ())
             os << "fprintf (stderr, \"%s:%lu:%lu: %s\\n\"," << endl
                << "input, e.line (), e.column (), e.schema_text ());";
           else
@@ -1087,7 +1086,7 @@ namespace CXX
         os << "case " << xs << "::parser_error::app:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s:%lu:%lu: application error %d\\n\"," << endl
              << "input, e.line (), e.column (), e.app_code ());";
         else
@@ -1111,7 +1110,7 @@ namespace CXX
            << "catch (const " << xs << "::parser_exception& e)"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s:%lu:%lu: %s\\n\"," << endl
              << "input, e.line (), e.column (), e.text ());"
              << "r = 1;";
@@ -1122,7 +1121,7 @@ namespace CXX
 
         os << "}";
 
-        if (!ctx.options.value<CLI::no_iostream> ())
+        if (!ctx.options.no_iostream ())
         {
           os << "catch (const std::ios_base::failure&)"
              << "{"
@@ -1133,13 +1132,12 @@ namespace CXX
         }
       }
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "if (argc > 1)" << endl
            << "fclose (f);"
            << endl;
 
-      if (ctx.options.value<CLI::no_iostream> () ||
-          ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_iostream () || ctx.options.no_exceptions ())
         os << "return r;";
       else
         os << "return 0;";

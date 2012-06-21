@@ -335,10 +335,10 @@ namespace CXX
          names of generated serializer implementation files."
       };
 
-      Cult::Types::NarrowString --paggr-type-suffix = "_paggs"
+      Cult::Types::NarrowString --paggr-type-suffix = "_paggr"
       {
         "<suffix>",
-        "Use <suffix> instead of the default \cb{_paggs} to construct the
+        "Use <suffix> instead of the default \cb{_paggr} to construct the
          names of generated parser aggregates."
       };
 
@@ -348,6 +348,24 @@ namespace CXX
         "Use <suffix> instead of the default \cb{_saggr} to construct the
          names of generated serializer aggregates."
       };
+
+      // In C++/Hybrid these common options can be specified multiple
+      // times with keys that identify which files they apply to. So
+      // "override" them here. Note that the documentation is still
+      // specified in the common version.
+      //
+      std::vector<Cult::Types::NarrowString> --hxx-regex;
+      std::vector<Cult::Types::NarrowString> --ixx-regex;
+      std::vector<Cult::Types::NarrowString> --cxx-regex;
+
+      std::vector<Cult::Types::NarrowString> --hxx-prologue-file;
+      std::vector<Cult::Types::NarrowString> --ixx-prologue-file;
+      std::vector<Cult::Types::NarrowString> --cxx-prologue-file;
+      std::vector<Cult::Types::NarrowString> --prologue-file;
+      std::vector<Cult::Types::NarrowString> --hxx-epilogue-file;
+      std::vector<Cult::Types::NarrowString> --ixx-epilogue-file;
+      std::vector<Cult::Types::NarrowString> --cxx-epilogue-file;
+      std::vector<Cult::Types::NarrowString> --epilogue-file;
     };
   }
 }

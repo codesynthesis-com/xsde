@@ -74,8 +74,8 @@ namespace CXX
           if (name)
           {
             Boolean fl (fixed_length (e));
-            Boolean val (!options.value<CLI::suppress_validation> () &&
-                         !options.value<CLI::suppress_parser_val> ());
+            Boolean val (!options.suppress_validation () &&
+                         !options.suppress_parser_val ());
 
             SemanticGraph::Type& b (e.inherits ().base ());
 

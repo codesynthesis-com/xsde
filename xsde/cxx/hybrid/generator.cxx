@@ -54,10 +54,7 @@
 
 #include "../../../libxsde/xsde/cxx/version.hxx"
 
-using std::endl;
-using std::wcerr;
-using std::wcout;
-
+using namespace std;
 using namespace XSDFrontend::SemanticGraph;
 
 //
@@ -110,136 +107,11 @@ namespace CXX
     "//\n\n";
   }
 
-  namespace Hybrid
-  {
-    namespace CLI
-    {
-      extern Key char_encoding            = "char-encoding";
-      extern Key no_stl                   = "no-stl";
-      extern Key no_iostream              = "no-iostream";
-      extern Key no_exceptions            = "no-exceptions";
-      extern Key no_long_long             = "no-long-long";
-      extern Key generate_parser          = "generate-parser";
-      extern Key generate_serializer      = "generate-serializer";
-      extern Key generate_aggregate       = "generate-aggregate";
-      extern Key suppress_validation      = "suppress-validation";
-      extern Key suppress_parser_val      = "suppress-parser-val";
-      extern Key suppress_serializer_val  = "suppress-serializer-val";
-      extern Key omit_default_attributes  = "omit-default-attributes";
-      extern Key suppress_enum            = "suppress-enum";
-      extern Key generate_clone           = "generate-clone";
-      extern Key generate_detach          = "generate-detach";
-      extern Key generate_insertion       = "generate-insertion";
-      extern Key generate_extraction      = "generate-extraction";
-      extern Key generate_inline          = "generate-inline";
-      extern Key generate_forward         = "generate-forward";
-      extern Key generate_xml_schema      = "generate-xml-schema";
-      extern Key extern_xml_schema        = "extern-xml-schema";
-      extern Key suppress_reset           = "suppress-reset";
-      extern Key custom_allocator         = "custom-allocator";
-      extern Key generate_polymorphic     = "generate-polymorphic";
-      extern Key runtime_polymorphic      = "runtime-polymorphic";
-      extern Key polymorphic_type         = "polymorphic-type";
-      extern Key generate_typeinfo        = "generate-typeinfo";
-      extern Key polymorphic_schema       = "polymorphic-schema";
-      extern Key reuse_style_mixin        = "reuse-style-mixin";
-      extern Key custom_data              = "custom-data";
-      extern Key custom_type              = "custom-type";
-      extern Key custom_parser            = "custom-parser";
-      extern Key custom_serializer        = "custom-serializer";
-      extern Key root_element_first       = "root-element-first";
-      extern Key root_element_last        = "root-element-last";
-      extern Key root_element_all         = "root-element-all";
-      extern Key root_element_none        = "root-element-none";
-      extern Key root_element             = "root-element";
-      extern Key root_type                = "root-type";
-      extern Key output_dir               = "output-dir";
-      extern Key pskel_type_suffix        = "pskel-type-suffix";
-      extern Key sskel_type_suffix        = "sskel-type-suffix";
-      extern Key pskel_file_suffix        = "pskel-file-suffix";
-      extern Key sskel_file_suffix        = "sskel-file-suffix";
-      extern Key pimpl_type_suffix        = "pimpl-type-suffix";
-      extern Key simpl_type_suffix        = "simpl-type-suffix";
-      extern Key pimpl_file_suffix        = "pimpl-file-suffix";
-      extern Key simpl_file_suffix        = "simpl-file-suffix";
-      extern Key paggr_type_suffix        = "paggr-type-suffix";
-      extern Key saggr_type_suffix        = "saggr-type-suffix";
-      extern Key namespace_map            = "namespace-map";
-      extern Key namespace_regex          = "namespace-regex";
-      extern Key namespace_regex_trace    = "namespace-regex-trace";
-      extern Key reserved_name            = "reserved-name";
-      extern Key include_with_brackets    = "include-with-brackets";
-      extern Key include_prefix           = "include-prefix";
-      extern Key include_regex            = "include-regex";
-      extern Key include_regex_trace      = "include-regex-trace";
-      extern Key guard_prefix             = "guard-prefix";
-      extern Key hxx_suffix               = "hxx-suffix";
-      extern Key ixx_suffix               = "ixx-suffix";
-      extern Key cxx_suffix               = "cxx-suffix";
-      extern Key fwd_suffix               = "fwd-suffix";
-      extern Key hxx_regex                = "hxx-regex";
-      extern Key ixx_regex                = "ixx-regex";
-      extern Key cxx_regex                = "cxx-regex";
-      extern Key fwd_regex                = "fwd-regex";
-      extern Key hxx_prologue             = "hxx-prologue";
-      extern Key ixx_prologue             = "ixx-prologue";
-      extern Key cxx_prologue             = "cxx-prologue";
-      extern Key fwd_prologue             = "fwd-prologue";
-      extern Key prologue                 = "prologue";
-      extern Key hxx_epilogue             = "hxx-epilogue";
-      extern Key ixx_epilogue             = "ixx-epilogue";
-      extern Key cxx_epilogue             = "cxx-epilogue";
-      extern Key fwd_epilogue             = "fwd-epilogue";
-      extern Key epilogue                 = "epilogue";
-      extern Key hxx_prologue_file        = "hxx-prologue-file";
-      extern Key ixx_prologue_file        = "ixx-prologue-file";
-      extern Key cxx_prologue_file        = "cxx-prologue-file";
-      extern Key fwd_prologue_file        = "fwd-prologue-file";
-      extern Key prologue_file            = "prologue-file";
-      extern Key hxx_epilogue_file        = "hxx-epilogue-file";
-      extern Key ixx_epilogue_file        = "ixx-epilogue-file";
-      extern Key cxx_epilogue_file        = "cxx-epilogue-file";
-      extern Key fwd_epilogue_file        = "fwd-epilogue-file";
-      extern Key epilogue_file            = "epilogue-file";
-      extern Key show_anonymous           = "show-anonymous";
-      extern Key show_sloc                = "show-sloc";
-      extern Key proprietary_license      = "proprietary-license";
-    }
-  }
-
   Void Hybrid::Generator::
   usage ()
   {
     CXX::Hybrid::options::print_usage (wcout);
     CXX::options::print_usage (wcout);
-  }
-
-  Hybrid::CLI::OptionsSpec Hybrid::Generator::
-  options_spec ()
-  {
-    CLI::OptionsSpec spec;
-
-    spec.option<CLI::char_encoding> ().default_value ("utf8");
-
-    spec.option<CLI::pskel_file_suffix> ().default_value ("-pskel");
-    spec.option<CLI::sskel_file_suffix> ().default_value ("-sskel");
-    spec.option<CLI::pskel_type_suffix> ().default_value ("_pskel");
-    spec.option<CLI::sskel_type_suffix> ().default_value ("_sskel");
-
-    spec.option<CLI::pimpl_file_suffix> ().default_value ("-pimpl");
-    spec.option<CLI::simpl_file_suffix> ().default_value ("-simpl");
-    spec.option<CLI::pimpl_type_suffix> ().default_value ("_pimpl");
-    spec.option<CLI::simpl_type_suffix> ().default_value ("_simpl");
-
-    spec.option<CLI::paggr_type_suffix> ().default_value ("_paggr");
-    spec.option<CLI::saggr_type_suffix> ().default_value ("_saggr");
-
-    spec.option<CLI::hxx_suffix> ().default_value (".hxx");
-    spec.option<CLI::ixx_suffix> ().default_value (".ixx");
-    spec.option<CLI::cxx_suffix> ().default_value (".cxx");
-    spec.option<CLI::fwd_suffix> ().default_value ("-fwd.hxx");
-
-    return spec;
   }
 
   namespace
@@ -253,12 +125,10 @@ namespace CXX
     sloc_filter;
 
     NarrowString
-    find_value (Cult::Containers::Vector<NarrowString> const& v,
-                Char const* key)
+    find_value (NarrowStrings const& v, Char const* key)
     {
-      typedef Cult::Containers::Vector<NarrowString> Values;
-
-      for (Values::ConstIterator i (v.begin ()), e (v.end ()); i != e; ++i)
+      for (NarrowStrings::const_iterator i (v.begin ()), e (v.end ());
+           i != e; ++i)
       {
         Size p (i->find ('='));
 
@@ -292,13 +162,12 @@ namespace CXX
     }
 
     Void
-    copy_values (Cult::Containers::Vector<NarrowString>& dst,
-                 Cult::Containers::Vector<NarrowString> const& src,
-                 Char const* key)
+    copy_values (NarrowStrings& dst, NarrowStrings const& src, Char const* key)
     {
-      typedef Cult::Containers::Vector<NarrowString> Values;
+      dst.clear ();
 
-      for (Values::ConstIterator i (src.begin ()), e (src.end ()); i != e; ++i)
+      for (NarrowStrings::const_iterator i (src.begin ()), e (src.end ());
+           i != e; ++i)
       {
         Size p (i->find ('='));
 
@@ -340,8 +209,6 @@ namespace CXX
       void
       traverse (Type& ns)
       {
-        namespace CLI = Hybrid::CLI;
-
         pre (ns);
 
         os << "using ::xsde::cxx::hybrid::any_type;"
@@ -352,16 +219,16 @@ namespace CXX
 
         if (type_ == 'p')
         {
-          skel = options.value<CLI::pskel_type_suffix> ();
-          impl = options.value<CLI::pimpl_type_suffix> ();
+          skel = options.pskel_type_suffix ();
+          impl = options.pimpl_type_suffix ();
 
           us = skel == L"_pskel";
           ui = impl == L"_pimpl";
         }
         else
         {
-          skel = options.value<CLI::sskel_type_suffix> ();
-          impl = options.value<CLI::simpl_type_suffix> ();
+          skel = options.sskel_type_suffix ();
+          impl = options.simpl_type_suffix ();
 
           us = skel == L"_sskel";
           ui = impl == L"_simpl";
@@ -387,85 +254,46 @@ namespace CXX
     };
   }
 
-  Parser::CLI::Options* Hybrid::Generator::
-  parser_options (CLI::Options const& h, Schema& schema, Path const& path)
+  auto_ptr<Parser::options> Hybrid::Generator::
+  parser_options (options const& h, Schema& schema, Path const& path)
   {
-    namespace H = CLI;
-    namespace P = Parser::CLI;
+    auto_ptr<Parser::options> r (new Parser::options);
 
-    Evptr<P::Options> r (new P::Options);
+    static_cast<CXX::options&> (*r) = h; // Assign common options.
 
-    r->value<P::char_encoding> ()         = h.value<H::char_encoding> ();
-    r->value<P::no_stl> ()                = h.value<H::no_stl> ();
-    r->value<P::no_iostream> ()           = h.value<H::no_iostream> ();
-    r->value<P::no_exceptions> ()         = h.value<H::no_exceptions> ();
-    r->value<P::no_long_long> ()          = h.value<H::no_long_long> ();
-    r->value<P::reuse_style_mixin> ()     = h.value<H::reuse_style_mixin> ();
-    r->value<P::reuse_style_none> ()      = false;
-    r->value<P::generate_inline> ()       = h.value<H::generate_inline> ();
-    r->value<P::suppress_validation> ()   = h.value<H::suppress_validation> ()
-      || h.value<H::suppress_parser_val> ();
-    r->value<P::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
-    r->value<P::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
-    r->value<P::suppress_reset> ()        = h.value<H::suppress_reset> ();
-    r->value<P::custom_allocator> ()      = h.value<H::custom_allocator> ();
-    r->value<P::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
-    r->value<P::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
-    r->value<P::output_dir> ()            = h.value<H::output_dir> ();
-    r->value<P::skel_file_suffix> ()      = h.value<H::pskel_file_suffix> ();
-    r->value<P::skel_type_suffix> ()      = h.value<H::pskel_type_suffix> ();
-    r->value<P::impl_type_suffix> ()      = h.value<H::pimpl_type_suffix> ();
-    r->value<P::namespace_map> ()         = h.value<H::namespace_map> ();
-    r->value<P::namespace_regex> ()       = h.value<H::namespace_regex> ();
-    r->value<P::namespace_regex_trace> () = h.value<H::namespace_regex_trace> ();
-    r->value<P::reserved_name> ()         = h.value<H::reserved_name> ();
-    r->value<P::include_with_brackets> () = h.value<H::include_with_brackets> ();
-    r->value<P::include_prefix> ()        = h.value<H::include_prefix> ();
-    r->value<P::include_regex> ()         = h.value<H::include_regex> ();
-    r->value<P::include_regex_trace> ()   = h.value<H::include_regex_trace> ();
-    r->value<P::guard_prefix> ()          = h.value<H::guard_prefix> ();
+    r->reuse_style_mixin (h.reuse_style_mixin ());
+    r->suppress_validation (h.suppress_validation () ||
+                            h.suppress_parser_val ());
+    r->generate_polymorphic (h.generate_polymorphic ());
+    r->runtime_polymorphic (h.runtime_polymorphic ());
 
-    r->value<P::hxx_suffix> ()            = h.value<H::hxx_suffix> ();
-    r->value<P::ixx_suffix> ()            = h.value<H::ixx_suffix> ();
-    r->value<P::cxx_suffix> ()            = h.value<H::cxx_suffix> ();
+    r->skel_file_suffix (h.pskel_file_suffix ());
+    r->skel_type_suffix (h.pskel_type_suffix ());
+    r->impl_type_suffix (h.pimpl_type_suffix ());
 
     Char const* k = "pskel";
 
-    r->value<P::hxx_regex> ()             =
-      find_value (h.value<H::hxx_regex> (), k);
-    r->value<P::ixx_regex> ()             =
-      find_value (h.value<H::ixx_regex> (), k);
-    r->value<P::cxx_regex> ()             =
-      find_value (h.value<H::cxx_regex> (), k);
+    r->hxx_regex (find_value (h.hxx_regex (), k));
+    r->ixx_regex (find_value (h.ixx_regex (), k));
+    r->cxx_regex (find_value (h.cxx_regex (), k));
 
-    r->value<P::hxx_prologue_file> ()     = find_value (
-      h.value<H::hxx_prologue_file> (), k);
-    r->value<P::ixx_prologue_file> ()     = find_value (
-      h.value<H::ixx_prologue_file> (), k);
-    r->value<P::cxx_prologue_file> ()     = find_value (
-      h.value<H::cxx_prologue_file> (), k);
-    r->value<P::prologue_file> ()         = find_value (
-      h.value<H::prologue_file> (),     k);
-    r->value<P::hxx_epilogue_file> ()     = find_value (
-      h.value<H::hxx_epilogue_file> (), k);
-    r->value<P::ixx_epilogue_file> ()     = find_value (
-      h.value<H::ixx_epilogue_file> (), k);
-    r->value<P::cxx_epilogue_file> ()     = find_value (
-      h.value<H::cxx_epilogue_file> (), k);
-    r->value<P::epilogue_file> ()         = find_value (
-      h.value<H::epilogue_file> (),     k);
+    r->prologue_file (find_value (h.prologue_file (), k));
+    r->epilogue_file (find_value (h.epilogue_file (), k));
+    r->hxx_prologue_file (find_value (h.hxx_prologue_file (), k));
+    r->ixx_prologue_file (find_value (h.ixx_prologue_file (), k));
+    r->cxx_prologue_file (find_value (h.cxx_prologue_file (), k));
+    r->hxx_epilogue_file (find_value (h.hxx_epilogue_file (), k));
+    r->ixx_epilogue_file (find_value (h.ixx_epilogue_file (), k));
+    r->cxx_epilogue_file (find_value (h.cxx_epilogue_file (), k));
 
-    copy_values (r->value<P::hxx_prologue> (), h.value<H::hxx_prologue> (), k);
-    copy_values (r->value<P::ixx_prologue> (), h.value<H::ixx_prologue> (), k);
-    copy_values (r->value<P::cxx_prologue> (), h.value<H::cxx_prologue> (), k);
-    copy_values (r->value<P::prologue> (),     h.value<H::prologue> (),     k);
-    copy_values (r->value<P::hxx_epilogue> (), h.value<H::hxx_epilogue> (), k);
-    copy_values (r->value<P::ixx_epilogue> (), h.value<H::ixx_epilogue> (), k);
-    copy_values (r->value<P::cxx_epilogue> (), h.value<H::cxx_epilogue> (), k);
-    copy_values (r->value<P::epilogue> (),     h.value<H::epilogue> (),     k);
-
-    r->value<P::show_sloc> ()             = h.value<H::show_sloc> ();
-    r->value<P::proprietary_license> ()   = h.value<H::proprietary_license> ();
+    copy_values (r->prologue (), h.prologue (), k);
+    copy_values (r->epilogue (), h.epilogue (), k);
+    copy_values (r->hxx_prologue (), h.hxx_prologue (), k);
+    copy_values (r->ixx_prologue (), h.ixx_prologue (), k);
+    copy_values (r->cxx_prologue (), h.cxx_prologue (), k);
+    copy_values (r->hxx_epilogue (), h.hxx_epilogue (), k);
+    copy_values (r->ixx_epilogue (), h.ixx_epilogue (), k);
+    copy_values (r->cxx_epilogue (), h.cxx_epilogue (), k);
 
     // Add the anyType parser.
     //
@@ -486,91 +314,52 @@ namespace CXX
         ns.dispatch (ctx.xs_ns ());
       }
 
-      r->value<P::hxx_prologue> ().push_back (String (os.str ()).to_narrow ());
+      r->hxx_prologue ().push_back (String (os.str ()).to_narrow ());
     }
 
-    return r.release ();
+    return r;
   }
 
-  Serializer::CLI::Options* Hybrid::Generator::
-  serializer_options (CLI::Options const& h, Schema& schema, Path const& path)
+  auto_ptr<Serializer::options> Hybrid::Generator::
+  serializer_options (options const& h, Schema& schema, Path const& path)
   {
-    namespace H = CLI;
-    namespace S = Serializer::CLI;
+    auto_ptr<Serializer::options> r (new Serializer::options);
 
-    Evptr<S::Options> r (new S::Options);
+    static_cast<CXX::options&> (*r) = h; // Assign common options.
 
-    r->value<S::char_encoding> ()         = h.value<H::char_encoding> ();
-    r->value<S::no_stl> ()                = h.value<H::no_stl> ();
-    r->value<S::no_iostream> ()           = h.value<H::no_iostream> ();
-    r->value<S::no_exceptions> ()         = h.value<H::no_exceptions> ();
-    r->value<S::no_long_long> ()          = h.value<H::no_long_long> ();
-    r->value<S::reuse_style_mixin> ()     = h.value<H::reuse_style_mixin> ();
-    r->value<S::reuse_style_none> ()      = false;
-    r->value<S::generate_inline> ()       = h.value<H::generate_inline> ();
-    r->value<S::suppress_validation> ()   = h.value<H::suppress_validation> ()
-      || h.value<H::suppress_serializer_val> ();
-    r->value<S::generate_xml_schema> ()   = h.value<H::generate_xml_schema> ();
-    r->value<S::extern_xml_schema> ()     = h.value<H::extern_xml_schema> ();
-    r->value<S::suppress_reset> ()        = h.value<H::suppress_reset> ();
-    r->value<S::custom_allocator> ()      = h.value<H::custom_allocator> ();
-    r->value<S::generate_polymorphic> ()  = h.value<H::generate_polymorphic> ();
-    r->value<S::runtime_polymorphic> ()   = h.value<H::runtime_polymorphic> ();
-    r->value<S::output_dir> ()            = h.value<H::output_dir> ();
-    r->value<S::skel_file_suffix> ()      = h.value<H::sskel_file_suffix> ();
-    r->value<S::skel_type_suffix> ()      = h.value<H::sskel_type_suffix> ();
-    r->value<S::impl_type_suffix> ()      = h.value<H::simpl_type_suffix> ();
-    r->value<S::namespace_map> ()         = h.value<H::namespace_map> ();
-    r->value<S::namespace_regex> ()       = h.value<H::namespace_regex> ();
-    r->value<S::namespace_regex_trace> () = h.value<H::namespace_regex_trace> ();
-    r->value<S::reserved_name> ()         = h.value<H::reserved_name> ();
-    r->value<S::include_with_brackets> () = h.value<H::include_with_brackets> ();
-    r->value<S::include_prefix> ()        = h.value<H::include_prefix> ();
-    r->value<S::include_regex> ()         = h.value<H::include_regex> ();
-    r->value<S::include_regex_trace> ()   = h.value<H::include_regex_trace> ();
-    r->value<S::guard_prefix> ()          = h.value<H::guard_prefix> ();
+    r->reuse_style_mixin (h.reuse_style_mixin ());
+    r->suppress_validation (h.suppress_validation () ||
+                            h.suppress_serializer_val ());
+    r->generate_polymorphic (h.generate_polymorphic ());
+    r->runtime_polymorphic (h.runtime_polymorphic ());
 
-    r->value<S::hxx_suffix> ()            = h.value<H::hxx_suffix> ();
-    r->value<S::ixx_suffix> ()            = h.value<H::ixx_suffix> ();
-    r->value<S::cxx_suffix> ()            = h.value<H::cxx_suffix> ();
+    r->skel_file_suffix (h.sskel_file_suffix ());
+    r->skel_type_suffix (h.sskel_type_suffix ());
+    r->impl_type_suffix (h.simpl_type_suffix ());
 
-    Char const* k = "sskel";
+    Char const* k = "pskel";
 
-    r->value<S::hxx_regex> ()             =
-      find_value (h.value<H::hxx_regex> (), k);
-    r->value<S::ixx_regex> ()             =
-      find_value (h.value<H::ixx_regex> (), k);
-    r->value<S::cxx_regex> ()             =
-      find_value (h.value<H::cxx_regex> (), k);
+    r->hxx_regex (find_value (h.hxx_regex (), k));
+    r->ixx_regex (find_value (h.ixx_regex (), k));
+    r->cxx_regex (find_value (h.cxx_regex (), k));
 
-    r->value<S::hxx_prologue_file> ()     = find_value (
-      h.value<H::hxx_prologue_file> (), k);
-    r->value<S::ixx_prologue_file> ()     = find_value (
-      h.value<H::ixx_prologue_file> (), k);
-    r->value<S::cxx_prologue_file> ()     = find_value (
-      h.value<H::cxx_prologue_file> (), k);
-    r->value<S::prologue_file> ()         = find_value (
-      h.value<H::prologue_file> (),     k);
-    r->value<S::hxx_epilogue_file> ()     = find_value (
-      h.value<H::hxx_epilogue_file> (), k);
-    r->value<S::ixx_epilogue_file> ()     = find_value (
-      h.value<H::ixx_epilogue_file> (), k);
-    r->value<S::cxx_epilogue_file> ()     = find_value (
-      h.value<H::cxx_epilogue_file> (), k);
-    r->value<S::epilogue_file> ()         = find_value (
-      h.value<H::epilogue_file> (),     k);
+    r->prologue_file (find_value (h.prologue_file (), k));
+    r->epilogue_file (find_value (h.epilogue_file (), k));
+    r->hxx_prologue_file (find_value (h.hxx_prologue_file (), k));
+    r->ixx_prologue_file (find_value (h.ixx_prologue_file (), k));
+    r->cxx_prologue_file (find_value (h.cxx_prologue_file (), k));
+    r->hxx_epilogue_file (find_value (h.hxx_epilogue_file (), k));
+    r->ixx_epilogue_file (find_value (h.ixx_epilogue_file (), k));
+    r->cxx_epilogue_file (find_value (h.cxx_epilogue_file (), k));
 
-    copy_values (r->value<S::hxx_prologue> (), h.value<H::hxx_prologue> (), k);
-    copy_values (r->value<S::ixx_prologue> (), h.value<H::ixx_prologue> (), k);
-    copy_values (r->value<S::cxx_prologue> (), h.value<H::cxx_prologue> (), k);
-    copy_values (r->value<S::prologue> (),     h.value<H::prologue> (),     k);
-    copy_values (r->value<S::hxx_epilogue> (), h.value<H::hxx_epilogue> (), k);
-    copy_values (r->value<S::ixx_epilogue> (), h.value<H::ixx_epilogue> (), k);
-    copy_values (r->value<S::cxx_epilogue> (), h.value<H::cxx_epilogue> (), k);
-    copy_values (r->value<S::epilogue> (),     h.value<H::epilogue> (),     k);
-
-    r->value<S::show_sloc> ()             = h.value<H::show_sloc> ();
-    r->value<S::proprietary_license> ()   = h.value<H::proprietary_license> ();
+    copy_values (r->prologue (), h.prologue (), k);
+    copy_values (r->epilogue (), h.epilogue (), k);
+    copy_values (r->hxx_prologue (), h.hxx_prologue (), k);
+    copy_values (r->ixx_prologue (), h.ixx_prologue (), k);
+    copy_values (r->cxx_prologue (), h.cxx_prologue (), k);
+    copy_values (r->hxx_epilogue (), h.hxx_epilogue (), k);
+    copy_values (r->ixx_epilogue (), h.ixx_epilogue (), k);
+    copy_values (r->cxx_epilogue (), h.cxx_epilogue (), k);
 
     // Add the anyType parser.
     //
@@ -591,14 +380,14 @@ namespace CXX
         ns.dispatch (ctx.xs_ns ());
       }
 
-      r->value<S::hxx_prologue> ().push_back (String (os.str ()).to_narrow ());
+      r->hxx_prologue ().push_back (String (os.str ()).to_narrow ());
     }
 
-    return r.release ();
+    return r;
   }
 
   Void Hybrid::Generator::
-  calculate_size (CLI::Options const& ops,
+  calculate_size (options const& ops,
                   XSDFrontend::SemanticGraph::Schema& schema,
                   XSDFrontend::SemanticGraph::Path const& file,
                   const WarningSet& disabled_warnings)
@@ -612,7 +401,7 @@ namespace CXX
   }
 
   Void Hybrid::Generator::
-  process_tree_names (CLI::Options const& ops,
+  process_tree_names (options const& ops,
                       XSDFrontend::SemanticGraph::Schema& schema,
                       XSDFrontend::SemanticGraph::Path const& file)
   {
@@ -621,7 +410,7 @@ namespace CXX
   }
 
   Void Hybrid::Generator::
-  process_parser_names (CLI::Options const& ops,
+  process_parser_names (options const& ops,
                         XSDFrontend::SemanticGraph::Schema& schema,
                         XSDFrontend::SemanticGraph::Path const& file)
   {
@@ -631,7 +420,7 @@ namespace CXX
   }
 
   Void Hybrid::Generator::
-  process_serializer_names (CLI::Options const& ops,
+  process_serializer_names (options const& ops,
                             XSDFrontend::SemanticGraph::Schema& schema,
                             XSDFrontend::SemanticGraph::Path const& file)
   {
@@ -690,19 +479,20 @@ namespace CXX
 
     Void
     append (WideOutputFileStream& os,
-            Cult::Containers::Vector<NarrowString> const& primary,
-            Cult::Containers::Vector<NarrowString> const& def,
+            NarrowStrings const& primary,
+            NarrowStrings const& def,
             Char const* primary_key,
             Char const* def_key)
     {
-      typedef Cult::Containers::Vector<NarrowString> Values;
-
-      for (Values const* v = &primary; v != 0; v = (v == &def ? 0 : &def))
+      for (NarrowStrings const* v = &primary;
+           v != 0;
+           v = (v == &def ? 0 : &def))
       {
         Boolean found (false);
         Char const* key (v == &primary ? primary_key : def_key);
 
-        for (Values::ConstIterator i (v->begin ()), e (v->end ()); i != e; ++i)
+        for (NarrowStrings::const_iterator i (v->begin ()), e (v->end ());
+             i != e; ++i)
         {
           if (key == 0)
             os << i->c_str () << endl;
@@ -747,8 +537,8 @@ namespace CXX
 
     Void
     append (WideOutputFileStream& os,
-            Cult::Containers::Vector<NarrowString> const& primary,
-            Cult::Containers::Vector<NarrowString> const& def,
+            NarrowStrings const& primary,
+            NarrowStrings const& def,
             Char const* key)
     {
       append (os, primary, def, key, key);
@@ -757,7 +547,7 @@ namespace CXX
 
 
   UnsignedLong Hybrid::Generator::
-  generate_tree (Hybrid::CLI::Options const& ops,
+  generate_tree (Hybrid::options const& ops,
                  Schema& schema,
                  Path const& file_path,
                  Boolean fpt,
@@ -772,7 +562,7 @@ namespace CXX
 
     try
     {
-      Boolean generate_xml_schema (ops.value<CLI::generate_xml_schema> ());
+      Boolean generate_xml_schema (ops.generate_xml_schema ());
 
       // We could be compiling several schemas at once in which case
       // handling of the --generate-xml-schema option gets tricky: we
@@ -781,7 +571,7 @@ namespace CXX
       //
       if (generate_xml_schema)
       {
-        if (NarrowString name = ops.value<CLI::extern_xml_schema> ())
+        if (NarrowString name = ops.extern_xml_schema ())
         {
           if (file_path.native_file_string () != name)
             generate_xml_schema = false;
@@ -805,24 +595,20 @@ namespace CXX
 
       // Generate code.
       //
-      Boolean inline_ (ops.value<CLI::generate_inline> () &&
-                       !generate_xml_schema);
-
-      Boolean forward (ops.value<CLI::generate_forward> () &&
-                       !generate_xml_schema);
-
+      Boolean inline_ (ops.generate_inline () && !generate_xml_schema);
+      Boolean forward (ops.generate_forward () && !generate_xml_schema);
       Boolean source (!generate_xml_schema);
 
       NarrowString name (file_path.leaf ());
 
-      NarrowString hxx_suffix (ops.value <CLI::hxx_suffix> ());
-      NarrowString ixx_suffix (ops.value <CLI::ixx_suffix> ());
-      NarrowString cxx_suffix (ops.value <CLI::cxx_suffix> ());
-      NarrowString fwd_suffix (ops.value <CLI::fwd_suffix> ());
+      NarrowString hxx_suffix (ops.hxx_suffix ());
+      NarrowString ixx_suffix (ops.ixx_suffix ());
+      NarrowString cxx_suffix (ops.cxx_suffix ());
+      NarrowString fwd_suffix (ops.fwd_suffix ());
 
-      NarrowString hxx_regex (find_value (ops.value <CLI::hxx_regex> (), ""));
-      NarrowString ixx_regex (find_value (ops.value <CLI::ixx_regex> (), ""));
-      NarrowString cxx_regex (find_value (ops.value <CLI::cxx_regex> (), ""));
+      NarrowString hxx_regex (find_value (ops.hxx_regex (), ""));
+      NarrowString ixx_regex (find_value (ops.ixx_regex (), ""));
+      NarrowString cxx_regex (find_value (ops.cxx_regex (), ""));
 
       Regex hxx_expr (
         hxx_regex.empty ()
@@ -840,9 +626,9 @@ namespace CXX
         : cxx_regex);
 
       Regex fwd_expr (
-        ops.value <CLI::fwd_regex> ().empty ()
+        ops.fwd_regex ().empty ()
         ? "#^(.+?)(\\.[^./\\\\]+)?$#$1" + fwd_suffix + "#"
-        : ops.value <CLI::fwd_regex> ());
+        : ops.fwd_regex ());
 
       if (!hxx_expr.match (name))
       {
@@ -888,7 +674,7 @@ namespace CXX
 
       Path out_dir;
 
-      if (NarrowString dir = ops.value<CLI::output_dir> ())
+      if (NarrowString dir = ops.output_dir ())
       {
         try
         {
@@ -984,9 +770,7 @@ namespace CXX
       // Print copyright and license.
       //
       Char const* copyright (
-        ops.value<CLI::proprietary_license> ()
-        ? copyright_proprietary
-        : copyright_gpl);
+        ops.proprietary_license () ? copyright_proprietary : copyright_gpl);
 
       if (forward)
         fwd << copyright;
@@ -1003,8 +787,7 @@ namespace CXX
       //
       WideInputFileStream prologue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::prologue_file> (), ""));
+        NarrowString name (find_value (ops.prologue_file (), ""));
 
         if (name)
           open (prologue, name);
@@ -1014,8 +797,7 @@ namespace CXX
       //
       WideInputFileStream epilogue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::epilogue_file> (), ""));
+        NarrowString name (find_value (ops.epilogue_file (), ""));
 
         if (name)
           open (epilogue, name);
@@ -1023,14 +805,14 @@ namespace CXX
 
       // SLOC counter.
       //
-      UnsignedLong sloc_total (0);
-      Boolean show_sloc (ops.value<CLI::show_sloc> ());
+      size_t sloc_total (0);
+      Boolean show_sloc (ops.show_sloc ());
 
       //
       //
       Regex guard_expr ("/([a-z])([A-Z])/$1_$2/"); // Split words.
 
-      NarrowString guard_prefix (ops.value<CLI::guard_prefix> ());
+      NarrowString guard_prefix (ops.guard_prefix ());
 
       if (!guard_prefix)
         guard_prefix = file_path.branch_path ().native_directory_string ();
@@ -1073,12 +855,8 @@ namespace CXX
         fwd << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (fwd,
-                ops.value<CLI::fwd_prologue> (),
-                ops.value<CLI::prologue> (),
-                0,
-                "");
-        append (fwd, ops.value<CLI::fwd_prologue_file> (), prologue);
+        append (fwd, ops.fwd_prologue (), ops.prologue (), 0, "");
+        append (fwd, ops.fwd_prologue_file (), prologue);
 
         fwd << "//" << endl
             << "// End prologue." << endl
@@ -1096,12 +874,8 @@ namespace CXX
         fwd << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (fwd, ops.value<CLI::fwd_epilogue_file> (), epilogue);
-        append (fwd,
-                ops.value<CLI::fwd_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                0,
-                "");
+        append (fwd, ops.fwd_epilogue_file (), epilogue);
+        append (fwd, ops.fwd_epilogue (), ops.epilogue (), 0, "");
 
         fwd << "//" << endl
             << "// End epilogue." << endl
@@ -1155,7 +929,7 @@ namespace CXX
         hxx << "#include <xsde/cxx/config.hxx>" << endl
             << endl;
 
-        if (ops.value<CLI::char_encoding> () == "iso8859-1")
+        if (ops.char_encoding () == "iso8859-1")
         {
           hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
               << "#error the generated code uses the ISO-8859-1 encoding" <<
@@ -1174,7 +948,7 @@ namespace CXX
               << endl;
         }
 
-        if (ops.value<CLI::no_stl> ())
+        if (ops.no_stl ())
         {
           hxx << "#ifdef XSDE_STL" << endl
               << "#error the XSD/e runtime uses STL while the " <<
@@ -1193,7 +967,7 @@ namespace CXX
               << endl;
         }
 
-        if (ops.value<CLI::no_exceptions> ())
+        if (ops.no_exceptions ())
         {
           hxx << "#ifdef XSDE_EXCEPTIONS" << endl
               << "#error the XSD/e runtime uses exceptions while the " <<
@@ -1212,7 +986,7 @@ namespace CXX
               << endl;
         }
 
-        if (ops.value<CLI::no_long_long> ())
+        if (ops.no_long_long ())
         {
           hxx << "#ifdef XSDE_LONGLONG" << endl
               << "#error the XSD/e runtime uses long long while the " <<
@@ -1231,7 +1005,7 @@ namespace CXX
               << endl;
         }
 
-        if (ops.value<CLI::custom_allocator> ())
+        if (ops.custom_allocator ())
         {
           hxx << "#ifndef XSDE_CUSTOM_ALLOCATOR" << endl
               << "#error the generated code uses custom allocator while " <<
@@ -1261,13 +1035,8 @@ namespace CXX
         hxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (hxx,
-                ops.value<CLI::hxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "");
-        append (hxx,
-                find_value (ops.value<CLI::hxx_prologue_file> (), ""),
-                prologue);
+        append (hxx, ops.hxx_prologue (), ops.prologue (), "");
+        append (hxx, find_value (ops.hxx_prologue_file (), ""), prologue);
 
         hxx << "//" << endl
             << "// End prologue." << endl
@@ -1288,10 +1057,10 @@ namespace CXX
 
             generate_tree_header (ctx);
 
-            if (!ops.value<CLI::generate_insertion> ().empty ())
+            if (!ops.generate_insertion ().empty ())
               generate_insertion_header (ctx);
 
-            if (!ops.value<CLI::generate_extraction> ().empty ())
+            if (!ops.generate_extraction ().empty ())
               generate_extraction_header (ctx);
           }
           else
@@ -1311,13 +1080,8 @@ namespace CXX
         hxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (hxx,
-                find_value (ops.value<CLI::hxx_epilogue_file> (), ""),
-                epilogue);
-        append (hxx,
-                ops.value<CLI::hxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "");
+        append (hxx, find_value (ops.hxx_epilogue_file (), ""), epilogue);
+        append (hxx, ops.hxx_epilogue (), ops.epilogue (), "");
 
         hxx << "//" << endl
             << "// End epilogue." << endl
@@ -1358,13 +1122,8 @@ namespace CXX
         ixx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (ixx,
-                ops.value<CLI::ixx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "");
-        append (ixx,
-                find_value (ops.value<CLI::ixx_prologue_file> (), ""),
-                prologue);
+        append (ixx, ops.ixx_prologue (), ops.prologue (), "");
+        append (ixx, find_value (ops.ixx_prologue_file (), ""), prologue);
 
         ixx << "//" << endl
             << "// End prologue." << endl
@@ -1382,13 +1141,8 @@ namespace CXX
         ixx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (ixx,
-                find_value (ops.value<CLI::ixx_epilogue_file> (), ""),
-                epilogue);
-        append (ixx,
-                ops.value<CLI::ixx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "");
+        append (ixx, find_value (ops.ixx_epilogue_file (), ""), epilogue);
+        append (ixx, ops.ixx_epilogue (), ops.epilogue (), "");
 
         ixx << "//" << endl
             << "// End epilogue." << endl
@@ -1419,13 +1173,8 @@ namespace CXX
         cxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (cxx,
-                ops.value<CLI::cxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "");
-        append (cxx,
-                find_value (ops.value<CLI::cxx_prologue_file> (), ""),
-                prologue);
+        append (cxx, ops.cxx_prologue (), ops.prologue (), "");
+        append (cxx, find_value (ops.cxx_prologue_file (), ""), prologue);
 
         cxx << "//" << endl
             << "// End prologue." << endl
@@ -1444,10 +1193,10 @@ namespace CXX
 
           generate_tree_source (ctx);
 
-          if (!ops.value<CLI::generate_insertion> ().empty ())
+          if (!ops.generate_insertion ().empty ())
             generate_insertion_source (ctx);
 
-          if (!ops.value<CLI::generate_extraction> ().empty ())
+          if (!ops.generate_extraction ().empty ())
             generate_extraction_source (ctx);
         }
 
@@ -1456,13 +1205,8 @@ namespace CXX
         cxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (cxx,
-                find_value (ops.value<CLI::cxx_epilogue_file> (), ""),
-                epilogue);
-        append (cxx,
-                ops.value<CLI::cxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "");
+        append (cxx, find_value (ops.cxx_epilogue_file (), ""), epilogue);
+        append (cxx, ops.cxx_epilogue (), ops.epilogue (), "");
 
         cxx << "//" << endl
             << "// End epilogue." << endl
@@ -1480,15 +1224,14 @@ namespace CXX
       // Populate the type maps if we are generating parsing or
       // serialization code.
       //
-      if (ops.value<CLI::generate_parser> () ||
-          ops.value<CLI::generate_serializer> ())
+      if (ops.generate_parser () || ops.generate_serializer ())
       {
         generate_tree_type_map (ops, schema, file_path, hxx_name,
                                 parser_type_map, serializer_type_map);
 
         // Re-map anyType.
         //
-        if (ops.value<CLI::generate_parser> ())
+        if (ops.generate_parser ())
         {
           parser_type_map.push_back (
             TypeMap::Namespace ("http://www.w3.org/2001/XMLSchema"));
@@ -1497,7 +1240,7 @@ namespace CXX
           xs.types_push_back ("anyType", xs_ns + L"::any_type*");
         }
 
-        if (ops.value<CLI::generate_serializer> ())
+        if (ops.generate_serializer ())
         {
           serializer_type_map.push_back (
             TypeMap::Namespace ("http://www.w3.org/2001/XMLSchema"));
@@ -1546,7 +1289,7 @@ namespace CXX
   }
 
   UnsignedLong Hybrid::Generator::
-  generate_parser (Hybrid::CLI::Options const& ops,
+  generate_parser (Hybrid::options const& ops,
                    Schema& schema,
                    Path const& file_path,
                    Boolean fpt,
@@ -1560,7 +1303,7 @@ namespace CXX
     try
     {
       {
-        Boolean gen_xml_schema (ops.value<CLI::generate_xml_schema> ());
+        Boolean gen_xml_schema (ops.generate_xml_schema ());
 
         // We could be compiling several schemas at once in which case
         // handling of the --generate-xml-schema option gets tricky: we
@@ -1569,7 +1312,7 @@ namespace CXX
         //
         if (gen_xml_schema)
         {
-          if (NarrowString name = ops.value<CLI::extern_xml_schema> ())
+          if (NarrowString name = ops.extern_xml_schema ())
           {
             if (file_path.native_file_string () != name)
               gen_xml_schema = false;
@@ -1590,22 +1333,17 @@ namespace CXX
       }
 
       NarrowString name (file_path.leaf ());
-      NarrowString skel_suffix (ops.value <CLI::pskel_file_suffix> ());
-      NarrowString impl_suffix (ops.value <CLI::pimpl_file_suffix> ());
+      NarrowString skel_suffix (ops.pskel_file_suffix ());
+      NarrowString impl_suffix (ops.pimpl_file_suffix ());
 
-      NarrowString hxx_suffix (ops.value <CLI::hxx_suffix> ());
-      NarrowString cxx_suffix (ops.value <CLI::cxx_suffix> ());
+      NarrowString hxx_suffix (ops.hxx_suffix ());
+      NarrowString cxx_suffix (ops.cxx_suffix ());
 
-      NarrowString hxx_obj_regex (
-        find_value (ops.value <CLI::hxx_regex> (), ""));
+      NarrowString hxx_obj_regex (find_value (ops.hxx_regex (), ""));
+      NarrowString hxx_skel_regex (find_value (ops.hxx_regex (), "pskel"));
 
-      NarrowString hxx_skel_regex (
-        find_value (ops.value <CLI::hxx_regex> (), "pskel"));
-
-      NarrowString hxx_regex (
-        find_value (ops.value <CLI::hxx_regex> (), "pimpl"));
-      NarrowString cxx_regex (
-        find_value (ops.value <CLI::cxx_regex> (), "pimpl"));
+      NarrowString hxx_regex (find_value (ops.hxx_regex (), "pimpl"));
+      NarrowString cxx_regex (find_value (ops.cxx_regex (), "pimpl"));
 
       // Here we need to make sure that hxx_obj_expr is the same
       // as in generate().
@@ -1658,7 +1396,7 @@ namespace CXX
 
       Path out_dir;
 
-      if (NarrowString dir = ops.value<CLI::output_dir> ())
+      if (NarrowString dir = ops.output_dir ())
       {
         try
         {
@@ -1713,9 +1451,7 @@ namespace CXX
       // Print copyright and license.
       //
       Char const* copyright (
-        ops.value<CLI::proprietary_license> ()
-        ? copyright_proprietary
-        : copyright_gpl);
+        ops.proprietary_license () ? copyright_proprietary : copyright_gpl);
 
       hxx << copyright;
       cxx << copyright;
@@ -1724,8 +1460,7 @@ namespace CXX
       //
       WideInputFileStream prologue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::prologue_file> (), "pimpl"));
+        NarrowString name (find_value (ops.prologue_file (), "pimpl"));
 
         if (name)
           open (prologue, name);
@@ -1735,8 +1470,7 @@ namespace CXX
       //
       WideInputFileStream epilogue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::epilogue_file> (), "pimpl"));
+        NarrowString name (find_value (ops.epilogue_file (), "pimpl"));
 
         if (name)
           open (epilogue, name);
@@ -1744,14 +1478,14 @@ namespace CXX
 
       // SLOC counter.
       //
-      UnsignedLong sloc_total (0);
-      Boolean show_sloc (ops.value<CLI::show_sloc> ());
+      size_t sloc_total (0);
+      Boolean show_sloc (ops.show_sloc ());
 
       //
       //
       Regex guard_expr ("/([a-z])([A-Z])/$1_$2/"); // Split words.
 
-      NarrowString guard_prefix (ops.value<CLI::guard_prefix> ());
+      NarrowString guard_prefix (ops.guard_prefix ());
 
       if (!guard_prefix)
         guard_prefix = file_path.branch_path ().native_directory_string ();
@@ -1759,7 +1493,7 @@ namespace CXX
       if (guard_prefix)
         guard_prefix += '_';
 
-      Boolean aggr (ops.value<CLI::generate_aggregate> ());
+      Boolean aggr (ops.generate_aggregate ());
 
       // HXX
       //
@@ -1784,13 +1518,8 @@ namespace CXX
         hxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (hxx,
-                ops.value<CLI::hxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "pimpl");
-        append (hxx,
-                find_value (ops.value<CLI::hxx_prologue_file> (), "pimpl"),
-                prologue);
+        append (hxx, ops.hxx_prologue (), ops.prologue (), "pimpl");
+        append (hxx, find_value (ops.hxx_prologue_file (), "pimpl"), prologue);
 
         hxx << "//" << endl
             << "// End prologue." << endl
@@ -1838,13 +1567,8 @@ namespace CXX
         hxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (hxx,
-                find_value (ops.value<CLI::hxx_epilogue_file> (), "pimpl"),
-                epilogue);
-        append (hxx,
-                ops.value<CLI::hxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "pimpl");
+        append (hxx, find_value (ops.hxx_epilogue_file (), "pimpl"), epilogue);
+        append (hxx, ops.hxx_epilogue (), ops.epilogue (), "pimpl");
 
         hxx << "//" << endl
             << "// End epilogue." << endl
@@ -1873,13 +1597,8 @@ namespace CXX
         cxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (cxx,
-                ops.value<CLI::cxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "pimpl");
-        append (cxx,
-                find_value (ops.value<CLI::cxx_prologue_file> (), "pimpl"),
-                prologue);
+        append (cxx, ops.cxx_prologue (), ops.prologue (), "pimpl");
+        append (cxx, find_value (ops.cxx_prologue_file (), "pimpl"), prologue);
 
         cxx << "//" << endl
             << "// End prologue." << endl
@@ -1904,13 +1623,8 @@ namespace CXX
         cxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (cxx,
-                find_value (ops.value<CLI::cxx_epilogue_file> (), "pimpl"),
-                epilogue);
-        append (cxx,
-                ops.value<CLI::cxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "pimpl");
+        append (cxx, find_value (ops.cxx_epilogue_file (), "pimpl"), epilogue);
+        append (cxx, ops.cxx_epilogue (), ops.epilogue (), "pimpl");
 
         cxx << "//" << endl
             << "// End epilogue." << endl
@@ -1961,7 +1675,7 @@ namespace CXX
   }
 
   UnsignedLong Hybrid::Generator::
-  generate_serializer (Hybrid::CLI::Options const& ops,
+  generate_serializer (Hybrid::options const& ops,
                        Schema& schema,
                        Path const& file_path,
                        Boolean fpt,
@@ -1975,7 +1689,7 @@ namespace CXX
     try
     {
       {
-        Boolean gen_xml_schema (ops.value<CLI::generate_xml_schema> ());
+        Boolean gen_xml_schema (ops.generate_xml_schema ());
 
         // We could be compiling several schemas at once in which case
         // handling of the --generate-xml-schema option gets tricky: we
@@ -1984,7 +1698,7 @@ namespace CXX
         //
         if (gen_xml_schema)
         {
-          if (NarrowString name = ops.value<CLI::extern_xml_schema> ())
+          if (NarrowString name = ops.extern_xml_schema ())
           {
             if (file_path.native_file_string () != name)
               gen_xml_schema = false;
@@ -2005,21 +1719,17 @@ namespace CXX
       }
 
       NarrowString name (file_path.leaf ());
-      NarrowString skel_suffix (ops.value <CLI::sskel_file_suffix> ());
-      NarrowString impl_suffix (ops.value <CLI::simpl_file_suffix> ());
+      NarrowString skel_suffix (ops.sskel_file_suffix ());
+      NarrowString impl_suffix (ops.simpl_file_suffix ());
 
-      NarrowString hxx_suffix (ops.value <CLI::hxx_suffix> ());
-      NarrowString cxx_suffix (ops.value <CLI::cxx_suffix> ());
+      NarrowString hxx_suffix (ops.hxx_suffix ());
+      NarrowString cxx_suffix (ops.cxx_suffix ());
 
-      NarrowString hxx_obj_regex (
-        find_value (ops.value <CLI::hxx_regex> (), ""));
+      NarrowString hxx_obj_regex (find_value (ops.hxx_regex (), ""));
 
-      NarrowString hxx_skel_regex (
-        find_value (ops.value <CLI::hxx_regex> (), "sskel"));
-      NarrowString hxx_regex (
-        find_value (ops.value <CLI::hxx_regex> (), "simpl"));
-      NarrowString cxx_regex (
-        find_value (ops.value <CLI::cxx_regex> (), "simpl"));
+      NarrowString hxx_skel_regex (find_value (ops.hxx_regex (), "sskel"));
+      NarrowString hxx_regex (find_value (ops.hxx_regex (), "simpl"));
+      NarrowString cxx_regex (find_value (ops.cxx_regex (), "simpl"));
 
       // Here we need to make sure that hxx_obj_expr is the same
       // as in generate().
@@ -2072,7 +1782,7 @@ namespace CXX
 
       Path out_dir;
 
-      if (NarrowString dir = ops.value<CLI::output_dir> ())
+      if (NarrowString dir = ops.output_dir ())
       {
         try
         {
@@ -2127,9 +1837,7 @@ namespace CXX
       // Print copyright and license.
       //
       Char const* copyright (
-        ops.value<CLI::proprietary_license> ()
-        ? copyright_proprietary
-        : copyright_gpl);
+        ops.proprietary_license () ? copyright_proprietary : copyright_gpl);
 
       hxx << copyright;
       cxx << copyright;
@@ -2138,8 +1846,7 @@ namespace CXX
       //
       WideInputFileStream prologue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::prologue_file> (), "simpl"));
+        NarrowString name (find_value (ops.prologue_file (), "simpl"));
 
         if (name)
           open (prologue, name);
@@ -2149,8 +1856,7 @@ namespace CXX
       //
       WideInputFileStream epilogue;
       {
-        NarrowString name (
-          find_value (ops.value<CLI::epilogue_file> (), "simpl"));
+        NarrowString name (find_value (ops.epilogue_file (), "simpl"));
 
         if (name)
           open (epilogue, name);
@@ -2158,14 +1864,14 @@ namespace CXX
 
       // SLOC counter.
       //
-      UnsignedLong sloc_total (0);
-      Boolean show_sloc (ops.value<CLI::show_sloc> ());
+      size_t sloc_total (0);
+      Boolean show_sloc (ops.show_sloc ());
 
       //
       //
       Regex guard_expr ("/([a-z])([A-Z])/$1_$2/"); // Split words.
 
-      NarrowString guard_prefix (ops.value<CLI::guard_prefix> ());
+      NarrowString guard_prefix (ops.guard_prefix ());
 
       if (!guard_prefix)
         guard_prefix = file_path.branch_path ().native_directory_string ();
@@ -2173,7 +1879,7 @@ namespace CXX
       if (guard_prefix)
         guard_prefix += '_';
 
-      Boolean aggr (ops.value<CLI::generate_aggregate> ());
+      Boolean aggr (ops.generate_aggregate ());
 
       // HXX
       //
@@ -2198,13 +1904,8 @@ namespace CXX
         hxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (hxx,
-                ops.value<CLI::hxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "simpl");
-        append (hxx,
-                find_value (ops.value<CLI::hxx_prologue_file> (), "simpl"),
-                prologue);
+        append (hxx, ops.hxx_prologue (), ops.prologue (), "simpl");
+        append (hxx, find_value (ops.hxx_prologue_file (), "simpl"), prologue);
 
         hxx << "//" << endl
             << "// End prologue." << endl
@@ -2252,13 +1953,8 @@ namespace CXX
         hxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (hxx,
-                find_value (ops.value<CLI::hxx_epilogue_file> (), "simpl"),
-                epilogue);
-        append (hxx,
-                ops.value<CLI::hxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "simpl");
+        append (hxx, find_value (ops.hxx_epilogue_file (), "simpl"), epilogue);
+        append (hxx, ops.hxx_epilogue (), ops.epilogue (), "simpl");
 
         hxx << "//" << endl
             << "// End epilogue." << endl
@@ -2287,13 +1983,8 @@ namespace CXX
         cxx << "// Begin prologue." << endl
             << "//" << endl;
 
-        append (cxx,
-                ops.value<CLI::cxx_prologue> (),
-                ops.value<CLI::prologue> (),
-                "simpl");
-        append (cxx,
-                find_value (ops.value<CLI::cxx_prologue_file> (), "simpl"),
-                prologue);
+        append (cxx, ops.cxx_prologue (), ops.prologue (), "simpl");
+        append (cxx, find_value (ops.cxx_prologue_file (), "simpl"), prologue);
 
         cxx << "//" << endl
             << "// End prologue." << endl
@@ -2318,13 +2009,8 @@ namespace CXX
         cxx << "// Begin epilogue." << endl
             << "//" << endl;
 
-        append (cxx,
-                find_value (ops.value<CLI::cxx_epilogue_file> (), "simpl"),
-                epilogue);
-        append (cxx,
-                ops.value<CLI::cxx_epilogue> (),
-                ops.value<CLI::epilogue> (),
-                "simpl");
+        append (cxx, find_value (ops.cxx_epilogue_file (), "simpl"), epilogue);
+        append (cxx, ops.cxx_epilogue (), ops.epilogue (), "simpl");
 
         cxx << "//" << endl
             << "// End epilogue." << endl

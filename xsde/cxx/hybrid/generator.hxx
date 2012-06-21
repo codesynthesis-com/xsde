@@ -6,22 +6,21 @@
 #ifndef CXX_HYBRID_GENERATOR_HXX
 #define CXX_HYBRID_GENERATOR_HXX
 
+#include <memory>  // std::auto_ptr
+
 #include <cult/types.hxx>
 
 #include <cult/containers/vector.hxx>
-
-#include <cult/cli/options.hxx>
-#include <cult/cli/options-spec.hxx>
 
 #include <xsd-frontend/semantic-graph/elements.hxx> // Path
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
 #include <xsde.hxx>
 #include <type-map/type-map.hxx>
-#include <cxx/hybrid/cli.hxx>
 
-#include <cxx/parser/cli.hxx>
-#include <cxx/serializer/cli.hxx>
+#include <cxx/parser/options.hxx>
+#include <cxx/serializer/options.hxx>
+#include <cxx/hybrid/options.hxx>
 
 namespace CXX
 {
@@ -37,16 +36,13 @@ namespace CXX
       static Void
       usage ();
 
-      static CLI::OptionsSpec
-      options_spec ();
-
-      static Parser::CLI::Options*
-      parser_options (CLI::Options const&,
+      static std::auto_ptr<Parser::options>
+      parser_options (options const&,
                       XSDFrontend::SemanticGraph::Schema&,
                       XSDFrontend::SemanticGraph::Path const&);
 
-      static Serializer::CLI::Options*
-      serializer_options (CLI::Options const&,
+      static std::auto_ptr<Serializer::options>
+      serializer_options (options const&,
                           XSDFrontend::SemanticGraph::Schema&,
                           XSDFrontend::SemanticGraph::Path const&);
 
@@ -54,7 +50,7 @@ namespace CXX
       //
       static Void
       calculate_size (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
         WarningSet const& disabled_warnings);
@@ -63,19 +59,19 @@ namespace CXX
       //
       static Void
       process_tree_names (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&);
 
       static Void
       process_parser_names (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&);
 
       static Void
       process_serializer_names (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&);
 
@@ -83,7 +79,7 @@ namespace CXX
       //
       static UnsignedLong
       generate_tree (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
         Boolean file_per_type,
@@ -95,7 +91,7 @@ namespace CXX
 
       static UnsignedLong
       generate_parser (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
         Boolean file_per_type,
@@ -105,7 +101,7 @@ namespace CXX
 
       static UnsignedLong
       generate_serializer (
-        CLI::Options const&,
+        options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
         Boolean file_per_type,

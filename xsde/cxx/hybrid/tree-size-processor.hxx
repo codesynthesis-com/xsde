@@ -10,7 +10,7 @@
 
 #include <xsd-frontend/semantic-graph.hxx>
 
-#include <cxx/hybrid/cli.hxx>
+#include <cxx/hybrid/options.hxx>
 
 #include <xsde.hxx>
 
@@ -24,7 +24,7 @@ namespace CXX
     {
     public:
       Boolean
-      process (CLI::Options const& options,
+      process (options const& options,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const& file,
                const WarningSet& disabled_warnings);

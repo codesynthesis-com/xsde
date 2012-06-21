@@ -30,31 +30,17 @@ namespace CXX
       class Context: public CXX::Context
       {
       public:
-        Context (CLI::Options const& ops,
+        typedef Hybrid::options options_type;
+
+      public:
+        Context (options_type const& ops,
                  SemanticGraph::Schema& root,
                  SemanticGraph::Path const& path)
-            : CXX::Context (std::wcerr,
-                            root,
-                            path,
-                            "name",
-                            "char",
-                            ops.value<CLI::char_encoding> (),
-                            ops.value<CLI::include_with_brackets> (),
-                            ops.value<CLI::include_prefix> (),
-                            "", // export symbol
-                            ops.value<CLI::namespace_map> (),
-                            ops.value<CLI::namespace_regex> (),
-                            ops.value<CLI::namespace_regex_trace> (),
-                            ops.value<CLI::include_regex> (),
-                            ops.value<CLI::include_regex_trace> (),
-                            ops.value<CLI::generate_inline> (),
-                            ops.value<CLI::custom_allocator> (),
-                            !ops.value<CLI::no_long_long> (),
-                            ops.value<CLI::reserved_name> ()),
-              impl_suffix_ (ops.value<CLI::simpl_type_suffix> ()),
-              aggr_suffix_ (ops.value<CLI::saggr_type_suffix> ()),
+            : CXX::Context (std::wcerr, root, path, ops, "name", "char"),
+              impl_suffix_ (ops.simpl_type_suffix ()),
+              aggr_suffix_ (ops.saggr_type_suffix ()),
               options (ops),
-              aggregate (ops.value<CLI::generate_aggregate> ()),
+              aggregate (ops.generate_aggregate ()),
               impl_suffix (impl_suffix_),
               aggr_suffix (aggr_suffix_),
               custom_serializer_map (custom_serializer_map_),
@@ -62,10 +48,9 @@ namespace CXX
         {
           // Custom serializer mapping.
           //
-          typedef Containers::Vector<NarrowString> Vector;
-          Vector const& v (ops.value<CLI::custom_serializer> ());
+          NarrowStrings const& v (ops.custom_serializer ());
 
-          for (Vector::ConstIterator i (v.begin ()), e (v.end ());
+          for (NarrowStrings::const_iterator i (v.begin ()), e (v.end ());
                i != e; ++i)
           {
             String s (*i);
@@ -232,7 +217,7 @@ namespace CXX
         Cult::Containers::Map<String, NameSet*> global_type_names_;
 
       public:
-        CLI::Options const& options;
+        options_type const& options;
         Boolean aggregate;
         String const& impl_suffix;
         String const& aggr_suffix;
@@ -258,7 +243,7 @@ namespace CXX
           //
           Type* base_enum (0);
 
-          if (options.value<CLI::suppress_enum> () ||
+          if (options.suppress_enum () ||
               !Hybrid::Context::enum_mapping (e, &base_enum))
           {
             complex_.traverse (e);
@@ -538,12 +523,11 @@ namespace CXX
 
           if (aggregate)
           {
-            typedef Cult::Containers::Vector<NarrowString> Names;
-            Names const& names (options.value<CLI::root_type> ());
+            NarrowStrings const& names (options.root_type ());
 
             // Hopefully nobody will specify more than a handful of names.
             //
-            for (Names::ConstIterator i (names.begin ());
+            for (NarrowStrings::const_iterator i (names.begin ());
                  i != names.end (); ++i)
             {
               if (name == String (*i))
@@ -570,7 +554,7 @@ namespace CXX
 
         ~GlobalElement ()
         {
-          if (last_ != 0 && options.value<CLI::root_element_last> ())
+          if (last_ != 0 && options.root_element_last ())
             process (*last_);
         }
 
@@ -579,36 +563,34 @@ namespace CXX
         {
           Boolean p (false);
 
-          if (last_ == 0 && options.value<CLI::root_element_first> ())
+          if (last_ == 0 && options.root_element_first ())
             p = true;
 
           last_ = &e;
 
           if (!p &&
-              !options.value<CLI::root_element_first> () &&
-              !options.value<CLI::root_element_last> () &&
-              !options.value<CLI::root_element_all> () &&
-              !options.value<CLI::root_element_none> () &&
-              options.value<CLI::root_element> ().empty ())
+              !options.root_element_first () &&
+              !options.root_element_last () &&
+              !options.root_element_all () &&
+              !options.root_element_none () &&
+              options.root_element ().empty ())
           {
             // By default process them all.
             //
             p = true;
           }
 
-          if (!p && options.value<CLI::root_element_all> ())
+          if (!p && options.root_element_all ())
             p = true;
 
           if (!p)
           {
-            typedef Cult::Containers::Vector<NarrowString> Names;
-            Names const& names (options.value<CLI::root_element> ());
+            NarrowStrings const& names (options.root_element ());
 
             // Hopefully nobody will specify more than a handful of names.
             //
-            for (Names::ConstIterator i (names.begin ());
-                 !p && i != names.end ();
-                 ++i)
+            for (NarrowStrings::const_iterator i (names.begin ());
+                 !p && i != names.end (); ++i)
             {
               if (e.name () == String (*i))
                 p = true;
@@ -736,7 +718,7 @@ namespace CXX
       Char const* Uses::seen_key = "cxx-hybrid-serializer-name-processor-seen";
 
       Void
-      process_impl (CLI::Options const& ops,
+      process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const& file,
                     Boolean deep)
@@ -802,7 +784,7 @@ namespace CXX
     }
 
     Boolean SerializerNameProcessor::
-    process (CLI::Options const& ops,
+    process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              Boolean deep)

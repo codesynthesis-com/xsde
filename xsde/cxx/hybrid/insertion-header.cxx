@@ -41,7 +41,7 @@ namespace CXX
           if (!name)
             return;
 
-          for (Streams::ConstIterator i (ostreams.begin ());
+          for (NarrowStrings::const_iterator i (ostreams.begin ());
                i != ostreams.end (); ++i)
           {
             os << (exceptions ? "void" : "bool") << endl
@@ -73,7 +73,7 @@ namespace CXX
           if (!name)
             return;
 
-          for (Streams::ConstIterator i (ostreams.begin ());
+          for (NarrowStrings::const_iterator i (ostreams.begin ());
                i != ostreams.end (); ++i)
           {
             os << (exceptions ? "void" : "bool") << endl
@@ -102,7 +102,7 @@ namespace CXX
           if (!name)
             return;
 
-          for (Streams::ConstIterator i (ostreams.begin ());
+          for (NarrowStrings::const_iterator i (ostreams.begin ());
                i != ostreams.end (); ++i)
           {
             os << (exceptions ? "void" : "bool") << endl
@@ -135,7 +135,7 @@ namespace CXX
             String const& type (etype (a));
             String const& scope (Context::scope (a));
 
-            for (Streams::ConstIterator i (ostreams.begin ());
+            for (NarrowStrings::const_iterator i (ostreams.begin ());
                  i != ostreams.end (); ++i)
             {
               os << (exceptions ? "void" : "bool") << endl
@@ -165,7 +165,7 @@ namespace CXX
             String const& type (etype (c));
             String const& scope (Context::scope (c));
 
-            for (Streams::ConstIterator i (ostreams.begin ());
+            for (NarrowStrings::const_iterator i (ostreams.begin ());
                  i != ostreams.end (); ++i)
             {
               os << (exceptions ? "void" : "bool") << endl
@@ -201,7 +201,7 @@ namespace CXX
             String const& type (etype (s));
             String const& scope (Context::scope (s));
 
-            for (Streams::ConstIterator i (ostreams.begin ());
+            for (NarrowStrings::const_iterator i (ostreams.begin ());
                  i != ostreams.end (); ++i)
             {
               os << (exceptions ? "void" : "bool") << endl
@@ -256,7 +256,7 @@ namespace CXX
           if (!name)
             return;
 
-          for (Streams::ConstIterator i (ostreams.begin ());
+          for (NarrowStrings::const_iterator i (ostreams.begin ());
                i != ostreams.end (); ++i)
           {
             os << (exceptions ? "void" : "bool") << endl

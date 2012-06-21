@@ -2067,7 +2067,7 @@ namespace CXX
     {
       // Generate includes.
       //
-      if (ctx.options.value<CLI::generate_inline> ())
+      if (ctx.options.generate_inline ())
       {
         Traversal::Schema schema;
         Includes includes (ctx, Includes::inline_);

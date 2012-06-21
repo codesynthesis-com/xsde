@@ -31,30 +31,16 @@ namespace CXX
       class Context: public CXX::Context
       {
       public:
-        Context (CLI::Options const& ops,
+        typedef Hybrid::options options_type;
+
+      public:
+        Context (options_type const& ops,
                  SemanticGraph::Schema& root,
                  SemanticGraph::Path const& path)
-            : CXX::Context (std::wcerr,
-                            root,
-                            path,
-                            "name",
-                            "char",
-                            ops.value<CLI::char_encoding> (),
-                            ops.value<CLI::include_with_brackets> (),
-                            ops.value<CLI::include_prefix> (),
-                            "", // export symbol
-                            ops.value<CLI::namespace_map> (),
-                            ops.value<CLI::namespace_regex> (),
-                            ops.value<CLI::namespace_regex_trace> (),
-                            ops.value<CLI::include_regex> (),
-                            ops.value<CLI::include_regex_trace> (),
-                            ops.value<CLI::generate_inline> (),
-                            ops.value<CLI::custom_allocator> (),
-                            !ops.value<CLI::no_long_long> (),
-                            ops.value<CLI::reserved_name> ()),
-              stl (!ops.value<CLI::no_stl> ()),
-              detach (ops.value<CLI::generate_detach> ()),
-              enum_ (!ops.value<CLI::suppress_enum> ()),
+            : CXX::Context (std::wcerr, root, path, ops, "name", "char"),
+              stl (!ops.no_stl ()),
+              detach (ops.generate_detach ()),
+              enum_ (!ops.suppress_enum ()),
               custom_data_map (custom_data_map_),
               custom_type_map (custom_type_map_),
               global_type_names (global_type_names_)
@@ -62,10 +48,9 @@ namespace CXX
           // Translate the type names with custom data.
           //
           {
-            typedef Cult::Containers::Vector<NarrowString> CustomData;
-            CustomData const& cd (ops.value<CLI::custom_data> ());
+            NarrowStrings const& cd (ops.custom_data ());
 
-            for (CustomData::ConstIterator i (cd.begin ());
+            for (NarrowStrings::const_iterator i (cd.begin ());
                  i != cd.end (); ++i)
             {
               String name (*i);
@@ -102,10 +87,9 @@ namespace CXX
           // Custom type mapping.
           //
           {
-            typedef Containers::Vector<NarrowString> Vector;
-            Vector const& v (ops.value<CLI::custom_type> ());
+            NarrowStrings const& v (ops.custom_type ());
 
-            for (Vector::ConstIterator i (v.begin ()), e (v.end ());
+            for (NarrowStrings::const_iterator i (v.begin ()), e (v.end ());
                  i != e; ++i)
             {
               String s (*i);
@@ -2197,7 +2181,7 @@ namespace CXX
       };
 
       Void
-      process_impl (CLI::Options const& ops,
+      process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const& file,
                     Boolean deep)
@@ -2311,7 +2295,7 @@ namespace CXX
     }
 
     Void TreeNameProcessor::
-    process (CLI::Options const& ops,
+    process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              Boolean deep)

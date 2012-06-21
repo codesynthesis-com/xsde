@@ -6,6 +6,8 @@
 #ifndef CXX_ELEMENTS_HXX
 #define CXX_ELEMENTS_HXX
 
+#include <ostream>
+
 #include <cutl/re.hxx>
 
 #include <cult/types.hxx>
@@ -16,9 +18,10 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
+#include <types.hxx>
 #include <elements.hxx>
 
-#include <ostream>
+#include <cxx/options.hxx>
 
 namespace CXX
 {
@@ -144,38 +147,27 @@ namespace CXX
     typedef Cult::Containers::Map<String, String> ReservedNameMap;
     typedef Cult::Containers::Set<String> KeywordSet;
 
+    typedef CXX::options options_type;
+
   public:
     Context (std::wostream& o,
              SemanticGraph::Schema& root,
              SemanticGraph::Path const& path,
+             options_type const&,
              Char const* name_key,
-             NarrowString const& char_type__,
-             NarrowString const& char_encoding__,
-             Boolean include_with_brackets__,
-             NarrowString const& include_prefix__,
-             NarrowString const& esymbol,
-             Containers::Vector<NarrowString> const& nsm,
-             Containers::Vector<NarrowString> const& nsr,
-             Boolean trace_namespace_regex_,
-             Containers::Vector<NarrowString> const& include_regex,
-             Boolean trace_include_regex_,
-             Boolean inline_,
-             Boolean custom_allocator,
-             Boolean long_long,
-             Containers::Vector<NarrowString> const& reserved_name);
+             NarrowString const& char_type);
 
   protected:
     Context (Context& c)
         : os (c.os),
           schema_root (c.schema_root),
           schema_path (c.schema_path),
+          options (c.options),
           ename_key (c.ename_key),
           char_type (c.char_type),
           char_encoding (c.char_encoding),
           L (c.L),
           string_type (c.string_type),
-          include_with_brackets (c.include_with_brackets),
-          include_prefix (c.include_prefix),
           type_exp (c.type_exp),
           inst_exp (c.inst_exp),
           inl (c.inl),
@@ -184,12 +176,10 @@ namespace CXX
           ns_mapping_cache (c.ns_mapping_cache),
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
-          trace_namespace_regex (c.trace_namespace_regex),
           urn_mapping (c.urn_mapping),
           nsr_mapping (c.nsr_mapping),
           nsm_mapping (c.nsm_mapping),
           include_mapping (c.include_mapping),
-          trace_include_regex (c.trace_include_regex),
           reserved_name_map (c.reserved_name_map),
           keyword_set (c.keyword_set)
     {
@@ -199,13 +189,12 @@ namespace CXX
         : os (o),
           schema_root (c.schema_root),
           schema_path (c.schema_path),
+          options (c.options),
           ename_key (c.ename_key),
           char_type (c.char_type),
           char_encoding (c.char_encoding),
           L (c.L),
           string_type (c.string_type),
-          include_with_brackets (c.include_with_brackets),
-          include_prefix (c.include_prefix),
           type_exp (c.type_exp),
           inst_exp (c.inst_exp),
           inl (c.inl),
@@ -214,12 +203,10 @@ namespace CXX
           ns_mapping_cache (c.ns_mapping_cache),
           xs_ns_ (c.xs_ns_),
           cxx_id_expr (c.cxx_id_expr),
-          trace_namespace_regex (c.trace_namespace_regex),
           urn_mapping (c.urn_mapping),
           nsr_mapping (c.nsr_mapping),
           nsm_mapping (c.nsm_mapping),
           include_mapping (c.include_mapping),
-          trace_include_regex (c.trace_include_regex),
           reserved_name_map (c.reserved_name_map),
           keyword_set (c.keyword_set)
     {
@@ -331,15 +318,14 @@ namespace CXX
     SemanticGraph::Schema& schema_root;
     SemanticGraph::Path const& schema_path;
 
+    options_type const& options;
+
     NarrowString const& ename_key;
 
     String& char_type;
     String& char_encoding;
     String& L;                  // string literal prefix
     String& string_type;
-
-    Boolean& include_with_brackets;
-    String& include_prefix;
 
     String& type_exp;
     String& inst_exp;
@@ -363,9 +349,6 @@ namespace CXX
     String L_;
     String string_type_;
 
-    Boolean include_with_brackets_;
-    String include_prefix_;
-
     String type_exp_;
     String inst_exp_;
     String inl_;
@@ -373,7 +356,6 @@ namespace CXX
   private:
     RegexPat const cxx_id_expr_;
     RegexPat const& cxx_id_expr;
-    Boolean trace_namespace_regex;
     Regex urn_mapping_;
     RegexMapping nsr_mapping_;
     MapMapping nsm_mapping_;
@@ -384,7 +366,6 @@ namespace CXX
 
     RegexMapping include_mapping_;
     RegexMapping const& include_mapping;
-    Boolean trace_include_regex;
 
     ReservedNameMap const& reserved_name_map;
     ReservedNameMap reserved_name_map_;

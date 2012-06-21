@@ -141,14 +141,19 @@ gen  := $(addprefix $(out_base)/,$(genf))
 
 $(gen): $(cli)
 $(gen): cli := $(cli)
+# Watch out: if I add --generate-specifier, then I will need to fix
+# code that relies on modifiers to also modify the "specified" flag.
+#
 $(gen): cli_options +=         \
 -I $(src_base)                 \
+--generate-modifier            \
 --ostream-type ::std::wostream \
 --exclude-base                 \
 --suppress-undocumented        \
 --generate-file-scanner        \
 --include-with-brackets        \
---option-length 28
+--option-length 28             \
+--cxx-prologue '\#include <options-parser.hxx>'
 
 #--include-prefix xsde
 #--guard-prefix XSDE

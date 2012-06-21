@@ -12,7 +12,7 @@
 
 #include <type-map/type-map.hxx>
 
-#include <cxx/hybrid/cli.hxx>
+#include <cxx/hybrid/options.hxx>
 
 namespace CXX
 {
@@ -21,7 +21,7 @@ namespace CXX
     using namespace Cult::Types;
 
     Void
-    generate_tree_type_map (CLI::Options const& options,
+    generate_tree_type_map (options const& options,
                             XSDFrontend::SemanticGraph::Schema&,
                             XSDFrontend::SemanticGraph::Path const&,
                             String const& hxx_name,

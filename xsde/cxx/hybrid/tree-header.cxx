@@ -787,7 +787,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::Long&)
         {
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
             align_type ("long", 5);
           else
             align_type ("long long", 8);
@@ -796,7 +796,7 @@ namespace CXX
         virtual Void
         traverse (SemanticGraph::Fundamental::UnsignedLong&)
         {
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
             align_type ("unsigned long", 5);
           else
             align_type ("unsigned long long", 8);
@@ -2946,7 +2946,7 @@ namespace CXX
     Void
     generate_tree_header (Context& ctx)
     {
-      Boolean inline_ (ctx.options.value<CLI::generate_inline> ());
+      Boolean inline_ (ctx.options.generate_inline ());
 
       // Emit header includes.
       //

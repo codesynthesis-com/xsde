@@ -220,7 +220,7 @@ namespace CXX
           else
             string_type_ = L"char*";
 
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
           {
             long_type_ = L"long";
             unsigned_long_type_ = L"unsigned long";
@@ -670,7 +670,7 @@ namespace CXX
           Boolean icdr (false), ocdr (false);
           Boolean ixdr (false), oxdr (false);
 
-          for (Streams::ConstIterator i (istreams.begin ());
+          for (NarrowStrings::const_iterator i (istreams.begin ());
                i != istreams.end (); ++i)
           {
             if (*i == "CDR")
@@ -679,7 +679,7 @@ namespace CXX
               ixdr = true;
           }
 
-          for (Streams::ConstIterator i (ostreams.begin ());
+          for (NarrowStrings::const_iterator i (ostreams.begin ());
                i != ostreams.end (); ++i)
           {
             if (*i == "CDR")
@@ -724,7 +724,7 @@ namespace CXX
     Void
     generate_tree_forward (Context& ctx, Boolean generate_xml_schema)
     {
-      NarrowString xml_schema (ctx.options.value<CLI::extern_xml_schema> ());
+      NarrowString xml_schema (ctx.options.extern_xml_schema ());
 
       // Inlcude or Emit fundamental types.
       //
@@ -752,7 +752,7 @@ namespace CXX
 
         // Data representation stream includes.
         //
-        for (Context::Streams::ConstIterator i (ctx.istreams.begin ());
+        for (NarrowStrings::const_iterator i (ctx.istreams.begin ());
              i != ctx.istreams.end (); ++i)
         {
           if (*i == "CDR")
@@ -763,7 +763,7 @@ namespace CXX
                    << endl;
         }
 
-        for (Context::Streams::ConstIterator i (ctx.ostreams.begin ());
+        for (NarrowStrings::const_iterator i (ctx.ostreams.begin ());
              i != ctx.ostreams.end (); ++i)
         {
           if (*i == "CDR")

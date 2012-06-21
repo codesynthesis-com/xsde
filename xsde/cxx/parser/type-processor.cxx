@@ -273,12 +273,11 @@ namespace CXX
       };
 
       Void
-      process_impl (CLI::Options const& options,
+      process_impl (options const& ops,
                     XSDFrontend::SemanticGraph::Schema& tu,
                     TypeMap::Namespaces& type_map)
       {
-        Boolean tiein (!options.value<CLI::reuse_style_mixin> () &&
-                       !options.value<CLI::reuse_style_none> ());
+        Boolean tiein (!ops.reuse_style_mixin () && !ops.reuse_style_none ());
 
         if (tu.names_begin ()->named ().name () ==
             L"http://www.w3.org/2001/XMLSchema")
@@ -301,8 +300,7 @@ namespace CXX
           // If --extern-xml-schema is specified, then we don't want
           // includes from the XML Schema type map.
           //
-          Boolean extern_xml_schema (
-            options.value<CLI::extern_xml_schema> ());
+          Boolean extern_xml_schema (ops.extern_xml_schema ());
 
           // Besides types defined in this schema, also process those
           // referenced by global elements in case we are generating
@@ -344,11 +342,11 @@ namespace CXX
     }
 
     Void TypeProcessor::
-    process (CLI::Options const& options,
+    process (options const& ops,
              XSDFrontend::SemanticGraph::Schema& s,
              TypeMap::Namespaces& tm)
     {
-      process_impl (options, s, tm);
+      process_impl (ops, s, tm);
     }
   }
 }

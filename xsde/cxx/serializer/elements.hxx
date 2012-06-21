@@ -12,7 +12,7 @@
 
 #include <cxx/elements.hxx>
 
-#include <cxx/serializer/cli.hxx>
+#include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
@@ -35,11 +35,13 @@ namespace CXX
     public:
       typedef cutl::re::regexsub Regex;
 
+      typedef Serializer::options options_type;
+
     public:
       Context (std::wostream&,
                SemanticGraph::Schema&,
                SemanticGraph::Path const&,
-               CLI::Options const&,
+               options_type const&,
                Regex const* hxx_expr,
                Regex const* ixx_expr,
                Regex const* hxx_impl_expr);
@@ -179,7 +181,7 @@ namespace CXX
       has_facets (SemanticGraph::Complex& c);
 
     public:
-      CLI::Options const& options;
+      options_type const& options;
       String& xml_serializer;
       String& serializer_base;
       String& simple_base;
@@ -608,21 +610,20 @@ namespace CXX
     //
     struct RootElement: Traversal::Element
     {
-      RootElement (CLI::Options const& options,
-                   SemanticGraph::Element*& element)
-          : options_ (options), element_ (element)
+      RootElement (options const& o, SemanticGraph::Element*& e)
+          : options_ (o), element_ (e)
       {
       }
 
       virtual Void
       traverse (Type& e)
       {
-        if (options_.value<CLI::root_element_first> ())
+        if (options_.root_element_first ())
         {
           if (element_ == 0)
             element_ = &e;
         }
-        else if (String name = options_.value<CLI::root_element> ())
+        else if (String name = options_.root_element ())
         {
           if (e.name () == name)
             element_ = &e;
@@ -632,7 +633,7 @@ namespace CXX
       }
 
     private:
-      CLI::Options const& options_;
+      options const& options_;
       SemanticGraph::Element*& element_;
     };
   }

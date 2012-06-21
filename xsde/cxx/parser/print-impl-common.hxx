@@ -95,7 +95,7 @@ namespace CXX
       {
         if (default_type (t, "bool"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %u\n") << ", " <<
               arg_ << ");";
           else
@@ -113,7 +113,7 @@ namespace CXX
       {
         if (default_type (t, "signed char"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d\n") << ", " <<
               arg_ << ");";
           else
@@ -129,7 +129,7 @@ namespace CXX
       {
         if (default_type (t, "unsigned char"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %u\n") << ", " <<
               arg_ << ");";
           else
@@ -145,7 +145,7 @@ namespace CXX
       {
         if (default_type (t, "short"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d\n") << ", " <<
               arg_ << ");";
           else
@@ -161,7 +161,7 @@ namespace CXX
       {
         if (default_type (t, "unsigned short"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %u\n") << ", " <<
               arg_ << ");";
           else
@@ -177,7 +177,7 @@ namespace CXX
       {
         if (default_type (t, "int"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d\n") << ", " <<
               arg_ << ");";
           else
@@ -193,7 +193,7 @@ namespace CXX
       {
         if (default_type (t, "unsigned int"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %u\n") << ", " <<
               arg_ << ");";
           else
@@ -207,11 +207,11 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::Fundamental::Long& t)
       {
-        if (options.value<CLI::no_long_long> ())
+        if (options.no_long_long ())
         {
           if (default_type (t, "long"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %ld\n") << ", " <<
                 arg_ << ");";
             else
@@ -225,7 +225,7 @@ namespace CXX
         {
           if (default_type (t, "long long"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %lld\n") << ", " <<
                 arg_ << ");";
             else
@@ -240,11 +240,11 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::Fundamental::UnsignedLong& t)
       {
-        if (options.value<CLI::no_long_long> ())
+        if (options.no_long_long ())
         {
           if (default_type (t, "unsigned long"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %lu\n") << ", " <<
                 arg_ << ");";
             else
@@ -258,7 +258,7 @@ namespace CXX
         {
           if (default_type (t, "unsigned long long"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %llu\n") << ", " <<
                 arg_ << ");";
             else
@@ -275,7 +275,7 @@ namespace CXX
       {
         if (default_type (t, "long"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %ld\n") << ", " <<
               arg_ << ");";
           else
@@ -291,7 +291,7 @@ namespace CXX
       {
         if (default_type (t, "long"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %ld\n") << ", " <<
               arg_ << ");";
           else
@@ -307,7 +307,7 @@ namespace CXX
       {
         if (default_type (t, "long"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %ld\n") << ", " <<
               arg_ << ");";
           else
@@ -323,7 +323,7 @@ namespace CXX
       {
         if (default_type (t, "unsigned long"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %lu\n") << ", " <<
               arg_ << ");";
           else
@@ -339,7 +339,7 @@ namespace CXX
       {
         if (default_type (t, "unsigned long"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %lu\n") << ", " <<
               arg_ << ");";
           else
@@ -357,7 +357,7 @@ namespace CXX
       {
         if (default_type (t, "float"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %g\n") << ", " <<
               arg_ << ");";
           else
@@ -373,7 +373,7 @@ namespace CXX
       {
         if (default_type (t, "double"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %g\n") << ", " <<
               arg_ << ");";
           else
@@ -389,7 +389,7 @@ namespace CXX
       {
         if (default_type (t, "double"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %g\n") << ", " <<
               arg_ << ");";
           else
@@ -483,11 +483,11 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::Fundamental::QName& t)
       {
-        if (options.value<CLI::no_stl> ())
+        if (options.no_stl ())
         {
           if (default_type (t, xs_ns_name () + L"::qname*"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "if (" << arg_ << "->prefix ()[0] == '\\0')" << endl
                  << "printf (" << strlit (tag_ + L": %s\n") << ", " <<
                 arg_ << "->name ());"
@@ -511,7 +511,7 @@ namespace CXX
         {
           if (default_type (t, xs_ns_name () + L"::qname"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "if (" << arg_ << ".prefix ().empty ())" << endl
                  << "printf (" << strlit (tag_ + L": %s\n") << ", " <<
                 arg_ << ".name ().c_str ());"
@@ -554,7 +554,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::date"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d-%u-%u") << "," << endl
                << arg_ << ".year ()," << endl
                << arg_ << ".month ()," << endl
@@ -576,7 +576,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::date_time"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d-%u-%uT%u:%u:%g") <<
               "," << endl
                << arg_ << ".year ()," << endl
@@ -605,7 +605,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::duration"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": ") << ");"
                << endl
                << "if (" << arg_ << ".negative ())" << endl
@@ -642,7 +642,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::gday"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": ---%u") << ", " <<
               arg_ << ".day ());";
           else
@@ -660,7 +660,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::gmonth"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": --%u") << ", " <<
               arg_ << ".month ());";
           else
@@ -678,7 +678,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::gmonth_day"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": --%u-%u") << "," << endl
                << arg_ << ".month ()," << endl
                << arg_ << ".day ());";
@@ -698,7 +698,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::gyear"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d") << ", " <<
               arg_ << ".year ());";
           else
@@ -716,7 +716,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::gyear_month"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %d-%u") << "," << endl
                << arg_ << ".year ()," << endl
                << arg_ << ".month ());";
@@ -736,7 +736,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::time"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %u:%u:%g") << "," << endl
                << arg_ << ".hours ()," << endl
                << arg_ << ".minutes ()," << endl
@@ -770,11 +770,11 @@ namespace CXX
       void
       gen_string (SemanticGraph::Type& t)
       {
-        if (options.value<CLI::no_stl> ())
+        if (options.no_stl ())
         {
           if (default_type (t, "char*"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %s\n") << ", " <<
                 arg_ << ");";
             else
@@ -788,7 +788,7 @@ namespace CXX
         {
           if (default_type (t, "::std::string"))
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "printf (" << strlit (tag_ + L": %s\n") << ", " <<
                 arg_ << ".c_str ());";
             else
@@ -807,7 +807,7 @@ namespace CXX
 
         if (default_type (t, type + L"*"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": ") << ");"
                << endl;
           else
@@ -819,9 +819,9 @@ namespace CXX
              << "i != e;)"
              << "{";
 
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
           {
-            if (options.value<CLI::no_stl> ())
+            if (options.no_stl ())
               os << "printf (\"%s\", *i++);";
             else
               os << "printf (\"%s\", (i++)->c_str ());";
@@ -847,7 +847,7 @@ namespace CXX
       {
         if (default_type (t, xs_ns_name () + L"::buffer*"))
         {
-          if (options.value<CLI::no_iostream> ())
+          if (options.no_iostream ())
             os << "printf (" << strlit (tag_ + L": %zu bytes\n") << ", " <<
               arg_ << "->size ());";
           else
@@ -865,7 +865,7 @@ namespace CXX
            << "if (" << arg_ << ".zone_present ())"
            << "{";
 
-        if (options.value<CLI::no_iostream> ())
+        if (options.no_iostream ())
           os << "if (" << arg_ << ".zone_hours () < 0)" << endl
              << "printf (\"%d:%d\", " << arg_ << ".zone_hours (), -" <<
             arg_ << ".zone_minutes ());"
@@ -882,7 +882,7 @@ namespace CXX
 
         os << "}";
 
-        if (options.value<CLI::no_iostream> ())
+        if (options.no_iostream ())
           os << "printf (\"\\n\");";
         else
           os << "std::cout << std::endl;";
@@ -1011,7 +1011,7 @@ namespace CXX
       virtual Void
       traverse (SemanticGraph::Fundamental::QName& t)
       {
-        if (options.value<CLI::no_stl> () &&
+        if (options.no_stl () &&
             default_type (t, xs_ns_name () + L"::qname*"))
         {
           os << endl;
@@ -1048,7 +1048,7 @@ namespace CXX
       void
       gen_string (SemanticGraph::Type& t)
       {
-        if (options.value<CLI::no_stl> () && default_type (t, "char*"))
+        if (options.no_stl () && default_type (t, "char*"))
         {
           os << endl;
 

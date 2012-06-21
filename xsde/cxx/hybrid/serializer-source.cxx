@@ -206,8 +206,8 @@ namespace CXX
                << "_serialize_content ()"
                << "{";
 
-            if (!options.value<CLI::suppress_validation> () &&
-                !options.value<CLI::suppress_serializer_val> ())
+            if (!options.suppress_validation () &&
+                !options.suppress_serializer_val ())
             {
               // Do facet validation.
               //
@@ -1056,7 +1056,7 @@ namespace CXX
 
             if (a.default_p ())
             {
-              Boolean omit (options.value<CLI::omit_default_attributes> ());
+              Boolean omit (options.omit_default_attributes ());
 
               if (a.fixed_p ())
                 os << "return " << (omit ? "false" : "true") << ";";
@@ -1144,8 +1144,8 @@ namespace CXX
           Boolean rec (recursive (c));
           Boolean restriction (restriction_p (c));
 
-          Boolean validation (!options.value<CLI::suppress_validation> () &&
-                              !options.value<CLI::suppress_serializer_val> ());
+          Boolean validation (!options.suppress_validation () &&
+                              !options.suppress_serializer_val ());
 
           String state;
           String member;
@@ -1400,8 +1400,8 @@ namespace CXX
                << endl;
 
       if (ctx.enum_ &&
-          !ctx.options.value<CLI::suppress_validation> () &&
-          !ctx.options.value<CLI::suppress_serializer_val> ())
+          !ctx.options.suppress_validation () &&
+          !ctx.options.suppress_serializer_val ())
       {
         // We need this functionality for enum mapping.
         //

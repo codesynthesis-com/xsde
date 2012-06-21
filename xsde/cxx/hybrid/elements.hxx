@@ -14,7 +14,7 @@
 
 #include <cxx/elements.hxx>
 
-#include <cxx/hybrid/cli.hxx>
+#include <cxx/hybrid/options.hxx>
 
 namespace CXX
 {
@@ -29,11 +29,13 @@ namespace CXX
     public:
       typedef Hybrid::Regex Regex;
 
+      typedef Hybrid::options options_type;
+
     public:
       Context (std::wostream&,
                SemanticGraph::Schema&,
                SemanticGraph::Path const&,
-               CLI::Options const&,
+               options_type const&,
                Regex const* fwd_expr,
                Regex const* hxx_expr,
                Regex const* ixx_expr);
@@ -591,7 +593,7 @@ namespace CXX
       NamespaceStack;
 
     public:
-      CLI::Options const& options;
+      options_type const& options;
 
       Boolean exceptions;
       Boolean stl;
@@ -617,9 +619,8 @@ namespace CXX
       String const& str_seq;
       String const& data_seq;
 
-      typedef Containers::Vector<NarrowString> Streams;
-      Streams const& istreams;
-      Streams const& ostreams;
+      NarrowStrings const& istreams;
+      NarrowStrings const& ostreams;
 
       String const& icdrstream;
       String const& ocdrstream;
@@ -1191,7 +1192,7 @@ namespace CXX
       {
         if (use_ != base)
         {
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
             fund_type ("long");
           else
             fund_type ("long long");
@@ -1205,7 +1206,7 @@ namespace CXX
       {
         if (use_ != base)
         {
-          if (options.value<CLI::no_long_long> ())
+          if (options.no_long_long ())
             fund_type ("unsigned long");
           else
             fund_type ("unsigned long long");
@@ -2172,7 +2173,7 @@ namespace CXX
       Includes (Context& c, Type type, Regex const* r = 0)
           : ctx_ (c),
             type_ (type),
-            forward_ (c.options.value<CLI::generate_forward> ()),
+            forward_ (c.options.generate_forward ()),
             regex_ (r),
             namespace_ (c),
             type_forward_ (c)

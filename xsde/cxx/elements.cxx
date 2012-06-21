@@ -110,57 +110,40 @@ namespace CXX
   Context (std::wostream& o,
            SemanticGraph::Schema& root,
            SemanticGraph::Path const& path,
+           options_type const& ops,
            Char const* name_key,
-           NarrowString const& char_type__,
-           NarrowString const& char_encoding__,
-           Boolean include_with_brackets__,
-           NarrowString const& include_prefix__,
-           NarrowString const& esymbol,
-           Containers::Vector<NarrowString> const& nsm,
-           Containers::Vector<NarrowString> const& nsr,
-           Boolean trace_namespace_regex_,
-           Containers::Vector<NarrowString> const& ir,
-           Boolean trace_include_regex_,
-           Boolean inline_,
-           Boolean custom_allocator,
-           Boolean ll,
-           Containers::Vector<NarrowString> const& reserved_name)
+           NarrowString const& char_type__)
       : os (o),
         schema_root (root),
         schema_path (schema_path_),
+        options (ops),
         ename_key (ename_key_),
         char_type (char_type_),
         char_encoding (char_encoding_),
         L (L_),
         string_type (string_type_),
-        include_with_brackets (include_with_brackets_),
-        include_prefix (include_prefix_),
         type_exp (type_exp_),
         inst_exp (inst_exp_),
         inl (inl_),
-        custom_alloc (custom_allocator),
-        long_long (ll),
+        custom_alloc (ops.custom_allocator ()),
+        long_long (!ops.no_long_long ()),
         ns_mapping_cache (ns_mapping_cache_),
         schema_path_ (path),
         xs_ns_ (0),
         ename_key_ (name_key),
         char_type_ (char_type__),
-        char_encoding_ (char_encoding__),
+        char_encoding_ (ops.char_encoding ()),
         L_ (char_type == L"wchar_t" ? L"L" : L""),
-        include_with_brackets_ (include_with_brackets__),
-        include_prefix_ (include_prefix__),
-        type_exp_ (esymbol ? esymbol + " " : esymbol),
-        inst_exp_ (esymbol ? esymbol + "\n" : esymbol),
-        inl_ (inline_ ? L"inline\n" : L""),
+        type_exp_ (/*esymbol ? esymbol + " " : esymbol*/),
+        inst_exp_ (/*esymbol ? esymbol + "\n" : esymbol*/),
+        inl_ (ops.generate_inline () ? L"inline\n" : L""),
         cxx_id_expr_ (L"^(::)?([a-zA-Z_]\\w*)(::[a-zA-Z_]\\w*)*$"),
         cxx_id_expr (cxx_id_expr_),
-        trace_namespace_regex (trace_namespace_regex_),
         urn_mapping_ (L"#^urn.*:([a-zA-Z_].*)$#$1#"),
         urn_mapping (urn_mapping_),
         nsr_mapping (nsr_mapping_),
         nsm_mapping (nsm_mapping_),
         include_mapping (include_mapping_),
-        trace_include_regex (trace_include_regex_),
         reserved_name_map (reserved_name_map_),
         keyword_set (keyword_set_)
   {
@@ -206,16 +189,16 @@ namespace CXX
 
     // Custom regex mapping.
     //
-    for (Containers::Vector<NarrowString>::ConstIterator
-           i (nsr.begin ()), e (nsr.end ()); i != e; ++i)
+    for (NarrowStrings::const_iterator i (ops.namespace_regex ().begin ()),
+           e (ops.namespace_regex ().end ()); i != e; ++i)
     {
       nsr_mapping_.push_back (Regex (String (*i)));
     }
 
     // Custom direct mapping.
     //
-    for (Containers::Vector<NarrowString>::ConstIterator
-           i (nsm.begin ()), e (nsm.end ()); i != e; ++i)
+    for (NarrowStrings::const_iterator i (ops.namespace_map ().begin ()),
+           e (ops.namespace_map ().end ()); i != e; ++i)
     {
       String s (*i);
 
@@ -239,16 +222,16 @@ namespace CXX
 
     // Include path regex
     //
-    for (Containers::Vector<NarrowString>::ConstIterator
-           i (ir.begin ()), e (ir.end ()); i != e; ++i)
+    for (NarrowStrings::const_iterator i (ops.include_regex ().begin ()),
+           e (ops.include_regex ().end ()); i != e; ++i)
     {
       include_mapping_.push_back (Regex (String (*i)));
     }
 
     // Reserved names.
     //
-    for (Containers::Vector<NarrowString>::ConstIterator
-           i (reserved_name.begin ()), e (reserved_name.end ()); i != e; ++i)
+    for (NarrowStrings::const_iterator i (ops.reserved_name ().begin ()),
+           e (ops.reserved_name ().end ()); i != e; ++i)
     {
       String s (*i);
 
@@ -333,7 +316,9 @@ namespace CXX
       }
       else
       {
-        if (trace_namespace_regex)
+        bool trace (options.namespace_regex_trace ());
+
+        if (trace)
           wcerr << "namespace: '" << pair << "'" << endl;
 
         Boolean found (false);
@@ -342,7 +327,7 @@ namespace CXX
         for (RegexMapping::ConstReverseIterator e (nsr_mapping.rbegin ());
              e != nsr_mapping.rend (); ++e)
         {
-          if (trace_namespace_regex)
+          if (trace)
             wcerr << "try: '" << e->regex () << "' : ";
 
           if (e->match (pair))
@@ -354,11 +339,11 @@ namespace CXX
             //
             found = cxx_id_expr.match (tmp);
 
-            if (trace_namespace_regex)
+            if (trace)
               wcerr << "'" << tmp << "' : ";
           }
 
-          if (trace_namespace_regex)
+          if (trace)
             wcerr << (found ? '+' : '-') << endl;
 
           if (found)
@@ -1106,9 +1091,10 @@ namespace CXX
   String Context::
   process_include_path (String const& name) const
   {
-    String path (include_prefix + name);
+    String path (String (options.include_prefix ()) + name);
+    bool trace (options.include_regex_trace ());
 
-    if (trace_include_regex)
+    if (trace)
       wcerr << "include: '" << path << "'" << endl;
 
     String r;
@@ -1117,7 +1103,7 @@ namespace CXX
     for (RegexMapping::ConstReverseIterator e (include_mapping.rbegin ());
          e != include_mapping.rend (); ++e)
     {
-      if (trace_include_regex)
+      if (trace)
         wcerr << "try: '" << e->regex () << "' : ";
 
       if (e->match (path))
@@ -1125,11 +1111,11 @@ namespace CXX
         r = e->replace (path);
         found = true;
 
-        if (trace_include_regex)
+        if (trace)
           wcerr << "'" << r << "' : ";
       }
 
-      if (trace_include_regex)
+      if (trace)
         wcerr << (found ? '+' : '-') << endl;
 
       if (found)
@@ -1141,8 +1127,8 @@ namespace CXX
 
     if (!r.empty () && r[0] != L'"' && r[0] != L'<')
     {
-      WideChar op (include_with_brackets ? L'<' : L'"');
-      WideChar cl (include_with_brackets ? L'>' : L'"');
+      WideChar op (options.include_with_brackets () ? L'<' : L'"');
+      WideChar cl (options.include_with_brackets () ? L'>' : L'"');
       r = op + r + cl;
     }
 

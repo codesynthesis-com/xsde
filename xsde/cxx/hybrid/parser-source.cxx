@@ -121,8 +121,8 @@ namespace CXX
 
           Boolean fl (fixed_length (e));
 
-          Boolean val (!options.value<CLI::suppress_validation> () &&
-                       !options.value<CLI::suppress_parser_val> ());
+          Boolean val (!options.suppress_validation () &&
+                       !options.suppress_parser_val ());
 
           SemanticGraph::Context& ec (e.context ());
           SemanticGraph::Type& b (e.inherits ().base ());
@@ -1611,8 +1611,8 @@ namespace CXX
           Boolean fixed (fixed_length (c));
           Boolean rec (recursive (c));
 
-          Boolean validation (!options.value<CLI::suppress_validation> () &&
-                              !options.value<CLI::suppress_parser_val> ());
+          Boolean validation (!options.suppress_validation () &&
+                              !options.suppress_parser_val ());
 
           Boolean c_string_base (false);
           if (!stl && hb)
@@ -2093,8 +2093,8 @@ namespace CXX
       {
         // We need this functionality for enum mapping.
         //
-        if (!ctx.options.value<CLI::suppress_validation> () &&
-            !ctx.options.value<CLI::suppress_parser_val> ())
+        if (!ctx.options.suppress_validation () &&
+            !ctx.options.suppress_parser_val ())
           ctx.os << "#include <xsde/cxx/parser/validating/string-common.hxx>" << endl
                  << endl;
         else

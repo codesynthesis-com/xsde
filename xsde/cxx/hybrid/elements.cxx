@@ -13,39 +13,22 @@ namespace CXX
     Context (std::wostream& o,
              SemanticGraph::Schema& root,
              SemanticGraph::Path const& path,
-             CLI::Options const& ops,
+             options_type const& ops,
              Regex const* fe,
              Regex const* he,
              Regex const* ie)
-        : CXX::Context (o,
-                        root,
-                        path,
-                        "name",
-                        "char",
-                        ops.value<CLI::char_encoding> (),
-                        ops.value<CLI::include_with_brackets> (),
-                        ops.value<CLI::include_prefix> (),
-                        "", // export symbol
-                        ops.value<CLI::namespace_map> (),
-                        ops.value<CLI::namespace_regex> (),
-                        ops.value<CLI::namespace_regex_trace> (),
-                        ops.value<CLI::include_regex> (),
-                        ops.value<CLI::include_regex_trace> (),
-                        ops.value<CLI::generate_inline> (),
-                        ops.value<CLI::custom_allocator> (),
-                        !ops.value<CLI::no_long_long> (),
-                        ops.value<CLI::reserved_name> ()),
+        : CXX::Context (o, root, path, ops, "name", "char"),
           options (ops),
-          exceptions (!ops.value<CLI::no_exceptions> ()),
-          stl (!ops.value<CLI::no_stl> ()),
-          poly_code (ops.value<CLI::generate_polymorphic> ()),
-          poly_runtime (poly_code || ops.value<CLI::runtime_polymorphic> ()),
-          reset (!ops.value<CLI::suppress_reset> ()),
-          clone (ops.value<CLI::generate_clone> ()),
-          detach (ops.value<CLI::generate_detach> ()),
-          mixin (ops.value<CLI::reuse_style_mixin> ()),
+          exceptions (!ops.no_exceptions ()),
+          stl (!ops.no_stl ()),
+          poly_code (ops.generate_polymorphic ()),
+          poly_runtime (poly_code || ops.runtime_polymorphic ()),
+          reset (!ops.suppress_reset ()),
+          clone (ops.generate_clone ()),
+          detach (ops.generate_detach ()),
+          mixin (ops.reuse_style_mixin ()),
           tiein (!mixin),
-          enum_ (!ops.value<CLI::suppress_enum> ()),
+          enum_ (!ops.suppress_enum ()),
           fwd_expr (fe),
           hxx_expr (he),
           ixx_expr (ie),
@@ -55,16 +38,15 @@ namespace CXX
           var_seq (var_seq_),
           str_seq (str_seq_),
           data_seq (data_seq_),
-          istreams (ops.value<CLI::generate_extraction> ()),
-          ostreams (ops.value<CLI::generate_insertion> ()),
+          istreams (ops.generate_extraction ()),
+          ostreams (ops.generate_insertion ()),
           icdrstream (icdrstream_),
           ocdrstream (ocdrstream_),
           ixdrstream (ixdrstream_),
           oxdrstream (oxdrstream_)
     {
-      typeinfo = poly_code &&
-        (ops.value<CLI::generate_typeinfo> () ||
-         ops.value<CLI::generate_serializer> ());
+      typeinfo =
+        poly_code && (ops.generate_typeinfo () || ops.generate_serializer ());
 
       String xs_ns (xs_ns_name ());
 

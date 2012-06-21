@@ -27,38 +27,19 @@ namespace CXX
       class Context: public CXX::Context
       {
       public:
-        Context (CLI::Options const& ops,
+        Context (Serializer::options const& ops,
                  SemanticGraph::Schema& root,
                  SemanticGraph::Path const& path)
-            : CXX::Context (std::wcerr,
-                            root,
-                            path,
-                            "s:name",
-                            "char",
-                            ops.value<CLI::char_encoding> (),
-                            ops.value<CLI::include_with_brackets> (),
-                            ops.value<CLI::include_prefix> (),
-                            "", // export symbol
-                            ops.value<CLI::namespace_map> (),
-                            ops.value<CLI::namespace_regex> (),
-                            ops.value<CLI::namespace_regex_trace> (),
-                            ops.value<CLI::include_regex> (),
-                            ops.value<CLI::include_regex_trace> (),
-                            ops.value<CLI::generate_inline> (),
-                            ops.value<CLI::custom_allocator> (),
-                            !ops.value<CLI::no_long_long> (),
-                            ops.value<CLI::reserved_name> ()),
-              skel_suffix_ (ops.value<CLI::skel_type_suffix> ()),
-              impl_suffix_ (ops.value<CLI::impl_type_suffix> ()),
-              impl (ops.value<CLI::generate_empty_impl> () ||
-                    ops.value<CLI::generate_test_driver> ()),
-              tiein (!ops.value<CLI::reuse_style_mixin> () &&
-                     !ops.value<CLI::reuse_style_none> ()),
+            : CXX::Context (std::wcerr, root, path, ops, "s:name", "char"),
+              skel_suffix_ (ops.skel_type_suffix ()),
+              impl_suffix_ (ops.impl_type_suffix ()),
+              impl (ops.generate_empty_impl () || ops.generate_test_driver ()),
+              tiein (!ops.reuse_style_mixin () && !ops.reuse_style_none ()),
               skel_suffix (skel_suffix_),
               impl_suffix (impl_suffix_),
               global_type_names (global_type_names_),
-              validation (!ops.value<CLI::suppress_validation> ()),
-              polymorphic (ops.value<CLI::generate_polymorphic> ())
+              validation (!ops.suppress_validation ()),
+              polymorphic (ops.generate_polymorphic ())
         {
         }
 
@@ -1301,7 +1282,7 @@ namespace CXX
       };
 
       Void
-      process_impl (CLI::Options const& ops,
+      process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const& file,
                     Boolean deep)
@@ -1399,7 +1380,7 @@ namespace CXX
     }
 
     Void NameProcessor::
-    process (CLI::Options const& ops,
+    process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              Boolean deep)

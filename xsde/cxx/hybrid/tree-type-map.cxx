@@ -22,27 +22,10 @@ namespace CXX
       class Context: public CXX::Context
       {
       public:
-        Context (CLI::Options const& ops,
+        Context (Hybrid::options const& ops,
                  SemanticGraph::Schema& root,
                  SemanticGraph::Path const& path)
-            : CXX::Context (std::wcerr,
-                            root,
-                            path,
-                            "name",
-                            "char",
-                            ops.value<CLI::char_encoding> (),
-                            ops.value<CLI::include_with_brackets> (),
-                            ops.value<CLI::include_prefix> (),
-                            "", // export symbol
-                            ops.value<CLI::namespace_map> (),
-                            ops.value<CLI::namespace_regex> (),
-                            ops.value<CLI::namespace_regex_trace> (),
-                            ops.value<CLI::include_regex> (),
-                            ops.value<CLI::include_regex_trace> (),
-                            ops.value<CLI::generate_inline> (),
-                            ops.value<CLI::custom_allocator> (),
-                            !ops.value<CLI::no_long_long> (),
-                            ops.value<CLI::reserved_name> ())
+            : CXX::Context (std::wcerr, root, path, ops, "name", "char")
         {
         }
 
@@ -205,7 +188,7 @@ namespace CXX
     }
 
     Void
-    generate_tree_type_map (CLI::Options const& ops,
+    generate_tree_type_map (options const& ops,
                             XSDFrontend::SemanticGraph::Schema& tu,
                             XSDFrontend::SemanticGraph::Path const& path,
                             String const& hxx_name,
@@ -229,16 +212,16 @@ namespace CXX
         Traversal::Names schema_names;
         Namespace ns (
           ctx, &hxx_name,
-          (ops.value<CLI::generate_parser> () ? &parser_map : 0),
-          (ops.value<CLI::generate_serializer> () ? &serializer_map : 0));
+          (ops.generate_parser () ? &parser_map : 0),
+          (ops.generate_serializer () ? &serializer_map : 0));
 
         schema >> schema_names >> ns;
 
         Traversal::Names used_schema_names;
         Namespace used_ns (
           ctx, 0,
-          (ops.value<CLI::generate_parser> () ? &parser_map : 0),
-          (ops.value<CLI::generate_serializer> () ? &serializer_map : 0));
+          (ops.generate_parser () ? &parser_map : 0),
+          (ops.generate_serializer () ? &serializer_map : 0));
 
         used_schema >> used_schema_names >> used_ns;
 

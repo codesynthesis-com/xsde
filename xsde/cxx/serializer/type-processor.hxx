@@ -12,7 +12,7 @@
 
 #include <type-map/type-map.hxx>
 
-#include <cxx/serializer/cli.hxx>
+#include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
@@ -24,7 +24,7 @@ namespace CXX
     {
     public:
       Void
-      process (CLI::Options const& options,
+      process (options const&,
                XSDFrontend::SemanticGraph::Schema&,
                TypeMap::Namespaces&);
     };

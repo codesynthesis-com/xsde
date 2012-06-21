@@ -1026,25 +1026,22 @@ namespace CXX
       Char const* pass_two_key = "cxx-hybrid-size-processor-seen-two";
 
       Boolean
-      process_impl (CLI::Options const& ops,
+      process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const&,
                     const WarningSet& disabled_warnings)
       {
         Boolean valid (true);
-        Boolean stl (!ops.value<CLI::no_stl> ());
-        Boolean poly (ops.value<CLI::generate_polymorphic> ());
+        Boolean stl (!ops.no_stl ());
+        Boolean poly (ops.generate_polymorphic ());
 
         // Prepare a set of polymorphic types.
         //
 
         TypeSet poly_types;
         if (poly)
-        {
-          poly_types.insert (
-            ops.value<CLI::polymorphic_type> ().begin (),
-            ops.value<CLI::polymorphic_type> ().end ());
-        }
+          poly_types.insert (ops.polymorphic_type ().begin (),
+                             ops.polymorphic_type ().end ());
 
         // Root schema in the file-per-type mode is just a bunch
         // of includes without a namespace.
@@ -1103,10 +1100,9 @@ namespace CXX
             TypeSet custom_data_types;
 
             {
-              typedef Cult::Containers::Vector<NarrowString> CustomData;
-              CustomData const& cd (ops.value<CLI::custom_data> ());
+              NarrowStrings const& cd (ops.custom_data ());
 
-              for (CustomData::ConstIterator i (cd.begin ());
+              for (NarrowStrings::const_iterator i (cd.begin ());
                    i != cd.end (); ++i)
               {
                 String n (*i);
@@ -1119,10 +1115,9 @@ namespace CXX
             CustomTypeMap custom_type_map;
 
             {
-              typedef Containers::Vector<NarrowString> Vector;
-              Vector const& v (ops.value<CLI::custom_type> ());
+              NarrowStrings const& v (ops.custom_type ());
 
-              for (Vector::ConstIterator i (v.begin ()), e (v.end ());
+              for (NarrowStrings::const_iterator i (v.begin ()), e (v.end ());
                    i != e; ++i)
               {
                 String s (*i);
@@ -1226,7 +1221,7 @@ namespace CXX
                          poly_types,
                          stl,
                          poly,
-                         !ops.value<CLI::suppress_enum> ());
+                         !ops.suppress_enum ());
 
               schema >> schema_names >> ns >> ns_names >> type;
 
@@ -1244,7 +1239,7 @@ namespace CXX
     }
 
     Boolean TreeSizeProcessor::
-    process (CLI::Options const& ops,
+    process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
              const WarningSet& disabled_warnings)

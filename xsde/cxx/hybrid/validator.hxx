@@ -10,7 +10,7 @@
 
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
-#include <cxx/hybrid/cli.hxx>
+#include <cxx/hybrid/options.hxx>
 
 #include <xsde.hxx>
 
@@ -24,7 +24,7 @@ namespace CXX
     {
     public:
       Boolean
-      validate (CLI::Options const& options,
+      validate (options const& options,
                 XSDFrontend::SemanticGraph::Schema&,
                 XSDFrontend::SemanticGraph::Path const& tu,
                 const WarningSet& disabled_warnings);

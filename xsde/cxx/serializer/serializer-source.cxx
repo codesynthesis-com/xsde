@@ -2716,7 +2716,7 @@ namespace CXX
       // Emit "weak" header includes that are used in the file-per-type
       // compilation model.
       //
-      if (ctx.options.value<CLI::generate_inline> ())
+      if (ctx.options.generate_inline ())
       {
         Traversal::Schema schema;
         Includes includes (ctx, Includes::source);

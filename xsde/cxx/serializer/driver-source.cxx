@@ -764,12 +764,12 @@ namespace CXX
         virtual Void
         traverse (Type& e)
         {
-          if (options.value<CLI::root_element_first> ())
+          if (options.root_element_first ())
           {
             if (element_ == 0)
               element_ = &e;
           }
-          else if (String name = options.value<CLI::root_element> ())
+          else if (String name = options.root_element ())
           {
             if (e.name () == name)
               element_ = &e;
@@ -815,16 +815,16 @@ namespace CXX
 
       set.insert ("doc_s");
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "#include <stdio.h>" << endl
            << endl;
       else
         os << "#include <iostream>" << endl
            << endl;
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
       {
-        if (ctx.options.value<CLI::no_exceptions> ())
+        if (ctx.options.no_exceptions ())
         {
           os << "struct writer: " << xs << "::writer"
              << "{"
@@ -868,7 +868,7 @@ namespace CXX
          << "main ()"
          << "{";
 
-      if (!ctx.options.value<CLI::no_exceptions> ())
+      if (!ctx.options.no_exceptions ())
         os << "try"
            << "{";
 
@@ -897,10 +897,10 @@ namespace CXX
       os << "// Serialize the XML document." << endl
          << "//" << endl;
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "writer w;";
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << xs << "::serializer_error e;"
            << endl
            << "do"
@@ -917,7 +917,7 @@ namespace CXX
           ctx.strlit (root->name ()) << ");"
            << endl;
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "e = doc_s._error ();"
            << "if (e)" << endl
            << "break;"
@@ -931,20 +931,20 @@ namespace CXX
       os << root_s << ".pre ();"
          << endl;
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "e = " << root_s << "._error ();"
            << "if (e)" << endl
            << "break;"
            << endl;
 
-      if (ctx.options.value<CLI::no_iostream> ())
+      if (ctx.options.no_iostream ())
         os << "doc_s.serialize (w);"
            << endl;
       else
         os << "doc_s.serialize (std::cout);"
            << endl;
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "e = doc_s._error ();"
            << "if (e)" << endl
            << "break;"
@@ -952,11 +952,11 @@ namespace CXX
 
       os << root_s << ".post ();";
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << endl
            << "e = " << root_s << "._error ();";
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
         os << "}"
            << "while (false);"
            << endl;
@@ -964,7 +964,7 @@ namespace CXX
       // Error handling.
       //
 
-      if (ctx.options.value<CLI::no_exceptions> ())
+      if (ctx.options.no_exceptions ())
       {
         os << "// Handle errors." << endl
            << "//" << endl
@@ -975,7 +975,7 @@ namespace CXX
            << "case " << xs << "::serializer_error::sys:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s\\n\", e.sys_text ());";
         else
           os << "std::cerr << e.sys_text () << std::endl;";
@@ -985,7 +985,7 @@ namespace CXX
            << "case " << xs << "::serializer_error::xml:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"%s\\n\", e.xml_text ());";
         else
           os << "std::cerr << e.xml_text () << std::endl;";
@@ -993,12 +993,12 @@ namespace CXX
         os << "break;"
            << "}";
 
-        if (!ctx.options.value<CLI::suppress_validation> ())
+        if (!ctx.options.suppress_validation ())
         {
           os << "case " << xs << "::serializer_error::schema:"
              << "{";
 
-          if (ctx.options.value<CLI::no_iostream> ())
+          if (ctx.options.no_iostream ())
             os << "fprintf (stderr, \"%s\\n\", e.schema_text ());";
           else
             os << "std::cerr << e.schema_text () << std::endl;";
@@ -1010,7 +1010,7 @@ namespace CXX
         os << "case " << xs << "::serializer_error::app:"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"application error %d\\n\", e.app_code ());";
         else
           os << "std::cerr << \"application error \" << e.app_code () " <<
@@ -1032,7 +1032,7 @@ namespace CXX
            << "catch (const " << xs << "::serializer_exception& e)"
            << "{";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "fprintf (stderr, \"error: %s\\n\", e.text ());";
         else
           os << "std::cerr << \"error: \" << e.text () << std::endl;";
@@ -1040,7 +1040,7 @@ namespace CXX
         os << "return 1;"
            << "}";
 
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           os << "catch (const io_failure&)"
              << "{"
              << "fprintf (stderr, \"error: write failure\\n\");"

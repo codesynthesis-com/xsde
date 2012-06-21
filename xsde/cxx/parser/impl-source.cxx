@@ -66,11 +66,11 @@ namespace CXX
             os << arg_type (base) << " v = " << post_name (base) << " ();"
                << endl;
 
-            if (options.value<CLI::no_exceptions> ())
+            if (options.no_exceptions ())
               os << "if (!_error ())"
                  << "{";
 
-            if (options.value<CLI::generate_print_impl> ())
+            if (options.generate_print_impl ())
             {
               PrintCall t (*this, e.name (), "v");
               t.dispatch (base);
@@ -84,7 +84,7 @@ namespace CXX
               t.dispatch (base);
             }
 
-            if (options.value<CLI::no_exceptions> ())
+            if (options.no_exceptions ())
               os << "}";
           }
           else
@@ -96,7 +96,7 @@ namespace CXX
               os << arg_type (base) << " v = " << post_name (base) << " ();"
                  << endl;
 
-              if (options.value<CLI::no_exceptions> ())
+              if (options.no_exceptions ())
                 os << "if (!_error ())"
                    << "{";
 
@@ -109,7 +109,7 @@ namespace CXX
                 t.dispatch (base);
               }
 
-              if (options.value<CLI::no_exceptions> ())
+              if (options.no_exceptions ())
                 os << "}";
             }
           }
@@ -162,7 +162,7 @@ namespace CXX
 
           if (arg != L"void")
           {
-            if (options.value<CLI::generate_print_impl> ())
+            if (options.generate_print_impl ())
             {
               PrintCall t (*this, type.name (), item);
               t.dispatch (type);
@@ -227,9 +227,9 @@ namespace CXX
              << "_characters (const " << string_type << "& s)"
              << "{";
 
-          if (options.value<CLI::generate_print_impl> ())
+          if (options.generate_print_impl ())
           {
-            if (options.value<CLI::no_iostream> ())
+            if (options.no_iostream ())
               os << "if (s.size () != 0)"
                  << "{"
                  << "printf (" << strlit (u.name () + L": ") << ");"
@@ -293,7 +293,7 @@ namespace CXX
 
           if (arg != L"void")
           {
-            if (options.value<CLI::generate_print_impl> ())
+            if (options.generate_print_impl ())
             {
               PrintCall t (*this, e.name (), name);
               t.dispatch (e.type ());
@@ -340,7 +340,7 @@ namespace CXX
 
           if (arg != L"void")
           {
-            if (options.value<CLI::generate_print_impl> ())
+            if (options.generate_print_impl ())
             {
               PrintCall t (*this, a.name (), name);
               t.dispatch (a.type ());
@@ -433,11 +433,11 @@ namespace CXX
               os << arg_type (base) << " v = " << post_name (base) << " ();"
                  << endl;
 
-              if (options.value<CLI::no_exceptions> ())
+              if (options.no_exceptions ())
                 os << "if (!_error ())"
                    << "{";
 
-              if (options.value<CLI::generate_print_impl> ())
+              if (options.generate_print_impl ())
               {
                 PrintCall t (*this, c.name (), "v");
                 t.dispatch (base);
@@ -451,7 +451,7 @@ namespace CXX
                 t.dispatch (base);
               }
 
-              if (options.value<CLI::no_exceptions> ())
+              if (options.no_exceptions ())
                 os << "}";
             }
             else
@@ -463,7 +463,7 @@ namespace CXX
                 os << arg_type (base) << " v = " << post_name (base) << " ();"
                    << endl;
 
-                if (options.value<CLI::no_exceptions> ())
+                if (options.no_exceptions ())
                   os << "if (!_error ())"
                      << "{";
 
@@ -476,7 +476,7 @@ namespace CXX
                   t.dispatch (base);
                 }
 
-                if (options.value<CLI::no_exceptions> ())
+                if (options.no_exceptions ())
                   os << "}";
               }
             }
@@ -506,9 +506,9 @@ namespace CXX
     Void
     generate_impl_source (Context& ctx)
     {
-      if (ctx.options.value<CLI::generate_print_impl> ())
+      if (ctx.options.generate_print_impl ())
       {
-        if (ctx.options.value<CLI::no_iostream> ())
+        if (ctx.options.no_iostream ())
           ctx.os << "#include <stdio.h>" << endl
                  << endl;
         else

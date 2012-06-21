@@ -28,10 +28,10 @@ namespace CXX
       public:
         ValidationContext (SemanticGraph::Schema& root,
                            SemanticGraph::Path const& path,
-                           CLI::Options const& options,
+                           Hybrid::options const& ops,
                            const WarningSet& disabled_warnings,
                            Boolean& valid_)
-            : Context (std::wcerr, root, path, options, 0, 0, 0),
+            : Context (std::wcerr, root, path, ops, 0, 0, 0),
               disabled_warnings_ (disabled_warnings),
               disabled_warnings_all_ (false),
               valid (valid_),
@@ -160,7 +160,7 @@ namespace CXX
             return;
 
           if (e.substitutes_p () &&
-              !options.value<CLI::generate_polymorphic> () &&
+              !options.generate_polymorphic () &&
               !subst_group_warning_issued)
           {
             subst_group_warning_issued = true;
@@ -245,7 +245,7 @@ namespace CXX
                     << "automatically name them"
                     << endl;
 
-              if (!options.value<CLI::show_anonymous> ())
+              if (!options.show_anonymous ())
                 wcerr << t.file ()
                       << ": info: use --show-anonymous option to see these "
                       << "types" << endl;
@@ -274,7 +274,7 @@ namespace CXX
         {
           if (traverse_common (e))
           {
-            if (options.value<CLI::show_anonymous> ())
+            if (options.show_anonymous ())
             {
               wcerr << e.file () << ":" << e.line () << ":" << e.column ()
                     << ": error: element '" << xpath (e) << "' "
@@ -299,7 +299,7 @@ namespace CXX
         {
           if (traverse_common (a))
           {
-            if (options.value<CLI::show_anonymous> ())
+            if (options.show_anonymous ())
             {
               wcerr << a.file () << ":" << a.line () << ":" << a.column ()
                     << ": error: attribute '" << xpath (a) << "' "
@@ -482,17 +482,17 @@ namespace CXX
     }
 
     Boolean Validator::
-    validate (CLI::Options const& options,
+    validate (options const& ops,
               SemanticGraph::Schema& root,
               SemanticGraph::Path const& path,
               const WarningSet& disabled_warnings)
     {
       Boolean valid (true);
-      ValidationContext ctx (root, path, options, disabled_warnings, valid);
+      ValidationContext ctx (root, path, ops, disabled_warnings, valid);
 
       //
       //
-      NarrowString enc (options.value<CLI::char_encoding> ());
+      NarrowString enc (ops.char_encoding ());
 
       if (enc != "utf8" && enc != "iso8859-1")
       {
@@ -502,9 +502,9 @@ namespace CXX
 
       //
       //
-      Boolean par (options.value<CLI::generate_parser> ());
-      Boolean ser (options.value<CLI::generate_serializer> ());
-      Boolean agg (options.value<CLI::generate_aggregate> ());
+      Boolean par (ops.generate_parser ());
+      Boolean ser (ops.generate_serializer ());
+      Boolean agg (ops.generate_aggregate ());
 
       if (agg && !par && !ser && !ctx.is_disabled ("H002"))
       {
@@ -517,11 +517,11 @@ namespace CXX
       // are generating aggregate types.
       //
       if (agg &&
-          !options.value<CLI::root_element_first> () &&
-          !options.value<CLI::root_element_last> () &&
-          !options.value<CLI::root_element_all> () &&
-          !options.value<CLI::root_element_none> () &&
-          options.value<CLI::root_element> ().empty () &&
+          !ops.root_element_first () &&
+          !ops.root_element_last () &&
+          !ops.root_element_all () &&
+          !ops.root_element_none () &&
+          ops.root_element ().empty () &&
           !ctx.is_disabled ("H003"))
       {
         UnsignedLong count (0);
@@ -565,8 +565,7 @@ namespace CXX
       // Test for constructs that require validation in parser.
       //
       if (valid && par &&
-          (options.value<CLI::suppress_validation> () ||
-           options.value<CLI::suppress_parser_val> ()))
+          (ops.suppress_validation () || ops.suppress_parser_val ()))
       {
         Traversal::Schema schema;
         Sources sources;
