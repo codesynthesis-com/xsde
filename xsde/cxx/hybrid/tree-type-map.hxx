@@ -6,21 +6,17 @@
 #ifndef CXX_HYBRID_TREE_TYPE_MAP_HXX
 #define CXX_HYBRID_TREE_TYPE_MAP_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
+#include <types.hxx>
 #include <type-map/type-map.hxx>
-
 #include <cxx/hybrid/options.hxx>
 
 namespace CXX
 {
   namespace Hybrid
   {
-    using namespace Cult::Types;
-
-    Void
+    void
     generate_tree_type_map (options const& options,
                             XSDFrontend::SemanticGraph::Schema&,
                             XSDFrontend::SemanticGraph::Path const&,

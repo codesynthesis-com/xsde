@@ -12,8 +12,8 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
-    generate_tree_forward (Context&, Boolean generate_xml_schema);
+    void
+    generate_tree_forward (Context&, bool generate_xml_schema);
   }
 }
 

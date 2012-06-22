@@ -6,24 +6,21 @@
 #ifndef CXX_HYBRID_TREE_SIZE_PROCESSOR_HXX
 #define CXX_HYBRID_TREE_SIZE_PROCESSOR_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph.hxx>
 
-#include <cxx/hybrid/options.hxx>
-
 #include <xsde.hxx>
+#include <types.hxx>
+
+#include <cxx/hybrid/options.hxx>
 
 namespace CXX
 {
   namespace Hybrid
   {
-    using namespace Cult::Types;
-
     class TreeSizeProcessor
     {
     public:
-      Boolean
+      bool
       process (options const& options,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const& file,

@@ -23,7 +23,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           if (c.inherits_p ())
@@ -52,7 +52,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -156,7 +156,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (esimpl_custom (l));
@@ -236,7 +236,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (esimpl_custom (u));
@@ -298,7 +298,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           if (c.max () != 1)
@@ -323,7 +323,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (e.max () != 1)
@@ -353,7 +353,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -368,12 +368,12 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () != c.contains_end ())
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             if (min == 0 && max == 1)
             {
@@ -396,10 +396,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
-          UnsignedLong min (s.min ()), max (s.max ());
+          size_t min (s.min ()), max (s.max ());
 
           if (min == 0 && max == 1)
           {
@@ -425,10 +425,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong min (e.min ()), max (e.max ());
+          size_t min (e.min ()), max (e.max ());
 
           if (min == 0 && max == 1)
           {
@@ -458,7 +458,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (a.optional_p ())
@@ -513,7 +513,7 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (esimpl_custom (c));
@@ -527,16 +527,16 @@ namespace CXX
             // generate serializer callbacks, etc. since they are the same
             // as in the base. We only need the serialization/validation code.
             //
-            Boolean restriction (restriction_p (c));
+            bool restriction (restriction_p (c));
 
-            Boolean hb (c.inherits_p ());
-            Boolean he (has<Traversal::Element> (c));
-            Boolean ha (has<Traversal::Attribute> (c));
+            bool hb (c.inherits_p ());
+            bool he (has<Traversal::Element> (c));
+            bool ha (has<Traversal::Attribute> (c));
 
-            Boolean hae (has_particle<Traversal::Any> (c));
-            Boolean haa (has<Traversal::AnyAttribute> (c));
+            bool hae (has_particle<Traversal::Any> (c));
+            bool haa (has<Traversal::AnyAttribute> (c));
 
-            Boolean rec (recursive (c));
+            bool rec (recursive (c));
 
             String const& arg (sarg_type (c));
 
@@ -689,7 +689,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_serializer_header (Context& ctx)
     {
       ctx.os << "#include <xsde/cxx/stack.hxx>" << endl

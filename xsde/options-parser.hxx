@@ -6,17 +6,16 @@
 #ifndef OPTIONS_PARSER_HXX
 #define OPTIONS_PARSER_HXX
 
-#include <cult/types.hxx>
-
+#include <types.hxx>
 #include <options.hxx>
 
 namespace cli
 {
   template <>
-  struct parser<Cult::Types::NarrowString>
+  struct parser<NarrowString>
   {
     static void
-    parse (Cult::Types::NarrowString& x, scanner& s)
+    parse (NarrowString& x, scanner& s)
     {
       const char* o (s.next ());
 

@@ -6,17 +6,13 @@
 #ifndef ELEMENTS_HXX
 #define ELEMENTS_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-using namespace Cult;
-typedef WideString String;
+#include <types.hxx>
 
 namespace SemanticGraph = XSDFrontend::SemanticGraph;
 namespace Traversal = XSDFrontend::Traversal;
-
 
 // Anonymous feedback via belongs edge.
 //
@@ -63,7 +59,7 @@ public:
 
 public:
 
-  virtual Void
+  virtual void
   traverse (SemanticGraph::Element& e)
   {
     SemanticGraph::Type& t (e.type ());
@@ -82,7 +78,7 @@ public:
     }
   }
 
-  virtual Void
+  virtual void
   traverse (SemanticGraph::Attribute& a)
   {
     SemanticGraph::Type& t (a.type ());
@@ -109,7 +105,7 @@ private:
     {
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Complex& c)
     {
       if (d1_)

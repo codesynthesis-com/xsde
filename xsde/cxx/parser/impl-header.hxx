@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Parser
   {
-    Void
+    void
     generate_impl_header (Context&);
   }
 }

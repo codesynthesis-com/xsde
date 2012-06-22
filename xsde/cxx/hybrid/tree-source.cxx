@@ -22,7 +22,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           os << strlit (e.name ());
@@ -40,7 +40,7 @@ namespace CXX
           names_ >> enumerator_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -251,7 +251,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         comma (Type&)
         {
           os << "," << endl;
@@ -273,7 +273,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (ename_custom (l));
@@ -284,7 +284,7 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean poly (polymorphic (l));
+          bool poly (polymorphic (l));
           SemanticGraph::Context& lc (l.context ());
 
           if (poly || clone)
@@ -453,7 +453,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (ename_custom (u));
@@ -464,7 +464,7 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean poly (polymorphic (u));
+          bool poly (polymorphic (u));
           SemanticGraph::Context& uc (u.context ());
 
           os << "// " << comment (u.name ()) << endl
@@ -647,7 +647,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (a.default_p ())
@@ -722,12 +722,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           SemanticGraph::Type& t (e.type ());
 
-          Boolean fund (false);
+          bool fund (false);
           {
             FundamentalType test (fund);
             test.dispatch (t);
@@ -909,7 +909,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           String const& member (emember (c));
@@ -1044,7 +1044,7 @@ namespace CXX
 
       struct ChoiceFunc: Traversal::Choice, Context
       {
-        ChoiceFunc (Context& c, Boolean in_choice)
+        ChoiceFunc (Context& c, bool in_choice)
             : Context (c),
               in_choice_ (in_choice),
               particle_free_ (c, ChoiceParticle::free),
@@ -1054,14 +1054,14 @@ namespace CXX
           contains_alloc_ >> particle_alloc_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (!in_choice_ && c.max () == 1 && c.min () == 1)
           {
             String const& arm_tag (earm_tag (c));
             String const& arm_member (earm_member (c));
-            UnsignedLong bad_tag (arm_tag_count (c));
+            size_t bad_tag (arm_tag_count (c));
 
             // void
             // arm (arm_tag)
@@ -1097,7 +1097,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
 
         ChoiceParticle particle_free_;
         Traversal::ContainsParticle contains_free_;
@@ -1108,12 +1108,12 @@ namespace CXX
 
       struct SequenceFunc: Traversal::Sequence, Context
       {
-        SequenceFunc (Context& c, Boolean in_choice)
+        SequenceFunc (Context& c, bool in_choice)
             : Context (c), in_choice_ (in_choice)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // When sequence is in choice we generate nested class even
@@ -1124,7 +1124,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
       };
 
       //
@@ -1138,13 +1138,13 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (!a.fixed_p ())
           {
-            Boolean def (a.default_p ());
-            Boolean fl (fixed_length (a.type ()));
+            bool def (a.default_p ());
+            bool fl (fixed_length (a.type ()));
 
             if (!fl)
             {
@@ -1170,12 +1170,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (e.max () == 1)
           {
-            Boolean fl (fixed_length (e.type ()));
+            bool fl (fixed_length (e.type ()));
 
             if (!fl)
               os << "this->" << emember (e) << " = 0;";
@@ -1193,7 +1193,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -1218,7 +1218,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () == 1)
@@ -1246,7 +1246,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () == 1)
@@ -1275,7 +1275,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (!a.fixed_p ())
@@ -1299,7 +1299,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (e.max () == 1)
@@ -1322,7 +1322,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -1356,7 +1356,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () == 1)
@@ -1393,7 +1393,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () == 1)
@@ -1431,7 +1431,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (!a.fixed_p ())
@@ -1458,7 +1458,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& member (emember (e));
@@ -1482,7 +1482,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (a.min () == 0)
@@ -1507,7 +1507,7 @@ namespace CXX
           contains_copy_ >> particle_copy_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.min () == 0)
@@ -1547,7 +1547,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.min () == 0)
@@ -1575,7 +1575,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (!a.fixed_p ())
@@ -1602,7 +1602,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& member (emember (e));
@@ -1626,7 +1626,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (a.min () == 0)
@@ -1651,7 +1651,7 @@ namespace CXX
           contains_assign_ >> particle_assign_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.min () == 0)
@@ -1691,7 +1691,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.min () == 0)
@@ -1719,7 +1719,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (!a.fixed_p ())
@@ -1727,7 +1727,7 @@ namespace CXX
             String const& name (ename (a));
             SemanticGraph::Type& t (a.type ());
 
-            Boolean opt (a.optional_p () && !a.default_p ());
+            bool opt (a.optional_p () && !a.default_p ());
 
             if (opt)
               os << "if (this->" << epresent (a) << " ())";
@@ -1753,7 +1753,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& name (ename (e));
@@ -1772,7 +1772,7 @@ namespace CXX
           {
             SemanticGraph::Type& t (e.type ());
 
-            Boolean opt (e.min () == 0);
+            bool opt (e.min () == 0);
 
             if (opt)
               os << "if (this->" << epresent (e) << " ())";
@@ -1797,7 +1797,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -1840,7 +1840,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -1892,7 +1892,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           os << "case " << etag (e) << ":"
@@ -1904,7 +1904,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           // In choice there are no inline compositors.
@@ -1924,7 +1924,7 @@ namespace CXX
           }
           else
           {
-            Boolean opt (c.min () == 0);
+            bool opt (c.min () == 0);
 
             if (opt)
               os << "if (this->" << epresent (c) << " ())";
@@ -1962,7 +1962,7 @@ namespace CXX
           contains_particle_ >> particle_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () != 1)
@@ -2047,7 +2047,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -2056,7 +2056,7 @@ namespace CXX
           if (a.min () != 0)
             return;
 
-          Boolean fl (fixed_length (a));
+          bool fl (fixed_length (a));
           String const& type (etype (a));
           String const& scope (Context::scope (a));
 
@@ -2208,7 +2208,7 @@ namespace CXX
       struct Choice: Traversal::Choice, Context
       {
         Choice (Context& c,
-                Boolean in_choice,
+                bool in_choice,
                 Traversal::ContainsParticle& contains_func)
             : Context (c),
               in_choice_ (in_choice),
@@ -2226,7 +2226,7 @@ namespace CXX
           contains_clone_ >> particle_clone_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           // When choice is in choice we generate nested class even
@@ -2238,11 +2238,11 @@ namespace CXX
             String const& arm (earm (c));
             String const& arm_tag (earm_tag (c));
             String const& arm_member (earm_member (c));
-            UnsignedLong bad_tag (arm_tag_count (c));
+            size_t bad_tag (arm_tag_count (c));
 
             String const& scope (Context::scope (c));
 
-            Boolean fl (fixed_length (c));
+            bool fl (fixed_length (c));
 
             // c-tor ()
             //
@@ -2435,7 +2435,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
         Traversal::ContainsParticle& contains_func_;
 
         ChoiceParticle particle_free_;
@@ -2458,7 +2458,7 @@ namespace CXX
       struct Sequence: Traversal::Sequence, Context
       {
         Sequence (Context& c,
-                  Boolean in_choice,
+                  bool in_choice,
                   Traversal::ContainsParticle& contains_ctor,
                   Traversal::ContainsParticle& contains_dtor,
                   Traversal::ContainsParticle& contains_copy,
@@ -2476,7 +2476,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // When sequence is in choice we generate nested class even
@@ -2487,7 +2487,7 @@ namespace CXX
             String const& type (etype (s));
             String const& scope (Context::scope (s));
 
-            Boolean fl (fixed_length (s));
+            bool fl (fixed_length (s));
 
             // c-tor ()
             //
@@ -2632,7 +2632,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
         Traversal::ContainsParticle& contains_ctor_;
         Traversal::ContainsParticle& contains_dtor_;
         Traversal::ContainsParticle& contains_copy_;
@@ -2835,7 +2835,7 @@ namespace CXX
           contains_compositor_ >> sequence_in_sequence_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (ename_custom (c));
@@ -2846,9 +2846,9 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean fl (fixed_length (c));
-          Boolean poly (polymorphic (c));
-          Boolean restriction (restriction_p (c));
+          bool fl (fixed_length (c));
+          bool poly (polymorphic (c));
+          bool restriction (restriction_p (c));
 
           os << "// " << comment (c.name ()) << endl
              << "//" << endl
@@ -3221,7 +3221,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_tree_source (Context& ctx)
     {
       // Needed for placement new.

@@ -8,14 +8,11 @@
 
 #include <memory>  // std::auto_ptr
 
-#include <cult/types.hxx>
-
-#include <cult/containers/vector.hxx>
-
 #include <xsd-frontend/semantic-graph/elements.hxx> // Path
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
 #include <xsde.hxx>
+#include <types.hxx>
 #include <type-map/type-map.hxx>
 
 #include <cxx/parser/options.hxx>
@@ -26,14 +23,12 @@ namespace CXX
 {
   namespace Hybrid
   {
-    using namespace Cult::Types;
-
     class Generator
     {
     public:
       struct Failed {};
 
-      static Void
+      static void
       usage ();
 
       static std::auto_ptr<Parser::options>
@@ -48,7 +43,7 @@ namespace CXX
 
       // Calculate type sizes.
       //
-      static Void
+      static void
       calculate_size (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
@@ -57,19 +52,19 @@ namespace CXX
 
       // Assign names to global declarations.
       //
-      static Void
+      static void
       process_tree_names (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&);
 
-      static Void
+      static void
       process_parser_names (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&);
 
-      static Void
+      static void
       process_serializer_names (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
@@ -77,34 +72,34 @@ namespace CXX
 
       // Generate code.
       //
-      static UnsignedLong
+      static size_t
       generate_tree (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
-        Boolean file_per_type,
+        bool file_per_type,
         WarningSet const& disabled_warnings,
         TypeMap::Namespaces& parser_type_map,
         TypeMap::Namespaces& serializer_type_map,
         FileList&,
         AutoUnlinks&);
 
-      static UnsignedLong
+      static size_t
       generate_parser (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
-        Boolean file_per_type,
+        bool file_per_type,
         WarningSet const& disabled_warnings,
         FileList&,
         AutoUnlinks&);
 
-      static UnsignedLong
+      static size_t
       generate_serializer (
         options const&,
         XSDFrontend::SemanticGraph::Schema&,
         XSDFrontend::SemanticGraph::Path const&,
-        Boolean file_per_type,
+        bool file_per_type,
         WarningSet const& disabled_warnings,
         FileList&,
         AutoUnlinks&);

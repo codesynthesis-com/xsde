@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
+    void
     generate_tree_inline (Context&);
   }
 }

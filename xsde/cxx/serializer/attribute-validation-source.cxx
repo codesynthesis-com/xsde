@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           String const& ns (a.definition_namespace ().name ());
@@ -97,7 +97,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& name (ename (a));
@@ -230,7 +230,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           os << "while (this->" << enext (a) << " ())"
@@ -394,7 +394,7 @@ namespace CXX
           names_attribute_ >> attribute_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           if (!has<Traversal::Attribute> (c) &&
@@ -404,7 +404,7 @@ namespace CXX
           // Don't use restriction_p here since we don't want special
           // treatment of anyType.
           //
-          Boolean restriction (
+          bool restriction (
             c.inherits_p () &&
             c.inherits ().is_a<SemanticGraph::Restricts> ());
 
@@ -447,7 +447,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_attribute_validation_source (Context& ctx)
     {
       Traversal::Schema schema;

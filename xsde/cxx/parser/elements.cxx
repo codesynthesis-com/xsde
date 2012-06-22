@@ -171,7 +171,7 @@ namespace CXX
       return t.context ().get<String> ("p:impl");
     }
 
-    Boolean Context::
+    bool Context::
     has_facets (SemanticGraph::Complex& c)
     {
       if (restriction_p (c))
@@ -234,20 +234,20 @@ namespace CXX
 
     // Includes
     //
-    Void TypeForward::
+    void TypeForward::
     traverse (SemanticGraph::Type& t)
     {
       os << "class " << t.context ().get<String> (name_key_) << ";";
     }
 
-    Void Includes::
+    void Includes::
     traverse_ (SemanticGraph::Uses& u)
     {
       // Support for weak (forward) inclusion used in the file-per-type
       // compilation model.
       //
       SemanticGraph::Schema& s (u.schema ());
-      Boolean weak (u.context ().count ("weak"));
+      bool weak (u.context ().count ("weak"));
 
       if (weak && (type_ == header || type_ == impl_header))
       {

@@ -6,15 +6,14 @@
 #ifndef XSDE_TYPE_MAP_TYPE_MAP_HXX
 #define XSDE_TYPE_MAP_TYPE_MAP_HXX
 
+#include <vector>
+
 #include <cutl/re.hxx>
 
-#include <cult/types.hxx>
-#include <cult/containers/vector.hxx>
+#include <types.hxx>
 
 namespace TypeMap
 {
-  using namespace Cult::Types;
-  typedef WideString String;
   typedef cutl::re::wregex Pattern;
 
   class Type
@@ -81,7 +80,7 @@ namespace TypeMap
     }
 
     Namespace (Pattern const& xsd_name,
-               Boolean has_cxx_name,
+               bool has_cxx_name,
                String const& cxx_name)
         : xsd_name_ (xsd_name),
           has_cxx_name_ (has_cxx_name),
@@ -91,8 +90,8 @@ namespace TypeMap
 
     //
     //
-    typedef Cult::Containers::Vector<String> Includes;
-    typedef Includes::ConstIterator IncludesIterator;
+    typedef std::vector<String> Includes;
+    typedef Includes::const_iterator IncludesIterator;
 
     IncludesIterator
     includes_begin () const
@@ -106,7 +105,7 @@ namespace TypeMap
       return includes_.end ();
     }
 
-    Void
+    void
     includes_push_back (String const& i)
     {
       includes_.push_back (i);
@@ -114,8 +113,8 @@ namespace TypeMap
 
     //
     //
-    typedef Cult::Containers::Vector<Type> Types;
-    typedef Types::ConstIterator TypesIterator;
+    typedef std::vector<Type> Types;
+    typedef Types::const_iterator TypesIterator;
 
     TypesIterator
     types_begin () const
@@ -129,7 +128,7 @@ namespace TypeMap
       return types_.end ();
     }
 
-    Void
+    void
     types_push_back (String const& xsd_type,
                      String const& cxx_ret_type,
                      String const& cxx_arg_type = L"")
@@ -137,7 +136,7 @@ namespace TypeMap
       types_.push_back (Type (xsd_type, cxx_ret_type, cxx_arg_type));
     }
 
-    Void
+    void
     types_push_back (Pattern const& xsd_type,
                      String const& cxx_ret_type,
                      String const& cxx_arg_type = L"")
@@ -155,7 +154,7 @@ namespace TypeMap
 
     //
     //
-    Boolean
+    bool
     has_cxx_name () const
     {
       return has_cxx_name_;
@@ -171,11 +170,11 @@ namespace TypeMap
     Includes includes_;
     Types types_;
     Pattern xsd_name_;
-    Boolean has_cxx_name_;
+    bool has_cxx_name_;
     String cxx_name_;
   };
 
-  typedef Cult::Containers::Vector<Namespace> Namespaces;
+  typedef std::vector<Namespace> Namespaces;
 }
 
 #endif // XSDE_TYPE_MAP_TYPE_MAP_HXX

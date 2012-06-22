@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -75,7 +75,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (ename_custom (l));
@@ -113,7 +113,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (ename_custom (u));
@@ -159,7 +159,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           // Nothing is serialized for fixed attributes.
@@ -169,8 +169,8 @@ namespace CXX
 
           SemanticGraph::Type& t (a.type ());
 
-          Boolean fl (fixed_length (t));
-          Boolean st (false);
+          bool fl (fixed_length (t));
+          bool st (false);
 
           String const& name (ename (a));
 
@@ -309,7 +309,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           // See also ChoiceParticleData.
@@ -328,8 +328,8 @@ namespace CXX
           {
             SemanticGraph::Type& t (e.type ());
 
-            Boolean fl (fixed_length (t));
-            Boolean st (false);
+            bool fl (fixed_length (t));
+            bool st (false);
 
             if (!fl)
             {
@@ -434,7 +434,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -442,7 +442,7 @@ namespace CXX
           //
           if (a.min () == 0)
           {
-            Boolean fl (fixed_length (a));
+            bool fl (fixed_length (a));
 
             String const& name (ename (a));
             String const& present (epresent (a));
@@ -524,7 +524,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           os << "case " << scope (e) << "::" << etag (e) << ":"
@@ -546,8 +546,8 @@ namespace CXX
           {
             SemanticGraph::Type& t (e.type ());
 
-            Boolean fl (fixed_length (t));
-            Boolean st (false);
+            bool fl (fixed_length (t));
+            bool st (false);
 
             if (!fl)
             {
@@ -643,7 +643,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           os << "case " << scope (c) << "::" << etag (c) << ":"
@@ -665,7 +665,7 @@ namespace CXX
           }
           else
           {
-            Boolean fl (fixed_length (c));
+            bool fl (fixed_length (c));
 
             if (c.min () == 0)
             {
@@ -747,7 +747,7 @@ namespace CXX
           contains_data_ >> particle_data_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () != 1)
@@ -762,7 +762,7 @@ namespace CXX
           }
           else if (c.min () == 0)
           {
-            Boolean fl (fixed_length (c));
+            bool fl (fixed_length (c));
 
             String const& name (ename (c));
             String const& present (epresent (c));
@@ -870,7 +870,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -885,7 +885,7 @@ namespace CXX
           }
           else if (s.min () == 0)
           {
-            Boolean fl (fixed_length (s));
+            bool fl (fixed_length (s));
 
             String const& name (ename (s));
             String const& present (epresent (s));
@@ -969,7 +969,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -1005,13 +1005,13 @@ namespace CXX
 
       struct Choice: Traversal::Choice, Context
       {
-        Choice (Context& c, Boolean in_choice)
+        Choice (Context& c, bool in_choice)
             : Context (c), in_choice_ (in_choice), particle_data_ (c)
         {
           contains_data_ >> particle_data_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           // When choice is in choice we generate nested class even
@@ -1060,7 +1060,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
 
         ChoiceParticleData particle_data_;
         Traversal::ContainsParticle contains_data_;
@@ -1070,7 +1070,7 @@ namespace CXX
       struct Sequence: Traversal::Sequence, Context
       {
         Sequence (Context& c,
-                  Boolean in_choice,
+                  bool in_choice,
                   Traversal::ContainsParticle& contains_data)
             : Context (c),
               in_choice_ (in_choice),
@@ -1078,7 +1078,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // When sequence is in choice we generate nested class even
@@ -1111,7 +1111,7 @@ namespace CXX
         }
 
       private:
-        Boolean in_choice_;
+        bool in_choice_;
         Traversal::ContainsParticle& contains_data_;
       };
 
@@ -1175,7 +1175,7 @@ namespace CXX
           contains_compositor_ >> sequence_in_sequence_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (ename_custom (c));
@@ -1186,7 +1186,7 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean restriction (restriction_p (c));
+          bool restriction (restriction_p (c));
 
           for (NarrowStrings::const_iterator i (istreams.begin ());
                i != istreams.end (); ++i)
@@ -1203,7 +1203,7 @@ namespace CXX
             {
               SemanticGraph::Type& b (c.inherits ().base ());
 
-              Boolean c_str (false);
+              bool c_str (false);
 
               if (!stl)
               {
@@ -1291,7 +1291,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_extraction_source (Context& ctx)
     {
       Traversal::Schema schema;

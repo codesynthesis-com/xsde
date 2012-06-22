@@ -23,7 +23,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& name (a.name ());
@@ -39,7 +39,7 @@ namespace CXX
             os << "n == " << L << strlit (name) << " && ns.empty ()";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           String const& ns (a.definition_namespace ().name ());
@@ -93,7 +93,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           String const& name (ename (a));
@@ -173,7 +173,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           os << "if (";
@@ -201,7 +201,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (!a.optional_p ())
@@ -219,7 +219,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (!a.optional_p ())
@@ -254,16 +254,16 @@ namespace CXX
           names_attribute_state_check_ >> attribute_state_check_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean has_att (has<Traversal::Attribute> (c));
-          Boolean has_any (has<Traversal::AnyAttribute> (c));
+          bool has_att (has<Traversal::Attribute> (c));
+          bool has_any (has<Traversal::AnyAttribute> (c));
 
           if (!has_att && !has_any)
             return;
 
-          Boolean has_req_att (false);
+          bool has_req_att (false);
           if (has_att)
           {
             RequiredAttributeTest test (has_req_att);
@@ -444,7 +444,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_attribute_validation_source (Context& ctx)
     {
       Traversal::Schema schema;

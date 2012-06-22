@@ -3,12 +3,14 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <cxx/parser/parser-source.hxx>
+#include <set>
 
-#include <cult/containers/set.hxx>
+#include <cxx/parser/parser-source.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
+
+using namespace std;
 
 namespace CXX
 {
@@ -23,7 +25,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (ename (e));
@@ -31,12 +33,12 @@ namespace CXX
           SemanticGraph::Type& base (e.inherits ().base ());
           String const& base_ret (ret_type (base));
 
-          Boolean same (ret == base_ret);
-          Boolean base_same (
+          bool same (ret == base_ret);
+          bool base_same (
             base.inherits_p () &&
             base_ret == ret_type (base.inherits ().base ()));
 
-          Boolean enum_facets (false); // Whether we need to set enum facets.
+          bool enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
             StringBasedType t (enum_facets);
@@ -106,7 +108,7 @@ namespace CXX
 
             if (validation)
             {
-              Boolean gen (!anonymous (e));
+              bool gen (!anonymous (e));
 
               // We normally don't need to enter anonymous types into
               // the inheritance map. The only exception is when an
@@ -162,7 +164,7 @@ namespace CXX
 
           if (enum_facets)
           {
-            typedef Cult::Containers::Set<String> Enums;
+            typedef set<String> Enums;
             Enums enums;
 
             for (Type::NamesIterator i (e.names_begin ()),
@@ -173,7 +175,7 @@ namespace CXX
               "_enums_[" << enums.size () << "UL] = "
                << "{";
 
-            for (Enums::Iterator b (enums.begin ()), i (b), end (enums.end ());
+            for (Enums::iterator b (enums.begin ()), i (b), end (enums.end ());
                  i != end; ++i)
               os << (i != b ? ",\n" : "") << strlit (*i);
 
@@ -191,7 +193,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (ename (l));
@@ -375,7 +377,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (ename (u));
@@ -441,7 +443,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& m (emember (e));
@@ -468,7 +470,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           String const& m (emember (a));
@@ -488,11 +490,11 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
-          Boolean poly (poly_code && !anonymous (e.type ()));
-          Boolean subst (poly && e.global_p ());
+          bool poly (poly_code && !anonymous (e.type ()));
+          bool subst (poly && e.global_p ());
 
           if (e.qualified_p () && e.namespace_ ().name ())
           {
@@ -592,12 +594,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (ename (e));
-          Boolean poly (poly_code && !anonymous (e.type ()));
-          Boolean subst (poly && e.global_p ());
+          bool poly (poly_code && !anonymous (e.type ()));
+          bool subst (poly && e.global_p ());
 
           if (e.qualified_p () && e.namespace_ ().name ())
           {
@@ -706,7 +708,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           String const& name (ename (a));
@@ -802,7 +804,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (correspondent (a) == 0)
@@ -834,7 +836,7 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () == c.contains_end ())
@@ -865,7 +867,7 @@ namespace CXX
           Traversal::Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // Root compositor that models inheritance by extension
@@ -969,7 +971,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (correspondent (e) == 0)
@@ -1009,7 +1011,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& name (ename (a));
@@ -1101,17 +1103,17 @@ namespace CXX
           names_attribute_ >> attribute_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
-          Boolean restriction (restriction_p (c));
-          Boolean he (has<Traversal::Element> (c));
-          Boolean ha (has<Traversal::Attribute> (c));
+          bool hb (c.inherits_p ());
+          bool restriction (restriction_p (c));
+          bool he (has<Traversal::Element> (c));
+          bool ha (has<Traversal::Attribute> (c));
 
-          Boolean hae (has_particle<Traversal::Any> (c));
+          bool hae (has_particle<Traversal::Any> (c));
 
-          Boolean hra (false); // Has required attribute.
+          bool hra (false); // Has required attribute.
           if (ha)
           {
             RequiredAttributeTest test (hra);
@@ -1121,10 +1123,10 @@ namespace CXX
 
           String const& name (ename (c));
           String const& ret (ret_type (c));
-          Boolean same (hb && ret == ret_type (c.inherits ().base ()));
+          bool same (hb && ret == ret_type (c.inherits ().base ()));
 
           String base_ret;
-          Boolean base_same (true);
+          bool base_same (true);
 
           if (tiein && hb)
           {
@@ -1294,7 +1296,7 @@ namespace CXX
 
             if (hb && validation)
             {
-              Boolean gen (!anonymous (c));
+              bool gen (!anonymous (c));
 
               // We normally don't need to enter anonymous types into
               // the inheritance map. The only exception is when an
@@ -1555,7 +1557,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           if (e.substitutes_p ())
@@ -1595,7 +1597,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_source (Context& ctx)
     {
       if (ctx.tiein)

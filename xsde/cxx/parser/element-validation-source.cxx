@@ -3,12 +3,14 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <vector>
+
 #include <cxx/parser/element-validation-source.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/vector.hxx>
+using namespace std;
 
 namespace CXX
 {
@@ -16,7 +18,7 @@ namespace CXX
   {
     namespace
     {
-      typedef Cult::Containers::Vector<SemanticGraph::Particle*> Particles;
+      typedef vector<SemanticGraph::Particle*> Particles;
 
       // Find particle that can be absent.
       //
@@ -27,7 +29,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           using SemanticGraph::Choice;
@@ -49,12 +51,12 @@ namespace CXX
                            Traversal::Element,
                            Traversal::Any
         {
-          IsOptional (Boolean& r)
+          IsOptional (bool& r)
               : r_ (r)
           {
           }
 
-          virtual Void
+          virtual void
           traverse (SemanticGraph::Choice& c)
           {
             if (!r_ && c.min () == 0)
@@ -73,7 +75,7 @@ namespace CXX
             }
           }
 
-          virtual Void
+          virtual void
           traverse (SemanticGraph::Sequence& s)
           {
             if (!r_ && s.min () == 0)
@@ -88,7 +90,7 @@ namespace CXX
                  !r_ && i != s.contains_end ();
                  ++i)
             {
-              Boolean r (false);
+              bool r (false);
               IsOptional test (r);
               test.dispatch (i->particle ());
               if (!r)
@@ -98,14 +100,14 @@ namespace CXX
             r_ = true;
           }
 
-          virtual Void
+          virtual void
           traverse (SemanticGraph::Element& e)
           {
             if (!r_ && e.min () == 0)
               r_ = true;
           }
 
-          virtual Void
+          virtual void
           traverse (SemanticGraph::Any& a)
           {
             if (!r_ && a.min () == 0)
@@ -113,21 +115,21 @@ namespace CXX
           }
 
         private:
-          Boolean& r_;
+          bool& r_;
         };
 
       private:
-        Boolean optional_;
+        bool optional_;
         IsOptional is_optional_;
         SemanticGraph::Particle*& result_;
       };
 
       //
       //
-      Void
+      void
       sequence_next_call (SemanticGraph::Sequence* s, Context* ctx);
 
-      Void
+      void
       choice_arm_call (SemanticGraph::Particle* p,
                        SemanticGraph::Choice* c,
                        Context* ctx)
@@ -158,7 +160,7 @@ namespace CXX
         }
       }
 
-      Void
+      void
       sequence_next_call (SemanticGraph::Sequence* s, Context* ctx)
       {
         using SemanticGraph::Choice;
@@ -207,11 +209,11 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& name (e.name ());
-          Boolean subst (poly_code && e.global_p ());
+          bool subst (poly_code && e.global_p ());
 
           if (subst)
             os << "(";
@@ -247,7 +249,7 @@ namespace CXX
 
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           String const& ns (a.definition_namespace ().name ());
@@ -294,7 +296,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           // This compositor should already have been tested for
@@ -302,9 +304,9 @@ namespace CXX
           //
           Particles const& p (c.context ().get<Particles> ("p:prefixes"));
 
-          Boolean paren (p.size () != 1);
+          bool paren (p.size () != 1);
 
-          for (Particles::ConstIterator i (p.begin ()), e (p.end ());
+          for (Particles::const_iterator i (p.begin ()), e (p.end ());
                i != e;)
           {
             if (paren)
@@ -335,7 +337,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String ns (e.qualified_p () ? e.namespace_ ().name () : String ());
@@ -343,7 +345,7 @@ namespace CXX
           os << L << strlit (ns) << ", " << L << strlit (e.name ());
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           String const& ns (*a.namespace_begin ());
@@ -351,7 +353,7 @@ namespace CXX
           os << L << strlit (ns) << ", " << L << "\"*\"";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           Particles const& p (c.context ().get<Particles> ("p:prefixes"));
@@ -374,7 +376,7 @@ namespace CXX
 
         // Generate sub-parser setup code as well as the pre/post calls.
         //
-        Void
+        void
         pre_post_calls (SemanticGraph::Particle& p)
         {
           using SemanticGraph::Element;
@@ -383,7 +385,7 @@ namespace CXX
           if (Element* e = dynamic_cast<Element*> (&p))
           {
             SemanticGraph::Type& type (e->type ());
-            Boolean poly (poly_code && !anonymous (type));
+            bool poly (poly_code && !anonymous (type));
 
             String const& name (ename (*e));
             String fq_type (fq_name (type));
@@ -522,10 +524,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong state (e.context ().get<UnsignedLong> ("p:state"));
+          size_t state (e.context ().get<size_t> ("p:state"));
 
           SemanticGraph::Compositor& c (
             e.contained_particle ().compositor ());
@@ -549,16 +551,15 @@ namespace CXX
             // Make the call to _present if we haven't seen any
             // elements yet.
             //
-            UnsignedLong state_count (
-              c.context().get<UnsignedLong> ("p:state-count"));
+            size_t state_count (c.context().get<size_t> ("p:state-count"));
 
             if (state_count > 1)
             {
               os << "if (";
 
-              Boolean sub (false);
+              bool sub (false);
 
-              for (UnsignedLong i (0); i < state_count; ++i)
+              for (size_t i (0); i < state_count; ++i)
               {
                 if (i == state)
                   continue;
@@ -609,14 +610,14 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Particle& p)
         {
           using SemanticGraph::Element;
 
-          UnsignedLong state (p.context ().get<UnsignedLong> ("p:state"));
+          size_t state (p.context ().get<size_t> ("p:state"));
 
-          UnsignedLong min (p.min ()), max (p.max ());
+          size_t min (p.min ()), max (p.max ());
 
           os << "case " << state << "UL:" << endl
              << "{";
@@ -695,20 +696,20 @@ namespace CXX
              << "}"; // case
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           using SemanticGraph::Choice;
           using SemanticGraph::Sequence;
           using SemanticGraph::Compositor;
 
-          Boolean choice (c.is_a<Choice> ());
+          bool choice (c.is_a<Choice> ());
           SemanticGraph::Context& cc (c.context ());
 
-          UnsignedLong max (c.max ());
-          UnsignedLong min (cc.get<UnsignedLong> ("p:effective-min"));
-          UnsignedLong n (cc.get<UnsignedLong> ("p:comp-number"));
-          UnsignedLong state (cc.get<UnsignedLong> ("p:state"));
+          size_t max (c.max ());
+          size_t min (cc.get<size_t> ("p:effective-min"));
+          size_t n (cc.get<size_t> ("p:comp-number"));
+          size_t state (cc.get<size_t> ("p:state"));
 
           String func (choice ? "choice_" : "sequence_");
 
@@ -717,7 +718,7 @@ namespace CXX
              << "unsigned long s = ~0UL;"
              << endl;
 
-          Boolean first (true);
+          bool first (true);
 
           for (Compositor::ContainsIterator ci (c.contains_begin ());
                ci != c.contains_end (); ++ci)
@@ -730,7 +731,7 @@ namespace CXX
             if (!p.context ().count ("p:prefix"))
               break;
 
-            UnsignedLong state (p.context ().get<UnsignedLong> ("p:state"));
+            size_t state (p.context ().get<size_t> ("p:state"));
 
             if (first)
               first = false;
@@ -755,7 +756,7 @@ namespace CXX
               if (Choice* pc = dynamic_cast<Choice*> (p))
               {
                 if (pc->min () != 0 &&
-                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    pc->context ().get<size_t> ("p:effective-min") == 0)
                 {
                   // This is a required choice with effective-min == 0 (i.e.,
                   // it contains optional particle). We need to call the arm
@@ -766,8 +767,7 @@ namespace CXX
 
                   if (p)
                   {
-                    UnsignedLong state (
-                      pc->context ().get<UnsignedLong> ("p:state"));
+                    size_t state (pc->context ().get<size_t> ("p:state"));
 
                     os << endl
                        << "if (s > " << state << "UL)" << endl
@@ -784,10 +784,9 @@ namespace CXX
                 // to call the next callback.
                 //
                 if (ps->min () != 0 && ps->max () != 1 &&
-                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    ps->context ().get<size_t> ("p:effective-min") == 0)
                 {
-                  UnsignedLong state (
-                    ps->context ().get<UnsignedLong> ("p:state"));
+                  size_t state (ps->context ().get<size_t> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
@@ -908,8 +907,8 @@ namespace CXX
                                  ParticleInCompositor
       {
         ParticleInSequence (Context& c,
-                            UnsignedLong state,
-                            UnsignedLong next_state,
+                            size_t state,
+                            size_t next_state,
                             SemanticGraph::Complex& type)
             : ParticleInCompositor (c, type),
               state_ (state), particle_name_ (c)
@@ -926,10 +925,10 @@ namespace CXX
             next_state_ = L"~0";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Particle& p)
         {
-          UnsignedLong min (p.min ()), max (p.max ());
+          size_t min (p.min ()), max (p.max ());
 
           os << "case " << state_ << "UL:" << endl
              << "{"
@@ -1009,19 +1008,19 @@ namespace CXX
              << "}"; // case
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           using SemanticGraph::Choice;
           using SemanticGraph::Sequence;
           using SemanticGraph::Compositor;
 
-          Boolean choice (c.is_a<Choice> ());
+          bool choice (c.is_a<Choice> ());
           SemanticGraph::Context& cc (c.context ());
 
-          UnsignedLong max (c.max ());
-          UnsignedLong min (cc.get<UnsignedLong> ("p:effective-min"));
-          UnsignedLong n (cc.get<UnsignedLong> ("p:comp-number"));
+          size_t max (c.max ());
+          size_t min (cc.get<size_t> ("p:effective-min"));
+          size_t n (cc.get<size_t> ("p:comp-number"));
 
           String func (choice ? "choice_" : "sequence_");
 
@@ -1030,7 +1029,7 @@ namespace CXX
              << "unsigned long s = ~0UL;"
              << endl;
 
-          Boolean first (true);
+          bool first (true);
 
           for (Compositor::ContainsIterator ci (c.contains_begin ());
                ci != c.contains_end (); ++ci)
@@ -1043,7 +1042,7 @@ namespace CXX
             if (!p.context ().count ("p:prefix"))
               break;
 
-            UnsignedLong state (p.context ().get<UnsignedLong> ("p:state"));
+            size_t state (p.context ().get<size_t> ("p:state"));
 
             if (first)
               first = false;
@@ -1068,7 +1067,7 @@ namespace CXX
               if (Choice* pc = dynamic_cast<Choice*> (p))
               {
                 if (pc->min () != 0 &&
-                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    pc->context ().get<size_t> ("p:effective-min") == 0)
                 {
                   // This is a required choice with effective-min == 0 (i.e.,
                   // it contains optional particle). We need to call the arm
@@ -1079,8 +1078,7 @@ namespace CXX
 
                   if (p)
                   {
-                    UnsignedLong state (
-                      pc->context ().get<UnsignedLong> ("p:state"));
+                    size_t state (pc->context ().get<size_t> ("p:state"));
 
                     os << endl
                        << "if (s > " << state << "UL)" << endl
@@ -1097,10 +1095,9 @@ namespace CXX
                 // to call the next callback.
                 //
                 if (ps->min () != 0 && ps->max () != 1 &&
-                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    ps->context ().get<size_t> ("p:effective-min") == 0)
                 {
-                  UnsignedLong state (
-                    ps->context ().get<UnsignedLong> ("p:state"));
+                  size_t state (ps->context ().get<size_t> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
@@ -1253,7 +1250,7 @@ namespace CXX
         }
 
       private:
-        UnsignedLong state_;
+        size_t state_;
         String next_state_;
 
         ParticleName particle_name_;
@@ -1274,7 +1271,7 @@ namespace CXX
         }
 
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (!a.context().count ("p:comp-number")) // Empty compositor.
@@ -1322,7 +1319,7 @@ namespace CXX
 
             Element& e (dynamic_cast<Element&> (ci->particle ()));
             String ns (e.qualified_p () ? e.namespace_ ().name () : String ());
-            UnsignedLong state (e.context ().get<UnsignedLong> ("p:state"));
+            size_t state (e.context ().get<size_t> ("p:state"));
 
             os << "if (count[" << state << "UL] == 0)"
                << "{"
@@ -1348,7 +1345,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           using SemanticGraph::Compositor;
@@ -1358,7 +1355,7 @@ namespace CXX
           if (!cc.count ("p:comp-number")) // Empty compositor.
             return;
 
-          UnsignedLong n (cc.get<UnsignedLong> ("p:comp-number"));
+          size_t n (cc.get<size_t> ("p:comp-number"));
 
           os << "void " << ename (type_) << "::" << endl
              << "choice_" << n << " (unsigned long& state," << endl
@@ -1411,7 +1408,7 @@ namespace CXX
           Traversal::Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (!s.context().count ("p:comp-number")) // Empty compositor.
@@ -1419,7 +1416,7 @@ namespace CXX
 
           using SemanticGraph::Compositor;
 
-          UnsignedLong n (s.context ().get<UnsignedLong> ("p:comp-number"));
+          size_t n (s.context ().get<size_t> ("p:comp-number"));
 
           os << "void " << ename (type_) << "::" << endl
              << "sequence_" << n << " (unsigned long& state," << endl
@@ -1444,7 +1441,7 @@ namespace CXX
           os << "switch (state)"
              << "{";
 
-          UnsignedLong state (0);
+          size_t state (0);
 
           for (Compositor::ContainsIterator ci (s.contains_begin ()),
                  ce (s.contains_end ()); ci != ce;)
@@ -1467,7 +1464,7 @@ namespace CXX
                    ci->particle ().is_a<Compositor> () &&
                    !ci->particle ().context().count ("p:comp-number"));
 
-            UnsignedLong next (ci == ce ? 0 : state + 1);
+            size_t next (ci == ce ? 0 : state + 1);
 
             ParticleInSequence t (*this, state++, next, type_);
             t.dispatch (p);
@@ -1502,7 +1499,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // Clear the counts and push the initial state.
@@ -1514,7 +1511,7 @@ namespace CXX
           traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor&) // Choice and sequence.
         {
           os << "v_state_& vs = *static_cast< v_state_* > (" <<
@@ -1543,7 +1540,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All&)
         {
           // The 'all' state machine reaches the final state only
@@ -1562,19 +1559,19 @@ namespace CXX
              << endl;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c) // Choice and sequence.
         {
           using SemanticGraph::Choice;
           using SemanticGraph::Sequence;
           using SemanticGraph::Compositor;
 
-          Boolean choice (c.is_a<Choice> ());
+          bool choice (c.is_a<Choice> ());
           SemanticGraph::Context& cc (c.context ());
 
-          UnsignedLong max (c.max ());
-          UnsignedLong min (cc.get<UnsignedLong> ("p:effective-min"));
-          UnsignedLong n (cc.get<UnsignedLong> ("p:comp-number"));
+          size_t max (c.max ());
+          size_t min (cc.get<size_t> ("p:effective-min"));
+          size_t n (cc.get<size_t> ("p:comp-number"));
 
           String func (choice ? "choice_" : "sequence_");
 
@@ -1606,7 +1603,7 @@ namespace CXX
              << "unsigned long s = ~0UL;"
              << endl;
 
-          Boolean first (true);
+          bool first (true);
 
           // Note that we don't need to worry about the compositor
           // being empty - this case is handled by our caller.
@@ -1622,7 +1619,7 @@ namespace CXX
             if (!p.context ().count ("p:prefix"))
               break;
 
-            UnsignedLong state (p.context ().get<UnsignedLong> ("p:state"));
+            size_t state (p.context ().get<size_t> ("p:state"));
 
             if (first)
               first = false;
@@ -1647,7 +1644,7 @@ namespace CXX
               if (Choice* pc = dynamic_cast<Choice*> (p))
               {
                 if (pc->min () != 0 &&
-                    pc->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    pc->context ().get<size_t> ("p:effective-min") == 0)
                 {
                   // This is a required choice with effective-min == 0 (i.e.,
                   // it contains optional particle). We need to call the arm
@@ -1658,8 +1655,7 @@ namespace CXX
 
                   if (p)
                   {
-                    UnsignedLong state (
-                      pc->context ().get<UnsignedLong> ("p:state"));
+                    size_t state (pc->context ().get<size_t> ("p:state"));
 
                     os << endl
                        << "if (s > " << state << "UL)" << endl
@@ -1676,10 +1672,9 @@ namespace CXX
                 // to call the next callback.
                 //
                 if (ps->min () != 0 && ps->max () != 1 &&
-                    ps->context ().get<UnsignedLong> ("p:effective-min") == 0)
+                    ps->context ().get<size_t> ("p:effective-min") == 0)
                 {
-                  UnsignedLong state (
-                    ps->context ().get<UnsignedLong> ("p:state"));
+                  size_t state (ps->context ().get<size_t> ("p:state"));
 
                   os << endl
                      << "if (s > " << state << "UL)" << endl
@@ -1845,7 +1840,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All&)
         {
           os << "all_0 (vd.state, v_all_count_.top (), " <<
@@ -1853,7 +1848,7 @@ namespace CXX
              << endl;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor&) // Choice and sequence.
         {
           os << "assert (vd.func != 0);"
@@ -1881,7 +1876,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           using SemanticGraph::Element;
@@ -1901,7 +1896,7 @@ namespace CXX
             (poly_runtime ? "0, " : "") << "true);"
              << "}";
 
-          if (a.context ().get<UnsignedLong> ("p:effective-min") != 0)
+          if (a.context ().get<size_t> ("p:effective-min") != 0)
           {
             os << "else" << endl
                << "this->_schema_error (" <<
@@ -1919,14 +1914,13 @@ namespace CXX
              << "v_all_count_.pop ();";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c) // Choice and sequence.
         {
           using SemanticGraph::Choice;
           using SemanticGraph::Sequence;
 
-          UnsignedLong min (
-            c.context ().get<UnsignedLong> ("p:effective-min"));
+          size_t min (c.context ().get<size_t> ("p:effective-min"));
 
           os << "v_state_& vs = *static_cast< v_state_* > (" <<
             "this->v_state_stack_.top ());"
@@ -2019,7 +2013,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           // Nothing to generate if we don't have any elements and wildcards.
@@ -2036,7 +2030,7 @@ namespace CXX
           // Don't use restriction_p here since we don't want special
           // treatment of anyType.
           //
-          Boolean restriction (
+          bool restriction (
             c.inherits_p () &&
             c.inherits ().is_a<SemanticGraph::Restricts> ());
 
@@ -2284,7 +2278,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_element_validation_source (Context& ctx)
     {
       ctx.os << "#include <assert.h>" << endl

@@ -3,6 +3,9 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <set>
+#include <iostream>
+
 #include <cxx/parser/validator.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
@@ -10,9 +13,7 @@
 
 #include <cxx/parser/elements.hxx>
 
-#include <iostream>
-
-using std::wcerr;
+using namespace std;
 
 namespace CXX
 {
@@ -27,7 +28,7 @@ namespace CXX
                            SemanticGraph::Path const& path,
                            Parser::options const& options,
                            const WarningSet& disabled_warnings,
-                           Boolean& valid_)
+                           bool& valid_)
             : Context (std::wcerr, root, path, options, 0, 0, 0),
               disabled_warnings_ (disabled_warnings),
               disabled_warnings_all_ (false),
@@ -40,8 +41,8 @@ namespace CXX
         }
 
       public:
-        Boolean
-        is_disabled (Char const* w)
+        bool
+        is_disabled (char const* w)
         {
           return disabled_warnings_all_ ||
             disabled_warnings_.find (w) != disabled_warnings_.end ();
@@ -76,10 +77,10 @@ namespace CXX
 
       protected:
         const WarningSet& disabled_warnings_;
-        Boolean disabled_warnings_all_;
-        Boolean& valid;
-        Boolean& subst_group_warning_issued;
-        Boolean subst_group_warning_issued_;
+        bool disabled_warnings_all_;
+        bool& valid;
+        bool& subst_group_warning_issued;
+        bool subst_group_warning_issued_;
       };
 
       //
@@ -100,18 +101,18 @@ namespace CXX
           {
           }
 
-          virtual Void
+          virtual void
           traverse (SemanticGraph::Element& e)
           {
             using SemanticGraph::Any;
 
-            Boolean q (e.qualified_p ());
+            bool q (e.qualified_p ());
             String ns (q ? e.namespace_ ().name () : "");
 
             for (Any::NamespaceIterator i (any_.namespace_begin ());
                  i != any_.namespace_end (); ++i)
             {
-              Boolean failed (false);
+              bool failed (false);
 
               if (*i == L"##any")
               {
@@ -184,14 +185,14 @@ namespace CXX
           {
           }
 
-          virtual Void
+          virtual void
           post (Type& c)
           {
             // Go down the inheritance hierarchy.
             //
             if (down_)
             {
-              Boolean up = up_;
+              bool up = up_;
               up_ = false;
 
               if (c.inherits_p ())
@@ -204,7 +205,7 @@ namespace CXX
             //
             if (up_)
             {
-              Boolean down = down_;
+              bool down = down_;
               down_ = false;
 
               for (Type::BegetsIterator i (c.begets_begin ());
@@ -218,10 +219,10 @@ namespace CXX
           }
 
         private:
-          Boolean up_, down_;
+          bool up_, down_;
         };
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           using SemanticGraph::Compositor;
@@ -279,7 +280,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           using SemanticGraph::Schema;
@@ -325,7 +326,7 @@ namespace CXX
           Complex::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           if (t.named_p ())
@@ -334,7 +335,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (is_disabled ("P002"))
@@ -358,7 +359,7 @@ namespace CXX
 
         // Return true if root sources s.
         //
-        Boolean
+        bool
         sources_p (SemanticGraph::Schema& root, SemanticGraph::Schema& s)
         {
           using SemanticGraph::Schema;
@@ -378,7 +379,7 @@ namespace CXX
         }
 
       private:
-        Containers::Set<String> types_;
+        set<String> types_;
 
         Sources sources_;
 
@@ -399,12 +400,12 @@ namespace CXX
       //
       struct AnonymousMember: protected ValidationContext
       {
-        AnonymousMember (ValidationContext& c, Boolean& error_issued)
+        AnonymousMember (ValidationContext& c, bool& error_issued)
             : ValidationContext (c), error_issued_ (error_issued)
         {
         }
 
-        Boolean
+        bool
         traverse_common (SemanticGraph::Member& m)
         {
           SemanticGraph::Type& t (m.type ());
@@ -446,18 +447,18 @@ namespace CXX
         }
 
       private:
-        Boolean& error_issued_;
+        bool& error_issued_;
       };
 
       struct AnonymousElement: Traversal::Element,
                                AnonymousMember
       {
-        AnonymousElement (ValidationContext& c, Boolean& error_issued)
+        AnonymousElement (ValidationContext& c, bool& error_issued)
             : AnonymousMember (c, error_issued)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (traverse_common (e))
@@ -477,12 +478,12 @@ namespace CXX
       struct AnonymousAttribute: Traversal::Attribute,
                                  AnonymousMember
       {
-        AnonymousAttribute (ValidationContext& c, Boolean& error_issued)
+        AnonymousAttribute (ValidationContext& c, bool& error_issued)
             : AnonymousMember (c, error_issued)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (traverse_common (a))
@@ -521,9 +522,9 @@ namespace CXX
         }
 
       private:
-        Boolean error_issued_;
+        bool error_issued_;
 
-        Containers::Set<String> types_;
+        set<String> types_;
 
         Sources sources_;
 
@@ -547,7 +548,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           if (!valid)
@@ -590,14 +591,14 @@ namespace CXX
       };
     }
 
-    Boolean Validator::
+    bool Validator::
     validate (options const& ops,
               SemanticGraph::Schema& root,
               SemanticGraph::Path const& path,
-              Boolean gen_driver,
+              bool gen_driver,
               const WarningSet& disabled_warnings)
     {
-      Boolean valid (true);
+      bool valid (true);
       ValidationContext ctx (root, path, ops, disabled_warnings, valid);
 
       //
@@ -624,9 +625,9 @@ namespace CXX
       //
       //
       {
-        Boolean ref (ops.root_element_first ());
-        Boolean rel (ops.root_element_last ());
-        Boolean re (ops.root_element ());
+        bool ref (ops.root_element_first ());
+        bool rel (ops.root_element_last ());
+        bool re (ops.root_element ());
 
         if ((ref && rel) || (ref && re) || (rel && re))
         {

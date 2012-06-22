@@ -9,7 +9,6 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/map.hxx>
 
 namespace CXX
 {
@@ -23,8 +22,8 @@ namespace CXX
       {
         ParticleArg (Context& c,
                      TypeInstanceMap& map,
-                     Boolean& first,
-                     Boolean poly,
+                     bool& first,
+                     bool poly,
                      String const& arg)
             : Context (c),
               poly_ (poly),
@@ -35,7 +34,7 @@ namespace CXX
         {
         }
 
-        ParticleArg (Context& c, Boolean& result, Boolean poly)
+        ParticleArg (Context& c, bool& result, bool poly)
             : Context (c),
               poly_ (poly),
               map_ (0),
@@ -44,7 +43,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (poly_ && anonymous (e.type ()))
@@ -68,26 +67,26 @@ namespace CXX
         }
 
       private:
-        Boolean poly_;
+        bool poly_;
         TypeInstanceMap* map_;
-        Boolean* first_;
-        Boolean* result_;
+        bool* first_;
+        bool* result_;
         String arg_;
       };
 
       struct AttributeArg: Traversal::Attribute, Context
       {
-        AttributeArg (Context& c, TypeInstanceMap& map, Boolean& first)
+        AttributeArg (Context& c, TypeInstanceMap& map, bool& first)
             : Context (c), map_ (&map), first_ (&first), result_ (0)
         {
         }
 
-        AttributeArg (Context& c, Boolean& result)
+        AttributeArg (Context& c, bool& result)
             : Context (c), map_ (0), first_ (0), result_ (&result)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (result_ != 0)
@@ -106,8 +105,8 @@ namespace CXX
 
       private:
         TypeInstanceMap* map_;
-        Boolean* first_;
-        Boolean* result_;
+        bool* first_;
+        bool* result_;
       };
 
       struct ArgList : Traversal::Complex,
@@ -116,7 +115,7 @@ namespace CXX
       {
         ArgList (Context& c,
                  TypeInstanceMap& map,
-                 Boolean poly,
+                 bool poly,
                  String const& arg)
             : Context (c),
               poly_ (poly),
@@ -137,7 +136,7 @@ namespace CXX
             names_ >> attribute_;
         }
 
-        ArgList (Context& c, Boolean& result, Boolean poly)
+        ArgList (Context& c, bool& result, bool poly)
             : Context (c),
               poly_ (poly),
               map_ (0),
@@ -156,7 +155,7 @@ namespace CXX
             names_ >> attribute_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           inherits (c, inherits_);
@@ -168,7 +167,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           if (poly_)
@@ -189,7 +188,7 @@ namespace CXX
         }
 
       private:
-        Boolean poly_;
+        bool poly_;
         TypeInstanceMap* map_;
 
         Traversal::Inherits inherits_;
@@ -202,8 +201,8 @@ namespace CXX
         Traversal::Names names_;
         AttributeArg attribute_;
 
-        Boolean first_;
-        Boolean* result_;
+        bool first_;
+        bool* result_;
       };
 
       struct ParserConnect: Traversal::List,
@@ -212,13 +211,13 @@ namespace CXX
       {
         ParserConnect (Context& c,
                        TypeInstanceMap& map,
-                       Boolean poly,
+                       bool poly,
                        String const& map_inst = String ())
             : Context (c), poly_ (poly), map_ (map), map_inst_ (map_inst)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           if (poly_)
@@ -229,7 +228,7 @@ namespace CXX
              << endl;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           if (has_members (c))
@@ -246,17 +245,17 @@ namespace CXX
         }
 
       private:
-        Boolean
+        bool
         has_members (SemanticGraph::Complex& c)
         {
-          Boolean r (false);
+          bool r (false);
           ArgList test (*this, r, poly_);
           test.traverse (c);
           return r;
         }
 
       private:
-        Boolean poly_;
+        bool poly_;
         TypeInstanceMap& map_;
         String map_inst_;
       };
@@ -271,7 +270,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           SemanticGraph::Context& tc (t.context ());
@@ -312,9 +311,9 @@ namespace CXX
           {
             String const& entry (tc.get<String> ("paggr-parser-map-entries"));
 
-            Size n (0);
+            size_t n (0);
 
-            for (TypeIdInstanceMap::Iterator i (tid_map->begin ());
+            for (TypeIdInstanceMap::iterator i (tid_map->begin ());
                  i != tid_map->end ();
                  ++i, ++n)
             {
@@ -330,7 +329,7 @@ namespace CXX
           //
           ParserConnect connect (*this, map, false);
 
-          for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
+          for (TypeInstanceMap::iterator i (map.begin ()), end (map.end ());
                i != end; ++i)
             connect.dispatch (*i->first);
 
@@ -341,7 +340,7 @@ namespace CXX
             ParserConnect connect (
               *this, map, true, tc.get<String> ("paggr-parser-map"));
 
-            for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
+            for (TypeInstanceMap::iterator i (map.begin ()), end (map.end ());
                  i != end; ++i)
               connect.dispatch (*i->first);
           }
@@ -357,7 +356,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           SemanticGraph::Context& ec (e.context ());
@@ -398,9 +397,9 @@ namespace CXX
           {
             String const& entry (ec.get<String> ("paggr-parser-map-entries"));
 
-            Size n (0);
+            size_t n (0);
 
-            for (TypeIdInstanceMap::Iterator i (tid_map->begin ());
+            for (TypeIdInstanceMap::iterator i (tid_map->begin ());
                  i != tid_map->end ();
                  ++i, ++n)
             {
@@ -416,7 +415,7 @@ namespace CXX
           //
           ParserConnect connect (*this, map, false);
 
-          for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
+          for (TypeInstanceMap::iterator i (map.begin ()), end (map.end ());
                i != end; ++i)
             connect.dispatch (*i->first);
 
@@ -427,7 +426,7 @@ namespace CXX
             ParserConnect connect (
               *this, map, true, ec.get<String> ("paggr-parser-map"));
 
-            for (TypeInstanceMap::Iterator i (map.begin ()), end (map.end ());
+            for (TypeInstanceMap::iterator i (map.begin ()), end (map.end ());
                  i != end; ++i)
               connect.dispatch (*i->first);
           }
@@ -457,10 +456,10 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_aggregate_source (Context& ctx)
     {
-      Boolean gen (false);
+      bool gen (false);
 
       {
         Traversal::Schema schema;

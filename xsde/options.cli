@@ -3,11 +3,9 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-include <vector>;
-include <string>;
 include <cstddef>; // std::size_t
 
-include <cult/types.hxx>; // NarrowString
+include <types.hxx>; // NarrowString, NarrowStrings
 
 class help_options
 {
@@ -20,7 +18,7 @@ class help_options
 
 class options = 0
 {
-  std::vector<Cult::Types::NarrowString> --disable-warning
+  NarrowStrings --disable-warning
   {
     "<warn>",
     "Disable printing warning with id <warn>. If \cb{all} is specified for
@@ -87,7 +85,7 @@ class options = 0
      only makes sense together with the \cb{--preserve-anonymous} option."
   };
 
-  std::vector<Cult::Types::NarrowString> --anonymous-regex
+  NarrowStrings --anonymous-regex
   {
     "<regex>",
     "Add <regex> to the list of regular expressions used to derive names for
@@ -130,7 +128,7 @@ class options = 0
 
   // Location options.
   //
-  std::vector<Cult::Types::NarrowString> --location-map
+  NarrowStrings --location-map
   {
     "<ol>=<nl>",
     "Map the original schema location <ol> that is specified in the XML
@@ -142,7 +140,7 @@ class options = 0
      \cb{--location-map http://example.com/foo.xsd=foo.xsd}"
   };
 
-  std::vector<Cult::Types::NarrowString> --location-regex
+  NarrowStrings --location-regex
   {
     "<regex>",
     "Add <regex> to the list of regular expressions used to map schema
@@ -184,7 +182,7 @@ class options = 0
      \cb{--fat-type-file}, and \cb{--file-list}."
   };
 
-  std::vector<Cult::Types::NarrowString> --type-file-regex
+  NarrowStrings --type-file-regex
   {
     "<regex>",
     "Add <regex> to the list of regular expressions used to translate type
@@ -214,7 +212,7 @@ class options = 0
      \cb{--type-file-regex} option. Use this option to find out why your
      regular expressions don't do what you expected them to do."
   };
-  std::vector<Cult::Types::NarrowString> --schema-file-regex
+  NarrowStrings --schema-file-regex
   {
     "<regex>",
     "Add <regex> to the list of regular expressions used to translate schema
@@ -261,7 +259,7 @@ class options = 0
 
   // File list options.
   //
-  Cult::Types::NarrowString --file-list
+  NarrowString --file-list
   {
     "<file>",
     "Write a list of generated C++ files to <file>. This option is primarily
@@ -270,7 +268,7 @@ class options = 0
      fragment."
   };
 
-  Cult::Types::NarrowString --file-list-prologue
+  NarrowString --file-list-prologue
   {
     "<text>",
     "Insert <text> at the beginning of the file list. As a convenience, all
@@ -279,7 +277,7 @@ class options = 0
      generated file list to a makefile variable."
   };
 
-  Cult::Types::NarrowString --file-list-epilogue
+  NarrowString --file-list-epilogue
   {
     "<text>",
     "Insert <text> at the end of the file list. As a convenience, all
@@ -287,7 +285,7 @@ class options = 0
      with new lines."
   };
 
-  Cult::Types::NarrowString --file-list-delim = "\n"
+  NarrowString --file-list-delim = "\n"
   {
     "<text>",
     "Delimit file names written to the file list with <text> instead of new

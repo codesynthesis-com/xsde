@@ -24,7 +24,7 @@ namespace CXX
 
   namespace
   {
-    WideChar const* keywords[] = {
+    wchar_t const* keywords[] = {
       L"NULL",
       L"and",
       L"asm",
@@ -111,7 +111,7 @@ namespace CXX
            SemanticGraph::Schema& root,
            SemanticGraph::Path const& path,
            options_type const& ops,
-           Char const* name_key,
+           char const* name_key,
            NarrowString const& char_type__)
       : os (o),
         schema_root (root),
@@ -204,7 +204,7 @@ namespace CXX
 
       // Split the string in two parts at the last '='.
       //
-      Size pos (s.rfind ('='));
+      size_t pos (s.rfind ('='));
 
       if (pos == String::npos)
         throw InvalidNamespaceMapping (s, "delimiter ('=') not found");
@@ -237,7 +237,7 @@ namespace CXX
 
       // Split the string in two parts at '='.
       //
-      Size pos (s.find ('='));
+      size_t pos (s.find ('='));
 
       if (pos == String::npos)
         reserved_name_map_[s] = L"";
@@ -247,7 +247,7 @@ namespace CXX
 
     // Populate the keyword set.
     //
-    for (Size i (0); i < sizeof (keywords) / sizeof (char*); ++i)
+    for (size_t i (0); i < sizeof (keywords) / sizeof (char*); ++i)
       keyword_set_.insert (keywords[i]);
   }
 
@@ -261,7 +261,7 @@ namespace CXX
     using SemanticGraph::Sources;
 
     String tmp;
-    MapMapping::ConstIterator i (nsm_mapping.find (ns.name ()));
+    MapMapping::const_iterator i (nsm_mapping.find (ns.name ()));
 
     if (i != nsm_mapping.end ())
     {
@@ -308,7 +308,7 @@ namespace CXX
 
       // Check cache first
       //
-      MappingCache::ConstIterator i (ns_mapping_cache.find (pair));
+      MappingCache::const_iterator i (ns_mapping_cache.find (pair));
 
       if (i != ns_mapping_cache.end ())
       {
@@ -321,10 +321,10 @@ namespace CXX
         if (trace)
           wcerr << "namespace: '" << pair << "'" << endl;
 
-        Boolean found (false);
+        bool found (false);
         Regex colon (L"#/#::#");
 
-        for (RegexMapping::ConstReverseIterator e (nsr_mapping.rbegin ());
+        for (RegexMapping::const_reverse_iterator e (nsr_mapping.rbegin ());
              e != nsr_mapping.rend (); ++e)
         {
           if (trace)
@@ -468,7 +468,7 @@ namespace CXX
   }
 
   String Context::
-  fq_name (SemanticGraph::Nameable& n, Char const* name_key) const
+  fq_name (SemanticGraph::Nameable& n, char const* name_key) const
   {
     using namespace SemanticGraph;
 
@@ -565,17 +565,17 @@ namespace CXX
   escape (String const& name) const
   {
     String r;
-    Size n (name.size ());
+    size_t n (name.size ());
 
     // In most common cases we will have that many chars.
     //
     r.reserve (n);
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      Boolean first (i == 0);
+      bool first (i == 0);
 
-      UnsignedLong u (unicode_char (name, i)); // May advance i.
+      unsigned int u (unicode_char (name, i)); // May advance i.
 
       if (first)
       {
@@ -591,7 +591,7 @@ namespace CXX
             u == '_'))
         r.push_back ('_');
       else
-        r.push_back (static_cast<WideChar> (u));
+        r.push_back (static_cast<wchar_t> (u));
     }
 
     if (r.empty ())
@@ -599,7 +599,7 @@ namespace CXX
 
     // Custom reserved words.
     //
-    ReservedNameMap::ConstIterator i (reserved_name_map.find (r));
+    ReservedNameMap::const_iterator i (reserved_name_map.find (r));
 
     if (i != reserved_name_map.end ())
     {
@@ -635,14 +635,14 @@ namespace CXX
   //
 
   String
-  charlit (UnsignedLong u)
+  charlit (unsigned int u)
   {
     String r ("\\x");
-    Boolean lead (true);
+    bool lead (true);
 
-    for (Long i (7); i >= 0; --i)
+    for (int i (7); i >= 0; --i)
     {
-      UnsignedLong x ((u >> (i * 4)) & 0x0F);
+      unsigned int x ((u >> (i * 4)) & 0x0F);
 
       if (lead)
       {
@@ -658,7 +658,7 @@ namespace CXX
     return r;
   }
 
-  const UnsignedLong utf8_first_char_mask[5] =
+  const unsigned int utf8_first_char_mask[5] =
   {
     0x00, 0x00, 0xC0, 0xE0, 0xF0
   };
@@ -667,7 +667,7 @@ namespace CXX
   strlit_utf8 (String const& str)
   {
     String r;
-    Size n (str.size ());
+    size_t n (str.size ());
 
     // In most common cases we will have that many chars.
     //
@@ -675,11 +675,11 @@ namespace CXX
 
     r += '"';
 
-    Boolean escape (false);
+    bool escape (false);
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      UnsignedLong u (Context::unicode_char (str, i)); // May advance i.
+      unsigned int u (Context::unicode_char (str, i)); // May advance i.
 
       // [128 - ]     - UTF-8
       // 127          - \x7F
@@ -760,15 +760,15 @@ namespace CXX
           }
         default:
           {
-            r += static_cast<WideChar> (u);
+            r += static_cast<wchar_t> (u);
             break;
           }
         }
       }
       else
       {
-        UnsignedLong count;
-        UnsignedLong tmp[4];
+        unsigned int count;
+        unsigned int tmp[4];
 
         if (u < 0x800)
           count = 2;
@@ -800,7 +800,7 @@ namespace CXX
           }
         }
 
-        for (UnsignedLong j (0); j < count; ++j)
+        for (unsigned int j (0); j < count; ++j)
           r += charlit (tmp[j]);
 
         escape = true;
@@ -816,7 +816,7 @@ namespace CXX
   strlit_iso8859_1 (String const& str)
   {
     String r;
-    Size n (str.size ());
+    size_t n (str.size ());
 
     // In most common cases we will have that many chars.
     //
@@ -824,11 +824,11 @@ namespace CXX
 
     r += '"';
 
-    Boolean escape (false);
+    bool escape (false);
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      UnsignedLong u (Context::unicode_char (str, i)); // May advance i.
+      unsigned int u (Context::unicode_char (str, i)); // May advance i.
 
       // [256 -    ]  - unrepresentable
       // [127 - 255]  - \xXX
@@ -909,7 +909,7 @@ namespace CXX
           }
         default:
           {
-            r += static_cast<WideChar> (u);
+            r += static_cast<wchar_t> (u);
             break;
           }
         }
@@ -936,7 +936,7 @@ namespace CXX
   strlit_utf32 (String const& str)
   {
     String r;
-    Size n (str.size ());
+    size_t n (str.size ());
 
     // In most common cases we will have that many chars.
     //
@@ -944,11 +944,11 @@ namespace CXX
 
     r += '"';
 
-    Boolean escape (false);
+    bool escape (false);
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      UnsignedLong u (Context::unicode_char (str, i)); // May advance i.
+      unsigned int u (Context::unicode_char (str, i)); // May advance i.
 
       // [128 - ]     - \xUUUUUUUU
       // 127          - \x7F
@@ -1029,7 +1029,7 @@ namespace CXX
           }
         default:
           {
-            r += static_cast<WideChar> (u);
+            r += static_cast<wchar_t> (u);
             break;
           }
         }
@@ -1065,16 +1065,16 @@ namespace CXX
   {
     String r;
 
-    WideChar const* s (str.c_str ());
-    Size size (str.size ());
+    wchar_t const* s (str.c_str ());
+    size_t size (str.size ());
 
     // In most common cases we will have that many chars.
     //
     r.reserve (size);
 
-    for (WideChar const* p (s); p < s + size; ++p)
+    for (wchar_t const* p (s); p < s + size; ++p)
     {
-      UnsignedLong u (unicode_char (p)); // May advance p.
+      unsigned int u (unicode_char (p)); // May advance p.
 
       // We are going to treat \v, \f and \n as unrepresentable
       // here even though they can be present in C++ source code.
@@ -1082,7 +1082,7 @@ namespace CXX
       if (u > 127 || (u < 32 && u != '\t'))
         r += L'?';
       else
-        r += static_cast<WideChar> (u);
+        r += static_cast<wchar_t> (u);
     }
 
     return r;
@@ -1098,9 +1098,9 @@ namespace CXX
       wcerr << "include: '" << path << "'" << endl;
 
     String r;
-    Boolean found (false);
+    bool found (false);
 
-    for (RegexMapping::ConstReverseIterator e (include_mapping.rbegin ());
+    for (RegexMapping::const_reverse_iterator e (include_mapping.rbegin ());
          e != include_mapping.rend (); ++e)
     {
       if (trace)
@@ -1127,8 +1127,8 @@ namespace CXX
 
     if (!r.empty () && r[0] != L'"' && r[0] != L'<')
     {
-      WideChar op (options.include_with_brackets () ? L'<' : L'"');
-      WideChar cl (options.include_with_brackets () ? L'>' : L'"');
+      wchar_t op (options.include_with_brackets () ? L'<' : L'"');
+      wchar_t cl (options.include_with_brackets () ? L'>' : L'"');
       r = op + r + cl;
     }
 
@@ -1138,7 +1138,7 @@ namespace CXX
   // Namespace
   //
 
-  Void Namespace::
+  void Namespace::
   pre (Type& n)
   {
     String ns (ctx_.ns_name (n));
@@ -1173,7 +1173,7 @@ namespace CXX
     } while (true);
   }
 
-  Void Namespace::
+  void Namespace::
   post (Type& n)
   {
     String ns (ctx_.ns_name (n));
@@ -1214,14 +1214,14 @@ namespace CXX
   // LiteralValue
   //
 
-  Void LiteralValue::
+  void LiteralValue::
   normalize (String& s)
   {
-    Size n (s.size ());
+    size_t n (s.size ());
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      WideChar& c (s[i]);
+      wchar_t& c (s[i]);
 
       if (c == 0x0D || // carriage return
           c == 0x09 || // tab
@@ -1230,15 +1230,15 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   collapse (String& s)
   {
-    Size n (s.size ()), j (0);
-    Boolean subs (false), trim (true);
+    size_t n (s.size ()), j (0);
+    bool subs (false), trim (true);
 
-    for (Size i (0); i < n; ++i)
+    for (size_t i (0); i < n; ++i)
     {
-      WideChar c (s[i]);
+      wchar_t c (s[i]);
 
       if (c == 0x20 || c == 0x09 || c == 0x0A)
         subs = true;
@@ -1262,21 +1262,21 @@ namespace CXX
     s.resize (j);
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   strip_zeros (String& s)
   {
-    Size n (s.size ()), i (0);
+    size_t n (s.size ()), i (0);
 
     if (n > 0 && (s[i] == '-' || s[i] == '+'))
       i++;
 
-    Size j (i);
+    size_t j (i);
 
-    Boolean strip (true);
+    bool strip (true);
 
     for (; i < n; ++i)
     {
-      WideChar c (s[i]);
+      wchar_t c (s[i]);
 
       if (c == '0')
       {
@@ -1298,7 +1298,7 @@ namespace CXX
     s.resize (j);
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   make_float (String& s)
   {
     if (s.find ('.') == String::npos &&
@@ -1308,7 +1308,7 @@ namespace CXX
   }
 
   LiteralValue::
-  LiteralValue (Context& c, Boolean str)
+  LiteralValue (Context& c, bool str)
       : Context (c), str_ (str)
   {
   }
@@ -1322,7 +1322,7 @@ namespace CXX
     return literal_;
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::AnySimpleType&)
   {
     if (str_)
@@ -1331,7 +1331,7 @@ namespace CXX
 
   // Boolean.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Boolean&)
   {
     collapse (value_);
@@ -1340,7 +1340,7 @@ namespace CXX
 
   // Integral types.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Byte&)
   {
     collapse (value_);
@@ -1348,7 +1348,7 @@ namespace CXX
     literal_ = value_;
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::UnsignedByte&)
   {
     collapse (value_);
@@ -1356,7 +1356,7 @@ namespace CXX
     literal_ = value_ + L"U";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Short&)
   {
     collapse (value_);
@@ -1364,7 +1364,7 @@ namespace CXX
     literal_ = value_;
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::UnsignedShort&)
   {
     collapse (value_);
@@ -1372,7 +1372,7 @@ namespace CXX
     literal_ = value_ + L"U";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Int&)
   {
     collapse (value_);
@@ -1380,7 +1380,7 @@ namespace CXX
     literal_ = value_;
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::UnsignedInt&)
   {
     collapse (value_);
@@ -1388,7 +1388,7 @@ namespace CXX
     literal_ = value_ + L"U";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Long&)
   {
     collapse (value_);
@@ -1397,7 +1397,7 @@ namespace CXX
     literal_ += long_long ? L"LL" : L"L";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::UnsignedLong&)
   {
     collapse (value_);
@@ -1406,7 +1406,7 @@ namespace CXX
     literal_ += long_long ? L"ULL" : L"UL";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Integer&)
   {
     collapse (value_);
@@ -1414,7 +1414,7 @@ namespace CXX
     literal_ = value_ + L"L";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NonPositiveInteger&)
   {
     collapse (value_);
@@ -1422,7 +1422,7 @@ namespace CXX
     literal_ = value_ + L"L";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NonNegativeInteger&)
   {
     collapse (value_);
@@ -1430,7 +1430,7 @@ namespace CXX
     literal_ = value_ + L"UL";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::PositiveInteger&)
   {
     collapse (value_);
@@ -1438,7 +1438,7 @@ namespace CXX
     literal_ = value_ + L"UL";
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NegativeInteger&)
   {
     collapse (value_);
@@ -1448,7 +1448,7 @@ namespace CXX
 
   // Floats.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Float&)
   {
     collapse (value_);
@@ -1473,7 +1473,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Double&)
   {
     collapse (value_);
@@ -1498,7 +1498,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Decimal&)
   {
     collapse (value_);
@@ -1509,14 +1509,14 @@ namespace CXX
 
   // Strings.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::String&)
   {
     if (str_)
       literal_ = strlit (value_);
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NormalizedString&)
   {
     if (str_)
@@ -1526,7 +1526,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Token&)
   {
     if (str_)
@@ -1536,7 +1536,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NameToken&)
   {
     if (str_)
@@ -1546,7 +1546,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Name&)
   {
     if (str_)
@@ -1556,7 +1556,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::NCName&)
   {
     if (str_)
@@ -1566,7 +1566,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Language&)
   {
     if (str_)
@@ -1579,7 +1579,7 @@ namespace CXX
 
   // ID/IDREF.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Id&)
   {
     if (str_)
@@ -1589,7 +1589,7 @@ namespace CXX
     }
   }
 
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::IdRef&)
   {
     if (str_)
@@ -1601,7 +1601,7 @@ namespace CXX
 
   // URI.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::AnyURI&)
   {
     if (str_)
@@ -1613,7 +1613,7 @@ namespace CXX
 
   // Entity.
   //
-  Void LiteralValue::
+  void LiteralValue::
   traverse (SemanticGraph::Fundamental::Entity&)
   {
     if (str_)

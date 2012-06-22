@@ -14,7 +14,7 @@ namespace CXX
   {
     namespace
     {
-      Void
+      void
       facet_calls (SemanticGraph::Complex& c, Context& ctx)
       {
         using SemanticGraph::Restricts;
@@ -123,19 +123,19 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (ename (e));
 
-          Boolean enum_facets (false); // Whether we need to set enum facets.
+          bool enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
             StringBasedType t (enum_facets);
             t.dispatch (e);
           }
 
-          UnsignedLong enum_count (0);
+          size_t enum_count (0);
           if (enum_facets)
           {
             for (Type::NamesIterator i (e.names_begin ()), end (e.names_end ());
@@ -143,7 +143,7 @@ namespace CXX
               ++enum_count;
           }
 
-          Boolean facets (enum_facets || has_facets (e));
+          bool facets (enum_facets || has_facets (e));
 
           if (facets || tiein)
             os << "// " << name << endl
@@ -197,8 +197,8 @@ namespace CXX
         }
 
       private:
-        Void
-        facet_calls (Type& e, UnsignedLong enum_count)
+        void
+        facet_calls (Type& e, size_t enum_count)
         {
           Parser::facet_calls (e, *this);
 
@@ -217,7 +217,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (ename (l));
@@ -285,7 +285,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           if (tiein)
@@ -328,7 +328,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& scope (ename (e.scope ()));
@@ -360,7 +360,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           os << inl
@@ -376,12 +376,12 @@ namespace CXX
       //
       struct ParticleMemberSet: Traversal::Element, Context
       {
-        ParticleMemberSet (Context& c, Boolean poly)
+        ParticleMemberSet (Context& c, bool poly)
             : Context (c), poly_ (poly)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (poly_)
@@ -394,7 +394,7 @@ namespace CXX
         }
 
       private:
-        Boolean poly_;
+        bool poly_;
       };
 
       struct AttributeMemberSet: Traversal::Attribute, Context
@@ -404,7 +404,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           os << "this->" << emember (a) << " = &" << ename (a) << ";";
@@ -415,13 +415,13 @@ namespace CXX
                             Traversal::List,
                             Context
       {
-        BaseMemberSet (Context& c, Boolean poly)
+        BaseMemberSet (Context& c, bool poly)
             : Context (c), poly_ (poly)
         {
           inherits_ >> *this;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           inherits (c, inherits_);
@@ -433,7 +433,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           if (poly_)
@@ -447,19 +447,19 @@ namespace CXX
 
       private:
         Traversal::Inherits inherits_;
-        Boolean poly_;
+        bool poly_;
       };
 
       //
       //
       struct ParticleMemberInit: Traversal::Element, Context
       {
-        ParticleMemberInit (Context& c, Boolean comma)
+        ParticleMemberInit (Context& c, bool comma)
             : Context (c), first_ (!comma)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (first_)
@@ -476,24 +476,24 @@ namespace CXX
           }
         }
 
-        Boolean
+        bool
         comma () const
         {
           return !first_;
         }
 
       private:
-        Boolean first_;
+        bool first_;
       };
 
       struct AttributeMemberInit: Traversal::Attribute, Context
       {
-        AttributeMemberInit (Context& c, Boolean comma)
+        AttributeMemberInit (Context& c, bool comma)
             : Context (c), first_ (!comma)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (first_)
@@ -504,14 +504,14 @@ namespace CXX
           os << emember (a) << " (0)";
         }
 
-        Boolean
+        bool
         comma () const
         {
           return !first_;
         }
 
       private:
-        Boolean first_;
+        bool first_;
       };
 
       //
@@ -523,14 +523,13 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (!a.context().count ("p:comp-number"))
             return;
 
-          UnsignedLong state_count (
-            a.context().get<UnsignedLong> ("p:state-count"));
+          size_t state_count (a.context().get<size_t> ("p:state-count"));
 
           os << "," << endl
              << "  v_all_count_ (" << state_count << "UL, v_all_first_)";
@@ -586,17 +585,17 @@ namespace CXX
           contains_particle_set_poly_ >> particle_set_poly_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
-          Boolean facets (has_facets (c));
-          Boolean he (has<Traversal::Element> (c));
-          Boolean ha (has<Traversal::Attribute> (c));
+          bool hb (c.inherits_p ());
+          bool facets (has_facets (c));
+          bool he (has<Traversal::Element> (c));
+          bool ha (has<Traversal::Attribute> (c));
 
-          Boolean hae (has_particle<Traversal::Any> (c));
+          bool hae (has_particle<Traversal::Any> (c));
 
-          Boolean hra (false); // Has required attribute.
+          bool hra (false); // Has required attribute.
           if (ha)
           {
             RequiredAttributeTest test (hra);
@@ -604,7 +603,7 @@ namespace CXX
             names (c, names_test);
           }
 
-          Boolean restriction (restriction_p (c));
+          bool restriction (restriction_p (c));
 
           if (!(tiein || facets ||
                 (!restriction && (he || ha)) ||
@@ -657,7 +656,7 @@ namespace CXX
             //
             if (poly_code && he)
             {
-              Boolean r (false);
+              bool r (false);
               ParserParamTest test (*this, r, true);
               test.traverse (c);
 
@@ -705,7 +704,7 @@ namespace CXX
               (validation && (he || hae || hra)))
             os << ": ";
 
-          Boolean comma (false);
+          bool comma (false);
 
           if (hb && tiein)
           {
@@ -798,7 +797,7 @@ namespace CXX
 
             os << "  " << etiein (c) << " (impl)";
 
-            Boolean comma (true);
+            bool comma (true);
 
             if (!restriction && (he || ha))
             {
@@ -902,7 +901,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_inline (Context& ctx)
     {
       // Emit "weak" header includes that are used in the file-per-type

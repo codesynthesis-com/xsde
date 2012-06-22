@@ -6,7 +6,7 @@
 #ifndef CXX_HYBRID_AGGREGATE_ELEMENTS_HXX
 #define CXX_HYBRID_AGGREGATE_ELEMENTS_HXX
 
-#include <cult/containers/map.hxx>
+#include <map>
 
 #include <cxx/hybrid/elements.hxx>
 
@@ -14,9 +14,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    typedef
-    Cult::Containers::Map<SemanticGraph::Type*, String>
-    TypeInstanceMap;
+    typedef std::map<SemanticGraph::Type*, String> TypeInstanceMap;
 
     struct InstanceInfo
     {
@@ -24,7 +22,7 @@ namespace CXX
       String name;
     };
 
-    typedef Cult::Containers::Map<String, InstanceInfo> TypeIdInstanceMap;
+    typedef std::map<String, InstanceInfo> TypeIdInstanceMap;
   }
 }
 

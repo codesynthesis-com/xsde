@@ -3,12 +3,14 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <cxx/serializer/serializer-source.hxx>
+#include <set>
 
-#include <cult/containers/set.hxx>
+#include <cxx/serializer/serializer-source.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
+
+using namespace std;
 
 namespace CXX
 {
@@ -30,12 +32,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () != c.contains_end ())
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             if (min != 0)
             {
@@ -71,10 +73,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
-          UnsignedLong min (s.min ()), max (s.max ());
+          size_t min (s.min ()), max (s.max ());
 
           if (max != 1 && min != 0)
           {
@@ -120,10 +122,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong min (e.min ()), max (e.max ());
+          size_t min (e.min ()), max (e.max ());
 
           String const& impl (
             etiein (dynamic_cast<SemanticGraph::Type&> (e.scope ())));
@@ -155,10 +157,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
-          UnsignedLong min (a.min ()), max (a.max ());
+          size_t min (a.min ()), max (a.max ());
 
           if (min != 0 &&
               !a.contained_particle ().compositor ().is_a<
@@ -223,7 +225,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& ret (ret_type (a.type ()));
@@ -270,7 +272,7 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           // pre
@@ -290,14 +292,14 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Enumeration& e)
         {
           SemanticGraph::Type& t (e);
           traverse (t);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           SemanticGraph::Type& t (l);
@@ -321,7 +323,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Union& u)
         {
           SemanticGraph::Type& t (u);
@@ -339,7 +341,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           SemanticGraph::Type& t (c);
@@ -377,14 +379,14 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (ename (e));
           String const& arg (arg_type (e));
           SemanticGraph::Type& base (e.inherits ().base ());
 
-          Boolean enum_facets (false); // Whether we need to set enum facets.
+          bool enum_facets (false); // Whether we need to set enum facets.
           if (validation)
           {
             StringBasedType t (enum_facets);
@@ -436,7 +438,7 @@ namespace CXX
 
             if (validation)
             {
-              Boolean gen (!anonymous (e));
+              bool gen (!anonymous (e));
 
               // We normally don't need to enter anonymous types into
               // the inheritance map. The only exception is when an
@@ -487,7 +489,7 @@ namespace CXX
 
           if (enum_facets)
           {
-            typedef Cult::Containers::Set<String> Enums;
+            typedef set<String> Enums;
             Enums enums;
 
             for (Type::NamesIterator i (e.names_begin ()),
@@ -498,7 +500,7 @@ namespace CXX
               "_enums_[" << enums.size () << "UL] = "
                << "{";
 
-            for (Enums::Iterator b (enums.begin ()), i (b), end (enums.end ());
+            for (Enums::iterator b (enums.begin ()), i (b), end (enums.end ());
                  i != end; ++i)
               os << (i != b ? ",\n" : "") << strlit (*i);
 
@@ -516,7 +518,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (ename (l));
@@ -758,7 +760,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (ename (u));
@@ -822,7 +824,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& m (emember (e));
@@ -849,7 +851,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           String const& m (emember (a));
@@ -872,12 +874,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
           //
-          UnsignedLong min (a.min ());
+          size_t min (a.min ());
 
           if (min == 0)
             os << "if (this->" << epresent (a) << " ())"
@@ -898,12 +900,12 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () != c.contains_end ())
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             if (min == 0 && max == 1)
             {
@@ -972,10 +974,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
-          UnsignedLong min (s.min ()), max (s.max ());
+          size_t min (s.min ()), max (s.max ());
 
           if (min == 0 && max == 1)
           {
@@ -1014,10 +1016,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong min (e.min ()), max (e.max ());
+          size_t min (e.min ()), max (e.max ());
 
           String const& name (ename (e));
 
@@ -1039,7 +1041,7 @@ namespace CXX
           String const& arg (arg_type (e.type ()));
           String fq_type (fq_name (e.type ()));
 
-          Boolean poly (poly_code && !anonymous (e.type ()));
+          bool poly (poly_code && !anonymous (e.type ()));
           String inst (poly ? String (L"s") : L"this->" + emember (e));
 
           if (poly)
@@ -1295,10 +1297,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
-          UnsignedLong min (a.min ()), max (a.max ());
+          size_t min (a.min ()), max (a.max ());
 
           if (min == 0 && max == 1)
           {
@@ -1437,7 +1439,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& name (ename (a));
@@ -1566,7 +1568,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           os << "while (this->" << enext (a) << " ())"
@@ -1699,7 +1701,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           if (!a.context ().count ("xsd-frontend-restriction-correspondence"))
@@ -1733,13 +1735,13 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (SemanticGraph::Compositor* b = correspondent (c))
           {
-            UnsignedLong smin (c.min ());
-            UnsignedLong bmax (b->max ());
+            size_t smin (c.min ());
+            size_t bmax (b->max ());
 
             if (bmax != 1 && smin == 0)
             {
@@ -1768,7 +1770,7 @@ namespace CXX
           }
           else
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             if (min == 0)
             {
@@ -1833,13 +1835,13 @@ namespace CXX
           Traversal::Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (SemanticGraph::Compositor* b = correspondent (s))
           {
-            UnsignedLong smin (s.min ());
-            UnsignedLong bmax (b->max ());
+            size_t smin (s.min ());
+            size_t bmax (b->max ());
 
             if (bmax != 1 && smin == 0)
             {
@@ -1868,7 +1870,7 @@ namespace CXX
           }
           else
           {
-            UnsignedLong min (s.min ()), max (s.max ());
+            size_t min (s.min ()), max (s.max ());
 
             if (min == 0)
             {
@@ -1940,7 +1942,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (SemanticGraph::Element* b = correspondent (e))
@@ -1970,7 +1972,7 @@ namespace CXX
           }
           else
           {
-            UnsignedLong min (e.min ()), max (e.max ());
+            size_t min (e.min ()), max (e.max ());
             String const& s (ename (e.scope ()));
 
             String impl;
@@ -2034,7 +2036,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           if (SemanticGraph::Any* b = correspondent (a))
@@ -2064,7 +2066,7 @@ namespace CXX
           }
           else
           {
-            UnsignedLong min (a.min ()), max (a.max ());
+            size_t min (a.min ()), max (a.max ());
 
             if (min == 0 ||
                 a.contained_particle ().compositor ().is_a<
@@ -2169,7 +2171,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& s (ename (a.scope ()));
@@ -2215,7 +2217,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           String const& s (ename (a.scope ()));
@@ -2330,18 +2332,18 @@ namespace CXX
           names_attribute_ >> attribute_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
-          Boolean he (has<Traversal::Element> (c));
-          Boolean ha (has<Traversal::Attribute> (c));
+          bool hb (c.inherits_p ());
+          bool he (has<Traversal::Element> (c));
+          bool ha (has<Traversal::Attribute> (c));
 
-          Boolean hae (has_particle<Traversal::Any> (c));
-          Boolean haa (has<Traversal::AnyAttribute> (c));
+          bool hae (has_particle<Traversal::Any> (c));
+          bool haa (has<Traversal::AnyAttribute> (c));
 
           String const& arg (arg_type (c));
-          Boolean same (hb && arg == arg_type (c.inherits ().base ()));
+          bool same (hb && arg == arg_type (c.inherits ().base ()));
 
           String const& name (ename (c));
 
@@ -2456,7 +2458,7 @@ namespace CXX
 
             if (hb && validation)
             {
-              Boolean gen (!anonymous (c));
+              bool gen (!anonymous (c));
 
               // We normally don't need to enter anonymous types into
               // the inheritance map. The only exception is when an
@@ -2515,7 +2517,7 @@ namespace CXX
           // Don't use restriction_p here since we don't want special
           // treatment of anyType.
           //
-          Boolean restriction (
+          bool restriction (
             hb && c.inherits ().is_a<SemanticGraph::Restricts> ());
 
           // _serialize_attributes
@@ -2641,7 +2643,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           if (e.substitutes_p ())
@@ -2680,7 +2682,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_serializer_source (Context& ctx)
     {
       if (ctx.tiein)

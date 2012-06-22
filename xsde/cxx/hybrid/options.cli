@@ -3,11 +3,9 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-include <vector>;
-include <string>;
 include <cstddef>; // std::size_t
 
-include <cult/types.hxx>; // NarrowString
+include <types.hxx>; // NarrowString, NarrowStrings
 
 include <cxx/options.cli>;
 
@@ -77,7 +75,7 @@ namespace CXX
          same tree or between different trees."
       };
 
-      std::vector<Cult::Types::NarrowString> --generate-insertion
+      NarrowStrings --generate-insertion
       {
         "<os>",
         "Generate data representation stream insertion operators for the
@@ -89,7 +87,7 @@ namespace CXX
          \cb{--hxx-prologue*} options to include the necessary declarations."
       };
 
-      std::vector<Cult::Types::NarrowString> --generate-extraction
+      NarrowStrings --generate-extraction
       {
         "<is>",
         "Generate data representation stream extraction operators for the
@@ -121,7 +119,7 @@ namespace CXX
          configured with polymorphism support."
       };
 
-      std::vector<Cult::Types::NarrowString> --polymorphic-type
+      NarrowStrings --polymorphic-type
       {
         "<type>",
         "Indicate that <type> is a root of a polymorphic type hierarchy. The
@@ -140,7 +138,7 @@ namespace CXX
          standard C++ RTTI mechanism to determine object's type at runtime."
       };
 
-      std::vector<Cult::Types::NarrowString> --polymorphic-schema
+      NarrowStrings --polymorphic-schema
       {
         "<file>",
         "Indicate that <file> contains derivations of polymorphic types that
@@ -164,7 +162,7 @@ namespace CXX
 
       // Custom data/type.
       //
-      std::vector<Cult::Types::NarrowString> --custom-data
+      NarrowStrings --custom-data
       {
         "<type>",
         "Add the ability to store custom data to the C++ class generated for
@@ -173,7 +171,7 @@ namespace CXX
          containing the compositor, for example, \cb{foo::sequence::choise1}."
       };
 
-      std::vector<Cult::Types::NarrowString> --custom-type
+      NarrowStrings --custom-type
       {
         "<map>",
         "Use a custom type implementation instead of the generated version.
@@ -194,7 +192,7 @@ namespace CXX
          \ci{base} is specified) or instead of the generated version."
       };
 
-      std::vector<Cult::Types::NarrowString> --custom-parser
+      NarrowStrings --custom-parser
       {
         "<map>",
         "Use a custom parser implementation instead of the generated version.
@@ -209,7 +207,7 @@ namespace CXX
          generated version."
       };
 
-      std::vector<Cult::Types::NarrowString> --custom-serializer
+      NarrowStrings --custom-serializer
       {
         "<map>",
         "Use a custom serializer implementation instead of the generated
@@ -260,7 +258,7 @@ namespace CXX
          also the \cb{--generate-aggregate} option."
       };
 
-      std::vector<Cult::Types::NarrowString> --root-element
+      NarrowStrings --root-element
       {
         "<element>",
         "Treat only <element> as a document root. This determines for which
@@ -269,7 +267,7 @@ namespace CXX
          \cb{--generate-aggregate} option."
       };
 
-      std::vector<Cult::Types::NarrowString> --root-type
+      NarrowStrings --root-type
       {
         "<type>",
         "Generate parser/serializer aggregate for <type>. Repeat this option
@@ -279,70 +277,70 @@ namespace CXX
 
       // Suffixes.
       //
-      Cult::Types::NarrowString --pskel-type-suffix = "_pskel"
+      NarrowString --pskel-type-suffix = "_pskel"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_pskel} to construct the
          names of generated parser skeletons."
       };
 
-      Cult::Types::NarrowString --sskel-type-suffix = "_sskel"
+      NarrowString --sskel-type-suffix = "_sskel"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_sskel} to construct the
          names of generated serializer skeletons."
       };
 
-      Cult::Types::NarrowString --pskel-file-suffix = "-pskel"
+      NarrowString --pskel-file-suffix = "-pskel"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{-pskel} to construct the
          names of generated parser skeleton files."
       };
 
-      Cult::Types::NarrowString --sskel-file-suffix = "-sskel"
+      NarrowString --sskel-file-suffix = "-sskel"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{-sskel} to construct the
          names of generated serializer skeleton files."
       };
 
-      Cult::Types::NarrowString --pimpl-type-suffix = "_pimpl"
+      NarrowString --pimpl-type-suffix = "_pimpl"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_pimpl} to construct the
          names of generated parser implementations."
       };
 
-      Cult::Types::NarrowString --simpl-type-suffix = "_simpl"
+      NarrowString --simpl-type-suffix = "_simpl"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_simpl} to construct the
          names of generated serializer implementations."
       };
 
-      Cult::Types::NarrowString --pimpl-file-suffix = "-pimpl"
+      NarrowString --pimpl-file-suffix = "-pimpl"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{-pimpl} to construct the
          names of generated parser implementation files."
       };
 
-      Cult::Types::NarrowString --simpl-file-suffix = "-simpl"
+      NarrowString --simpl-file-suffix = "-simpl"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{-simpl} to construct the
          names of generated serializer implementation files."
       };
 
-      Cult::Types::NarrowString --paggr-type-suffix = "_paggr"
+      NarrowString --paggr-type-suffix = "_paggr"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_paggr} to construct the
          names of generated parser aggregates."
       };
 
-      Cult::Types::NarrowString --saggr-type-suffix = "_saggr"
+      NarrowString --saggr-type-suffix = "_saggr"
       {
         "<suffix>",
         "Use <suffix> instead of the default \cb{_saggr} to construct the
@@ -354,18 +352,18 @@ namespace CXX
       // "override" them here. Note that the documentation is still
       // specified in the common version.
       //
-      std::vector<Cult::Types::NarrowString> --hxx-regex;
-      std::vector<Cult::Types::NarrowString> --ixx-regex;
-      std::vector<Cult::Types::NarrowString> --cxx-regex;
+      NarrowStrings --hxx-regex;
+      NarrowStrings --ixx-regex;
+      NarrowStrings --cxx-regex;
 
-      std::vector<Cult::Types::NarrowString> --hxx-prologue-file;
-      std::vector<Cult::Types::NarrowString> --ixx-prologue-file;
-      std::vector<Cult::Types::NarrowString> --cxx-prologue-file;
-      std::vector<Cult::Types::NarrowString> --prologue-file;
-      std::vector<Cult::Types::NarrowString> --hxx-epilogue-file;
-      std::vector<Cult::Types::NarrowString> --ixx-epilogue-file;
-      std::vector<Cult::Types::NarrowString> --cxx-epilogue-file;
-      std::vector<Cult::Types::NarrowString> --epilogue-file;
+      NarrowStrings --hxx-prologue-file;
+      NarrowStrings --ixx-prologue-file;
+      NarrowStrings --cxx-prologue-file;
+      NarrowStrings --prologue-file;
+      NarrowStrings --hxx-epilogue-file;
+      NarrowStrings --ixx-epilogue-file;
+      NarrowStrings --cxx-epilogue-file;
+      NarrowStrings --epilogue-file;
     };
   }
 }

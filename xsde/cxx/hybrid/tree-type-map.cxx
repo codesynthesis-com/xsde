@@ -3,15 +3,16 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <set>
+#include <iostream>
+
 #include <cxx/elements.hxx>
 #include <cxx/hybrid/tree-type-map.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/set.hxx>
-
-#include <iostream>
+using namespace std;
 
 namespace CXX
 {
@@ -47,7 +48,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           String const& xn (t.name ());
@@ -55,7 +56,7 @@ namespace CXX
 
           if (parser_ != 0)
           {
-            if (t.context ().get<Boolean> ("fixed"))
+            if (t.context ().get<bool> ("fixed"))
               parser_->types_push_back (xn, qn);
             else
               parser_->types_push_back (xn, qn + L"*");
@@ -84,7 +85,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& ns)
         {
           String include;
@@ -144,7 +145,7 @@ namespace CXX
           schema_set_.insert (&root);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sources& sr)
         {
           SemanticGraph::Schema& s (sr.schema ());
@@ -158,7 +159,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Includes& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -170,7 +171,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Imports& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -183,11 +184,11 @@ namespace CXX
         }
 
       private:
-        Containers::Set<SemanticGraph::Schema*> schema_set_;
+        set<SemanticGraph::Schema*> schema_set_;
       };
     }
 
-    Void
+    void
     generate_tree_type_map (options const& ops,
                             XSDFrontend::SemanticGraph::Schema& tu,
                             XSDFrontend::SemanticGraph::Path const& path,

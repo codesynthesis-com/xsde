@@ -92,7 +92,7 @@ namespace CXX
       }
 
     public:
-      Boolean
+      bool
       restriction_p (SemanticGraph::Complex& c) const
       {
         if (c.inherits_p () &&
@@ -177,7 +177,7 @@ namespace CXX
       eimpl (SemanticGraph::Type&);
 
     public:
-      Boolean
+      bool
       has_facets (SemanticGraph::Complex& c);
 
     public:
@@ -188,14 +188,14 @@ namespace CXX
       String& complex_base;
       String& serializer_map;
 
-      Boolean validation;
-      Boolean exceptions;
-      Boolean stl;
-      Boolean poly_code;
-      Boolean poly_runtime;
-      Boolean reset;
-      Boolean mixin;
-      Boolean tiein;
+      bool validation;
+      bool exceptions;
+      bool stl;
+      bool poly_code;
+      bool poly_runtime;
+      bool reset;
+      bool mixin;
+      bool tiein;
 
       Regex const* hxx_expr;
       Regex const* ixx_expr;
@@ -227,13 +227,13 @@ namespace CXX
                             Traversal::Fundamental::Entity
 
     {
-      StringBasedType (Boolean& r)
+      StringBasedType (bool& r)
           : r_ (r)
       {
         *this >> inherits_ >> *this;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Complex& c)
       {
         inherits (c, inherits_);
@@ -241,74 +241,74 @@ namespace CXX
 
       // Strings.
       //
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::String&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::NormalizedString&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::Token&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::NameToken&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::Name&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::NCName&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::Language&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::Id&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::IdRef&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::AnyURI&)
       {
         r_ = true;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Fundamental::Entity&)
       {
         r_ = true;
       }
 
     private:
-      Boolean& r_;
+      bool& r_;
       Traversal::Inherits inherits_;
     };
 
@@ -317,12 +317,12 @@ namespace CXX
     //
     struct RequiredAttributeTest: Traversal::Attribute
     {
-      RequiredAttributeTest (Boolean& result)
+      RequiredAttributeTest (bool& result)
           : result_ (result)
       {
       }
 
-      virtual Void
+      virtual void
       traverse (Type& a)
       {
         if (!result_ && !a.optional_p ())
@@ -330,7 +330,7 @@ namespace CXX
       }
 
     private:
-      Boolean& result_;
+      bool& result_;
     };
 
 
@@ -339,9 +339,9 @@ namespace CXX
     struct ParticleParamDecl: Traversal::Element, Context
     {
       ParticleParamDecl (Context& c,
-                         Boolean& first,
-                         Boolean name_arg,
-                         Boolean poly)
+                         bool& first,
+                         bool name_arg,
+                         bool poly)
           : Context (c),
             first_ (first),
             name_arg_ (name_arg),
@@ -350,12 +350,12 @@ namespace CXX
       {
       }
 
-      ParticleParamDecl (Context& c, Boolean* result, Boolean poly)
+      ParticleParamDecl (Context& c, bool* result, bool poly)
           : Context (c), first_ (name_arg_), poly_ (poly), result_ (result)
       {
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Element& e)
       {
         if (poly_ && anonymous (e.type ()))
@@ -384,15 +384,15 @@ namespace CXX
       }
 
     private:
-      Boolean& first_;
-      Boolean name_arg_;
-      Boolean poly_;
-      Boolean* result_;
+      bool& first_;
+      bool name_arg_;
+      bool poly_;
+      bool* result_;
     };
 
     struct AttributeParamDecl: Traversal::Attribute, Context
     {
-      AttributeParamDecl (Context& c, Boolean& first, Boolean name_arg)
+      AttributeParamDecl (Context& c, bool& first, bool name_arg)
           : Context (c),
             first_ (first),
             name_arg_ (name_arg),
@@ -400,12 +400,12 @@ namespace CXX
       {
       }
 
-      AttributeParamDecl (Context& c, Boolean* result)
+      AttributeParamDecl (Context& c, bool* result)
           : Context (c), first_ (name_arg_), result_ (result)
       {
       }
 
-      virtual Void
+      virtual void
       traverse (Type& a)
       {
         if (result_ != 0)
@@ -428,16 +428,16 @@ namespace CXX
       }
 
     private:
-      Boolean& first_;
-      Boolean name_arg_;
-      Boolean* result_;
+      bool& first_;
+      bool name_arg_;
+      bool* result_;
     };
 
     struct SerializerParamDecl : Traversal::Complex,
                              Traversal::List,
                              Context
     {
-      SerializerParamDecl (Context& c, Boolean name_arg, Boolean poly)
+      SerializerParamDecl (Context& c, bool name_arg, bool poly)
           : Context (c),
             particle_ (c, first_, name_arg, poly),
             attribute_ (c, first_, name_arg),
@@ -456,7 +456,7 @@ namespace CXX
           names_ >> attribute_;
       }
 
-      SerializerParamDecl (Context& c, Boolean* result, Boolean poly)
+      SerializerParamDecl (Context& c, bool* result, bool poly)
           : Context (c),
             particle_ (c, result, poly),
             attribute_ (c, result),
@@ -473,7 +473,7 @@ namespace CXX
           names_ >> attribute_;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Complex& c)
       {
         inherits (c, inherits_);
@@ -485,7 +485,7 @@ namespace CXX
         }
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::List& l)
       {
         if (poly_)
@@ -521,20 +521,20 @@ namespace CXX
       AttributeParamDecl attribute_;
       Traversal::Names names_;
 
-      Boolean first_;
-      Boolean name_arg_;
-      Boolean poly_;
-      Boolean* result_;
+      bool first_;
+      bool name_arg_;
+      bool poly_;
+      bool* result_;
     };
 
     struct SerializerParamTest
     {
-      SerializerParamTest (Context& c, Boolean& result, Boolean poly)
+      SerializerParamTest (Context& c, bool& result, bool poly)
           : impl_ (c, &result, poly)
       {
       }
 
-      Void
+      void
       traverse (SemanticGraph::Complex& c)
       {
         impl_.traverse (c);
@@ -548,16 +548,16 @@ namespace CXX
     //
     struct TypeForward: Traversal::Type, Context
     {
-      TypeForward (Context& c, Char const* name_key)
+      TypeForward (Context& c, char const* name_key)
           : Context (c), name_key_ (name_key)
       {
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Type& t);
 
     private:
-      Char const* name_key_;
+      char const* name_key_;
     };
 
     struct Includes : Traversal::Imports,
@@ -579,20 +579,20 @@ namespace CXX
         schema_ >> schema_names_ >> namespace_ >> names_ >> type_forward_;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Imports& i)
       {
         traverse_ (i);
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Includes& i)
       {
         traverse_ (i);
       }
 
     private:
-      Void
+      void
       traverse_ (SemanticGraph::Uses&);
 
     private:
@@ -615,7 +615,7 @@ namespace CXX
       {
       }
 
-      virtual Void
+      virtual void
       traverse (Type& e)
       {
         if (options_.root_element_first ())

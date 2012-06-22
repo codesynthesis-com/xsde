@@ -23,10 +23,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
-          Boolean clear (false);
+          bool clear (false);
 
           if (scope_ == 0)
           {
@@ -70,7 +70,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           using SemanticGraph::Enumeration;
@@ -96,7 +96,7 @@ namespace CXX
           names_ >> enumerator_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -119,9 +119,9 @@ namespace CXX
              << "//" << endl
              << endl;
 
-          Boolean fl (fixed_length (e));
+          bool fl (fixed_length (e));
 
-          Boolean val (!options.suppress_validation () &&
+          bool val (!options.suppress_validation () &&
                        !options.suppress_parser_val ());
 
           SemanticGraph::Context& ec (e.context ());
@@ -430,7 +430,7 @@ namespace CXX
               os << type << "* r = this->" << state << ".x_;"
                  << "this->" << state << ".x_ = 0;";
 
-              Boolean flb (fixed_length (b));
+              bool flb (fixed_length (b));
 
               // Copy the value if our base is fixed-length.
               //
@@ -486,7 +486,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         comma (Type&)
         {
           os << "else ";
@@ -509,7 +509,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (epimpl_custom (l));
@@ -662,7 +662,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (epimpl_custom (u));
@@ -863,13 +863,13 @@ namespace CXX
         // for the current element in the container is returned.
         //
         String
-        access_seq (SemanticGraph::Particle& p, Boolean element = true)
+        access_seq (SemanticGraph::Particle& p, bool element = true)
         {
           using namespace SemanticGraph;
 
           String r;
 
-          Boolean seq (false);
+          bool seq (false);
 
           Compositor* c;
 
@@ -957,7 +957,7 @@ namespace CXX
 
           if (!seq)
           {
-            Boolean fixed (fixed_length (t));
+            bool fixed (fixed_length (t));
             String const& s (epstate_member (t));
 
             if (!r)
@@ -1036,24 +1036,24 @@ namespace CXX
 
       struct CompositorTest: Traversal::Compositor
       {
-        CompositorTest (Boolean& p)
+        CompositorTest (bool& p)
             : p_ (p)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           // We are only interested in var-length required compositors.
           //
           if (c.max () == 1 &&
               c.min () == 1 &&
-              !c.context ().get<Boolean> ("fixed"))
+              !c.context ().get<bool> ("fixed"))
             p_ = true;
         }
 
       private:
-        Boolean& p_;
+        bool& p_;
       };
 
       //
@@ -1070,7 +1070,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -1129,7 +1129,7 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           String const& s (epimpl_custom (scope (c)));
@@ -1350,7 +1350,7 @@ namespace CXX
           Traversal::Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -1487,7 +1487,7 @@ namespace CXX
         }
 
       private:
-        Boolean init_;
+        bool init_;
         CompositorTest compositor_test_;
       };
 
@@ -1498,7 +1498,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           using SemanticGraph::Complex;
@@ -1547,7 +1547,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           using SemanticGraph::Complex;
@@ -1598,7 +1598,7 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (epimpl_custom (c));
@@ -1606,15 +1606,15 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean hb (c.inherits_p ());
-          Boolean restriction (restriction_p (c));
-          Boolean fixed (fixed_length (c));
-          Boolean rec (recursive (c));
+          bool hb (c.inherits_p ());
+          bool restriction (restriction_p (c));
+          bool fixed (fixed_length (c));
+          bool rec (recursive (c));
 
-          Boolean validation (!options.suppress_validation () &&
+          bool validation (!options.suppress_validation () &&
                               !options.suppress_parser_val ());
 
-          Boolean c_string_base (false);
+          bool c_string_base (false);
           if (!stl && hb)
           {
             StringType test (c_string_base);
@@ -2086,7 +2086,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_source (Context& ctx, Regex const& hxx_obj_expr)
     {
       if (ctx.enum_)

@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
+    void
     generate_parser_source (Context&, Regex const& hxx_obj_expr);
   }
 }

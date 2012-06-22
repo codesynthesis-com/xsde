@@ -3,19 +3,18 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <set>
+#include <map>
+#include <vector>
+#include <iostream>
+
 #include <cxx/hybrid/elements.hxx>
 #include <cxx/hybrid/tree-size-processor.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/map.hxx>
-#include <cult/containers/set.hxx>
-#include <cult/containers/vector.hxx>
-
-#include <iostream>
-
-using std::wcerr;
+using namespace std;
 
 namespace CXX
 {
@@ -23,53 +22,52 @@ namespace CXX
   {
     namespace
     {
-      typedef Cult::Containers::Set<String> TypeSet;
-
+      typedef set<String> TypeSet;
 
       struct CustomType
       {
-        Boolean fixed;
+        bool fixed;
         String base;
       };
 
-      typedef Cult::Containers::Map<String, CustomType> CustomTypeMap;
+      typedef map<String, CustomType> CustomTypeMap;
 
-      Boolean
+      bool
       test (SemanticGraph::Type& t)
       {
         return t.context ().count ("fixed") != 0;
       }
 
-      Void
-      set (SemanticGraph::Type& t, Boolean v)
+      void
+      set (SemanticGraph::Type& t, bool v)
       {
         t.context ().set ("fixed", v);
       }
 
-      Void
-      set (SemanticGraph::Compositor& c, Boolean v)
+      void
+      set (SemanticGraph::Compositor& c, bool v)
       {
         c.context ().set ("fixed", v);
       }
 
-      Boolean
+      bool
       get (SemanticGraph::Type& t)
       {
-        return t.context ().get<Boolean> ("fixed");
+        return t.context ().get<bool> ("fixed");
       }
 
       //
       //
       struct Particle: Traversal::Element
       {
-        Particle (Boolean& fixed,
-                  Boolean& poly,
+        Particle (bool& fixed,
+                  bool& poly,
                   Traversal::NodeBase& type_traverser)
             : fixed_ (fixed), poly_ (poly), type_traverser_ (type_traverser)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           // Check the type. We need to do it even if fixed_ is
@@ -91,7 +89,7 @@ namespace CXX
         }
 
         /*
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any&)
         {
           // Types with wildcards are always variable length.
@@ -102,8 +100,8 @@ namespace CXX
         */
 
       private:
-        Boolean& fixed_;
-        Boolean& poly_;
+        bool& fixed_;
+        bool& poly_;
         Traversal::NodeBase& type_traverser_;
       };
 
@@ -111,14 +109,14 @@ namespace CXX
                          Traversal::Choice,
                          Traversal::Sequence
       {
-        Compositor (Boolean& fixed,
-                    Boolean& poly,
+        Compositor (bool& fixed,
+                    bool& poly,
                     Traversal::NodeBase& type_traverser)
             : fixed_ (fixed), poly_ (poly), type_traverser_ (type_traverser)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -127,7 +125,7 @@ namespace CXX
           //
           if (a.min () == 0)
           {
-            Boolean fixed = true;
+            bool fixed = true;
 
             {
               Particle particle (fixed, poly_, type_traverser_);
@@ -147,13 +145,13 @@ namespace CXX
             All::contains (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           // Here we need to assign the size for the nested class in
           // all three cases because this choice might be in choice.
           //
-          Boolean fixed = true;
+          bool fixed = true;
 
           {
             Particle particle (fixed, poly_, type_traverser_);
@@ -172,13 +170,13 @@ namespace CXX
             fixed_ = false;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // Here we need to assign the size for the nested class in
           // all three cases because this sequence might be in choice.
           //
-          Boolean fixed = true;
+          bool fixed = true;
 
           {
             Particle particle (fixed, poly_, type_traverser_);
@@ -198,19 +196,19 @@ namespace CXX
         }
 
       private:
-        Boolean& fixed_;
-        Boolean& poly_;
+        bool& fixed_;
+        bool& poly_;
         Traversal::NodeBase& type_traverser_;
       };
 
       struct Attribute: Traversal::Attribute
       {
-        Attribute (Boolean& fixed, Traversal::NodeBase& type_traverser)
+        Attribute (bool& fixed, Traversal::NodeBase& type_traverser)
             : fixed_ (fixed), type_traverser_ (type_traverser)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           // Simple types cannot be recursive.
@@ -227,7 +225,7 @@ namespace CXX
         }
 
         /*
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute&)
         {
           // Types with wildcards are always variable length.
@@ -238,7 +236,7 @@ namespace CXX
         */
 
       private:
-        Boolean& fixed_;
+        bool& fixed_;
         Traversal::NodeBase& type_traverser_;
       };
 
@@ -249,13 +247,13 @@ namespace CXX
                    Traversal::Complex,
                    Traversal::Enumeration
       {
-        Type (Boolean& valid,
+        Type (bool& valid,
               TypeSet& custom_data,
               CustomTypeMap& custom_type_map,
               TypeSet& poly_types,
-              Boolean stl_,
-              Boolean poly_,
-              Boolean enum_mapping)
+              bool stl_,
+              bool poly_,
+              bool enum_mapping)
             : valid_ (valid),
               custom_data_ (custom_data),
               custom_type_map_ (custom_type_map),
@@ -266,19 +264,19 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           if (!test (l))
             set (l, false);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Union& u)
         {
           if (!test (u))
           {
-            Boolean fixed (stl);
+            bool fixed (stl);
 
             // Check for custom data.
             //
@@ -292,7 +290,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Enumeration& e)
         {
           if (!test (e))
@@ -313,7 +311,7 @@ namespace CXX
               return;
             }
 
-            Boolean fixed (true);
+            bool fixed (true);
 
             if (base_enum && !get (b))
               fixed = false;
@@ -330,7 +328,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           SemanticGraph::Context& ctx (c.context ());
@@ -344,7 +342,7 @@ namespace CXX
 
             // Mark all the types involved in the cycle as recursive.
             //
-            for (Path::ReverseIterator i (path_.rbegin ()); *i != &c; ++i)
+            for (Path::reverse_iterator i (path_.rbegin ()); *i != &c; ++i)
             {
               (*i)->context ().set ("recursive", true);
             }
@@ -354,7 +352,7 @@ namespace CXX
             ctx.set ("recurse", true);
             path_.push_back (&c);
 
-            Boolean fixed = true;
+            bool fixed = true;
 
             // First check our base.
             //
@@ -373,7 +371,7 @@ namespace CXX
             //
             if (c.contains_compositor_p ())
             {
-              Boolean poly (false);
+              bool poly (false);
 
               Particle particle (fixed, poly, *this);
               Compositor compositor (fixed, poly, *this);
@@ -424,8 +422,8 @@ namespace CXX
         }
 
       private:
-        Void
-        set (SemanticGraph::Type& t, Boolean v)
+        void
+        set (SemanticGraph::Type& t, bool v)
         {
           using SemanticGraph::Complex;
 
@@ -441,7 +439,7 @@ namespace CXX
             {
               // If our base is polymorphic then we are as well.
               //
-              Boolean pb (false);
+              bool pb (false);
               if (Complex* c = dynamic_cast<Complex*> (&t))
               {
                 pb = c->inherits_p () &&
@@ -460,7 +458,7 @@ namespace CXX
 
           // Check if this is a custom type.
           //
-          CustomTypeMap::Iterator i = custom_type_map_.find (name);
+          CustomTypeMap::iterator i = custom_type_map_.find (name);
 
           if (i != custom_type_map_.end ())
           {
@@ -481,15 +479,15 @@ namespace CXX
         }
 
       private:
-        Boolean& valid_;
+        bool& valid_;
         TypeSet& custom_data_;
         CustomTypeMap& custom_type_map_;
         TypeSet& poly_types_;
-        Boolean stl;
-        Boolean poly;
-        Boolean enum_;
+        bool stl;
+        bool poly;
+        bool enum_;
 
-        typedef Containers::Vector<SemanticGraph::Complex*> Path;
+        typedef vector<SemanticGraph::Complex*> Path;
         Path path_;
       };
 
@@ -550,14 +548,14 @@ namespace CXX
                         Traversal::Fundamental::Entities
 
       {
-        FundType (Boolean stl_, TypeSet& poly_types)
+        FundType (bool stl_, TypeSet& poly_types)
             : stl (stl_), poly_types_ (poly_types)
         {
         }
 
         // anyType & anySimpleType.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyType& t)
         {
           set (t, false);
@@ -568,7 +566,7 @@ namespace CXX
             t.context ().set ("polymorphic", true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnySimpleType& t)
         {
           set (t, stl);
@@ -576,7 +574,7 @@ namespace CXX
 
         // Boolean.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Boolean& t)
         {
           set (t, true);
@@ -584,79 +582,79 @@ namespace CXX
 
         // Integral types.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Byte& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedByte& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Short& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedShort& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Int& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedInt& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Long& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedLong& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Integer& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NonPositiveInteger& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NonNegativeInteger& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::PositiveInteger& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NegativeInteger& t)
         {
           set (t, true);
@@ -664,19 +662,19 @@ namespace CXX
 
         // Floats.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Float& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Double& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Decimal& t)
         {
           set (t, true);
@@ -684,49 +682,49 @@ namespace CXX
 
         // Strings.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::String& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NormalizedString& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Token& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NameToken& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NameTokens& t)
         {
           set (t, false);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Name& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NCName& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Language& t)
         {
           set (t, stl);
@@ -735,7 +733,7 @@ namespace CXX
 
         // Qualified name.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::QName& t)
         {
           set (t, stl);
@@ -744,19 +742,19 @@ namespace CXX
 
         // ID/IDREF.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Id& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::IdRef& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::IdRefs& t)
         {
           set (t, false);
@@ -764,7 +762,7 @@ namespace CXX
 
         // URI.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::AnyURI& t)
         {
           set (t, stl);
@@ -772,13 +770,13 @@ namespace CXX
 
         // Binary.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Base64Binary& t)
         {
           set (t, false);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::HexBinary& t)
         {
           set (t, false);
@@ -787,55 +785,55 @@ namespace CXX
 
         // Date/time.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Date& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::DateTime& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Duration& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Day& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Month& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::MonthDay& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Year& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::YearMonth& t)
         {
           set (t, true);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Time& t)
         {
           set (t, true);
@@ -843,27 +841,27 @@ namespace CXX
 
         // Entity.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Entity& t)
         {
           set (t, stl);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Entities& t)
         {
           set (t, false);
         }
 
       private:
-        Boolean stl;
+        bool stl;
         TypeSet& poly_types_;
       };
 
       struct GlobalElement: Traversal::Element
       {
         GlobalElement (TypeSet& poly_types,
-                       Boolean& valid,
+                       bool& valid,
                        const WarningSet& disabled_warnings)
             : poly_types_ (poly_types), valid_ (valid), warning_ (true)
         {
@@ -872,7 +870,7 @@ namespace CXX
             warning_ = false;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           using SemanticGraph::Schema;
@@ -945,7 +943,7 @@ namespace CXX
       private:
         // Return true if root sources s.
         //
-        Boolean
+        bool
         sources_p (SemanticGraph::Schema& root, SemanticGraph::Schema& s)
         {
           using SemanticGraph::Schema;
@@ -966,8 +964,8 @@ namespace CXX
 
       private:
         TypeSet& poly_types_;
-        Boolean& valid_;
-        Boolean warning_;
+        bool& valid_;
+        bool warning_;
       };
 
       // Go into sourced/included/imported schemas while making sure
@@ -977,12 +975,12 @@ namespace CXX
                    Traversal::Includes,
                    Traversal::Imports
       {
-        Uses (Char const* seen_key)
+        Uses (char const* seen_key)
             : seen_key_ (seen_key)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sources& sr)
         {
           SemanticGraph::Schema& s (sr.schema ());
@@ -994,7 +992,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Includes& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -1006,7 +1004,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Imports& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -1019,21 +1017,21 @@ namespace CXX
         }
 
       private:
-        Char const* seen_key_;
+        char const* seen_key_;
       };
 
-      Char const* pass_one_key = "cxx-hybrid-size-processor-seen-one";
-      Char const* pass_two_key = "cxx-hybrid-size-processor-seen-two";
+      char const* pass_one_key = "cxx-hybrid-size-processor-seen-one";
+      char const* pass_two_key = "cxx-hybrid-size-processor-seen-two";
 
-      Boolean
+      bool
       process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const&,
                     const WarningSet& disabled_warnings)
       {
-        Boolean valid (true);
-        Boolean stl (!ops.no_stl ());
-        Boolean poly (ops.generate_polymorphic ());
+        bool valid (true);
+        bool stl (!ops.no_stl ());
+        bool poly (ops.generate_polymorphic ());
 
         // Prepare a set of polymorphic types.
         //
@@ -1127,7 +1125,7 @@ namespace CXX
 
                 // Split the string in two parts at the last '='.
                 //
-                Size pos (s.rfind ('='));
+                size_t pos (s.rfind ('='));
 
                 if (pos == String::npos)
                   continue;
@@ -1238,7 +1236,7 @@ namespace CXX
       }
     }
 
-    Boolean TreeSizeProcessor::
+    bool TreeSizeProcessor::
     process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,

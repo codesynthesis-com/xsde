@@ -30,38 +30,38 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NameTokens&)
         {
           os << "&";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::QName&)
         {
           if (!stl)
             os << "&";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::IdRefs&)
         {
           os << "&";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Base64Binary&)
         {
           os << "&";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::HexBinary&)
         {
           os << "&";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Entities&)
         {
           os << "&";
@@ -77,10 +77,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
-          Boolean clear (false);
+          bool clear (false);
 
           if (scope_ == 0)
           {
@@ -127,7 +127,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -239,7 +239,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (esimpl_custom (l));
@@ -306,7 +306,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (esimpl_custom (u));
@@ -367,13 +367,13 @@ namespace CXX
         // for the current element in the container is returned.
         //
         String
-        access_seq (SemanticGraph::Particle& p, Boolean element = true)
+        access_seq (SemanticGraph::Particle& p, bool element = true)
         {
           using namespace SemanticGraph;
 
           String r;
 
-          Boolean seq (false);
+          bool seq (false);
 
           Compositor* c;
 
@@ -538,19 +538,19 @@ namespace CXX
       struct CompositorTest: Traversal::Choice,
                              Traversal::Sequence
       {
-        CompositorTest (Boolean& seq)
+        CompositorTest (bool& seq)
             : seq_ (seq)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () != 1)
             seq_ = true;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -564,17 +564,17 @@ namespace CXX
         }
 
       private:
-        Boolean& seq_;
+        bool& seq_;
       };
 
       struct ParticleTest: Traversal::Element
       {
-        ParticleTest (Boolean& seq)
+        ParticleTest (bool& seq)
             : seq_ (seq)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (e.max () != 1)
@@ -582,7 +582,7 @@ namespace CXX
         }
 
       private:
-        Boolean& seq_;
+        bool& seq_;
       };
 
       //
@@ -598,7 +598,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.max () != 1)
@@ -617,7 +617,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -650,7 +650,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (e.max () != 1)
@@ -691,7 +691,7 @@ namespace CXX
           contains_particle_test_ >> particle_test_;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -710,7 +710,7 @@ namespace CXX
           All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           SemanticGraph::Complex& t (scope (c));
@@ -831,7 +831,7 @@ namespace CXX
           Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           String const& sc (esimpl_custom (scope (s)));
@@ -906,7 +906,7 @@ namespace CXX
       private:
         Traversal::ContainsParticle& init_;
 
-        Boolean seq_;
+        bool seq_;
         CompositorTest compositor_test_;
         ParticleTest particle_test_;
         Traversal::ContainsParticle contains_particle_test_;
@@ -919,7 +919,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& s (
@@ -1039,7 +1039,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& s (
@@ -1056,7 +1056,7 @@ namespace CXX
 
             if (a.default_p ())
             {
-              Boolean omit (options.omit_default_attributes ());
+              bool omit (options.omit_default_attributes ());
 
               if (a.fixed_p ())
                 os << "return " << (omit ? "false" : "true") << ";";
@@ -1132,7 +1132,7 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (esimpl_custom (c));
@@ -1140,11 +1140,11 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean hb (c.inherits_p ());
-          Boolean rec (recursive (c));
-          Boolean restriction (restriction_p (c));
+          bool hb (c.inherits_p ());
+          bool rec (recursive (c));
+          bool restriction (restriction_p (c));
 
-          Boolean validation (!options.suppress_validation () &&
+          bool validation (!options.suppress_validation () &&
                               !options.suppress_serializer_val ());
 
           String state;
@@ -1392,7 +1392,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_serializer_source (Context& ctx, Regex const& hxx_obj_expr)
     {
       if (ctx.poly_code && !ctx.stl)

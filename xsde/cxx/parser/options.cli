@@ -3,11 +3,9 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-include <vector>;
-include <string>;
 include <cstddef>; // std::size_t
 
-include <cult/types.hxx>; // NarrowString
+include <types.hxx>; // NarrowString, NarrowStrings
 
 include <cxx/options.cli>;
 
@@ -17,7 +15,7 @@ namespace CXX
   {
     class options: CXX::options
     {
-      std::vector<Cult::Types::NarrowString> --type-map
+      NarrowStrings --type-map
       {
         "<mapfile>",
         "Read XML Schema to C++ type mapping information from <mapfile>.
@@ -116,7 +114,7 @@ namespace CXX
          implementation."
       };
 
-      Cult::Types::NarrowString --root-element
+      NarrowString --root-element
       {
         "<element>",
         "Indicate that <element> is the document root. This information is
@@ -125,21 +123,21 @@ namespace CXX
 
       // Suffixes.
       //
-      Cult::Types::NarrowString --skel-type-suffix = "_pskel"
+      NarrowString --skel-type-suffix = "_pskel"
       {
         "<suffix>",
         "Use the provided <suffix> instead of the default \cb{_pskel} to
          construct the names of generated parser skeletons."
       };
 
-      Cult::Types::NarrowString --skel-file-suffix = "-pskel"
+      NarrowString --skel-file-suffix = "-pskel"
       {
         "<suffix>",
         "Use the provided <suffix> instead of the default \cb{-pskel} to
          construct the names of generated parser skeleton files."
       };
 
-      Cult::Types::NarrowString --impl-type-suffix = "_pimpl"
+      NarrowString --impl-type-suffix = "_pimpl"
       {
         "<suffix>",
         "Use the provided <suffix> instead of the default \cb{_pimpl} to
@@ -147,7 +145,7 @@ namespace CXX
          XML Schema types and sample parser implementations."
       };
 
-      Cult::Types::NarrowString --impl-file-suffix = "-pimpl"
+      NarrowString --impl-file-suffix = "-pimpl"
       {
         "<suffix>",
         "Use the provided <suffix> instead of the default \cb{-pimpl} to

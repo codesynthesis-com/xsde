@@ -3,6 +3,9 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <vector>
+#include <iostream>
+
 #include <cxx/parser/state-processor.hxx>
 
 #include <cxx/parser/elements.hxx>
@@ -10,9 +13,7 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/vector.hxx>
-
-#include <iostream>
+using namespace std;
 
 namespace CXX
 {
@@ -20,17 +21,14 @@ namespace CXX
   {
     namespace
     {
-      typedef Cult::Containers::Vector<SemanticGraph::Particle*> Particles;
+      typedef vector<SemanticGraph::Particle*> Particles;
 
       void
       print (Particles const& p)
       {
-        using std::wcerr;
-        using std::endl;
-
         wcerr << "prefixes: " << endl;
 
-        for (Particles::ConstIterator i (p.begin ()); i != p.end (); ++i)
+        for (Particles::const_iterator i (p.begin ()); i != p.end (); ++i)
         {
           if (SemanticGraph::Element* e =
               dynamic_cast<SemanticGraph::Element*> (*i))
@@ -52,10 +50,10 @@ namespace CXX
                        Traversal::Choice,
                        Traversal::Sequence
       {
-        Particle (UnsignedLong& all,
-                  UnsignedLong& choice,
-                  UnsignedLong& sequence,
-                  UnsignedLong& depth)
+        Particle (size_t& all,
+                  size_t& choice,
+                  size_t& sequence,
+                  size_t& depth)
             : all_ (all),
               choice_ (choice),
               sequence_ (sequence),
@@ -63,7 +61,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           using SemanticGraph::Compositor;
@@ -78,8 +76,8 @@ namespace CXX
           // compositor cannot contain any nested compositors.
           //
 
-          UnsignedLong state (0);
-          UnsignedLong min (0);
+          size_t state (0);
+          size_t min (0);
 
           for (Compositor::ContainsIterator ci (a.contains_begin ());
                ci != a.contains_end (); ++ci)
@@ -101,8 +99,7 @@ namespace CXX
           {
             a.context ().set ("p:comp-number", choice_++);
             a.context ().set ("p:prefixes", prefixes_);
-            a.context ().set ("p:state-count",
-                              UnsignedLong (prefixes_.size ()));
+            a.context ().set ("p:state-count", size_t (prefixes_.size ()));
 
             // effective-min = min * actual-min
             //
@@ -115,7 +112,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           using SemanticGraph::Compositor;
@@ -127,8 +124,8 @@ namespace CXX
           // the actual value specified in the schema.
           //
 
-          UnsignedLong state (0);
-          UnsignedLong min (1);
+          size_t state (0);
+          size_t min (1);
 
           for (Compositor::ContainsIterator ci (c.contains_begin ());
                ci != c.contains_end (); ++ci)
@@ -145,7 +142,7 @@ namespace CXX
             }
             else
             {
-              UnsignedLong depth (0);
+              size_t depth (0);
               Particle t (all_, choice_, sequence_, depth);
               t.dispatch (p);
 
@@ -160,7 +157,7 @@ namespace CXX
                                 t.prefixes_.end ().base ());
 
               if (min == 1 &&
-                  p.context ().get<UnsignedLong> ("p:effective-min") == 0)
+                  p.context ().get<size_t> ("p:effective-min") == 0)
                 min = 0;
             }
 
@@ -184,7 +181,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           using SemanticGraph::Compositor;
@@ -196,9 +193,9 @@ namespace CXX
           // of the actual value specified in the schema.
           //
 
-          Boolean prefix (true);
-          UnsignedLong state (0);
-          UnsignedLong min (0);
+          bool prefix (true);
+          size_t state (0);
+          size_t min (0);
 
           for (Compositor::ContainsIterator ci (s.contains_begin ());
                ci != s.contains_end (); ++ci)
@@ -218,7 +215,7 @@ namespace CXX
             }
             else
             {
-              UnsignedLong depth (0);
+              size_t depth (0);
               Particle t (all_, choice_, sequence_, depth);
               t.dispatch (p);
 
@@ -234,7 +231,7 @@ namespace CXX
                                   t.prefixes_.begin ().base (),
                                   t.prefixes_.end ().base ());
 
-                if (p.context ().get<UnsignedLong> ("p:effective-min") != 0)
+                if (p.context ().get<size_t> ("p:effective-min") != 0)
                   min = 1;
               }
             }
@@ -267,11 +264,11 @@ namespace CXX
       private:
         Particles prefixes_;
 
-        UnsignedLong& all_;
-        UnsignedLong& choice_;
-        UnsignedLong& sequence_;
+        size_t& all_;
+        size_t& choice_;
+        size_t& sequence_;
 
-        UnsignedLong& depth_;
+        size_t& depth_;
       };
 
 
@@ -279,12 +276,12 @@ namespace CXX
       //
       struct Complex: Traversal::Complex
       {
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           if (c.contains_compositor_p ())
           {
-            UnsignedLong all (0), choice (0), sequence (0), depth (0);
+            size_t all (0), choice (0), sequence (0), depth (0);
             Particle t (all, choice, sequence, depth);
             t.dispatch (c.contains_compositor ().compositor ());
 
@@ -297,7 +294,7 @@ namespace CXX
       };
     }
 
-    Void StateProcessor::
+    void StateProcessor::
     process (SemanticGraph::Schema& tu, SemanticGraph::Path const&)
     {
       Traversal::Schema schema;

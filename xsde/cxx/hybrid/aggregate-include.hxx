@@ -6,7 +6,7 @@
 #ifndef CXX_HYBRID_AGGREGATE_INCLUDE_HXX
 #define CXX_HYBRID_AGGREGATE_INCLUDE_HXX
 
-#include <cult/containers/set.hxx>
+#include <set>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
@@ -31,7 +31,7 @@ namespace CXX
       {
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Complex& c)
       {
         inherits (c);
@@ -71,7 +71,7 @@ namespace CXX
         belongs_ >> *this;
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Type& t)
       {
         if (types_.find (&t) != types_.end ())
@@ -83,7 +83,7 @@ namespace CXX
           collect (t);
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Complex& c)
       {
         if (types_.find (&c) != types_.end ())
@@ -104,7 +104,7 @@ namespace CXX
       }
 
     private:
-      virtual Void
+      virtual void
       collect (SemanticGraph::Type& t)
       {
         using SemanticGraph::Type;
@@ -120,7 +120,7 @@ namespace CXX
         }
       }
 
-      virtual Void
+      virtual void
       emit (SemanticGraph::Type& t)
       {
         using SemanticGraph::Schema;
@@ -173,8 +173,8 @@ namespace CXX
       }
 
     private:
-      Cult::Containers::Set<SemanticGraph::Type*> types_;
-      Cult::Containers::Set<SemanticGraph::Schema*> schemas_;
+      std::set<SemanticGraph::Type*> types_;
+      std::set<SemanticGraph::Schema*> schemas_;
 
       BaseInclude base_;
       Traversal::Inherits inherits_;
@@ -194,19 +194,19 @@ namespace CXX
                              Traversal::Element,
                              Context
     {
-      AggregateInclude (Context& c, Char const* key)
+      AggregateInclude (Context& c, char const* key)
           : Context (c), key_ (key), type_include_ (c)
       {
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Type& t)
       {
         if (t.context ().count (key_))
           type_include_.dispatch (t);
       }
 
-      virtual Void
+      virtual void
       traverse (SemanticGraph::Element& e)
       {
         if (e.context ().count (key_))
@@ -214,7 +214,7 @@ namespace CXX
       }
 
     private:
-      Char const* key_;
+      char const* key_;
       TypeInclude type_include_;
     };
   }

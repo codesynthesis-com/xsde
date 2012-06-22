@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (eimpl (e));
@@ -99,7 +99,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (eimpl (l));
@@ -167,7 +167,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (eimpl (u));
@@ -223,7 +223,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -244,12 +244,12 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () != c.contains_end ())
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             SemanticGraph::Complex& t (scope (c));
             String const& s (eimpl (t));
@@ -287,10 +287,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
-          UnsignedLong min (s.min ()), max (s.max ());
+          size_t min (s.min ()), max (s.max ());
 
           String const& sc (eimpl (scope (s)));
 
@@ -342,10 +342,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong min (e.min ()), max (e.max ());
+          size_t min (e.min ()), max (e.max ());
 
           String const& s (
             eimpl (dynamic_cast<SemanticGraph::Complex&> (e.scope ())));
@@ -381,10 +381,10 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
-          UnsignedLong min (a.min ()), max (a.max ());
+          size_t min (a.min ()), max (a.max ());
 
           String const& s (
             eimpl (dynamic_cast<SemanticGraph::Complex&> (a.scope ())));
@@ -449,7 +449,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& s (
@@ -475,7 +475,7 @@ namespace CXX
              << "}";
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyAttribute& a)
         {
           String const& s (
@@ -535,10 +535,10 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
+          bool hb (c.inherits_p ());
 
           String const& name (eimpl (c));
           String const& arg (arg_type (c));
@@ -634,7 +634,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_impl_source (Context& ctx)
     {
       Traversal::Schema schema;

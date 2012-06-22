@@ -6,26 +6,23 @@
 #ifndef CXX_SERIALIZER_NAME_PROCESSOR_HXX
 #define CXX_SERIALIZER_NAME_PROCESSOR_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph.hxx>
 
+#include <types.hxx>
 #include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
   namespace Serializer
   {
-    using namespace Cult::Types;
-
     class NameProcessor
     {
     public:
-      Void
+      void
       process (options const&,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const&,
-               Boolean deep);
+               bool deep);
     };
   }
 }

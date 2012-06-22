@@ -6,26 +6,23 @@
 #ifndef CXX_PARSER_NAME_PROCESSOR_HXX
 #define CXX_PARSER_NAME_PROCESSOR_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph.hxx>
 
+#include <types.hxx>
 #include <cxx/parser/options.hxx>
 
 namespace CXX
 {
   namespace Parser
   {
-    using namespace Cult::Types;
-
     class NameProcessor
     {
     public:
-      Void
+      void
       process (options const&,
                XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const&,
-               Boolean deep);
+               bool deep);
     };
   }
 }

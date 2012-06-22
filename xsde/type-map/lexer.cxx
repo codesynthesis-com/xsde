@@ -68,7 +68,7 @@ namespace TypeMap
     if (is_.eof ())
       return Token (Token::eos, L"<end-of-stream>", line_);
 
-    Boolean quote (c == '"');
+    bool quote (c == '"');
 
     if (!quote)
       lexeme += c;

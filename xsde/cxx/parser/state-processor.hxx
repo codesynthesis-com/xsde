@@ -6,19 +6,18 @@
 #ifndef CXX_PARSER_STATE_PROCESSOR_HXX
 #define CXX_PARSER_STATE_PROCESSOR_HXX
 
-#include <cult/types.hxx>
 #include <xsd-frontend/semantic-graph.hxx>
+
+#include <types.hxx>
 
 namespace CXX
 {
   namespace Parser
   {
-    using namespace Cult::Types;
-
     class StateProcessor
     {
     public:
-      Void
+      void
       process (XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const& file);
     };

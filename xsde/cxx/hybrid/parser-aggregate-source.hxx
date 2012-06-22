@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
+    void
     generate_parser_aggregate_source (Context&);
   }
 }

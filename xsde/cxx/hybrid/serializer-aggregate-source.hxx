@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
+    void
     generate_serializer_aggregate_source (Context&);
   }
 }

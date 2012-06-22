@@ -3,6 +3,13 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <set>
+#include <map>
+#include <sstream>
+#include <iostream>
+
+#include <cutl/shared-ptr.hxx>
+
 #include <cxx/elements.hxx>
 
 #include <cxx/hybrid/elements.hxx>
@@ -11,11 +18,8 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/set.hxx>
-#include <cult/containers/map.hxx>
-
-#include <sstream>
-#include <iostream>
+using namespace std;
+using cutl::shared_ptr;
 
 namespace CXX
 {
@@ -23,10 +27,8 @@ namespace CXX
   {
     namespace
     {
-      //
-      //
-      typedef Cult::Containers::Set<String> NameSet;
-      Char const* member_set_key = "cxx-hybrid-name-processor-member-set";
+      typedef set<String> NameSet;
+      char const* member_set_key = "cxx-hybrid-name-processor-member-set";
 
       class Context: public CXX::Context
       {
@@ -62,10 +64,10 @@ namespace CXX
                 e = name.find (L"::", b);
                 String entry (name, b, e == String::npos ? e : e - b);
 
-                Shptr<CustomDataMap>& p ((*map)[entry]);
+                shared_ptr<CustomDataMap>& p ((*map)[entry]);
 
                 if (p == 0)
-                  p = Shptr<CustomDataMap> (new CustomDataMap);
+                  p = shared_ptr<CustomDataMap> (new (shared) CustomDataMap);
 
                 b = e;
 
@@ -73,7 +75,7 @@ namespace CXX
                 {
                   // Last name. Add an empty string to indicate this.
                   //
-                  (*p)[L""] = Shptr<CustomDataMap> (0);
+                  (*p)[L""] = shared_ptr<CustomDataMap> ();
                   break;
                 }
 
@@ -99,7 +101,7 @@ namespace CXX
 
               // Split the string in two parts at the last '='.
               //
-              Size pos (s.rfind ('='));
+              size_t pos (s.rfind ('='));
 
               // If no delimiter found type, base, and include are empty.
               //
@@ -173,19 +175,19 @@ namespace CXX
         }
 
       public:
-        Boolean
+        bool
         fixed_length (SemanticGraph::Type& t)
         {
-          return t.context ().get<Boolean> ("fixed");
+          return t.context ().get<bool> ("fixed");
         }
 
-        Boolean
+        bool
         fixed_length (SemanticGraph::Compositor& c)
         {
-          return c.context ().get<Boolean> ("fixed");
+          return c.context ().get<bool> ("fixed");
         }
 
-        Void
+        void
         mark_variable (SemanticGraph::Compositor& c)
         {
           SemanticGraph::Compositor* p (&c);
@@ -199,7 +201,7 @@ namespace CXX
 
             p = &p->contained_particle ().compositor ();
 
-            if (!p->context ().get<Boolean> ("fixed"))
+            if (!p->context ().get<bool> ("fixed"))
               break;
           }
         }
@@ -210,7 +212,7 @@ namespace CXX
         {
           String name (escape (n + suffix));
 
-          for (UnsignedLong i (1); set.find (name) != set.end (); ++i)
+          for (size_t i (1); set.find (name) != set.end (); ++i)
           {
             std::wostringstream os;
             os << i;
@@ -228,10 +230,7 @@ namespace CXX
         }
 
       public:
-        struct CustomDataMap:
-          Cult::Containers::Map<String, Shptr<CustomDataMap> >
-        {
-        };
+        struct CustomDataMap: map<String, shared_ptr<CustomDataMap> > {};
 
       public:
         struct CustomType
@@ -248,25 +247,23 @@ namespace CXX
           String include;
         };
 
-        typedef
-        Cult::Containers::Map<String, CustomType>
-        CustomTypeMap;
+        typedef map<String, CustomType> CustomTypeMap;
 
       private:
         CustomDataMap custom_data_map_;
         CustomTypeMap custom_type_map_;
 
-        Cult::Containers::Map<String, NameSet*> global_type_names_;
+        map<String, NameSet*> global_type_names_;
 
       public:
-        Boolean stl;
-        Boolean detach;
-        Boolean enum_;
+        bool stl;
+        bool detach;
+        bool enum_;
 
         CustomDataMap& custom_data_map;
         CustomTypeMap& custom_type_map;
 
-        Cult::Containers::Map<String, NameSet*>& global_type_names;
+        map<String, NameSet*>& global_type_names;
       };
 
       //
@@ -280,7 +277,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           a.context ().set ("name", find_name (a.name (), set_));
@@ -297,7 +294,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           e.context ().set ("name", find_name (e.name (), set_));
@@ -314,7 +311,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -332,12 +329,12 @@ namespace CXX
 
       struct PrimaryChoice: Traversal::Choice, Context
       {
-        PrimaryChoice (Context& c, NameSet& set, Boolean in_choice)
+        PrimaryChoice (Context& c, NameSet& set, bool in_choice)
             : Context (c), set_ (set), in_choice_ (in_choice)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           // In case of choice assign primary name even if there is
@@ -352,17 +349,17 @@ namespace CXX
 
       private:
         NameSet& set_;
-        Boolean in_choice_;
+        bool in_choice_;
       };
 
       struct PrimarySequence: Traversal::Sequence, Context
       {
-        PrimarySequence (Context& c, NameSet& set, Boolean in_choice)
+        PrimarySequence (Context& c, NameSet& set, bool in_choice)
             : Context (c), set_ (set), in_choice_ (in_choice)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           // When sequence is in choice we have nested class even
@@ -376,7 +373,7 @@ namespace CXX
 
       private:
         NameSet& set_;
-        Boolean in_choice_;
+        bool in_choice_;
       };
 
       //
@@ -385,18 +382,18 @@ namespace CXX
 
       struct SecondaryAttribute: Traversal::Attribute, Context
       {
-        SecondaryAttribute (Context& c, NameSet& set, Boolean data_members)
+        SecondaryAttribute (Context& c, NameSet& set, bool data_members)
             : Context (c), set_ (set), data_members_ (data_members)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           SemanticGraph::Context& ac (a.context ());
 
-          Boolean def (a.default_p ());
-          Boolean fix (a.fixed_p ());
+          bool def (a.default_p ());
+          bool fix (a.fixed_p ());
 
           String const& base (ac.get<String> ("name"));
 
@@ -438,17 +435,17 @@ namespace CXX
 
       private:
         NameSet& set_;
-        Boolean data_members_;
+        bool data_members_;
       };
 
       struct SecondaryElement: Traversal::Element, Context
       {
-        SecondaryElement (Context& c, NameSet& set, Boolean data_members)
+        SecondaryElement (Context& c, NameSet& set, bool data_members)
             : Context (c), set_ (set), data_members_ (data_members)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           SemanticGraph::Context& ec (e.context ());
@@ -495,7 +492,7 @@ namespace CXX
 
       private:
         NameSet& set_;
-        Boolean data_members_;
+        bool data_members_;
       };
 
       struct SecondaryAll: Traversal::All, Context
@@ -503,7 +500,7 @@ namespace CXX
         SecondaryAll (Context& c,
                       NameSet& set,
                       CustomDataMap* map,
-                      Boolean data_members)
+                      bool data_members)
             : Context (c),
               set_ (set),
               map_ (map),
@@ -511,7 +508,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}
@@ -530,7 +527,7 @@ namespace CXX
 
               if (map_)
               {
-                CustomDataMap::Iterator i (map_->find (base));
+                CustomDataMap::iterator i (map_->find (base));
                 if (i != map_->end ())
                   map = i->second.get ();
               }
@@ -621,7 +618,7 @@ namespace CXX
       private:
         NameSet& set_;
         CustomDataMap* map_;
-        Boolean data_members_;
+        bool data_members_;
       };
 
       struct ParticleTag: Traversal::Element,
@@ -635,27 +632,27 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& base (e.context ().get<String> ("name"));
           e.context ().set ("tag", find_name (base, L"_tag", set_));
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           a.context ().set ("tag", find_name (L"any", L"_tag", set_));
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           String const& base (c.context ().get<String> ("name"));
           c.context ().set ("tag", find_name (base, L"_tag", set_));
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           String const& base (s.context ().get<String> ("name"));
@@ -671,8 +668,8 @@ namespace CXX
         SecondaryChoice (Context& c,
                          NameSet& set,
                          CustomDataMap* map,
-                         Boolean in_choice,
-                         Boolean data_members)
+                         bool in_choice,
+                         bool data_members)
             : Context (c),
               set_ (set),
               map_ (map),
@@ -681,17 +678,17 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice&);
 
-        Void
+        void
         traverse_nested (SemanticGraph::Choice&, NameSet&, CustomDataMap*);
 
       private:
         NameSet& set_;
         CustomDataMap* map_;
-        Boolean in_choice_;
-        Boolean data_members_;
+        bool in_choice_;
+        bool data_members_;
       };
 
       struct SecondarySequence: Traversal::Sequence, Context
@@ -699,8 +696,8 @@ namespace CXX
         SecondarySequence (Context& c,
                            NameSet& set,
                            CustomDataMap* map,
-                           Boolean in_choice,
-                           Boolean data_members)
+                           bool in_choice,
+                           bool data_members)
             : Context (c),
               set_ (set),
               map_ (map),
@@ -709,21 +706,21 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence&);
 
-        Void
+        void
         traverse_nested (SemanticGraph::Sequence&, NameSet&, CustomDataMap*);
 
       private:
         NameSet& set_;
         CustomDataMap* map_;
-        Boolean in_choice_;
-        Boolean data_members_;
+        bool in_choice_;
+        bool data_members_;
       };
 
 
-      Void SecondaryChoice::
+      void SecondaryChoice::
       traverse (SemanticGraph::Choice& c)
       {
         SemanticGraph::Context& cc (c.context ());
@@ -743,7 +740,7 @@ namespace CXX
 
             if (map_)
             {
-              CustomDataMap::Iterator i (map_->find (base));
+              CustomDataMap::iterator i (map_->find (base));
               if (i != map_->end ())
                 map = i->second.get ();
             }
@@ -774,7 +771,7 @@ namespace CXX
               cc.set ("arm-tag", find_name (arm + L"_tag", name_set));
 
               {
-                UnsignedLong count (name_set.size ());
+                size_t count (name_set.size ());
 
                 ParticleTag particle (*this, name_set);
                 Traversal::ContainsParticle contains (particle);
@@ -869,7 +866,7 @@ namespace CXX
             cc.set ("arm-tag", find_name (arm + L"_tag", set_));
 
             {
-              UnsignedLong count (set_.size ());
+              size_t count (set_.size ());
 
               ParticleTag particle (*this, set_);
               Traversal::ContainsParticle contains (particle);
@@ -889,7 +886,7 @@ namespace CXX
         }
       }
 
-      Void SecondaryChoice::
+      void SecondaryChoice::
       traverse_nested (SemanticGraph::Choice& c,
                        NameSet& name_set,
                        CustomDataMap* map)
@@ -948,7 +945,7 @@ namespace CXX
         Choice::contains (c, choice_contains_particle);
       }
 
-      Void SecondarySequence::
+      void SecondarySequence::
       traverse (SemanticGraph::Sequence& s)
       {
         // When sequence is in choice we have nested class even
@@ -968,7 +965,7 @@ namespace CXX
 
             if (map_)
             {
-              CustomDataMap::Iterator i (map_->find (base));
+              CustomDataMap::iterator i (map_->find (base));
               if (i != map_->end ())
                 map = i->second.get ();
             }
@@ -1062,7 +1059,7 @@ namespace CXX
           Sequence::contains (s);
       }
 
-      Void SecondarySequence::
+      void SecondarySequence::
       traverse_nested (SemanticGraph::Sequence& s,
                        NameSet& name_set,
                        CustomDataMap* map)
@@ -1130,7 +1127,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& n (e.name ());
@@ -1149,12 +1146,12 @@ namespace CXX
                                 Traversal::Enumeration,
                                 Context
       {
-        GlobalTypeMembers (Context& c, Boolean data_members)
+        GlobalTypeMembers (Context& c, bool data_members)
             : Context (c), data_members_ (data_members)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Enumeration& e)
         {
           // First see if we should delegate this one to Complex.
@@ -1201,7 +1198,7 @@ namespace CXX
 
             // Check if this type has custom data.
             //
-            CustomDataMap::Iterator i (custom_data_map.find (e.name ()));
+            CustomDataMap::iterator i (custom_data_map.find (e.name ()));
 
             if (i != custom_data_map.end () &&
                 i->second->find (L"") != i->second->end ())
@@ -1232,7 +1229,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           SemanticGraph::Context& lc (l.context ());
@@ -1250,7 +1247,7 @@ namespace CXX
           {
             // Check if this type has custom data.
             //
-            CustomDataMap::Iterator i (custom_data_map.find (l.name ()));
+            CustomDataMap::iterator i (custom_data_map.find (l.name ()));
 
             if (i != custom_data_map.end () &&
                 i->second->find (L"") != i->second->end ())
@@ -1283,7 +1280,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Union& u)
         {
           SemanticGraph::Context& uc (u.context ());
@@ -1311,7 +1308,7 @@ namespace CXX
 
             // Check if this type has custom data.
             //
-            CustomDataMap::Iterator i (custom_data_map.find (u.name ()));
+            CustomDataMap::iterator i (custom_data_map.find (u.name ()));
 
             if (i != custom_data_map.end () &&
                 i->second->find (L"") != i->second->end ())
@@ -1340,7 +1337,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           if (data_members_)
@@ -1349,7 +1346,7 @@ namespace CXX
             assign_names (c);
         }
 
-        virtual Void
+        virtual void
         assign_names (SemanticGraph::Complex& c)
         {
           SemanticGraph::Context& cc (c.context ());
@@ -1368,7 +1365,7 @@ namespace CXX
           //
           CustomDataMap* map (0);
           {
-            CustomDataMap::Iterator i (custom_data_map.find (c.name ()));
+            CustomDataMap::iterator i (custom_data_map.find (c.name ()));
             if (i != custom_data_map.end ())
               map = i->second.get ();
           }
@@ -1380,7 +1377,7 @@ namespace CXX
 
           // Add our base's members to the initial list.
           //
-          Boolean restriction (false);
+          bool restriction (false);
 
           if (c.inherits_p ())
           {
@@ -1519,7 +1516,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         assign_data (SemanticGraph::Complex& c)
         {
           SemanticGraph::Context& cc (c.context ());
@@ -1535,7 +1532,7 @@ namespace CXX
 
           //
           //
-          Boolean restriction (false);
+          bool restriction (false);
 
           if (c.inherits_p ())
             restriction = c.inherits ().is_a<SemanticGraph::Restricts> () &&
@@ -1606,7 +1603,7 @@ namespace CXX
         }
 
       private:
-        Boolean data_members_;
+        bool data_members_;
       };
 
       //
@@ -1621,7 +1618,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           String const& name (t.name ());
@@ -1631,7 +1628,7 @@ namespace CXX
 
           // See if this parser is being customized.
           //
-          CustomTypeMap::ConstIterator i (custom_type_map.find (name));
+          CustomTypeMap::const_iterator i (custom_type_map.find (name));
 
           if (i != custom_type_map.end ())
           {
@@ -1650,7 +1647,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Union& u)
         {
           traverse (static_cast<SemanticGraph::Type&> (u));
@@ -1674,7 +1671,7 @@ namespace CXX
           uc.set ("value", find_name ("value", set));
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Enumeration& e)
         {
           traverse (static_cast<SemanticGraph::Type&> (e));
@@ -1720,7 +1717,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& ns)
         {
           SemanticGraph::Context& nsc (ns.context ());
@@ -1816,13 +1813,13 @@ namespace CXX
 
         // anyType & anySimpleType.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnyType& t)
         {
           set_name (t, "any_type");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::AnySimpleType& t)
         {
           set_name (t, "any_simple_type");
@@ -1830,7 +1827,7 @@ namespace CXX
 
         // Boolean.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Boolean& t)
         {
           set_name (t, "boolean");
@@ -1838,79 +1835,79 @@ namespace CXX
 
         // Integral types.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Byte& t)
         {
           set_name (t, "byte");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedByte& t)
         {
           set_name (t, "unsigned_byte");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Short& t)
         {
           set_name (t, "short");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedShort& t)
         {
           set_name (t, "unsigned_short");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Int& t)
         {
           set_name (t, "int");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedInt& t)
         {
           set_name (t, "unsigned_int");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Long& t)
         {
           set_name (t, "long");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::UnsignedLong& t)
         {
           set_name (t, "unsigned_long");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Integer& t)
         {
           set_name (t, "integer");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NonPositiveInteger& t)
         {
           set_name (t, "non_positive_integer");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NonNegativeInteger& t)
         {
           set_name (t, "non_negative_integer");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::PositiveInteger& t)
         {
           set_name (t, "positive_integer");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NegativeInteger& t)
         {
           set_name (t, "negative_integer");
@@ -1918,19 +1915,19 @@ namespace CXX
 
         // Floats.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Float& t)
         {
           set_name (t, "float");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Double& t)
         {
           set_name (t, "double");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Decimal& t)
         {
           set_name (t, "decimal");
@@ -1938,49 +1935,49 @@ namespace CXX
 
         // Strings.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::String& t)
         {
           set_name (t, "string");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NormalizedString& t)
         {
           set_name (t, "normalized_string");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Token& t)
         {
           set_name (t, "token");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NameToken& t)
         {
           set_name (t, "nmtoken");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NameTokens& t)
         {
           set_name (t, "nmtokens");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Name& t)
         {
           set_name (t, "name");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::NCName& t)
         {
           set_name (t, "ncname");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Language& t)
         {
           set_name (t, "language");
@@ -1989,7 +1986,7 @@ namespace CXX
 
         // Qualified name.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::QName& t)
         {
           set_name (t, "qname");
@@ -1998,19 +1995,19 @@ namespace CXX
 
         // ID/IDREF.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Id& t)
         {
           set_name (t, "id");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::IdRef& t)
         {
           set_name (t, "idref");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::IdRefs& t)
         {
           set_name (t, "idrefs");
@@ -2018,7 +2015,7 @@ namespace CXX
 
         // URI.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::AnyURI& t)
         {
           set_name (t, "uri");
@@ -2026,13 +2023,13 @@ namespace CXX
 
         // Binary.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Base64Binary& t)
         {
           set_name (t, "base64_binary");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::HexBinary& t)
         {
           set_name (t, "hex_binary");
@@ -2041,55 +2038,55 @@ namespace CXX
 
         // Date/time.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Date& t)
         {
           set_name (t, "date");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::DateTime& t)
         {
           set_name (t, "date_time");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Duration& t)
         {
           set_name (t, "duration");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Day& t)
         {
           set_name (t, "gday");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Month& t)
         {
           set_name (t, "gmonth");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::MonthDay& t)
         {
           set_name (t, "gmonth_day");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Year& t)
         {
           set_name (t, "gyear");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::YearMonth& t)
         {
           set_name (t, "gyear_month");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Time& t)
         {
           set_name (t, "time");
@@ -2097,20 +2094,20 @@ namespace CXX
 
         // Entity.
         //
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Entity& t)
         {
           set_name (t, "entity");
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Fundamental::Entities& t)
         {
           set_name (t, "entities");
         }
 
       private:
-        Void
+        void
         set_name (SemanticGraph::Type& t, String const& name)
         {
           SemanticGraph::Context& c (t.context ());
@@ -2125,7 +2122,7 @@ namespace CXX
                    Traversal::Includes,
                    Traversal::Imports
       {
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sources& sr)
         {
           SemanticGraph::Schema& s (sr.schema ());
@@ -2137,7 +2134,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Includes& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -2149,7 +2146,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Imports& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -2167,7 +2164,7 @@ namespace CXX
       //
       struct Implies: Traversal::Implies
       {
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Implies& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -2180,11 +2177,11 @@ namespace CXX
         }
       };
 
-      Void
+      void
       process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const& file,
-                    Boolean deep)
+                    bool deep)
       {
         Context ctx (ops, tu, file);
 
@@ -2294,11 +2291,11 @@ namespace CXX
       }
     }
 
-    Void TreeNameProcessor::
+    void TreeNameProcessor::
     process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
-             Boolean deep)
+             bool deep)
     {
       process_impl (ops, tu, file, deep);
     }

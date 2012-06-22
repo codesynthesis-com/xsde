@@ -3,27 +3,22 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <processing/inheritance/processor.hxx>
+#include <set>
+#include <iostream>
 
-#include <elements.hxx>
+#include <processing/inheritance/processor.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/set.hxx>
+#include <elements.hxx>
 
-#include <iostream>
-using std::wcerr;
-using std::endl;
+using namespace std;
 
 namespace Processing
 {
-  using namespace Cult;
-
   namespace SemanticGraph = XSDFrontend::SemanticGraph;
   namespace Traversal = XSDFrontend::Traversal;
-
-  typedef WideString String;
 
   namespace Inheritance
   {
@@ -43,14 +38,14 @@ namespace Processing
         String member_xpath;
       };
 
-      inline Boolean
+      inline bool
       operator< (Dep const& a, Dep const& b)
       {
         return &a.type < &b.type;
       }
 
-      typedef Containers::Set<Dep> DepSet;
-      typedef Containers::Set<SemanticGraph::Type*> TypeSet;
+      typedef set<Dep> DepSet;
+      typedef set<SemanticGraph::Type*> TypeSet;
 
 
       String
@@ -82,26 +77,26 @@ namespace Processing
                    Traversal::Complex,
                    Traversal::Member
       {
-        Type (DepSet& dep_set, Char const* by_value_key)
+        Type (DepSet& dep_set, char const* by_value_key)
             : by_value_key_ (by_value_key), dep_set_ (dep_set), last_ (0)
         {
           *this >> names_ >> *this;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           SemanticGraph::Type& t (l.argumented ().type ());
 
           if (by_value_key_ != 0 &&
               t.context ().count (by_value_key_) &&
-              t.context ().get<Boolean> (by_value_key_))
+              t.context ().get<bool> (by_value_key_))
           {
             dep_set_.insert (Dep (t));
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           using SemanticGraph::Complex;
@@ -116,7 +111,7 @@ namespace Processing
           names (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Member& m)
         {
           SemanticGraph::Type& t (m.type ());
@@ -149,7 +144,7 @@ namespace Processing
           {
             if (by_value_key_ != 0 &&
                 t.context ().count (by_value_key_) &&
-                t.context ().get<Boolean> (by_value_key_))
+                t.context ().get<bool> (by_value_key_))
             {
               dep_set_.insert (Dep (t));
             }
@@ -157,7 +152,7 @@ namespace Processing
         }
 
       private:
-        Char const* by_value_key_;
+        char const* by_value_key_;
         DepSet& dep_set_;
         TypeSet types_seen_;
 
@@ -184,14 +179,14 @@ namespace Processing
         }
 
         template <typename E>
-        Void
+        void
         add_edge_left (E& e)
         {
           node_.add_edge_left (e, arg_);
         }
 
         template <typename E>
-        Void
+        void
         add_edge_right (E& e)
         {
           node_.add_edge_right (e, arg_);
@@ -212,8 +207,8 @@ namespace Processing
       {
         Global (SemanticGraph::Schema& root,
                 SemanticGraph::Schema& schema,
-                Char const* by_value_key,
-                Boolean& failed)
+                char const* by_value_key,
+                bool& failed)
             : root_ (root),
               schema_ (schema),
               by_value_key_ (by_value_key),
@@ -221,28 +216,28 @@ namespace Processing
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           if (t.named_p ())
             types_seen_.insert (&t);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::List& l)
         {
           check_dep (l, l);
           types_seen_.insert (&l);
         };
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           check_dep (c, c);
           types_seen_.insert (&c);
         };
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           SemanticGraph::Type& t (e.type ());
@@ -256,7 +251,7 @@ namespace Processing
         };
 
       private:
-        Void
+        void
         check_dep (SemanticGraph::Nameable& global,
                    SemanticGraph::Type& type)
         {
@@ -273,7 +268,7 @@ namespace Processing
             t.dispatch (type);
           }
 
-          for (DepSet::ConstIterator i (prereqs.begin ());
+          for (DepSet::const_iterator i (prereqs.begin ());
                i != prereqs.end (); ++i)
           {
             Dep const& dep (*i);
@@ -394,7 +389,7 @@ namespace Processing
       private:
         // Return true if root sources s.
         //
-        Boolean
+        bool
         sources_p (SemanticGraph::Schema& root, SemanticGraph::Schema& s)
         {
           using SemanticGraph::Schema;
@@ -416,9 +411,9 @@ namespace Processing
       private:
         SemanticGraph::Schema& root_;
         SemanticGraph::Schema& schema_;
-        Char const* by_value_key_;
+        char const* by_value_key_;
         TypeSet types_seen_;
-        Boolean& failed_;
+        bool& failed_;
       };
 
 
@@ -434,7 +429,7 @@ namespace Processing
         }
 
       private:
-        Cult::Containers::Set<SemanticGraph::Schema*> schemas_;
+        set<SemanticGraph::Schema*> schemas_;
       };
 
       // Go into included/imported schemas while making sure we don't
@@ -443,26 +438,26 @@ namespace Processing
       struct Uses: Traversal::Includes, Traversal::Imports
       {
         Uses (SemanticGraph::Schema& root,
-              Char const* by_value_key,
-              Boolean& failed)
+              char const* by_value_key,
+              bool& failed)
             : root_ (root), by_value_key_ (by_value_key), failed_ (failed)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Includes& i)
         {
           traverse (i.schema ());
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Imports& i)
         {
           traverse (i.schema ());
         }
 
       private:
-        Void
+        void
         traverse (SemanticGraph::Schema& s)
         {
           if (!s.context ().count ("processing-inheritance-seen"))
@@ -490,17 +485,17 @@ namespace Processing
 
       private:
         SemanticGraph::Schema& root_;
-        Char const* by_value_key_;
-        Boolean& failed_;
+        char const* by_value_key_;
+        bool& failed_;
       };
     }
 
-    Void Processor::
+    void Processor::
     process (SemanticGraph::Schema& tu,
              SemanticGraph::Path const&,
-             Char const* by_value_key)
+             char const* by_value_key)
     {
-      Boolean failed (false);
+      bool failed (false);
 
       // We need to process include/imported schemas since other
       // parts of the process, for example, name processors can

@@ -21,7 +21,7 @@ namespace TypeMap
   {
   }
 
-  Boolean Parser::
+  bool Parser::
   parse (Namespaces& ns)
   {
     try
@@ -83,7 +83,7 @@ namespace TypeMap
     return true;
   }
 
-  Boolean Parser::
+  bool Parser::
   namespace_ (Namespaces& ns)
   {
     // First get XML namespace.
@@ -115,7 +115,7 @@ namespace TypeMap
     //
     t = lex_.next ();
 
-    Boolean has_cxx_name (false);
+    bool has_cxx_name (false);
     String cxx_name;
 
     if (t.type () != Token::token)
@@ -191,7 +191,7 @@ namespace TypeMap
     return true;
   }
 
-  Boolean Parser::
+  bool Parser::
   include (Namespace& n)
   {
     Token t (lex_.next ());
@@ -222,7 +222,7 @@ namespace TypeMap
     return true;
   }
 
-  Boolean Parser::
+  bool Parser::
   type (Token t, Namespace& n)
   {
     Pattern xsd_name;

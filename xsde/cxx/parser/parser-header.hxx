@@ -12,8 +12,8 @@ namespace CXX
 {
   namespace Parser
   {
-    Void
-    generate_parser_header (Context&, Boolean generate_xml_schema);
+    void
+    generate_parser_header (Context&, bool generate_xml_schema);
   }
 }
 

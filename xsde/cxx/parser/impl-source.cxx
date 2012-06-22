@@ -22,7 +22,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (eimpl (e));
@@ -127,7 +127,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (eimpl (l));
@@ -205,7 +205,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (eimpl (u));
@@ -272,7 +272,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           using SemanticGraph::Complex;
@@ -319,7 +319,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           using SemanticGraph::Complex;
@@ -376,10 +376,10 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
+          bool hb (c.inherits_p ());
 
           String const& name (eimpl (c));
           String const& ret (ret_type (c));
@@ -503,7 +503,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_impl_source (Context& ctx)
     {
       if (ctx.options.generate_print_impl ())

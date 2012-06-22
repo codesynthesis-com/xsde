@@ -6,14 +6,12 @@
 #ifndef CXX_ELEMENTS_HXX
 #define CXX_ELEMENTS_HXX
 
+#include <set>
+#include <map>
+#include <vector>
 #include <ostream>
 
 #include <cutl/re.hxx>
-
-#include <cult/types.hxx>
-#include <cult/containers/map.hxx>
-#include <cult/containers/set.hxx>
-#include <cult/containers/vector.hxx>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
@@ -26,8 +24,6 @@
 namespace CXX
 {
   using std::endl;
-  typedef WideString String;
-
 
   // On some platforms std::toupper can be something other than a
   // function with C++ linkage.
@@ -41,7 +37,7 @@ namespace CXX
 
   struct UnrepresentableCharacter
   {
-    UnrepresentableCharacter (String const& str, Size pos)
+    UnrepresentableCharacter (String const& str, size_t pos)
         : str_ (str), pos_ (pos)
     {
     }
@@ -52,7 +48,7 @@ namespace CXX
       return str_;
     }
 
-    Size
+    size_t
     position () const
     {
       return pos_;
@@ -60,14 +56,14 @@ namespace CXX
 
   private:
     String str_;
-    Size pos_;
+    size_t pos_;
   };
 
   struct NoNamespaceMapping
   {
     NoNamespaceMapping (SemanticGraph::Path const& file,
-                        UnsignedLong line,
-                        UnsignedLong column,
+                        size_t line,
+                        size_t column,
                         String const& ns)
         : file_ (file),
           line_ (line),
@@ -82,13 +78,13 @@ namespace CXX
       return file_;
     }
 
-    UnsignedLong
+    size_t
     line () const
     {
       return line_;
     }
 
-    UnsignedLong
+    size_t
     column () const
     {
       return column_;
@@ -102,8 +98,8 @@ namespace CXX
 
   private:
     SemanticGraph::Path file_;
-    UnsignedLong line_;
-    UnsignedLong column_;
+    size_t line_;
+    size_t column_;
     String ns_;
   };
 
@@ -140,12 +136,12 @@ namespace CXX
   public:
     typedef cutl::re::wregex RegexPat;
     typedef cutl::re::wregexsub Regex;
-    typedef Cult::Containers::Vector<Regex> RegexMapping;
-    typedef Cult::Containers::Map<String, String> MapMapping;
-    typedef Cult::Containers::Map<String, String> MappingCache;
+    typedef std::vector<Regex> RegexMapping;
+    typedef std::map<String, String> MapMapping;
+    typedef std::map<String, String> MappingCache;
 
-    typedef Cult::Containers::Map<String, String> ReservedNameMap;
-    typedef Cult::Containers::Set<String> KeywordSet;
+    typedef std::map<String, String> ReservedNameMap;
+    typedef std::set<String> KeywordSet;
 
     typedef CXX::options options_type;
 
@@ -154,7 +150,7 @@ namespace CXX
              SemanticGraph::Schema& root,
              SemanticGraph::Path const& path,
              options_type const&,
-             Char const* name_key,
+             char const* name_key,
              NarrowString const& char_type);
 
   protected:
@@ -224,11 +220,11 @@ namespace CXX
     // advanced by 1 if this Unicode character takes more than one
     // underlying character.
     //
-    static UnsignedLong
-    unicode_char (String const& str, Size& pos);
+    static unsigned int
+    unicode_char (String const& str, size_t& pos);
 
-    static UnsignedLong
-    unicode_char (WideChar const*& p);
+    static unsigned int
+    unicode_char (wchar_t const*& p);
 
     // Escape C++ keywords and illegal characters.
     //
@@ -275,7 +271,7 @@ namespace CXX
     // Fully-qualified C++ name.
     //
     String
-    fq_name (SemanticGraph::Nameable& n, Char const* name_key = 0) const;
+    fq_name (SemanticGraph::Nameable& n, char const* name_key = 0) const;
 
   public:
     static SemanticGraph::Type&
@@ -286,7 +282,7 @@ namespace CXX
     process_include_path (String const&) const;
 
   public:
-    static Boolean
+    static bool
     anonymous (SemanticGraph::Type& t)
     {
       return t.context ().count ("anonymous");
@@ -331,8 +327,8 @@ namespace CXX
     String& inst_exp;
     String& inl;
 
-    Boolean custom_alloc;
-    Boolean long_long;
+    bool custom_alloc;
+    bool long_long;
 
   public:
     MappingCache& ns_mapping_cache;
@@ -374,16 +370,16 @@ namespace CXX
     KeywordSet keyword_set_;
   };
 
-  inline UnsignedLong Context::
-  unicode_char (String const& str, Size& pos)
+  inline unsigned int Context::
+  unicode_char (String const& str, size_t& pos)
   {
-    if (sizeof (WideChar) == 4)
+    if (sizeof (wchar_t) == 4)
     {
       return str[pos];
     }
-    else if (sizeof (WideChar) == 2)
+    else if (sizeof (wchar_t) == 2)
     {
-      WideChar x (str[pos]);
+      wchar_t x (str[pos]);
 
       if (x < 0xD800 || x > 0xDBFF)
         return x;
@@ -394,16 +390,16 @@ namespace CXX
       return 0;
   }
 
-  inline UnsignedLong Context::
-  unicode_char (WideChar const*& p)
+  inline unsigned int Context::
+  unicode_char (wchar_t const*& p)
   {
-    if (sizeof (WideChar) == 4)
+    if (sizeof (wchar_t) == 4)
     {
       return *p;
     }
-    else if (sizeof (WideChar) == 2)
+    else if (sizeof (wchar_t) == 2)
     {
-      WideChar x (*p);
+      wchar_t x (*p);
 
       if (x < 0xD800 || x > 0xDBFF)
         return x;
@@ -426,7 +422,7 @@ namespace CXX
     }
 
   private:
-    Cult::Containers::Set<SemanticGraph::Schema*> schemas_;
+    std::set<SemanticGraph::Schema*> schemas_;
   };
 
   // Usual namespace mapping.
@@ -438,10 +434,10 @@ namespace CXX
       virtual
       ~ScopeTracker () {}
 
-      virtual Void
+      virtual void
       enter (String const&) = 0;
 
-      virtual Void
+      virtual void
       leave () = 0;
     };
 
@@ -456,10 +452,10 @@ namespace CXX
     {
     }
 
-    virtual Void
+    virtual void
     pre (Type&);
 
-    virtual Void
+    virtual void
     post (Type&);
 
   private:
@@ -473,30 +469,30 @@ namespace CXX
   template <typename X>
   struct Has : X
   {
-    Has (Boolean& result)
+    Has (bool& result)
         : result_ (result)
     {
     }
 
-    virtual Void
+    virtual void
     traverse (typename X::Type&)
     {
       result_ = true;
     }
 
   private:
-    Boolean& result_;
+    bool& result_;
   };
 
   // Checks if scope 'Y' names any of 'X'
   //
   template <typename X, typename Y>
-  Boolean
+  bool
   has (Y& y)
   {
     using SemanticGraph::Scope;
 
-    Boolean result (false);
+    bool result (false);
     Has<X> t (result);
 
     for (Scope::NamesIterator i (y.names_begin ()), e (y.names_end ());
@@ -509,12 +505,12 @@ namespace CXX
   // Checks if the compositor has any particle of 'X'
   //
   template <typename X>
-  Boolean
+  bool
   has_particle (SemanticGraph::Compositor& y)
   {
     using SemanticGraph::Compositor;
 
-    Boolean result (false);
+    bool result (false);
     Has<X> t (result);
 
     for (Compositor::ContainsIterator i (y.contains_begin ()),
@@ -534,7 +530,7 @@ namespace CXX
   // Specialization for Complex
   //
   template <typename X>
-  Boolean
+  bool
   has_particle (SemanticGraph::Complex& c)
   {
     return c.contains_compositor_p () &&
@@ -553,61 +549,61 @@ namespace CXX
                        Traversal::Fundamental::Id,
                        Traversal::Fundamental::IdRef
   {
-    virtual Void
+    virtual void
     fundamental_type (SemanticGraph::Fundamental::Type& t) = 0;
 
-    virtual Void
+    virtual void
     fundamental_template (SemanticGraph::Fundamental::Type& t) = 0;
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Type& t)
     {
       fundamental_type (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::String& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NormalizedString& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Token& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Name& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NameToken& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NCName& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Id& t)
     {
       fundamental_template (t);
     }
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::IdRef& t)
     {
       fundamental_template (t);
@@ -651,127 +647,127 @@ namespace CXX
 
                        Context
   {
-    LiteralValue (Context&, Boolean str);
+    LiteralValue (Context&, bool str);
 
     String
     dispatch (SemanticGraph::Node& type, String const& value);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::AnySimpleType&);
 
     // Boolean.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Boolean&);
 
     // Integral types.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Byte&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::UnsignedByte&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Short&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::UnsignedShort&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Int&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::UnsignedInt&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Long&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::UnsignedLong&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Integer&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NonPositiveInteger&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NonNegativeInteger&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::PositiveInteger&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NegativeInteger&);
 
     // Floats.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Float&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Double&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Decimal&);
 
     // Strings.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::String&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NormalizedString&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Token&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NameToken&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Name&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::NCName&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Language&);
 
     // ID/IDREF.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Id&);
 
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::IdRef&);
 
     // URI.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::AnyURI&);
 
     // Entity.
     //
-    virtual Void
+    virtual void
     traverse (SemanticGraph::Fundamental::Entity&);
 
   public:
-    static Void
+    static void
     normalize (String&);
 
-    static Void
+    static void
     collapse (String&);
 
-    static Void
+    static void
     strip_zeros (String&);
 
-    static Void
+    static void
     make_float (String&);
 
   private:
-    Boolean str_;
+    bool str_;
     String value_;
     String literal_;
   };

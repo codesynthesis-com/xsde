@@ -3,6 +3,11 @@
 // copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <set>
+#include <map>
+#include <sstream>
+#include <iostream>
+
 #include <cxx/elements.hxx>
 #include <cxx/hybrid/elements.hxx>
 #include <cxx/hybrid/parser-name-processor.hxx>
@@ -10,11 +15,7 @@
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
-#include <cult/containers/set.hxx>
-#include <cult/containers/map.hxx>
-
-#include <sstream>
-#include <iostream>
+using namespace std;
 
 namespace CXX
 {
@@ -22,10 +23,7 @@ namespace CXX
   {
     namespace
     {
-      //
-      //
-      typedef Cult::Containers::Set<String> NameSet;
-
+      typedef set<String> NameSet;
       struct Failed {};
 
       class Context: public CXX::Context
@@ -61,7 +59,7 @@ namespace CXX
 
             // Split the string in two parts at the last '='.
             //
-            Size pos (s.rfind ('='));
+            size_t pos (s.rfind ('='));
 
             // If no delimiter found then both base and include are empty.
             //
@@ -107,13 +105,13 @@ namespace CXX
         }
 
       public:
-        Boolean
+        bool
         fixed_length (SemanticGraph::Type& t)
         {
-          return t.context ().get<Boolean> ("fixed");
+          return t.context ().get<bool> ("fixed");
         }
 
-        Boolean
+        bool
         recursive (SemanticGraph::Type& t)
         {
           return t.context ().count ("recursive");
@@ -125,7 +123,7 @@ namespace CXX
         {
           String name (escape (n + suffix));
 
-          for (UnsignedLong i (1); set.find (name) != set.end (); ++i)
+          for (size_t i (1); set.find (name) != set.end (); ++i)
           {
             std::wostringstream os;
             os << i;
@@ -212,25 +210,23 @@ namespace CXX
           String include;
         };
 
-        typedef
-        Cult::Containers::Map<String, CustomParser>
-        CustomParserMap;
+        typedef map<String, CustomParser> CustomParserMap;
 
       private:
         String const impl_suffix_;
         String const aggr_suffix_;
         CustomParserMap custom_parser_map_;
 
-        Cult::Containers::Map<String, NameSet*> global_type_names_;
+        map<String, NameSet*> global_type_names_;
 
       public:
         options_type const& options;
-        Boolean aggregate;
+        bool aggregate;
         String const& impl_suffix;
         String const& aggr_suffix;
         CustomParserMap const& custom_parser_map;
 
-        Cult::Containers::Map<String, NameSet*>& global_type_names;
+        map<String, NameSet*>& global_type_names;
       };
 
       //
@@ -242,7 +238,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -268,7 +264,7 @@ namespace CXX
           if (!name)
             return;
 
-          Boolean fl (fixed_length (e));
+          bool fl (fixed_length (e));
 
           NameSet set;
           set.insert (name);
@@ -297,7 +293,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           SemanticGraph::Context& lc (l.context ());
@@ -331,7 +327,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           SemanticGraph::Context& uc (u.context ());
@@ -368,7 +364,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           if (c.max () != 1)
@@ -393,7 +389,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           SemanticGraph::Context& cc (c.context ());
@@ -409,7 +405,7 @@ namespace CXX
 
           //
           //
-          Boolean restriction (false);
+          bool restriction (false);
 
           if (c.inherits_p ())
             restriction = c.inherits ().is_a<SemanticGraph::Restricts> () &&
@@ -472,7 +468,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           SemanticGraph::Context& tc (t.context ());
@@ -482,8 +478,8 @@ namespace CXX
 
           // See if this parser is being customized.
           //
-          Boolean custom (false);
-          CustomParserMap::ConstIterator i (custom_parser_map.find (name));
+          bool custom (false);
+          CustomParserMap::const_iterator i (custom_parser_map.find (name));
 
           if (i != custom_parser_map.end ())
           {
@@ -550,10 +546,10 @@ namespace CXX
             process (*last_);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          Boolean p (false);
+          bool p (false);
 
           if (last_ == 0 && options.root_element_first ())
             p = true;
@@ -595,7 +591,7 @@ namespace CXX
         }
 
       private:
-        Void
+        void
         process (SemanticGraph::Element& e)
         {
           SemanticGraph::Context& ec (e.context ());
@@ -618,7 +614,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& ns)
         {
           SemanticGraph::Context& nsc (ns.context ());
@@ -669,7 +665,7 @@ namespace CXX
                    Traversal::Includes,
                    Traversal::Imports
       {
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sources& sr)
         {
           SemanticGraph::Schema& s (sr.schema ());
@@ -681,7 +677,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Includes& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -693,7 +689,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Imports& i)
         {
           SemanticGraph::Schema& s (i.schema ());
@@ -705,16 +701,16 @@ namespace CXX
           }
         }
 
-        static Char const* seen_key;
+        static char const* seen_key;
       };
 
-      Char const* Uses::seen_key = "cxx-hybrid-parser-name-processor-seen";
+      char const* Uses::seen_key = "cxx-hybrid-parser-name-processor-seen";
 
-      Void
+      void
       process_impl (options const& ops,
                     SemanticGraph::Schema& tu,
                     SemanticGraph::Path const& file,
-                    Boolean deep)
+                    bool deep)
       {
         Context ctx (ops, tu, file);
 
@@ -776,11 +772,11 @@ namespace CXX
       }
     }
 
-    Boolean ParserNameProcessor::
+    bool ParserNameProcessor::
     process (options const& ops,
              SemanticGraph::Schema& tu,
              SemanticGraph::Path const& file,
-             Boolean deep)
+             bool deep)
     {
       try
       {

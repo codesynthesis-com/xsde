@@ -6,28 +6,25 @@
 #ifndef CXX_SERIALIZER_VALIDATOR_HXX
 #define CXX_SERIALIZER_VALIDATOR_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph/schema.hxx>
 
-#include <cxx/serializer/options.hxx>
-
 #include <xsde.hxx>
+#include <types.hxx>
+
+#include <cxx/serializer/options.hxx>
 
 namespace CXX
 {
   namespace Serializer
   {
-    using namespace Cult::Types;
-
     class Validator
     {
     public:
-      Boolean
+      bool
       validate (options const&,
                 XSDFrontend::SemanticGraph::Schema&,
                 XSDFrontend::SemanticGraph::Path const& tu,
-                Boolean gen_driver,
+                bool gen_driver,
                 const WarningSet& disabled_warnings);
     };
   }

@@ -3,16 +3,16 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-#include <cxx/hybrid/validator.hxx>
+#include <set>
+#include <iostream>
 
 #include <xsd-frontend/semantic-graph.hxx>
 #include <xsd-frontend/traversal.hxx>
 
 #include <cxx/hybrid/elements.hxx>
+#include <cxx/hybrid/validator.hxx>
 
-#include <iostream>
-
-using std::wcerr;
+using namespace std;
 
 namespace CXX
 {
@@ -30,7 +30,7 @@ namespace CXX
                            SemanticGraph::Path const& path,
                            Hybrid::options const& ops,
                            const WarningSet& disabled_warnings,
-                           Boolean& valid_)
+                           bool& valid_)
             : Context (std::wcerr, root, path, ops, 0, 0, 0),
               disabled_warnings_ (disabled_warnings),
               disabled_warnings_all_ (false),
@@ -43,8 +43,8 @@ namespace CXX
         }
 
       public:
-        Boolean
-        is_disabled (Char const* w)
+        bool
+        is_disabled (char const* w)
         {
           return disabled_warnings_all_ ||
             disabled_warnings_.find (w) != disabled_warnings_.end ();
@@ -79,10 +79,10 @@ namespace CXX
 
       protected:
         const WarningSet& disabled_warnings_;
-        Boolean disabled_warnings_all_;
-        Boolean& valid;
-        Boolean& subst_group_warning_issued;
-        Boolean subst_group_warning_issued_;
+        bool disabled_warnings_all_;
+        bool& valid;
+        bool& subst_group_warning_issued;
+        bool subst_group_warning_issued_;
       };
 
       //
@@ -100,7 +100,7 @@ namespace CXX
           *this >> schema_names_ >> ns_ >> names_ >> *this;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           using SemanticGraph::Schema;
@@ -144,7 +144,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Type& t)
         {
           if (t.named_p ())
@@ -153,7 +153,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (is_disabled ("H001"))
@@ -177,7 +177,7 @@ namespace CXX
 
         // Return true if root sources s.
         //
-        Boolean
+        bool
         sources_p (SemanticGraph::Schema& root, SemanticGraph::Schema& s)
         {
           using SemanticGraph::Schema;
@@ -197,7 +197,7 @@ namespace CXX
         }
 
       private:
-        Containers::Set<String> types_;
+        set<String> types_;
 
         Sources sources_;
 
@@ -211,12 +211,12 @@ namespace CXX
       //
       struct AnonymousMember: protected ValidationContext
       {
-        AnonymousMember (ValidationContext& c, Boolean& error_issued)
+        AnonymousMember (ValidationContext& c, bool& error_issued)
             : ValidationContext (c), error_issued_ (error_issued)
         {
         }
 
-        Boolean
+        bool
         traverse_common (SemanticGraph::Member& m)
         {
           SemanticGraph::Type& t (m.type ());
@@ -258,18 +258,18 @@ namespace CXX
         }
 
       private:
-        Boolean& error_issued_;
+        bool& error_issued_;
       };
 
       struct AnonymousElement: Traversal::Element,
                                AnonymousMember
       {
-        AnonymousElement (ValidationContext& c, Boolean& error_issued)
+        AnonymousElement (ValidationContext& c, bool& error_issued)
             : AnonymousMember (c, error_issued)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           if (traverse_common (e))
@@ -289,12 +289,12 @@ namespace CXX
       struct AnonymousAttribute: Traversal::Attribute,
                                  AnonymousMember
       {
-        AnonymousAttribute (ValidationContext& c, Boolean& error_issued)
+        AnonymousAttribute (ValidationContext& c, bool& error_issued)
             : AnonymousMember (c, error_issued)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& a)
         {
           if (traverse_common (a))
@@ -333,9 +333,9 @@ namespace CXX
         }
 
       private:
-        Boolean error_issued_;
+        bool error_issued_;
 
-        Containers::Set<String> types_;
+        set<String> types_;
 
         Sources sources_;
 
@@ -354,19 +354,19 @@ namespace CXX
 
       struct GlobalElementCount: Traversal::Element
       {
-        GlobalElementCount (UnsignedLong& count)
+        GlobalElementCount (size_t& count)
             : count_ (count)
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element&)
         {
           count_++;
         }
 
       private:
-        UnsignedLong& count_;
+        size_t& count_;
       };
 
       struct ParserValidation: Traversal::All,
@@ -383,7 +383,7 @@ namespace CXX
           *this >> contains_particle_ >> *this;
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -403,7 +403,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (!issued_)
@@ -421,7 +421,7 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (!issued_)
@@ -453,7 +453,7 @@ namespace CXX
           Traversal::Sequence::traverse (s);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           if (!issued_ && !restriction_p (c))
@@ -474,20 +474,20 @@ namespace CXX
         }
 
       private:
-        Boolean issued_;
+        bool issued_;
 
         Traversal::ContainsCompositor contains_compositor_;
         Traversal::ContainsParticle contains_particle_;
       };
     }
 
-    Boolean Validator::
+    bool Validator::
     validate (options const& ops,
               SemanticGraph::Schema& root,
               SemanticGraph::Path const& path,
               const WarningSet& disabled_warnings)
     {
-      Boolean valid (true);
+      bool valid (true);
       ValidationContext ctx (root, path, ops, disabled_warnings, valid);
 
       //
@@ -502,9 +502,9 @@ namespace CXX
 
       //
       //
-      Boolean par (ops.generate_parser ());
-      Boolean ser (ops.generate_serializer ());
-      Boolean agg (ops.generate_aggregate ());
+      bool par (ops.generate_parser ());
+      bool ser (ops.generate_serializer ());
+      bool agg (ops.generate_aggregate ());
 
       if (agg && !par && !ser && !ctx.is_disabled ("H002"))
       {
@@ -524,7 +524,7 @@ namespace CXX
           ops.root_element ().empty () &&
           !ctx.is_disabled ("H003"))
       {
-        UnsignedLong count (0);
+        size_t count (0);
 
         {
           Traversal::Schema schema;

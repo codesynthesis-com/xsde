@@ -6,17 +6,15 @@
 #ifndef PROCESSING_INHERITANCE_PROCESSOR_HXX
 #define PROCESSING_INHERITANCE_PROCESSOR_HXX
 
-#include <cult/types.hxx>
-
 #include <xsd-frontend/semantic-graph/elements.hxx> // Path
 #include <xsd-frontend/semantic-graph/schema.hxx>
+
+#include <types.hxx>
 
 namespace Processing
 {
   namespace Inheritance
   {
-    using namespace Cult::Types;
-
     class Processor
     {
     public:
@@ -27,10 +25,10 @@ namespace Processing
       // is rearranged to appear before the type containing this
       // element/attribute.
       //
-      Void
+      void
       process (XSDFrontend::SemanticGraph::Schema&,
                XSDFrontend::SemanticGraph::Path const& file,
-               Char const* by_value_key = 0);
+               char const* by_value_key = 0);
     };
   }
 }

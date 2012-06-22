@@ -12,8 +12,8 @@ namespace CXX
 {
   namespace Serializer
   {
-    Void
-    generate_serializer_header (Context&, Boolean generate_xml_schema);
+    void
+    generate_serializer_header (Context&, bool generate_xml_schema);
   }
 }
 

@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Serializer
   {
-    Void
+    void
     generate_attribute_validation_source (Context&);
   }
 }

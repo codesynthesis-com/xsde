@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           os << "class " << ename (e) << ";";
@@ -37,7 +37,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           os << "class " << ename (l) << ";";
@@ -53,7 +53,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           os << "class " << ename (u) << ";";
@@ -69,7 +69,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           os << "class " << ename (c) << ";";
@@ -77,7 +77,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_forward (Context& ctx)
     {
       ctx.os << "// Forward declarations" << endl

@@ -23,7 +23,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           if (!c.mixed_p ())
@@ -46,7 +46,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_characters_validation_source (Context& ctx)
     {
       //@@ Most of the time there is no mixed content type so

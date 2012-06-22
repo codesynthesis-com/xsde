@@ -9,13 +9,10 @@
 #include <locale>
 #include <iosfwd>
 
-#include <cult/types.hxx>
+#include <types.hxx>
 
 namespace TypeMap
 {
-  using namespace Cult::Types;
-  typedef WideString String;
-
   class Lexer
   {
   public:
@@ -29,7 +26,7 @@ namespace TypeMap
         eos
       };
 
-      Token (Type type, String const& lexeme, UnsignedLong line)
+      Token (Type type, String const& lexeme, size_t line)
           : type_ (type), lexeme_ (lexeme), line_ (line)
       {
       }
@@ -46,7 +43,7 @@ namespace TypeMap
         return lexeme_;
       }
 
-      UnsignedLong
+      size_t
       line () const
       {
         return line_;
@@ -55,7 +52,7 @@ namespace TypeMap
     private:
       Type type_;
       String lexeme_;
-      UnsignedLong line_;
+      size_t line_;
     };
 
     Lexer (std::istream&, String const& path);
@@ -69,12 +66,11 @@ namespace TypeMap
     std::locale locale_;
     std::istream& is_;
     String path_;
-    UnsignedLong line_;
+    size_t line_;
     String held_lexeme_;
-    Boolean comment_;
+    bool comment_;
   };
 
 }
 
 #endif // XSDE_TYPE_MAP_LEXER_HXX
-

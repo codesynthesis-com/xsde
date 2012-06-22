@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
           String const& ns (a.definition_namespace ().name ());
@@ -98,12 +98,12 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
           //
-          UnsignedLong min (a.min ());
+          size_t min (a.min ());
 
           if (min == 0)
             os << "if (this->" << epresent (a) << " ())"
@@ -122,12 +122,12 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           if (c.contains_begin () != c.contains_end ())
           {
-            UnsignedLong min (c.min ()), max (c.max ());
+            size_t min (c.min ()), max (c.max ());
 
             if (min == 0 && max == 1)
             {
@@ -234,10 +234,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
-          UnsignedLong min (s.min ()), max (s.max ());
+          size_t min (s.min ()), max (s.max ());
 
           if (min == 0 && max == 1)
           {
@@ -312,10 +312,10 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
-          UnsignedLong min (e.min ()), max (e.max ());
+          size_t min (e.min ()), max (e.max ());
 
           String const& name (ename (e));
 
@@ -351,7 +351,7 @@ namespace CXX
           String const& arg (arg_type (e.type ()));
           String fq_type (fq_name (e.type ()));
 
-          Boolean poly (poly_code && !anonymous (e.type ()));
+          bool poly (poly_code && !anonymous (e.type ()));
           String inst (poly ? String (L"s") : L"this->" + emember (e));
 
           if (poly)
@@ -613,10 +613,10 @@ namespace CXX
           }
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Any& a)
         {
-          UnsignedLong min (a.min ()), max (a.max ());
+          size_t min (a.min ()), max (a.max ());
 
           if (min == 0 && max == 1)
           {
@@ -833,7 +833,7 @@ namespace CXX
           contains_particle_ >> particle_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           if (!has<Traversal::Element> (c) &&
@@ -843,7 +843,7 @@ namespace CXX
           // Don't use restriction_p here since we don't want special
           // treatment of anyType.
           //
-          Boolean restriction (
+          bool restriction (
             c.inherits_p () &&
             c.inherits ().is_a<SemanticGraph::Restricts> ());
 
@@ -888,7 +888,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_element_validation_source (Context& ctx)
     {
       Traversal::Schema schema;

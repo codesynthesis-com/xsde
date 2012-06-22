@@ -114,10 +114,6 @@ $(call import,\
   l: cutl.l,cpp-options: cutl.l.cpp-options)
 
 $(call import,\
-  $(scf_root)/import/libcult/stub.make,\
-  l: cult.l,cpp-options: cult.l.cpp-options)
-
-$(call import,\
   $(scf_root)/import/libboost/filesystem/stub.make,\
   l: fs.l,cpp-options: fs.l.cpp-options)
 
@@ -127,12 +123,11 @@ $(call import,\
 
 # Build.
 #
-$(xsde): $(cxx_obj) $(xsd_fe.l) $(cult.l) $(cutl.l) $(fs.l)
+$(xsde): $(cxx_obj) $(xsd_fe.l) $(cutl.l) $(fs.l)
 
 $(cxx_obj) $(cxx_od): cpp_options := -I$(src_base)
 $(cxx_obj) $(cxx_od):     \
   $(xsd_fe.l.cpp-options) \
-  $(cult.l.cpp-options)   \
   $(cutl.l.cpp-options)   \
   $(fs.l.cpp-options)
 

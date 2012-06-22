@@ -21,7 +21,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           String const& name (eimpl (e));
@@ -66,7 +66,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (eimpl (l));
@@ -113,7 +113,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (eimpl (u));
@@ -145,7 +145,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& arg (arg_type (e.type ()));
@@ -169,7 +169,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           String const& arg (arg_type (a.type ()));
@@ -204,12 +204,12 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
-          Boolean hb (c.inherits_p ());
-          Boolean he (has<Traversal::Element> (c));
-          Boolean ha (has<Traversal::Attribute> (c));
+          bool hb (c.inherits_p ());
+          bool he (has<Traversal::Element> (c));
+          bool ha (has<Traversal::Attribute> (c));
 
           String const& name (eimpl (c));
           String const& ret (ret_type (c));
@@ -277,7 +277,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_impl_header (Context& ctx)
     {
       Traversal::Schema schema;

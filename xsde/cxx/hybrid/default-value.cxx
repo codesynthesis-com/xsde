@@ -24,18 +24,18 @@ namespace CXX
     {
     }
 
-    Void InitValue::
+    void InitValue::
     dispatch (SemanticGraph::Node& type, String const& value)
     {
       value_ = value;
       Traversal::NodeBase::dispatch (type);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::List& l)
     {
       SemanticGraph::Type& t (l.argumented ().type ());
-      Boolean fl (fixed_length (t));
+      bool fl (fixed_length (t));
 
       LiteralValue::collapse (value_);
 
@@ -45,9 +45,9 @@ namespace CXX
       String ov (value_);
       String om (member_);
 
-      Size b (0);
+      size_t b (0);
 
-      for (Size e (ov.find (' ')); ; e = ov.find (' ', b))
+      for (size_t e (ov.find (' ')); ; e = ov.find (' ', b))
       {
         String v (ov, b, e != String::npos ? e - b : e);
 
@@ -146,7 +146,7 @@ namespace CXX
       value_ = ov;
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Union& u)
     {
       String const& value (u.context ().get<String> ("value"));
@@ -178,13 +178,13 @@ namespace CXX
       }
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Complex& c)
     {
       Traversal::NodeBase::dispatch (ultimate_base (c));
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Enumeration& e)
     {
       using SemanticGraph::Enumerator;
@@ -215,7 +215,7 @@ namespace CXX
         //
         String const& vt (e.context ().get<String> ("value-type"));
 
-        Size n (0);
+        size_t n (0);
         {
           Enumeration const& tmp (x);
           for (Enumeration::NamesConstIterator i (tmp.names_begin ());
@@ -233,7 +233,7 @@ namespace CXX
       os << ");";
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Type& t)
     {
       // This is a fall-back case where we handle all other (literal)
@@ -245,7 +245,7 @@ namespace CXX
 
     // anySimpleType.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::AnySimpleType& t)
     {
       string_type (t);
@@ -253,49 +253,49 @@ namespace CXX
 
     // Strings.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::String& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::NormalizedString& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Token& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::NameToken& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::NameTokens&)
     {
       string_sequence_type ();
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Name& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::NCName& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Language& t)
     {
       string_type (t);
@@ -303,13 +303,13 @@ namespace CXX
 
     // Qualified name.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::QName&)
     {
       // Newer version of the XSD frontend provide resolved values
       // in the form <namespace>#<qname>.
       //
-      Size p (value_.rfind ('#'));
+      size_t p (value_.rfind ('#'));
       if (p != String::npos)
         value_ = String (value_, p + 1, value_.size () - p - 1);
 
@@ -348,19 +348,19 @@ namespace CXX
 
     // ID/IDREF.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Id& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::IdRef& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::IdRefs&)
     {
       string_sequence_type ();
@@ -368,7 +368,7 @@ namespace CXX
 
     // URI.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::AnyURI& t)
     {
       string_type (t);
@@ -376,7 +376,7 @@ namespace CXX
 
     // Binary.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Base64Binary&)
     {
       LiteralValue::collapse (value_);
@@ -386,7 +386,7 @@ namespace CXX
            << endl;
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::HexBinary&)
     {
       LiteralValue::collapse (value_);
@@ -399,15 +399,15 @@ namespace CXX
 
     // Date/time.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Date&)
     {
       // date := [-]CCYY[N]*-MM-DD[Z|(+|-)HH:MM]
       //
       LiteralValue::collapse (value_);
 
-      Size b (0);
-      Size e (value_.find ('-', value_[0] == '-' ? 5 : 4));
+      size_t b (0);
+      size_t e (value_.find ('-', value_[0] == '-' ? 5 : 4));
       String year (value_, 0, e);
 
       b = e + 1;
@@ -427,15 +427,15 @@ namespace CXX
       time_zone (b + 2);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::DateTime&)
     {
       // date_time := [-]CCYY[N]*-MM-DDTHH:MM:SS[.S+][Z|(+|-)HH:MM]
       //
       LiteralValue::collapse (value_);
 
-      Size b (0);
-      Size e (value_.find ('-', value_[0] == '-' ? 5 : 4));
+      size_t b (0);
+      size_t e (value_.find ('-', value_[0] == '-' ? 5 : 4));
       String year (value_, 0, e);
       b = e + 1;
 
@@ -454,7 +454,7 @@ namespace CXX
       e = b + 2;
       for (; e < value_.size (); ++e)
       {
-        WideChar c (value_[e]);
+        wchar_t c (value_[e]);
 
         if (c == 'Z' || c == '+' || c == '-')
           break;
@@ -482,12 +482,12 @@ namespace CXX
 
     namespace
     {
-      Size
-      find_delim (String const& s, Size pos)
+      size_t
+      find_delim (String const& s, size_t pos)
       {
         for (; pos < s.size (); ++pos)
         {
-          WideChar c (s[pos]);
+          wchar_t c (s[pos]);
 
           if (c == 'Y' || c == 'D' || c == 'M' || c == 'H' ||
               c == 'M' || c == 'S' || c == 'T')
@@ -498,14 +498,14 @@ namespace CXX
       }
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Duration&)
     {
       // duration := [-]P[nY][nM][nD][TnHnMn[.n+]S]
       //
       LiteralValue::collapse (value_);
 
-      Size b (1), e, n (value_.size ());
+      size_t b (1), e, n (value_.size ());
 
       if (value_[0] == '-')
       {
@@ -583,7 +583,7 @@ namespace CXX
       }
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Day&)
     {
       // gday := ---DD[Z|(+|-)HH:MM]
@@ -598,7 +598,7 @@ namespace CXX
       time_zone (5);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Month&)
     {
       // gmonth := --MM[Z|(+|-)HH:MM]
@@ -613,7 +613,7 @@ namespace CXX
       time_zone (4);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::MonthDay&)
     {
       // gmonth_day := --MM-DD[Z|(+|-)HH:MM]
@@ -632,17 +632,17 @@ namespace CXX
       time_zone (7);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Year&)
     {
       // gyear := [-]CCYY[N]*[Z|(+|-)HH:MM]
       //
       LiteralValue::collapse (value_);
 
-      Size pos (value_[0] == '-' ? 5 : 4);
+      size_t pos (value_[0] == '-' ? 5 : 4);
       for (; pos < value_.size (); ++pos)
       {
-        WideChar c (value_[pos]);
+        wchar_t c (value_[pos]);
 
         if (c == 'Z' || c == '+' || c == '-')
           break;
@@ -656,14 +656,14 @@ namespace CXX
       time_zone (pos);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::YearMonth&)
     {
       // gyear_month := [-]CCYY[N]*-MM[Z|(+|-)HH:MM]
       //
       LiteralValue::collapse (value_);
 
-      Size pos (value_.find ('-', value_[0] == '-' ? 5 : 4));
+      size_t pos (value_.find ('-', value_[0] == '-' ? 5 : 4));
 
       String year (value_, 0, pos);
       String month (value_, pos + 1, 2);
@@ -677,7 +677,7 @@ namespace CXX
       time_zone (pos + 3);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Time&)
     {
       // time := HH:MM:SS[.S+][Z|(+|-)HH:MM]
@@ -687,10 +687,10 @@ namespace CXX
       String hours (value_, 0, 2);
       String minutes (value_, 3, 2);
 
-      Size e (8);
+      size_t e (8);
       for (; e < value_.size (); ++e)
       {
-        WideChar c (value_[e]);
+        wchar_t c (value_[e]);
 
         if (c == 'Z' || c == '+' || c == '-')
           break;
@@ -710,8 +710,8 @@ namespace CXX
       time_zone (e);
     }
 
-    Void InitValue::
-    time_zone (Size pos)
+    void InitValue::
+    time_zone (size_t pos)
     {
       // time_zone := Z|(+|-)HH:MM
       //
@@ -746,19 +746,19 @@ namespace CXX
 
     // Entity.
     //
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Entity& t)
     {
       string_type (t);
     }
 
-    Void InitValue::
+    void InitValue::
     traverse (SemanticGraph::Fundamental::Entities&)
     {
       string_sequence_type ();
     }
 
-    Void InitValue::
+    void InitValue::
     string_type (SemanticGraph::Type& t)
     {
       // In case STL is disabled, strings are returned as literals
@@ -795,7 +795,7 @@ namespace CXX
       }
     }
 
-    Void InitValue::
+    void InitValue::
     string_sequence_type ()
     {
       LiteralValue::collapse (value_);
@@ -803,9 +803,9 @@ namespace CXX
       if (!value_)
         return;
 
-      Size b (0);
+      size_t b (0);
 
-      for (Size e (value_.find (' ')); ; e = value_.find (' ', b))
+      for (size_t e (value_.find (' ')); ; e = value_.find (' ', b))
       {
         String v (value_, b, e != String::npos ? e - b : e);
 
@@ -856,7 +856,7 @@ namespace CXX
     {
     }
 
-    Void CompareValue::
+    void CompareValue::
     dispatch (SemanticGraph::Node& type, String const& lhs, String const& rhs)
     {
       lhs_ = &lhs;
@@ -864,7 +864,7 @@ namespace CXX
       Traversal::NodeBase::dispatch (type);
     }
 
-    Void CompareValue::
+    void CompareValue::
     traverse (SemanticGraph::Union& u)
     {
       String const& value (u.context ().get<String> ("value"));
@@ -873,13 +873,13 @@ namespace CXX
         " ()";
     }
 
-    Void CompareValue::
+    void CompareValue::
     traverse (SemanticGraph::Complex& c)
     {
       Traversal::NodeBase::dispatch (ultimate_base (c));
     }
 
-    Void CompareValue::
+    void CompareValue::
     traverse (SemanticGraph::Enumeration& e)
     {
       // First see if we should delegate this one to the Complex
@@ -894,7 +894,7 @@ namespace CXX
       os << *lhs_ << " == " << *rhs_;
     }
 
-    Void CompareValue::
+    void CompareValue::
     traverse (SemanticGraph::Type&)
     {
       // This is a fall-back case where we handle all other types.

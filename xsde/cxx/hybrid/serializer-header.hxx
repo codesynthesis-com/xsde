@@ -12,7 +12,7 @@ namespace CXX
 {
   namespace Hybrid
   {
-    Void
+    void
     generate_serializer_header (Context&);
   }
 }

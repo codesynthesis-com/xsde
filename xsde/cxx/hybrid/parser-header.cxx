@@ -23,7 +23,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Complex& c)
         {
           if (c.inherits_p ())
@@ -52,7 +52,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& e)
         {
           // First see if we should delegate this one to the Complex
@@ -73,8 +73,8 @@ namespace CXX
           //
           if (name)
           {
-            Boolean fl (fixed_length (e));
-            Boolean val (!options.suppress_validation () &&
+            bool fl (fixed_length (e));
+            bool val (!options.suppress_validation () &&
                          !options.suppress_parser_val ());
 
             SemanticGraph::Type& b (e.inherits ().base ());
@@ -232,7 +232,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& l)
         {
           String const& name (epimpl_custom (l));
@@ -323,7 +323,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (Type& u)
         {
           String const& name (epimpl_custom (u));
@@ -333,7 +333,7 @@ namespace CXX
           //
           if (name)
           {
-            Boolean fl (fixed_length (u));
+            bool fl (fixed_length (u));
 
             os << "class " << name << ": public " <<
               (mixin ? "virtual " : "") << epskel (u)
@@ -437,7 +437,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Compositor& c)
         {
           if (c.max () != 1)
@@ -467,7 +467,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::All& a)
         {
           // For the all compositor, maxOccurs=1 and minOccurs={0,1}.
@@ -482,7 +482,7 @@ namespace CXX
           Traversal::All::traverse (a);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Choice& c)
         {
           os << "virtual void" << endl
@@ -492,7 +492,7 @@ namespace CXX
           Traversal::Choice::traverse (c);
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Sequence& s)
         {
           if (s.max () != 1)
@@ -519,7 +519,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Element& e)
         {
           String const& arg (parg_type (e.type ()));
@@ -542,7 +542,7 @@ namespace CXX
         {
         }
 
-        virtual Void
+        virtual void
         traverse (SemanticGraph::Attribute& a)
         {
           if (a.fixed_p ())
@@ -595,7 +595,7 @@ namespace CXX
           names_attribute_callback_ >> attribute_callback_;
         }
 
-        virtual Void
+        virtual void
         traverse (Type& c)
         {
           String const& name (epimpl_custom (c));
@@ -605,14 +605,14 @@ namespace CXX
           //
           if (name)
           {
-            Boolean hb (c.inherits_p ());
-            Boolean he (has<Traversal::Element> (c));
-            Boolean ha (has<Traversal::Attribute> (c));
-            Boolean hae (has_particle<Traversal::Any> (c));
+            bool hb (c.inherits_p ());
+            bool he (has<Traversal::Element> (c));
+            bool ha (has<Traversal::Attribute> (c));
+            bool hae (has_particle<Traversal::Any> (c));
 
-            Boolean restriction (restriction_p (c));
-            Boolean fixed (fixed_length (c));
-            Boolean rec (recursive (c));
+            bool restriction (restriction_p (c));
+            bool fixed (fixed_length (c));
+            bool rec (recursive (c));
 
             String const& ret (pret_type (c));
 
@@ -784,7 +784,7 @@ namespace CXX
       };
     }
 
-    Void
+    void
     generate_parser_header (Context& ctx)
     {
       ctx.os << "#include <xsde/cxx/stack.hxx>" << endl

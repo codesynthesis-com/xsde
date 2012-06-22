@@ -7,9 +7,15 @@
 #define TYPES_HXX
 
 #include <vector>
+#include <cstddef> // std::size_t
 
-#include <cult/types.hxx>
+#include <xsd-frontend/types.hxx>
 
-typedef std::vector<Cult::Types::NarrowString> NarrowStrings;
+using std::size_t;
+
+using XSDFrontend::String;
+using XSDFrontend::NarrowString;
+
+typedef std::vector<NarrowString> NarrowStrings;
 
 #endif // TYPES_HXX

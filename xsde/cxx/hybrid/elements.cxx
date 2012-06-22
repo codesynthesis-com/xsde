@@ -350,7 +350,7 @@ namespace CXX
     //
     //
     String Context::
-    scope (SemanticGraph::Compositor& c, Boolean fq) const
+    scope (SemanticGraph::Compositor& c, bool fq) const
     {
       using namespace SemanticGraph;
 
@@ -403,7 +403,7 @@ namespace CXX
     }
 
     String Context::
-    scope (SemanticGraph::Element& e, Boolean fq) const
+    scope (SemanticGraph::Element& e, bool fq) const
     {
       SemanticGraph::Compositor& c (e.contained_particle ().compositor ());
 
@@ -414,7 +414,7 @@ namespace CXX
     }
 
     String Context::
-    scope (SemanticGraph::Attribute& a, Boolean fq) const
+    scope (SemanticGraph::Attribute& a, bool fq) const
     {
       using SemanticGraph::Complex;
 
@@ -425,7 +425,7 @@ namespace CXX
         : ename_custom (t);
     }
 
-    Boolean Context::
+    bool Context::
     recursive_base (SemanticGraph::Complex& c)
     {
       using namespace SemanticGraph;
@@ -443,17 +443,17 @@ namespace CXX
       return false;
     }
 
-    Void Context::
+    void Context::
     close_ns ()
     {
-      for (Size i (0), n (ns_stack.size () - 1); i < n; ++i)
+      for (size_t i (0), n (ns_stack.size () - 1); i < n; ++i)
         os << "}";
     }
 
-    Void Context::
+    void Context::
     open_ns ()
     {
-      for (NamespaceStack::Iterator i (ns_stack.begin () + 1);
+      for (NamespaceStack::iterator i (ns_stack.begin () + 1);
            i != ns_stack.end ();
            ++i)
       {
@@ -484,11 +484,11 @@ namespace CXX
         return os;
     }
 
-    Boolean Context::
+    bool Context::
     enum_mapping (SemanticGraph::Enumeration& e,
                   SemanticGraph::Enumeration** base)
     {
-      Boolean gen (false);
+      bool gen (false);
       StringBasedType t (gen);
       t.dispatch (e);
 
@@ -515,18 +515,18 @@ namespace CXX
     // Namespace
     //
     Namespace::
-    Namespace (Context& c, Boolean track_scope)
+    Namespace (Context& c, bool track_scope)
         : CXX::Namespace (c, track_scope ? this : 0), ctx_ (c)
     {
     }
 
-    Void Namespace::
+    void Namespace::
     enter (String const& name)
     {
       ctx_.ns_stack.push_back (name);
     }
 
-    Void Namespace::
+    void Namespace::
     leave ()
     {
       ctx_.ns_stack.pop_back ();
@@ -534,7 +534,7 @@ namespace CXX
 
     // Includes
     //
-    Void TypeForward::
+    void TypeForward::
     traverse (SemanticGraph::Type& t)
     {
       SemanticGraph::Context& ctx (t.context ());
@@ -558,7 +558,7 @@ namespace CXX
         os << "class " << ename (t) << ";";
     }
 
-    Void Includes::
+    void Includes::
     traverse_ (SemanticGraph::Uses& u)
     {
       // Support for weak (forward) inclusion used in the file-per-type
@@ -566,7 +566,7 @@ namespace CXX
       //
       Type t (type_);
       SemanticGraph::Schema& s (u.schema ());
-      Boolean weak (u.context ().count ("weak"));
+      bool weak (u.context ().count ("weak"));
 
       if (weak && (t == header || t == impl_header))
       {
