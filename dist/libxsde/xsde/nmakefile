@@ -583,7 +583,7 @@ config.h: $(root)\config\config.nmake
 	@echo #define XSDE_SERIALIZER_VALIDATION  >>$@
 !endif
 !if "$(XSDE_REGEXP)" == "y"
-	@echo #define REGEXP                      >>$@
+	@echo #define XSDE_REGEXP                 >>$@
 !endif
 !if "$(XSDE_REUSE_STYLE)" == "mixin"
 	@echo #define XSDE_REUSE_STYLE_MIXIN      >>$@
