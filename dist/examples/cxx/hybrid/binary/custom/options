@@ -2,7 +2,7 @@
 --generate-serializer
 --generate-aggregate
 --generate-insertion orawstream
---hxx-prologue #include "orawstream.hxx"
+--hxx-prologue '#include "orawstream.hxx"'
 --generate-extraction irawstream 
---hxx-prologue #include "irawstream.hxx"
+--hxx-prologue '#include "irawstream.hxx"'
 --extern-xml-schema xml-schema.xsd
