@@ -1257,13 +1257,16 @@ namespace CXX
               os << access;
           }
 
+          // GCC 2.9X cannot do enum-to-enum static_cast.
+          //
           os << earm (c) << " (" << endl
              << "static_cast< " << type_scope;
 
           if (c.context ().count ("type"))
             os << "::" << etype (c);
 
-          os << "::" << earm_tag (c) << " > (t));"
+          os << "::" << earm_tag (c) << " > (" << endl
+             << "static_cast< unsigned int > (t)));"
              << endl;
 
           // Test whether we have any arms that need initialization.

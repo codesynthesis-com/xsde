@@ -747,8 +747,12 @@ namespace CXX
             os << esskel (t) << "::" << arm_tag << " " << s << "::" << endl
                << esarm (c) << " ()"
                << "{"
-               << arm_tag << " t (static_cast< " << arm_tag << " > (" << endl
-               << access << iter << "->" << earm (c) << " ()));";
+              // GCC 2.9X cannot do enum-to-enum static_cast.
+              //
+               << arm_tag << " t (" << endl
+               << "static_cast< " << arm_tag << " > (" << endl
+               << "static_cast< unsigned int > (" << endl
+               << access << iter << "->" << earm (c) << " ())));";
           }
           else if (c.min () == 0)
           {
@@ -761,24 +765,32 @@ namespace CXX
             os << esskel (t) << "::" << arm_tag << " " << s << "::" << endl
                << esarm (c) << " ()"
                << "{"
-               << arm_tag << " t (static_cast< " << arm_tag << " > (" << endl
-               << access << ename (c) << " ()." << earm (c) << " ()));";
+              // GCC 2.9X cannot do enum-to-enum static_cast.
+              //
+               << arm_tag << " t (" << endl
+               << "static_cast< " << arm_tag << " > (" << endl
+               << "static_cast< unsigned int > (" << endl
+               << access << ename (c) << " ()." << earm (c) << " ())));";
           }
           else
           {
             os << esskel (t) << "::" << arm_tag << " " << s << "::" << endl
                << esarm (c) << " ()"
                << "{"
-               << arm_tag << " t (static_cast< " << arm_tag << " > (" << endl;
+              // GCC 2.9X cannot do enum-to-enum static_cast.
+              //
+               << arm_tag << " t (" << endl
+               << "static_cast< " << arm_tag << " > (" << endl
+               << "static_cast< unsigned int > (" << endl;
 
 
             // We may be in a choice in which case we get a nested
             // type (and accessor function) even for min == max == 1.
             //
             if (c.context ().count ("type"))
-              os << access << ename (c) << " ()." << earm (c) << " ()));";
+              os << access << ename (c) << " ()." << earm (c) << " ())));";
             else
-              os << access << earm (c) << " ()));";
+              os << access << earm (c) << " ())));";
           }
 
           // Test whether we have any arms that need initialization.
