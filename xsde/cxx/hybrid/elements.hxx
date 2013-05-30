@@ -1688,7 +1688,7 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Type& t)
       {
-        type (t);
+        general_type (t);
       }
 
       // anyType & anySimpleType.
@@ -1696,7 +1696,7 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::AnyType& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
@@ -1842,7 +1842,7 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::NameTokens& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
@@ -1868,7 +1868,7 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::QName& t)
       {
-        type (t);
+        general_type (t);
       }
 
       // ID/IDREF.
@@ -1888,7 +1888,7 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::IdRefs& t)
       {
-        type (t);
+        general_type (t);
       }
 
       // URI.
@@ -1904,13 +1904,13 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::Base64Binary& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::HexBinary& t)
       {
-        type (t);
+        general_type (t);
       }
 
       // Date/time.
@@ -1918,55 +1918,55 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::Date& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::DateTime& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::Duration& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::Day& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::Month& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::MonthDay& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::Year& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::YearMonth& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       traverse (SemanticGraph::Fundamental::Time& t)
       {
-        type (t);
+        general_type (t);
       }
 
       // Entity.
@@ -1980,12 +1980,12 @@ namespace CXX
       virtual void
       traverse (SemanticGraph::Fundamental::Entities& t)
       {
-        type (t);
+        general_type (t);
       }
 
     protected:
       virtual void
-      type (SemanticGraph::Type&) = 0;
+      general_type (SemanticGraph::Type&) = 0;
 
       virtual void
       fund_type (SemanticGraph::Type&) = 0;
@@ -2003,7 +2003,7 @@ namespace CXX
 
     protected:
       virtual void
-      type (SemanticGraph::Type& t)
+      general_type (SemanticGraph::Type& t)
       {
         if (!fixed_length (t))
           os << "*";
@@ -2036,7 +2036,7 @@ namespace CXX
 
     protected:
       virtual void
-      type (SemanticGraph::Type& t)
+      general_type (SemanticGraph::Type& t)
       {
         if (!custom_alloc)
           os << "delete " << var_ << ";";
@@ -2054,14 +2054,14 @@ namespace CXX
       virtual void
       fund_type (SemanticGraph::Type& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
       string_type (SemanticGraph::Type& t)
       {
         if (stl)
-          type (t);
+          general_type (t);
         else
         {
           if (!custom_alloc)
@@ -2095,7 +2095,7 @@ namespace CXX
 
     protected:
       virtual void
-      type (SemanticGraph::Type& t)
+      general_type (SemanticGraph::Type& t)
       {
         String const& name (ename (*member_));
 
@@ -2115,7 +2115,7 @@ namespace CXX
       virtual void
       fund_type (SemanticGraph::Type& t)
       {
-        type (t);
+        general_type (t);
       }
 
       virtual void
