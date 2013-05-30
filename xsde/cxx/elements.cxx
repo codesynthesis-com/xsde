@@ -291,16 +291,18 @@ namespace CXX
 
       if (!path.empty ())
       {
+        path.normalize ();
+
         // Try to use the portable representation of the path. If that
         // fails, fall back to the native representation.
         //
         try
         {
-          pair = path.string ();
+          pair = path.posix_string ();
         }
         catch (SemanticGraph::InvalidPath const&)
         {
-          pair = path.native_file_string ();
+          pair = path.string ();
         }
       }
 

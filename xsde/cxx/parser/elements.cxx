@@ -267,6 +267,7 @@ namespace CXX
         s.context ().count ("renamed")
         ? s.context ().get<SemanticGraph::Path> ("renamed")
         : u.path ());
+      path.normalize ();
 
       // Try to use the portable representation of the path. If that
       // fails, fall back to the native representation.
@@ -274,11 +275,11 @@ namespace CXX
       NarrowString path_str;
       try
       {
-        path_str = path.string ();
+        path_str = path.posix_string ();
       }
       catch (SemanticGraph::InvalidPath const&)
       {
-        path_str = path.native_file_string ();
+        path_str = path.string ();
       }
 
       String inc_path;

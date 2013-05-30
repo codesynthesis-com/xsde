@@ -3,9 +3,9 @@
 // copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <algorithm>
 #include <iostream>
-
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
 
 #include <cutl/re.hxx>
 
@@ -49,17 +49,9 @@ using namespace XSDFrontend::SemanticGraph;
 
 //
 //
-typedef
-boost::filesystem::wifstream
-WideInputFileStream;
-
-typedef
-boost::filesystem::wofstream
-WideOutputFileStream;
-
-typedef
-boost::filesystem::ifstream
-NarrowInputFileStream;
+typedef std::wifstream WideInputFileStream;
+typedef std::wofstream WideOutputFileStream;
+typedef std::ifstream NarrowInputFileStream;
 
 namespace CXX
 {
@@ -129,8 +121,9 @@ namespace CXX
     {
       try
       {
-        Path fs_path (path, boost::filesystem::native);
-        ifs.open (fs_path, std::ios_base::in | std::ios_base::binary);
+        Path fs_path (path);
+        ifs.open (fs_path.string ().c_str (),
+                  std::ios_base::in | std::ios_base::binary);
 
         if (!ifs.is_open ())
         {
@@ -213,7 +206,7 @@ namespace CXX
       {
         if (NarrowString name = ops.extern_xml_schema ())
         {
-          if (file_path.native_file_string () != name)
+          if (file_path.string () != name)
             generate_xml_schema = false;
         }
       }
@@ -397,7 +390,7 @@ namespace CXX
       bool inline_ (ops.generate_inline () && !generate_xml_schema);
       bool source (!generate_xml_schema);
 
-      NarrowString name (file_path.leaf ());
+      NarrowString name (file_path.leaf ().string ());
       NarrowString skel_suffix (ops.skel_file_suffix ());
       NarrowString impl_suffix (ops.impl_file_suffix ());
 
@@ -503,9 +496,9 @@ namespace CXX
         cxx_driver_name = cxx_driver_expr.replace (name);
       }
 
-      Path hxx_path (hxx_name, boost::filesystem::native);
-      Path ixx_path (ixx_name, boost::filesystem::native);
-      Path cxx_path (cxx_name, boost::filesystem::native);
+      Path hxx_path (hxx_name);
+      Path ixx_path (ixx_name);
+      Path cxx_path (cxx_name);
 
       Path hxx_impl_path;
       Path cxx_impl_path;
@@ -513,9 +506,9 @@ namespace CXX
 
       if (impl || driver)
       {
-        hxx_impl_path = Path (hxx_impl_name, boost::filesystem::native);
-        cxx_impl_path = Path (cxx_impl_name, boost::filesystem::native);
-        cxx_driver_path = Path (cxx_driver_name, boost::filesystem::native);
+        hxx_impl_path = Path (hxx_impl_name);
+        cxx_impl_path = Path (cxx_impl_name);
+        cxx_driver_path = Path (cxx_driver_name);
       }
 
       Path out_dir;
@@ -524,7 +517,7 @@ namespace CXX
       {
         try
         {
-          out_dir = Path (dir, boost::filesystem::native);
+          out_dir = Path (dir);
         }
         catch (InvalidPath const&)
         {
@@ -539,7 +532,7 @@ namespace CXX
         // unless the user added the directory so that we propagate this
         // to the output files.
         //
-        Path fpt_dir (file_path.branch_path ());
+        Path fpt_dir (file_path.directory ());
 
         if (!fpt_dir.empty ())
           out_dir /= fpt_dir;
@@ -570,7 +563,8 @@ namespace CXX
       {
         if (!ops.force_overwrite ())
         {
-          WideInputFileStream tmp (hxx_impl_path, ios_base::in);
+          WideInputFileStream tmp (
+            hxx_impl_path.string ().c_str (), ios_base::in);
 
           if (tmp.is_open ())
           {
@@ -582,7 +576,7 @@ namespace CXX
           tmp.close ();
         }
 
-        hxx_impl.open (hxx_impl_path, ios_base::out);
+        hxx_impl.open (hxx_impl_path.string ().c_str (), ios_base::out);
 
         if (!hxx_impl.is_open ())
         {
@@ -592,11 +586,12 @@ namespace CXX
         }
 
         unlinks.add (hxx_impl_path);
-        file_list.push_back (hxx_impl_path.native_file_string ());
+        file_list.push_back (hxx_impl_path.string ());
 
         if (!ops.force_overwrite ())
         {
-          WideInputFileStream tmp (cxx_impl_path, ios_base::in);
+          WideInputFileStream tmp (
+            cxx_impl_path.string ().c_str (), ios_base::in);
 
           if (tmp.is_open ())
           {
@@ -608,7 +603,7 @@ namespace CXX
           tmp.close ();
         }
 
-        cxx_impl.open (cxx_impl_path, ios_base::out);
+        cxx_impl.open (cxx_impl_path.string ().c_str (), ios_base::out);
 
         if (!cxx_impl.is_open ())
         {
@@ -618,14 +613,15 @@ namespace CXX
         }
 
         unlinks.add (cxx_impl_path);
-        file_list.push_back (cxx_impl_path.native_file_string ());
+        file_list.push_back (cxx_impl_path.string ());
       }
 
       if (driver)
       {
         if (!ops.force_overwrite ())
         {
-          WideInputFileStream tmp (cxx_driver_path, ios_base::in);
+          WideInputFileStream tmp (
+            cxx_driver_path.string ().c_str (), ios_base::in);
 
           if (tmp.is_open ())
           {
@@ -637,7 +633,7 @@ namespace CXX
           tmp.close ();
         }
 
-        cxx_driver.open (cxx_driver_path, ios_base::out);
+        cxx_driver.open (cxx_driver_path.string ().c_str (), ios_base::out);
 
         if (!cxx_driver.is_open ())
         {
@@ -647,12 +643,12 @@ namespace CXX
         }
 
         unlinks.add (cxx_driver_path);
-        file_list.push_back (cxx_driver_path.native_file_string ());
+        file_list.push_back (cxx_driver_path.string ());
       }
 
       // Open the skel files.
       //
-      WideOutputFileStream hxx (hxx_path, ios_base::out);
+      WideOutputFileStream hxx (hxx_path.string ().c_str (), ios_base::out);
       WideOutputFileStream ixx;
       WideOutputFileStream cxx;
 
@@ -663,11 +659,11 @@ namespace CXX
       }
 
       unlinks.add (hxx_path);
-      file_list.push_back (hxx_path.native_file_string ());
+      file_list.push_back (hxx_path.string ());
 
       if (inline_)
       {
-        ixx.open (ixx_path, ios_base::out);
+        ixx.open (ixx_path.string ().c_str (), ios_base::out);
 
         if (!ixx.is_open ())
         {
@@ -676,12 +672,12 @@ namespace CXX
         }
 
         unlinks.add (ixx_path);
-        file_list.push_back (ixx_path.native_file_string ());
+        file_list.push_back (ixx_path.string ());
       }
 
       if (source)
       {
-        cxx.open (cxx_path, ios_base::out);
+        cxx.open (cxx_path.string ().c_str (), ios_base::out);
 
         if (!cxx.is_open ())
         {
@@ -690,7 +686,7 @@ namespace CXX
         }
 
         unlinks.add (cxx_path);
-        file_list.push_back (cxx_path.native_file_string ());
+        file_list.push_back (cxx_path.string ());
       }
 
       // Print copyright and license.
@@ -755,7 +751,7 @@ namespace CXX
       NarrowString guard_prefix (ops.guard_prefix ());
 
       if (!guard_prefix)
-        guard_prefix = file_path.branch_path ().native_directory_string ();
+        guard_prefix = file_path.directory ().string ();
 
       if (guard_prefix)
         guard_prefix += '_';

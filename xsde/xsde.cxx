@@ -9,8 +9,7 @@
 #include <memory>  // std::auto_ptr
 #include <cstddef> // std::size_t
 #include <iostream>
-
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
 
 #include <cutl/re.hxx>
 
@@ -424,7 +423,7 @@ main (int argc, char* argv[])
 
         try
         {
-          tu = SemanticGraph::Path (files[i], boost::filesystem::native);
+          tu = SemanticGraph::Path (files[i]);
         }
         catch (SemanticGraph::InvalidPath const&)
         {
@@ -446,7 +445,7 @@ main (int argc, char* argv[])
         {
           if (xml_schema_file = common_ops.extern_xml_schema ())
           {
-            if (tu.native_file_string () != xml_schema_file)
+            if (tu.string () != xml_schema_file)
               gen_xml_schema = false;
           }
         }
@@ -468,8 +467,7 @@ main (int argc, char* argv[])
             for (; ai < files.size (); ++ai)
             {
               if (ai != i && files[ai] != xml_schema_file)
-                paths.push_back (
-                  SemanticGraph::Path (files[ai], boost::filesystem::native));
+                paths.push_back (SemanticGraph::Path (files[ai]));
             }
           }
           catch (SemanticGraph::InvalidPath const&)
@@ -489,8 +487,7 @@ main (int argc, char* argv[])
           {
             for (; i != extra_files.end (); ++i)
             {
-              paths.push_back (
-                SemanticGraph::Path (*i, boost::filesystem::native));
+              paths.push_back (SemanticGraph::Path (*i));
             }
           }
           catch (SemanticGraph::InvalidPath const&)
@@ -523,7 +520,7 @@ main (int argc, char* argv[])
             Transformations::Anonymous trans (anon_translator);
 
             if (multi)
-              trans.transform (*schema, "", true);
+              trans.transform (*schema, SemanticGraph::Path (), true);
             else
               trans.transform (*schema, tu, true);
           }
@@ -547,7 +544,7 @@ main (int argc, char* argv[])
           Transformations::Simplifier trans;
 
           if (multi)
-            trans.transform (*schema, "");
+            trans.transform (*schema, SemanticGraph::Path ());
           else
             trans.transform (*schema, tu);
         }
@@ -560,7 +557,7 @@ main (int argc, char* argv[])
           {
             if (multi)
               CXX::Hybrid::Generator::calculate_size (
-                *h_ops, *schema, "", disabled_w);
+                *h_ops, *schema, SemanticGraph::Path (), disabled_w);
             else
               CXX::Hybrid::Generator::calculate_size (
                 *h_ops, *schema, tu, disabled_w);
@@ -579,7 +576,9 @@ main (int argc, char* argv[])
           Processing::Inheritance::Processor proc;
 
           if (multi)
-            proc.process (*schema, "", gen_hybrid ? "fixed" : 0);
+            proc.process (*schema,
+                          SemanticGraph::Path (),
+                          gen_hybrid ? "fixed" : 0);
           else
             proc.process (*schema, tu, gen_hybrid ? "fixed" : 0);
         }
@@ -597,7 +596,7 @@ main (int argc, char* argv[])
             Transformations::Restriction trans;
 
             if (multi)
-              trans.transform (*schema, "");
+              trans.transform (*schema, SemanticGraph::Path ());
             else
               trans.transform (*schema, tu);
           }
@@ -810,8 +809,7 @@ main (int argc, char* argv[])
       {
         try
         {
-          paths.push_back (
-            SemanticGraph::Path (files[i], boost::filesystem::native));
+          paths.push_back (SemanticGraph::Path (files[i]));
         }
         catch (SemanticGraph::InvalidPath const&)
         {
@@ -846,7 +844,7 @@ main (int argc, char* argv[])
         try
         {
           Transformations::Anonymous trans (anon_translator);
-          trans.transform (*schema, "", false);
+          trans.transform (*schema, SemanticGraph::Path (), false);
         }
         catch (Transformations::Anonymous::Failed const&)
         {
@@ -859,14 +857,14 @@ main (int argc, char* argv[])
       if (gen_hybrid)
       {
         Transformations::EnumSynthesis trans;
-        trans.transform (*schema, "");
+        trans.transform (*schema, SemanticGraph::Path ());
       }
 
       // Simplify the schema graph.
       //
       {
         Transformations::Simplifier trans;
-        trans.transform (*schema, "");
+        trans.transform (*schema, SemanticGraph::Path ());
       }
 
       // Calculate type sizes.
@@ -876,7 +874,7 @@ main (int argc, char* argv[])
         try
         {
           CXX::Hybrid::Generator::calculate_size (
-            *h_ops, *schema, "", disabled_w);
+            *h_ops, *schema, SemanticGraph::Path (), disabled_w);
         }
         catch (CXX::Hybrid::Generator::Failed const&)
         {
@@ -891,7 +889,7 @@ main (int argc, char* argv[])
         try
         {
           Transformations::Restriction trans;
-          trans.transform (*schema, "");
+          trans.transform (*schema, SemanticGraph::Path ());
         }
         catch (Transformations::Restriction::Failed const&)
         {
@@ -1063,14 +1061,14 @@ main (int argc, char* argv[])
     //
     if (NarrowString fl = common_ops.file_list ())
     {
-      typedef boost::filesystem::ofstream OutputFileStream;
+      typedef std::ofstream OutputFileStream;
 
       try
       {
         OutputFileStream ofs;
         SemanticGraph::Path path (fl);
 
-        ofs.open (fl, ios_base::out);
+        ofs.open (path.string ().c_str (), ios_base::out);
 
         if (!ofs.is_open ())
         {
@@ -1272,7 +1270,7 @@ AnonymousNameTranslator (NarrowStrings const& regex, bool trace)
     catch (RegexFormat const& e)
     {
       wcerr << "error: invalid anonymous type regex: '" <<
-        e.regex () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }
@@ -1335,7 +1333,7 @@ SchemaPerTypeTranslator (NarrowStrings const& type_regex,
     catch (TypeRegexFormat const& e)
     {
       wcerr << "error: invalid type file regex: '" <<
-        e.regex () << "': " << e.description () << endl;
+        e.regex () << "': " << e.description ().c_str () << endl;
 
       throw Failed ();
     }

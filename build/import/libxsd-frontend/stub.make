@@ -13,7 +13,7 @@ ifdef libxsd_frontend_installed
 
 ifeq ($(libxsd_frontend_installed),y)
 
-$(call export,l: -lxsd-frontend -lfrontend-elements -lcult -lboost_filesystem -lxerces-c,cpp_options: )
+$(call export,l: -lxsd-frontend -lfrontend-elements -lcult -lxerces-c,cpp_options: )
 
 else
 
