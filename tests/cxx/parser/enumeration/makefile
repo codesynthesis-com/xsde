@@ -29,13 +29,13 @@ $(driver): $(obj) $(xsde.l)
 $(obj) $(dep): cpp_options := -I$(out_base) -I$(src_base)
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-skelf := $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.ixx) $(xsd:.xsd=-pskel.cxx)
-skel  := $(addprefix $(out_base)/,$(skelf))
+genf := $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.ixx) $(xsd:.xsd=-pskel.cxx)
+gen  := $(addprefix $(out_base)/,$(genf))
 
-$(skel): xsde := $(out_root)/xsde/xsde
-$(skel) $(dist) $(dist-win): xsde_options += --type-map $(src_base)/test.map
+$(gen): xsde := $(out_root)/xsde/xsde
+$(gen) $(dist) $(dist-win): xsde_options += --type-map $(src_base)/test.map
 
-$(skel): $(out_root)/xsde/xsde $(src_base)/test.map
+$(gen): $(out_root)/xsde/xsde $(src_base)/test.map
 
 $(call include-dep,$(dep),$(obj),$(gen))
 
@@ -55,7 +55,7 @@ $(test): $(driver) $(src_base)/test-000.xml $(src_base)/test-000.std
 # Dist.
 #
 $(dist) $(dist-win): opt := -src $(src_base) -cmd cxx-parser -xsd "$(xsd)" \
--cxx "$(cxx)" -hxx "$(hxx)" -gen "$(skelf)" -opt "$(xsde_options)" \
+-cxx "$(cxx)" -hxx "$(hxx)" -gen "$(genf)" -opt "$(xsde_options)" \
 -out $(dist_prefix)
 
 $(dist):
@@ -76,10 +76,10 @@ $(clean): $(driver).o.clean                                \
 # Generated .gitignore.
 #
 ifeq ($(out_base),$(src_base))
-$(skel): | $(out_base)/.gitignore
+$(gen): | $(out_base)/.gitignore
 $(driver): | $(out_base)/.gitignore
 
-$(out_base)/.gitignore: files := driver $(skelf)
+$(out_base)/.gitignore: files := driver $(genf)
 $(clean): $(out_base)/.gitignore.clean
 
 $(call include,$(bld_root)/git/gitignore.make)
