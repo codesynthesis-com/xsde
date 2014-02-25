@@ -1,4 +1,4 @@
-# file      : documentation/makefile
+# file      : doc/makefile
 # author    : Boris Kolpackov <boris@codesynthesis.com>
 # copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
@@ -121,9 +121,9 @@ dist-common := $(out_base)/.dist-common
 
 $(dist-common): $(out_base)/xsde.xhtml \
                 $(out_base)/xsde.1
-	$(call install-data,$(src_base)/default.css,$(dist_prefix)/documentation/default.css)
-	$(call install-data,$(out_base)/xsde.xhtml,$(dist_prefix)/documentation/xsde.xhtml)
-	$(call install-data,$(out_base)/xsde.1,$(dist_prefix)/documentation/xsde.1)
+	$(call install-data,$(src_base)/default.css,$(dist_prefix)/doc/default.css)
+	$(call install-data,$(out_base)/xsde.xhtml,$(dist_prefix)/doc/xsde.xhtml)
+	$(call install-data,$(out_base)/xsde.1,$(dist_prefix)/doc/xsde.1)
 
 $(dist): $(dist-common) $(out_base)/cxx/.dist
 $(dist-win): $(dist-common) $(out_base)/cxx/.dist

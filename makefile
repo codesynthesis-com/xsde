@@ -20,7 +20,7 @@ $(default): $(out_base)/xsde/         \
             $(out_base)/libxsde/      \
             $(out_base)/tests/        \
             $(out_base)/examples/     \
-            $(out_base)/documentation/
+            $(out_base)/doc/
 
 # Test.
 #
@@ -29,7 +29,7 @@ $(test): $(out_base)/tests/.test
 # Install.
 #
 $(install): $(out_base)/xsde/.install           \
-            $(out_base)/documentation/.install
+            $(out_base)/doc/.install
 	$(call install-data,$(src_base)/GPLv2,$(install_doc_dir)/xsde/GPLv2)
 	$(call install-data,$(src_base)/LICENSE,$(install_doc_dir)/xsde/LICENSE)
 	$(call install-data,$(src_base)/NEWS,$(install_doc_dir)/xsde/NEWS)
@@ -55,7 +55,7 @@ $(dist): $(dist-common)                  \
          $(out_base)/tests/.dist         \
          $(out_base)/libxsde/.dist       \
          $(out_base)/examples/.dist      \
-         $(out_base)/documentation/.dist
+         $(out_base)/doc/.dist
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE)
 	$(call install-data,$(src_base)/NEWS,$(dist_prefix)/NEWS)
@@ -68,7 +68,7 @@ $(dist-win): $(dist-common)                      \
              $(out_base)/tests/.dist-win         \
              $(out_base)/libxsde/.dist-win       \
              $(out_base)/examples/.dist-win      \
-             $(out_base)/documentation/.dist-win
+             $(out_base)/doc/.dist-win
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2.txt)
 	$(call message,,unix2dos $(dist_prefix)/GPLv2.txt)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE.txt)
@@ -89,7 +89,7 @@ $(clean): $(out_base)/xsde/.clean      \
           $(out_base)/tests/.clean     \
           $(out_base)/examples/.clean
 
-$(cleandoc): $(out_base)/documentation/.cleandoc
+$(cleandoc): $(out_base)/doc/.cleandoc
 
 
 $(call include,$(bld_root)/install.make)
@@ -98,4 +98,4 @@ $(call import,$(src_base)/xsde/makefile)
 $(call import,$(src_base)/libxsde/makefile)
 $(call import,$(src_base)/tests/makefile)
 $(call import,$(src_base)/examples/makefile)
-$(call import,$(src_base)/documentation/makefile)
+$(call import,$(src_base)/doc/makefile)

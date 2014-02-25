@@ -1,4 +1,4 @@
-# file      : documentation/cxx/makefile
+# file      : doc/cxx/makefile
 # author    : Boris Kolpackov <boris@codesynthesis.com>
 # copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
