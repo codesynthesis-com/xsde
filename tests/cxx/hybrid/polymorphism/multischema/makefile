@@ -50,7 +50,7 @@ $(gen) $(dist) $(dist-win): xsde_options += --generate-parser \
 --generate-typeinfo --polymorphic-type base \
 --polymorphic-schema $(src_base)/type.xsd
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

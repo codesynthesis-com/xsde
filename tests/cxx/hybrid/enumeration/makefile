@@ -48,7 +48,7 @@ $(gen) $(dist) $(dist-win): xsde_options += --generate-parser \
 --generate-serializer --generate-aggregate --custom-data simple-cd \
 --custom-data fbvd
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

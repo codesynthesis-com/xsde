@@ -49,7 +49,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --custom-serializer envelope=envelope_base_simpl/envelope-simpl.hxx \
 --hxx-epilogue '\#include "body.hxx"'
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

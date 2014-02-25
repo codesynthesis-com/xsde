@@ -42,7 +42,7 @@ $(skel): xsde_options += --generate-polymorphic \
 
 $(skel): $(out_root)/xsde/xsde $(src_base)/supermen.map
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

@@ -33,7 +33,7 @@ skel  := $(addprefix $(out_base)/,$(skelf))
 $(skel): xsde := $(out_root)/xsde/xsde
 $(skel): $(out_root)/xsde/xsde
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

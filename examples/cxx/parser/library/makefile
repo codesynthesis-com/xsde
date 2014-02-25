@@ -41,7 +41,7 @@ $(skel): xsde_options += --generate-inline --type-map $(src_base)/library.map
 
 $(skel): $(out_root)/xsde/xsde $(src_base)/library.map
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

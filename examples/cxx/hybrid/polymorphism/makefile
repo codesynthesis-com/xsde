@@ -46,7 +46,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --generate-aggregate --generate-polymorphic --generate-typeinfo \
 --root-element supermen
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

@@ -32,7 +32,7 @@ $(gen): $(out_root)/xsde/xsde
 $(gen): xsde := $(out_root)/xsde/xsde
 $(gen): xsde_options += --generate-inline
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

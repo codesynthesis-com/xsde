@@ -36,7 +36,7 @@ $(gen): xsde_options += --generate-print-impl --generate-test-driver \
 --force-overwrite
 $(gen): $(out_root)/xsde/xsde
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

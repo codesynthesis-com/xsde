@@ -35,7 +35,7 @@ $(skel): xsde_options += --type-map $(src_base)/email.map
 
 $(skel): $(out_root)/xsde/xsde $(src_base)/email.map
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

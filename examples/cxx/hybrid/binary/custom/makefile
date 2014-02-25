@@ -59,7 +59,7 @@ $(xsde_options) xml-schema.xsd)
 
 genf += xml-schema.hxx xml-schema-pskel.hxx xml-schema-sskel.hxx
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

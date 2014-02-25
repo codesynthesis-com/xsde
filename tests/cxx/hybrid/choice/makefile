@@ -47,7 +47,7 @@ $(gen): xsde := $(out_root)/xsde/xsde
 $(gen) $(dist) $(dist-win): xsde_options += --generate-parser \
 --generate-serializer --generate-aggregate
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

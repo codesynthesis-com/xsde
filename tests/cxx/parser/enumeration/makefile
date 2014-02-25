@@ -37,7 +37,7 @@ $(skel) $(dist) $(dist-win): xsde_options += --type-map $(src_base)/test.map
 
 $(skel): $(out_root)/xsde/xsde $(src_base)/test.map
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 
 # Convenience alias for default target.

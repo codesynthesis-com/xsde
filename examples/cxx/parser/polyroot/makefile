@@ -40,7 +40,7 @@ $(skel): xsde := $(out_root)/xsde/xsde
 $(skel): xsde_options += --generate-polymorphic
 $(skel): $(out_root)/xsde/xsde
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

@@ -26,7 +26,7 @@ $(driver): $(obj) $(xsde.l)
 
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

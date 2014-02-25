@@ -49,7 +49,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --custom-parser unknown_type=unknown_type_base_pimpl/unknown-type-pimpl.hxx \
 --custom-serializer unknown_type=unknown_type_base_simpl/unknown-type-simpl.hxx
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

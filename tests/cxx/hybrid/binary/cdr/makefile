@@ -47,7 +47,7 @@ $(gen) $(dist) $(dist-win): xsde_options += --generate-parser \
 --generate-serializer --generate-aggregate --generate-extraction CDR \
 --generate-insertion CDR
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

@@ -47,7 +47,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --custom-parser people=people_base_pimpl/people-custom-pimpl.hxx \
 --custom-serializer people=people_base_simpl/people-custom-simpl.hxx
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #

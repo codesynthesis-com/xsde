@@ -47,7 +47,7 @@ $(gen): xsde_options += --generate-parser --generate-serializer \
 --custom-parser envelope=envelope_base_pimpl/envelope-pimpl.hxx \
 --custom-serializer envelope=envelope_base_simpl/envelope-simpl.hxx
 
-$(call include-dep,$(dep))
+$(call include-dep,$(dep),$(obj),$(gen))
 
 # Convenience alias for default target.
 #
