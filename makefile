@@ -11,7 +11,6 @@ install  := $(out_base)/.install
 dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 clean    := $(out_base)/.clean
-cleandoc := $(out_base)/.cleandoc
 
 
 # Build.
@@ -87,9 +86,8 @@ $(dist-win): $(dist-common)                      \
 $(clean): $(out_base)/xsde/.clean      \
           $(out_base)/libxsde/.clean   \
           $(out_base)/tests/.clean     \
-          $(out_base)/examples/.clean
-
-$(cleandoc): $(out_base)/doc/.cleandoc
+          $(out_base)/examples/.clean  \
+          $(out_base)/doc/.clean
 
 
 $(call include,$(bld_root)/install.make)

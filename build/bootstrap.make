@@ -29,21 +29,19 @@ $(call include,$(scf_root)/configuration.make)
         $(out_base)/.dist          \
         $(out_base)/.dist-win      \
         $(out_base)/.dist-common   \
-        $(out_base)/.clean         \
-        $(out_base)/.cleandoc
+        $(out_base)/.clean
 
 ifdef %interactive%
 
-.PHONY: test install dist dist-win clean cleandoc
+.PHONY: test install dist dist-win clean
 
 test: $(out_base)/.test
 install: $(out_base)/.install
 dist: $(out_base)/.dist
 dist-win: $(out_base)/.dist-win
 clean: $(out_base)/.clean
-cleandoc: $(out_base)/.cleandoc
 
-ifneq ($(filter $(.DEFAULT_GOAL),test install dist dist-win clean cleandoc),)
+ifneq ($(filter $(.DEFAULT_GOAL),test install dist dist-win clean),)
 .DEFAULT_GOAL :=
 endif
 
@@ -65,7 +63,7 @@ define include-dep
 $(call -include,$1)
 endef
 
-ifneq ($(filter $(MAKECMDGOALS),clean cleandoc disfigure),)
+ifneq ($(filter $(MAKECMDGOALS),clean disfigure),)
 include-dep =
 endif
 

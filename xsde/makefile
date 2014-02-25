@@ -195,9 +195,11 @@ $(install): $(xsde)
 $(clean):                            \
   $(xsde).o.clean                    \
   $(addsuffix .cxx.clean,$(cxx_obj)) \
-  $(addsuffix .cxx.clean,$(cxx_od))  \
-  $(addprefix $(out_base)/,$(cli_tun:.cli=.cxx.cli.clean))
+  $(addsuffix .cxx.clean,$(cxx_od))
 
+ifneq ($(xsde_clean_gen),n)
+$(clean): $(addprefix $(out_base)/,$(cli_tun:.cli=.cxx.cli.clean))
+endif
 
 # Generated .gitignore.
 #

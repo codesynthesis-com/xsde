@@ -8,7 +8,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../../../../build/bootstrap.make
 default  := $(out_base)/
 dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
-cleandoc := $(out_base)/.cleandoc
+clean    := $(out_base)/.clean
 
 # Build.
 #
@@ -39,9 +39,11 @@ $(dist-win): $(dist)
 
 # Clean.
 #
-$(cleandoc):
+$(clean):
+ifneq ($(xsde_clean_gen),n)
 	$(call message,rm $$1,rm -f $$1,$(out_base)/cxx-serializer-e-guide.ps)
 	$(call message,rm $$1,rm -f $$1,$(out_base)/cxx-serializer-e-guide.pdf)
+endif
 
 # How to.
 #

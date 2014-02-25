@@ -9,7 +9,7 @@ default  := $(out_base)/
 dist     := $(out_base)/.dist
 dist-win := $(out_base)/.dist-win
 install  := $(out_base)/.install
-cleandoc := $(out_base)/.cleandoc
+clean    := $(out_base)/.clean
 
 # Import.
 #
@@ -139,9 +139,11 @@ $(install): $(out_base)/xsde.xhtml \
 
 # Clean.
 #
-$(cleandoc): $(src_base)/cxx/.cleandoc
+$(clean): $(src_base)/cxx/.clean
+ifneq ($(xsde_clean_gen),n)
 	$(call message,rm $$1,rm -f $$1,$(out_base)/xsde.1)
 	$(call message,rm $$1,rm -f $$1,$(out_base)/xsde.xhtml)
+endif
 
 # Generated .gitignore.
 #
