@@ -129,7 +129,11 @@ $(cxx_obj) $(cxx_od):     \
 genf := $(cli_tun:.cli=.hxx) $(cli_tun:.cli=.ixx) $(cli_tun:.cli=.cxx)
 gen  := $(addprefix $(out_base)/,$(genf))
 
+# Don't depend on installed executable since it may not exist.
+#
+ifneq ($(cli),cli)
 $(gen): $(cli)
+endif
 $(gen): cli := $(cli)
 # Watch out: if I add --generate-specifier, then I will need to fix
 # code that relies on modifiers to also modify the "specified" flag.
