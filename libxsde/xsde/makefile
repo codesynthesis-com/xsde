@@ -546,6 +546,7 @@ endif
 
 $(xsde.l.cpp-options): prefix := xsde/ $(out_root)/libxsde/
 $(xsde.l.cpp-options): value := -I$(out_root)/libxsde -I$(src_root)/libxsde
+$(xsde.l.cpp-options): $(out_base)/config.h
 
 $(call include-dep,$(c_d) $(cxx_d))
 
