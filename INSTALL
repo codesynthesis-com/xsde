@@ -2,14 +2,15 @@ Compiler Prerequisites
 
   build-time:
 
-    - build                >= 0.3.7   http://www.codesynthesis.com/projects/build/
-    - g++                  >= 3.4.3   http://gcc.gnu.org
+    - g++              >= 3.4.3   http://gcc.gnu.org
+    - build            >= 0.3.10  http://www.codesynthesis.com/projects/build/
+    - cli              >= 1.2.0   http://www.codesynthesis.com/projects/cli/
 
   run-time:
 
-    - libxsd-frontend      >= 1.18.0  http://www.codesynthesis.com/projects/libxsd-frontend/
-    - libbackend-elements  >= 1.7.2   http://kolpackov.net/projects/libbackend-elements/
-    - libcult              >= 1.4.6   http://kolpackov.net/projects/libcult/
+    - libxerces-c      >= 3.0.0   http://xerces.apache.org/xerces-c/
+    - libcutl          >= 1.8.0   http://www.codesynthesis.com/projects/libcutl/
+    - libxsd-frontend  >= 2.0.0   http://www.codesynthesis.com/projects/libxsd-frontend/
 
 
 Generated Code Prerequisites
@@ -21,8 +22,14 @@ Generated Code Prerequisites
 
 Building XSD/e
 
-  To build in the source directory simply run 'make'. You can also
-  build in a separate directory, e.g.,
+  First build (and optionally install) all the prerequisites listed above.
+  Alternatively, you can use the xsde+dep package that includes all the
+  prerequisites (except g++ and libxerces-c) and can be built with a
+  single 'make' invocation.
+
+  Once the prerequisites are ready, to build the XSD/e compiler in source
+  directory simply run 'make'. You can also build in a separate directory,
+  for example:
 
   $ mkdir xsde-i686-pc-linux-gnu
   $ cd xsde-i686-pc-linux-gnu
@@ -38,8 +45,8 @@ Creating Binary Distributions
   The dist and dist-win make targets are used to create binary distributions,
   for example:
 
-  $ make dist_prefix=/tmp/xsde-3.1.0-i686-linux-gnu dist
-  $ make dist_prefix=/tmp/xsde-3.1.0-i686-windows dist-win
+  $ make dist_prefix=/tmp/xsde-x.y.z-i686-linux-gnu dist
+  $ make dist_prefix=/tmp/xsde-x.y.z-i686-windows dist-win
 
 
 Installing XSD/e
