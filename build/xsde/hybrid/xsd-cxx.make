@@ -51,6 +51,7 @@ $(xsd_hybrid_pattern): xsde := xsde
 $(xsd_hybrid_pattern): xsde_command := cxx-hybrid
 
 ops :=                                  \
+--generate-inline                       \
 --pskel-file-suffix $(xsd_pskel_suffix) \
 --pimpl-file-suffix $(xsd_pimpl_suffix) \
 --sskel-file-suffix $(xsd_sskel_suffix) \

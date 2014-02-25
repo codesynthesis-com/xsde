@@ -28,7 +28,7 @@ xsd_parser_pattern += $(out_base)/%-pdriver.cxx
 $(xsd_parser_pattern): xsde := xsde
 $(xsd_parser_pattern): xsde_command := cxx-parser
 
-ops := --skel-file-suffix $(xsd_pskel_suffix)
+ops := --generate-inline --skel-file-suffix $(xsd_pskel_suffix)
 
 ifneq ($(xsd_pimpl_suffix),)
 ops += --impl-file-suffix $(xsd_pimpl_suffix)

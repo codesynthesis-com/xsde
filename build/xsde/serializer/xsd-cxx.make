@@ -28,7 +28,7 @@ xsd_serializer_pattern += $(out_base)/%-sdriver.cxx
 $(xsd_serializer_pattern): xsde := xsde
 $(xsd_serializer_pattern): xsde_command := cxx-serializer
 
-ops := --skel-file-suffix $(xsd_sskel_suffix)
+ops := --generate-inline --skel-file-suffix $(xsd_sskel_suffix)
 
 ifneq ($(xsd_pimpl_suffix),)
 ops += --impl-file-suffix $(xsd_simpl_suffix)
