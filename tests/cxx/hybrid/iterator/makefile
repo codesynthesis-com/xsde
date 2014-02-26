@@ -27,7 +27,7 @@ $(driver): $(obj) $(xsde.l)
 
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-genf := $(xsd:.xsd=.hxx) $(xsd:.xsd=.cxx)
+genf := $(xsd:.xsd=.hxx) $(xsd:.xsd=.ixx) $(xsd:.xsd=.cxx)
 gen := $(addprefix $(out_base)/,$(genf))
 
 $(gen): $(out_root)/xsde/xsde

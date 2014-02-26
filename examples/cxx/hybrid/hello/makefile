@@ -31,8 +31,8 @@ $(driver): $(obj) $(xsde.l)
 
 $(obj) $(dep): $(xsde.l.cpp-options)
 
-genf := $(xsd:.xsd=.hxx) $(xsd:.xsd=.cxx) \
-        $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.cxx) \
+genf := $(xsd:.xsd=.hxx) $(xsd:.xsd=.ixx) $(xsd:.xsd=.cxx) \
+        $(xsd:.xsd=-pskel.hxx) $(xsd:.xsd=-pskel.ixx) $(xsd:.xsd=-pskel.cxx) \
         $(xsd:.xsd=-pimpl.hxx) $(xsd:.xsd=-pimpl.cxx)
 
 gen := $(addprefix $(out_base)/,$(genf))
