@@ -773,6 +773,18 @@ namespace CXX
             << "#define " << guard << endl
             << endl;
 
+        // Copy prologue.
+        //
+        hxx << "// Begin prologue." << endl
+            << "//" << endl;
+
+        append (hxx, ops.hxx_prologue (), ops.prologue ());
+        append (hxx, ops.hxx_prologue_file (), prologue);
+
+        hxx << "//" << endl
+            << "// End prologue." << endl
+            << endl;
+
         // Version check.
         //
         hxx << "#include <xsde/cxx/version.hxx>" << endl
@@ -974,18 +986,6 @@ namespace CXX
         hxx << "#include <xsde/cxx/pre.hxx>" << endl
             << endl;
 
-        // Copy prologue.
-        //
-        hxx << "// Begin prologue." << endl
-            << "//" << endl;
-
-        append (hxx, ops.hxx_prologue (), ops.prologue ());
-        append (hxx, ops.hxx_prologue_file (), prologue);
-
-        hxx << "//" << endl
-            << "// End prologue." << endl
-            << endl;
-
         // Generate.
         //
         {
@@ -1001,6 +1001,9 @@ namespace CXX
           hxx << "#include " << ctx.process_include_path (ixx_name) << endl
               << endl;
 
+        hxx << "#include <xsde/cxx/post.hxx>" << endl
+            << endl;
+
         // Copy epilogue.
         //
         hxx << "// Begin epilogue." << endl
@@ -1011,9 +1014,6 @@ namespace CXX
 
         hxx << "//" << endl
             << "// End epilogue." << endl
-            << endl;
-
-        hxx << "#include <xsde/cxx/post.hxx>" << endl
             << endl;
 
         hxx << "#endif // " << guard << endl;
@@ -1093,6 +1093,9 @@ namespace CXX
             << "// End prologue." << endl
             << endl;
 
+        cxx << "#include <xsde/cxx/pre.hxx>" << endl
+            << endl;
+
         cxx << "#include " << ctx.process_include_path (hxx_name) << endl
             << endl;
 
@@ -1112,6 +1115,9 @@ namespace CXX
             generate_attribute_validation_source (ctx);
           }
         }
+
+        cxx << "#include <xsde/cxx/post.hxx>" << endl
+            << endl;
 
         // Copy epilogue.
         //
