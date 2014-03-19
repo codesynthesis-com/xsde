@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/wildcard/envelope-simpl.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include "body.hxx"

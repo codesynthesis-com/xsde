@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/binary/custom/orawstream.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include <string.h> // memcpy

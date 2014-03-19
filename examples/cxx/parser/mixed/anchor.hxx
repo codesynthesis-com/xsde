@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/mixed/anchor.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef ANCHOR_HXX

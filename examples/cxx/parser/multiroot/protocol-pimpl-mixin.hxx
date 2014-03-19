@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/multiroot/protocol-pimpl-mixin.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef PROTOCOL_PIMPL_HXX

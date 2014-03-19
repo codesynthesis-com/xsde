@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/library/library-pimpl-mixin.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_PIMPL_HXX

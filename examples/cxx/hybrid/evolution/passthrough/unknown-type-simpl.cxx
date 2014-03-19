@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/evolution/passthrough/unknown-type-simpl.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 // Include transform-simpl.hxx (which includes unknown-type-simpl.hxx)

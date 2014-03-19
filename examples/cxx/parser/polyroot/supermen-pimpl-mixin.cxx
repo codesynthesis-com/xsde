@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/polyroot/supermen-pimpl-mixin.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 //
 

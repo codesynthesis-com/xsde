@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/streaming/object-simpl.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 // Include position-simpl.hxx (which includes object-simpl.hxx)

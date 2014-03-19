@@ -1,5 +1,4 @@
 # file      : xsde/makefile
-# author    : Boris Kolpackov <boris@codesynthesis.com>
 # copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
@@ -554,7 +553,6 @@ $(call include-dep,$(c_d) $(cxx_d))
 #
 $(out_base)/config.h: $(dcf_root)/configuration-dynamic.make
 	@echo '// file      : xsde/config.h'                             >$@
-	@echo '// author    : automatically generated'                  >>$@
 	@echo ''                                                        >>$@
 	@echo '#ifndef XSDE_CONFIG_H'                                   >>$@
 	@echo '#define XSDE_CONFIG_H'                                   >>$@

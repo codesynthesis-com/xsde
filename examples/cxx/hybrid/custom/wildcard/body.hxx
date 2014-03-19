@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/custom/wildcard/body.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef BODY_HXX

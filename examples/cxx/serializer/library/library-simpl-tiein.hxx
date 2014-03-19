@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/library/library-simpl-tiein.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_SIMPL_HXX

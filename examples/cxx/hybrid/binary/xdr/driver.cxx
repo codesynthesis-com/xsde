@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/binary/xdr/driver.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include <stddef.h>  // size_t

@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/streaming/object-simpl.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef OBJECT_SIMPL_HXX

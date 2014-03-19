@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/library/library.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_HXX

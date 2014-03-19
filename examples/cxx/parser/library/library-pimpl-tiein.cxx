@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/library/library-pimpl-tiein.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include "library-pimpl-tiein.hxx"

@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/people/people-simpl-tiein.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef PEOPLE_SIMPL_HXX

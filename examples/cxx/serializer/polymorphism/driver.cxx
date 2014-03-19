@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/polymorphism/driver.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include <iostream>

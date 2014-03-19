@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/binary/custom/irawstream.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef IRAWSTREAM_HXX

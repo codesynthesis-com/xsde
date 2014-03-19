@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/filter/people-custom-simpl.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 // Include people-simpl.hxx (which includes people-custom-simpl.hxx)

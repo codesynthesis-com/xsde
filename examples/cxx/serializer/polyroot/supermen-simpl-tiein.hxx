@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/polyroot/supermen-simpl-tiein.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef SUPERMEN_SIMPL_HXX

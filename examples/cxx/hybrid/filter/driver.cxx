@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/filter/driver.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr

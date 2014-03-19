@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/binary/custom/exceptions.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef EXCEPTIONS_HXX

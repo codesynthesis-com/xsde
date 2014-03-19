@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/polyroot/supermen-simpl-mixin.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include "supermen-simpl-mixin.hxx"

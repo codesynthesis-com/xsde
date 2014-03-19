@@ -1,5 +1,4 @@
 // file      : xsde/type-map/parser.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : Copyright (c) 2007-2011 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 

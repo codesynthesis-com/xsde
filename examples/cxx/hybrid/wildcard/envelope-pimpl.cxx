@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/wildcard/envelope-pimpl.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include <memory> // std::auto_ptr

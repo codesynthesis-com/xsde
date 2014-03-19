@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/filter/people-custom-pimpl.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef PEOPLE_CUSTOM_PIMPL_HXX

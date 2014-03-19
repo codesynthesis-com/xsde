@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/evolution/passthrough/xml.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 //

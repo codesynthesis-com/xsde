@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/streaming/object-pimpl.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef OBJECT_PIMPL_HXX

@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/evolution/passthrough/unknown-type-simpl.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef UNKNOWN_TYPE_SIMPL_HXX

@@ -1,5 +1,4 @@
 // file      : examples/cxx/serializer/library/library-simpl-mixin.cxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #include "library-simpl-mixin.hxx"

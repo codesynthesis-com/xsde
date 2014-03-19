@@ -1,5 +1,4 @@
 // file      : examples/cxx/parser/polymorphism/supermen-pimpl-mixin.hxx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 #ifndef SUPERMEN_PIMPL_HXX

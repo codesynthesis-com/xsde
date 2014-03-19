@@ -1,5 +1,4 @@
 // file      : examples/cxx/hybrid/binary/custom/orawstream.ixx
-// author    : Boris Kolpackov <boris@codesynthesis.com>
 // copyright : not copyrighted - public domain
 
 inline orawstream::
