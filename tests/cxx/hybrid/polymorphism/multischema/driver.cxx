@@ -1,5 +1,5 @@
 // file      : tests/cxx/hybrid/polymorphism/multischema/driver.cxx
-// copyright : Copyright (c) 2006-2011 Code Synthesis Tools CC
+// copyright : Copyright (c) 2006-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test polymorphic parsing and serialization with the type hierarchy

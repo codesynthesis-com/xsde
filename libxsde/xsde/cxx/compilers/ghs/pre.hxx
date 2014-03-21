@@ -1,5 +1,5 @@
 // file      : xsde/cxx/compilers/ghs/pre.hxx
-// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Warning pragmas are only available in the new generation compiler.

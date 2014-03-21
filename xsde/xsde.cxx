@@ -1,5 +1,5 @@
 // file      : xsde/xsde.cxx
-// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <set>
@@ -152,7 +152,7 @@ main (int argc, char* argv[])
 
       o << "CodeSynthesis XSD/e XML Schema to C++ compiler " <<
         "for embedded systems " << XSDE_STR_VERSION << endl
-        << "Copyright (c) 2005-2011 Code Synthesis Tools CC" << endl;
+        << "Copyright (c) 2005-2014 Code Synthesis Tools CC" << endl;
 
       if (!help_ops.proprietary_license () && cmd == "version")
       {

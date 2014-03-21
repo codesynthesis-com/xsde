@@ -1,5 +1,5 @@
 // file      : xsde/cxx/serializer/serializer-header.hxx
-// copyright : Copyright (c) 2005-2011 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef CXX_SERIALIZER_SERIALIZER_HEADER_HXX
