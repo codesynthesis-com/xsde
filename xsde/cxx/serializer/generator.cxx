@@ -802,7 +802,7 @@ namespace CXX
         if (ops.char_encoding () == "iso8859-1")
         {
           hxx << "#ifndef XSDE_ENCODING_ISO8859_1" << endl
-              << "#error the generated code uses the ISO-8859-1 encoding" <<
+              << "#error the generated code uses the ISO-8859-1 encoding " <<
             "while the XSD/e runtime does not (reconfigure the runtime " <<
             "or change the --char-encoding value)" << endl
               << "#endif" << endl
@@ -811,7 +811,7 @@ namespace CXX
         else
         {
           hxx << "#ifndef XSDE_ENCODING_UTF8" << endl
-              << "#error the generated code uses the UTF-8 encoding" <<
+              << "#error the generated code uses the UTF-8 encoding " <<
             "while the XSD/e runtime does not (reconfigure the runtime " <<
             "or change the --char-encoding value)" << endl
               << "#endif" << endl
