@@ -110,6 +110,7 @@
     <restriction base="decimal">
       <minInclusive value="10.0"/>
       <maxInclusive value="100"/>
+      <fractionDigits value="2"/>
     </restriction>
   </simpleType>
 

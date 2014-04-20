@@ -817,6 +817,7 @@ namespace xsde
 #endif
           facets_.min_set_ = 0;
           facets_.max_set_ = 0;
+          facets_.fraction_digits_set_ = 0;
         }
 
 #ifdef XSDE_REUSE_STYLE_TIEIN
@@ -826,6 +827,7 @@ namespace xsde
         {
           facets_.min_set_ = 0;
           facets_.max_set_ = 0;
+          facets_.fraction_digits_set_ = 0;
         }
 #endif
         inline void decimal_sskel::
@@ -842,6 +844,13 @@ namespace xsde
           facets_.min_ = v;
           facets_.min_set_ = 1;
           facets_.min_inc_ = inc;
+        }
+
+        inline void decimal_sskel::
+        _fraction_digits_facet (unsigned int v)
+        {
+          facets_.fraction_digits_ = v;
+          facets_.fraction_digits_set_ = 1;
         }
 
         inline const decimal_sskel::facets& decimal_sskel::

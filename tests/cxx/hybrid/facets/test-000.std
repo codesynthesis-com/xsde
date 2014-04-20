@@ -47,6 +47,8 @@
   <decimal>10.5</decimal>
   <decimal>50</decimal>
   <decimal>99.5</decimal>
+  <decimal>99.55</decimal>
+  <decimal>50.12</decimal>
   <string1>12345</string1>
   <string2>12345</string2>
   <string2>1234567</string2>

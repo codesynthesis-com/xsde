@@ -45,12 +45,14 @@ namespace xsde
           //
           char str[128];
 
+          unsigned int p (f.fraction_digits_set_
+                          ? f.fraction_digits_
+                          : precision_);
+
 #ifdef XSDE_SNPRINTF
-          int n = snprintf (str, 128, "%.*f",
-                            static_cast<int> (precision_), value_);
+          int n = snprintf (str, 128, "%.*f", static_cast<int> (p), value_);
 #else
-          int n = sprintf (str, "%.*f",
-                           static_cast<int> (precision_), value_);
+          int n = sprintf (str, "%.*f", static_cast<int> (p), value_);
 #endif
           if (n > 0 && n < 128)
           {

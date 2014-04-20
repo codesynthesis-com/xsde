@@ -980,16 +980,21 @@ namespace xsde
           void
           _min_facet (double, bool inclusive);
 
+          void
+          _fraction_digits_facet (unsigned int);
+
         protected:
           struct facets
           {
             double min_;
             double max_;
+            unsigned int fraction_digits_;
 
             unsigned int min_set_ : 1;
             unsigned int min_inc_ : 1;
             unsigned int max_set_ : 1;
             unsigned int max_inc_ : 1;
+            unsigned int fraction_digits_set_ : 1;
           };
 
           const facets&

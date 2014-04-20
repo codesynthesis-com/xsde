@@ -9,6 +9,8 @@ Version 3.3.0
 
  C++/Serializer
 
+  * Support for the fractionDigits facet for the decimal data type.
+
   * New functions, format() and precision(), allow changing of the
     output notation and precision for the float, double, and decimal
     type serializers.

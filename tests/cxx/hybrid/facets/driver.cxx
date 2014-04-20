@@ -36,6 +36,12 @@ main (int argc, char* argv[])
   doc_p.parse (argv[1]);
   type* r = root_p.post ();
 
+  // Test fractionDigit.
+  //
+  decimal d;
+  d.base_value (50.123);
+  r->decimal ().push_back (d);
+
   // Serialize.
   //
   root_saggr root_s;
