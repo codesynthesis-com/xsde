@@ -68,17 +68,17 @@ $(dist-win): $(dist-common)                      \
              $(out_base)/examples/.dist-win      \
              $(out_base)/doc/.dist-win
 	$(call install-data,$(src_base)/GPLv2,$(dist_prefix)/GPLv2.txt)
-	$(call message,,unix2dos $(dist_prefix)/GPLv2.txt)
+	$(call message,,todos $(dist_prefix)/GPLv2.txt)
 	$(call install-data,$(src_base)/LICENSE,$(dist_prefix)/LICENSE.txt)
-	$(call message,,unix2dos $(dist_prefix)/LICENSE.txt)
+	$(call message,,todos $(dist_prefix)/LICENSE.txt)
 	$(call install-data,$(src_base)/NEWS,$(dist_prefix)/NEWS.txt)
-	$(call message,,unix2dos $(dist_prefix)/NEWS.txt)
+	$(call message,,todos $(dist_prefix)/NEWS.txt)
 	$(call install-data,$(src_base)/version,$(dist_prefix)/version.txt)
-	$(call message,,unix2dos $(dist_prefix)/version.txt)
+	$(call message,,todos $(dist_prefix)/version.txt)
 	$(call install-data,$(src_base)/dist/INSTALL,$(dist_prefix)/INSTALL.txt)
-	$(call message,,unix2dos $(dist_prefix)/INSTALL.txt)
+	$(call message,,todos $(dist_prefix)/INSTALL.txt)
 	$(call install-data,$(src_base)/dist/README,$(dist_prefix)/README.txt)
-	$(call message,,unix2dos $(dist_prefix)/README.txt)
+	$(call message,,todos $(dist_prefix)/README.txt)
 
 # Clean.
 #

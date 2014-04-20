@@ -69,7 +69,7 @@ $(dist): $(dist-common)
 
 $(dist-win): $(dist-common)
 	$(call install-data,$(src_base)/README,$(dist_prefix)/$(path)/README.txt)
-	$(call message,,unix2dos $(dist_prefix)/$(path)/README.txt)
+	$(call message,,todos $(dist_prefix)/$(path)/README.txt)
 
 
 # Clean.

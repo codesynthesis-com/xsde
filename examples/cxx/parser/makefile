@@ -61,7 +61,7 @@ $(dist): $(addprefix $(out_base)/,$(addsuffix /.dist,$(all_examples)))
 
 $(dist-win): $(addprefix $(out_base)/,$(addsuffix /.dist-win,$(all_examples)))
 	$(call install-data,$(src_base)/README,$(dist_prefix)/$(path)/README.txt)
-	$(call message,,unix2dos $(dist_prefix)/$(path)/README.txt)
+	$(call message,,todos $(dist_prefix)/$(path)/README.txt)
 
 ifneq ($(filter $(MAKECMDGOALS),dist dist-win),)
 $(foreach e,$(all_examples),$(call import,$(src_base)/$e/makefile))
