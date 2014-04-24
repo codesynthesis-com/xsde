@@ -1614,7 +1614,7 @@ namespace CXX
           bool rec (recursive (c));
 
           bool validation (!options.suppress_validation () &&
-                              !options.suppress_parser_val ());
+                           !options.suppress_parser_val ());
 
           bool c_string_base (false);
           if (!stl && hb)

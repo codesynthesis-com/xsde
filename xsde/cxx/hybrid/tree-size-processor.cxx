@@ -363,6 +363,14 @@ namespace CXX
                 dispatch (b);
 
               fixed = get (b);
+
+              // If our base is polymorphic and recursive, then we
+              // are also automatically recursive, since we can be
+              // substiuted for the base.
+              //
+              if (b.context ().count ("polymorphic") &&
+                  b.context ().count ("recursive"))
+                ctx.set ("recursive", true);
             }
 
             // Check particles. Do this even if fixed is already false
