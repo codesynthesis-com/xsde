@@ -1,5 +1,5 @@
 <t:root xmlns:t="test">
-  <complex af="123" afixed="abc" av="abc def">
+  <complex af="123" av="abc def" afixed="abc">
     <f>123</f>
     <v>abc def ghq</v>
     <of>123</of>

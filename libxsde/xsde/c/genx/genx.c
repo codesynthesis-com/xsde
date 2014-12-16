@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2014 Code Synthesis Tools CC.
+ * Copyright (c) 2007-2013 Code Synthesis Tools CC.
  * Copyright (c) 2004 by Tim Bray and Sun Microsystems.
  *
  * For copying permission, see the accompanying COPYING file.
@@ -47,8 +47,8 @@ typedef enum
 typedef struct
 {
   genxWriter writer;
-  int        count;
-  int        space;
+  size_t     count;
+  size_t     space;
   void * *   pointers;
 } plist;
 
@@ -58,8 +58,8 @@ typedef struct
 typedef struct
 {
   utf8 buf;
-  int  used;
-  int  space;
+  size_t  used;
+  size_t  space;
 } collector;
 
 /*******************************
@@ -79,7 +79,7 @@ struct genxNamespace_rec
 {
   genxWriter 	writer;
   utf8       	name;
-  int           declCount;
+  size_t        declCount;
   Boolean       baroque;
   genxAttribute declaration;
   genxAttribute defaultDecl;
@@ -107,6 +107,7 @@ struct genxAttribute_rec
   collector     value;
   int           provided;   /* provided for current element? */
   attrType      atype;
+  genxAttribute next;       /* Attribute order chain if not canonical. */
 };
 
 /*******************************
@@ -130,7 +131,7 @@ struct genxWriter_rec
   plist           	   attributes;
   plist                    prefixes;
   plist           	   stack;
-  struct genxAttribute_rec arec;
+  struct genxAttribute_rec arec;       /* Dummy attribute used for lookup. */
   char *                   etext[100];
   genxAlloc                alloc;
   genxDealloc              dealloc;
@@ -139,6 +140,13 @@ struct genxWriter_rec
   int                      ppIndent;
   int                      ppDepth;
   Boolean                  ppSimple;
+
+  /* Canonicalization. */
+  Boolean                  canonical;
+
+  /* Attrbute order when not canonical. */
+  genxAttribute            firstAttribute;
+  genxAttribute            lastAttribute;
 };
 
 /*******************************
@@ -159,7 +167,7 @@ void genxSetCharProps(char * p);
 /*******************************
  * private memory utilities
  */
-static void * allocate(genxWriter w, int bytes)
+static void * allocate(genxWriter w, size_t bytes)
 {
   if (w->alloc)
     return (void *) (*w->alloc)(w->userData, bytes);
@@ -202,7 +210,7 @@ static genxStatus initCollector(genxWriter w, collector * c)
   return GENX_SUCCESS;
 }
 
-static genxStatus growCollector(genxWriter w, collector * c, int size)
+static genxStatus growCollector(genxWriter w, collector * c, size_t size)
 {
   utf8 newSpace;
 
@@ -228,7 +236,7 @@ static void endCollect(collector * c)
 
 static genxStatus collectString(genxWriter w, collector * c, constUtf8 string)
 {
-  int sl = strlen((const char *) string);
+  size_t sl = strlen((const char *) string);
 
   if (sl >= c->space)
     if ((w->status = growCollector(w, c, sl)) != GENX_SUCCESS)
@@ -261,7 +269,7 @@ static genxStatus initPlist(genxWriter w, plist * pl)
 static Boolean checkExpand(plist * pl)
 {
   void * * newlist;
-  int i;
+  size_t i;
 
   if (pl->count < pl->space)
     return True;
@@ -293,9 +301,9 @@ static genxStatus listAppend(plist * pl, void * pointer)
 /*
  * insert in place, shuffling up
  */
-static genxStatus listInsert(plist * pl, void * pointer, int at)
+static genxStatus listInsert(plist * pl, void * pointer, size_t at)
 {
-  int i;
+  size_t i;
 
   if (!checkExpand(pl))
     return GENX_ALLOC_FAILED;
@@ -314,7 +322,7 @@ static genxStatus listInsert(plist * pl, void * pointer, int at)
 
 static genxNamespace findNamespace(plist * pl, constUtf8 uri)
 {
-  int i;
+  size_t i;
   genxNamespace * nn = (genxNamespace *) pl->pointers;
 
   for (i = 0; i < pl->count; i++)
@@ -326,7 +334,7 @@ static genxNamespace findNamespace(plist * pl, constUtf8 uri)
 
 static genxElement findElement(plist * pl, constUtf8 xmlns, constUtf8 type)
 {
-  int i;
+  size_t i;
   genxElement * ee = (genxElement *) pl->pointers;
 
   for (i = 0; i < pl->count; i++)
@@ -368,7 +376,8 @@ static utf8 storePrefix(genxWriter w, constUtf8 prefix, Boolean force)
     prefix = buf;
   }
 
-  high = w->prefixes.count; low = -1;
+  high = (int) w->prefixes.count;
+  low = -1;
   while (high - low > 1)
   {
     int probe = (high + low) / 2;
@@ -395,7 +404,7 @@ static utf8 storePrefix(genxWriter w, constUtf8 prefix, Boolean force)
     return NULL;
   }
 
-  w->status = listInsert(&w->prefixes, (void *) prefix, high);
+  w->status = listInsert(&w->prefixes, (void *) prefix, (size_t) high);
   if (w->status != GENX_SUCCESS)
     return NULL;
 
@@ -593,29 +602,28 @@ genxWriter genxNew(genxAlloc alloc, genxDealloc dealloc, void * userData)
 
   genxSetCharProps(w->xmlChars);
 
-  w->etext[GENX_SUCCESS] = "Success";
-  w->etext[GENX_BAD_UTF8] = "Bad UTF8";
-  w->etext[GENX_NON_XML_CHARACTER] = "Non XML Character";
-  w->etext[GENX_BAD_NAME] = "Bad NAME";
-  w->etext[GENX_ALLOC_FAILED] = "Memory allocation failed";
-  w->etext[GENX_BAD_NAMESPACE_NAME] = "Bad namespace name";
-  w->etext[GENX_INTERNAL_ERROR] = "Internal error";
-  w->etext[GENX_DUPLICATE_PREFIX] = "Duplicate prefix";
-  w->etext[GENX_SEQUENCE_ERROR] = "Call out of sequence";
-  w->etext[GENX_NO_START_TAG] = "No Start-tag for EndElement call";
-  w->etext[GENX_IO_ERROR] = "I/O error";
-  w->etext[GENX_MISSING_VALUE] = "Missing attribute value";
-  w->etext[GENX_MALFORMED_COMMENT] = "Malformed comment body";
+  w->etext[GENX_SUCCESS] = "success";
+  w->etext[GENX_BAD_UTF8] = "invalid UTF-8";
+  w->etext[GENX_NON_XML_CHARACTER] = "non-XML character";
+  w->etext[GENX_BAD_NAME] = "invalid name";
+  w->etext[GENX_ALLOC_FAILED] = "memory allocation failed";
+  w->etext[GENX_BAD_NAMESPACE_NAME] = "invalid namespace name";
+  w->etext[GENX_INTERNAL_ERROR] = "internal error";
+  w->etext[GENX_DUPLICATE_PREFIX] = "duplicate prefix";
+  w->etext[GENX_SEQUENCE_ERROR] = "call out of sequence";
+  w->etext[GENX_NO_START_TAG] = "no start tag for end element call";
+  w->etext[GENX_IO_ERROR] = "io error";
+  w->etext[GENX_MISSING_VALUE] = "missing attribute value";
+  w->etext[GENX_MALFORMED_COMMENT] = "malformed comment body";
   w->etext[GENX_MALFORMED_PI] = "?> in PI";
-  w->etext[GENX_XML_PI_TARGET] = "Target of PI matches [xX][mM][lL]";
-  w->etext[GENX_DUPLICATE_ATTRIBUTE] =
-    "Same attribute specified more than once";
+  w->etext[GENX_XML_PI_TARGET] = "target of PI matches [xX][mM][lL]";
+  w->etext[GENX_DUPLICATE_ATTRIBUTE] = "duplicate attribute";
   w->etext[GENX_ATTRIBUTE_IN_DEFAULT_NAMESPACE] =
-    "Attribute cannot be in default namespace";
+    "attribute is default namespace";
   w->etext[GENX_DUPLICATE_NAMESPACE] =
-    "Declared namespace twice with different prefixes on one element.";
+    "namespace declared twice with different prefixes";
   w->etext[GENX_BAD_DEFAULT_DECLARATION] =
-    "Declared a default namespace on an element which is in no namespace";
+    "default namespace declared on an element which is not in a namespace";
 
   /* the xml: namespace is pre-wired */
   xml = genxDeclareNamespace(w, (utf8) "http://www.w3.org/XML/1998/namespace",
@@ -626,13 +634,16 @@ genxWriter genxNew(genxAlloc alloc, genxDealloc dealloc, void * userData)
   xml->declaration = xml->defaultDecl;
 
   w->ppIndent = 0; /* Pretty-printing is disabled by default. */
+  w->canonical = False; /* No canonicalization by default. */
 
+  w->firstAttribute = NULL;
+  w->lastAttribute = NULL;
   return w;
 }
 
 genxStatus genxReset (genxWriter w)
 {
-  int i;
+  size_t i;
 
   /* Clean up the stack. */
   w->stack.count = 0;
@@ -645,6 +656,23 @@ genxStatus genxReset (genxWriter w)
   {
     ((genxNamespace) w->namespaces.pointers[i])->declCount = 0;
     ((genxNamespace) w->namespaces.pointers[i])->baroque = False;
+  }
+
+  /* Clear provided attributes. */
+  for (i = 0; i < w->attributes.count; i++)
+    ((genxAttribute) w->attributes.pointers[i])->provided = False;
+
+  /* Clear attribute list. */
+  if (!w->canonical)
+  {
+    while (w->firstAttribute != NULL)
+    {
+      genxAttribute t = w->firstAttribute->next;
+      w->firstAttribute->next = NULL;
+      w->firstAttribute = t;
+    }
+
+    w->lastAttribute = NULL;
   }
 
   w->status = GENX_SUCCESS;
@@ -685,6 +713,24 @@ int genxGetPrettyPrint(genxWriter w)
 }
 
 /*
+ * get/set canonicalization.
+ */
+genxStatus genxSetCanonical(genxWriter w, int flag)
+{
+  if (w->sequence == SEQUENCE_NO_DOC)
+    w->canonical = flag;
+  else
+    w->status = GENX_SEQUENCE_ERROR;
+
+  return w->status;
+}
+
+int genxGetCanonical(genxWriter w)
+{
+  return w->canonical;
+}
+
+/*
  * get/set allocator
  */
 void genxSetAlloc(genxWriter w, genxAlloc alloc)
@@ -712,7 +758,7 @@ genxDealloc genxGetDealloc(genxWriter w)
  */
 void genxDispose(genxWriter w)
 {
-  int i;
+  size_t i;
   genxNamespace * nn = (genxNamespace *) w->namespaces.pointers;
   genxElement * ee = (genxElement *) w->elements.pointers;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
@@ -1084,7 +1130,8 @@ static genxAttribute declareAttribute(genxWriter w, genxNamespace ns,
   }
 
   /* attribute list has to be kept sorted per c14n rules */
-  high = w->attributes.count; low = -1;
+  high = (int) w->attributes.count;
+  low = -1;
   while (high - low > 1)
   {
     int probe = (high + low) / 2;
@@ -1110,6 +1157,7 @@ static genxAttribute declareAttribute(genxWriter w, genxNamespace ns,
   a->ns = ns;
   a->provided = False;
   a->atype = w->arec.atype;
+  a->next = NULL;
 
   if ((a->name = copy(w, name)) == NULL)
   {
@@ -1124,7 +1172,7 @@ static genxAttribute declareAttribute(genxWriter w, genxNamespace ns,
     if ((w->status = collectString(w, &a->value, valuestr)) != GENX_SUCCESS)
       goto busted;
 
-  w->status = listInsert(&w->attributes, a, high);
+  w->status = listInsert(&w->attributes, a, (size_t) high);
   if (w->status != GENX_SUCCESS)
     goto busted;
 
@@ -1171,7 +1219,7 @@ static genxStatus sendxBounded(genxWriter w, constUtf8 start, constUtf8 end)
     return GENX_IO_ERROR;
 }
 
-#define SendCheck(w,s) if ((w->status=sendx(w,(utf8)s))!=GENX_SUCCESS) return w->status;
+#define SendCheck(w,s) if ((w->status=sendx(w,(constUtf8)s))!=GENX_SUCCESS) return w->status
 
 /*******************************
  * XML writing routines.  The semantics of the externally-facing ones are
@@ -1212,6 +1260,32 @@ static genxStatus writeIndentation(genxWriter w)
 }
 
 /*
+ * Output attribute.
+ */
+static genxStatus writeAttribute(genxAttribute a)
+{
+  genxWriter w = a->writer;
+
+  if (a->ns && a->ns->baroque && a->ns->declaration == w->xmlnsEquals)
+    return w->status = GENX_ATTRIBUTE_IN_DEFAULT_NAMESPACE;
+
+  SendCheck(w, " ");
+
+  if (a->ns)
+  {
+    SendCheck(w, a->ns->declaration->name + STRLEN_XMLNS_COLON);
+    SendCheck(w, ":");
+  }
+
+  SendCheck(w, a->name);
+  SendCheck(w, "=\"");
+  SendCheck(w, a->value.buf);
+  SendCheck(w, "\"");
+
+  return w->status;
+}
+
+/*
  * Write out the attributes we've been gathering up for an element.  We save
  *  them until we've gathered them all so they can be writen in canonical
  *  order.
@@ -1220,9 +1294,9 @@ static genxStatus writeIndentation(genxWriter w)
  *  we build it, then as each attribute is added, we fill in its value and
  *  mark the fact that it's been added, in the "provided" field.
  */
-static genxStatus writeStartTag(genxWriter w)
+static genxStatus writeStartTag(genxWriter w, Boolean close)
 {
-  int i;
+  size_t i;
   genxAttribute * aa = (genxAttribute *) w->attributes.pointers;
   genxElement e = w->nowStarting;
 
@@ -1242,8 +1316,11 @@ static genxStatus writeStartTag(genxWriter w)
       if (writeIndentation (w) != GENX_SUCCESS)
         return w->status;
 
-    w->ppDepth++;
-    w->ppSimple = True;
+    if (!close)
+    {
+      w->ppDepth++;
+      w->ppSimple = True;
+    }
   }
 
   SendCheck(w, "<");
@@ -1254,27 +1331,42 @@ static genxStatus writeStartTag(genxWriter w)
   }
   SendCheck(w, e->type);
 
-  for (i = 0; i < w->attributes.count; i++)
+  /* If we are canonicalizing, then write sorted attributes. Otherwise
+     write them in the order specified. */
+  if (w->canonical)
   {
-    if (aa[i]->provided)
+    for (i = 0; i < w->attributes.count; i++)
     {
-      if (aa[i]->ns && aa[i]->ns->baroque &&
-	  aa[i]->ns->declaration == w->xmlnsEquals)
-	return w->status = GENX_ATTRIBUTE_IN_DEFAULT_NAMESPACE;
-
-      SendCheck(w, " ");
-
-      if (aa[i]->ns)
+      if (aa[i]->provided)
       {
-	SendCheck(w, aa[i]->ns->declaration->name + STRLEN_XMLNS_COLON)
-	SendCheck(w, ":");
+        if (writeAttribute (aa[i]) != GENX_SUCCESS)
+          return w->status;
+
+        aa[i]->provided = False;
       }
-      SendCheck(w, aa[i]->name);
-      SendCheck(w, "=\"");
-      SendCheck(w, aa[i]->value.buf);
-      SendCheck(w, "\"");
     }
   }
+  else
+  {
+    /* Keep the chain consistent even if we bail out mid way because of
+       an error. This way we will still be able to clear it in reset().*/
+    while (w->firstAttribute != NULL)
+    {
+      genxAttribute t = w->firstAttribute->next;
+
+      if (writeAttribute (w->firstAttribute) != GENX_SUCCESS)
+        return w->status;
+
+      w->firstAttribute->provided = False;
+      w->firstAttribute->next = NULL;
+      w->firstAttribute = t;
+    }
+
+    w->lastAttribute = NULL;
+  }
+
+  if (close)
+    SendCheck(w, "/");
   SendCheck(w, ">");
   return GENX_SUCCESS;
 }
@@ -1288,7 +1380,7 @@ static genxStatus unsetDefaultNamespace(genxWriter w)
   Boolean found = False;
 
   /* don't put it in if not needed */
-  i = w->stack.count - 1;
+  i = (int) (w->stack.count) - 1;
   while (found == False && i > 0)
   {
     while (w->stack.pointers[i] != NULL)
@@ -1346,7 +1438,6 @@ genxStatus genxUnsetDefaultNamespace(genxWriter w)
 genxStatus genxStartElement(genxElement e)
 {
   genxWriter w = e->writer;
-  int i;
 
   switch (w->sequence)
   {
@@ -1356,7 +1447,7 @@ genxStatus genxStartElement(genxElement e)
     return w->status = GENX_SEQUENCE_ERROR;
   case SEQUENCE_START_TAG:
   case SEQUENCE_ATTRIBUTES:
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     break;
   case SEQUENCE_PRE_DOC:
@@ -1365,10 +1456,6 @@ genxStatus genxStartElement(genxElement e)
   }
 
   w->sequence = SEQUENCE_START_TAG;
-
-  /* clear provided attributes */
-  for (i = 0; i < w->attributes.count; i++)
-    ((genxAttribute) w->attributes.pointers[i])->provided = 0;
 
   /*
    * push the stack.  We push a NULL after a pointer to this element
@@ -1438,7 +1525,7 @@ static genxStatus addNamespace(genxNamespace ns, constUtf8 prefix)
      *  case it's a no-op; or, if there's another declaration for this
      *  prefix on another namespace, in which case we have to over-ride
      */
-    i = w->stack.count - 1;
+    i = (int) (w->stack.count) - 1;
     while (i > 0)
     {
       while (w->stack.pointers[i] != NULL)
@@ -1474,7 +1561,7 @@ static genxStatus addNamespace(genxNamespace ns, constUtf8 prefix)
    * If this namespace is already declared on
    *  this element (with different prefix/decl) which is an error.
    */
-  i = w->stack.count - 1;
+  i = (int) (w->stack.count) - 1;
   while (w->stack.pointers[i] != NULL)
   {
     genxNamespace otherNs;
@@ -1596,7 +1683,17 @@ static genxStatus addAttribute(genxAttribute a, constUtf8 valuestr)
 
   if (valuestr && a->provided)
     return w->status = GENX_DUPLICATE_ATTRIBUTE;
-  a->provided = 1;
+
+  a->provided = True;
+
+  /* Add the attribute to the ordered list if not canonical. */
+  if (!w->canonical)
+  {
+    if (w->lastAttribute != NULL)
+      w->lastAttribute = w->lastAttribute->next = a;
+    else
+      w->lastAttribute = w->firstAttribute = a;
+  }
 
   return GENX_SUCCESS;
 }
@@ -1653,15 +1750,24 @@ genxStatus genxEndAttribute(genxWriter w)
   if (a->provided)
     return w->status = GENX_DUPLICATE_ATTRIBUTE;
 
-  a->provided = 1;
+  a->provided = True;
+
+  /* Add the attribute to the ordered list if not canonical. */
+  if (!w->canonical)
+  {
+    if (w->lastAttribute != NULL)
+      w->lastAttribute = w->lastAttribute->next = a;
+    else
+      w->lastAttribute = w->firstAttribute = a;
+  }
 
   return GENX_SUCCESS;
 }
 
 genxStatus genxEndElement(genxWriter w)
 {
-  genxElement e;
   int i;
+  Boolean close = True;
 
   switch (w->sequence)
   {
@@ -1672,42 +1778,54 @@ genxStatus genxEndElement(genxWriter w)
     return w->status = GENX_SEQUENCE_ERROR;
   case SEQUENCE_START_TAG:
   case SEQUENCE_ATTRIBUTES:
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, !w->canonical)) != GENX_SUCCESS)
       return w->status;
+    close = w->canonical;
     break;
   case SEQUENCE_CONTENT:
     break;
   }
 
   /*
-   * first peek into the stack to find the right namespace declaration
-   *  (if any) so we can properly prefix the end-tag.  Have to do this
-   *  before unwinding the stack because that might reset some xmlns
-   *  prefixes to the context in the parent element
+   * Output the closing tag.
    */
-  for (i = w->stack.count - 1; w->stack.pointers[i] != NULL; i -= 2)
-    ;
-  e = (genxElement) w->stack.pointers[--i];
+  if (close)
+  {
+    genxElement e;
+
+    /*
+     * first peek into the stack to find the right namespace declaration
+     *  (if any) so we can properly prefix the end-tag.  Have to do this
+     *  before unwinding the stack because that might reset some xmlns
+     *  prefixes to the context in the parent element
+     */
+    for (i = (int) (w->stack.count) - 1;
+         w->stack.pointers[i] != NULL;
+         i -= 2)
+      ;
+    e = (genxElement) w->stack.pointers[--i];
+
+    if (w->ppIndent)
+    {
+      w->ppDepth--;
+
+      if (!w->ppSimple)
+        if (writeIndentation (w) != GENX_SUCCESS)
+          return w->status;
+    }
+
+    SendCheck(w, "</");
+    if (e->ns && e->ns->declaration != w->xmlnsEquals)
+    {
+      SendCheck(w, e->ns->declaration->name + STRLEN_XMLNS_COLON);
+      SendCheck(w, ":");
+    }
+    SendCheck(w, e->type);
+    SendCheck(w, ">");
+  }
 
   if (w->ppIndent)
-  {
-    w->ppDepth--;
-
-    if (!w->ppSimple)
-      if (writeIndentation (w) != GENX_SUCCESS)
-        return w->status;
-
     w->ppSimple = False;
-  }
-
-  SendCheck(w, "</");
-  if (e->ns && e->ns->declaration != w->xmlnsEquals)
-  {
-    SendCheck(w, e->ns->declaration->name + STRLEN_XMLNS_COLON);
-    SendCheck(w, ":");
-  }
-  SendCheck(w, e->type);
-  SendCheck(w, ">");
 
   /*
    * pop zero or more namespace declarations, then a null, then the
@@ -1729,7 +1847,7 @@ genxStatus genxEndElement(genxWriter w)
        */
       if (ns->baroque)
       {
-	i = w->stack.count;
+	i = (int) w->stack.count;
 	while (i > 0)
 	{
 	  while (w->stack.pointers[i] != NULL)
@@ -1756,9 +1874,9 @@ genxStatus genxEndElement(genxWriter w)
   }
 
   /* pop the NULL */
-  --w->stack.count;
-  if (w->stack.count < 0)
+  if (w->stack.count == 0)
     return w->status = GENX_NO_START_TAG;
+  --w->stack.count;
 
   if (w->stack.count == 0)
     w->sequence = SEQUENCE_POST_DOC;
@@ -1828,7 +1946,7 @@ genxStatus genxAddText(genxWriter w, constUtf8 start)
   if (w->sequence == SEQUENCE_START_TAG ||
       w->sequence == SEQUENCE_ATTRIBUTES)
   {
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     w->sequence = SEQUENCE_CONTENT;
   }
@@ -1861,7 +1979,7 @@ genxStatus genxAddBoundedText(genxWriter w, constUtf8 start, constUtf8 end)
   if (w->sequence == SEQUENCE_START_TAG ||
       w->sequence == SEQUENCE_ATTRIBUTES)
   {
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     w->sequence = SEQUENCE_CONTENT;
   }
@@ -1886,7 +2004,7 @@ genxStatus genxAddBoundedText(genxWriter w, constUtf8 start, constUtf8 end)
     return w->status = GENX_SEQUENCE_ERROR;
 }
 
-genxStatus genxAddCountedText(genxWriter w, constUtf8 start, int byteCount)
+genxStatus genxAddCountedText(genxWriter w, constUtf8 start, size_t byteCount)
 {
   utf8 end = (utf8) (start + byteCount);
 
@@ -1901,7 +2019,7 @@ genxStatus genxAddCharacter(genxWriter w, int c)
   if (w->sequence == SEQUENCE_START_TAG ||
       w->sequence == SEQUENCE_ATTRIBUTES)
   {
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     w->sequence = SEQUENCE_CONTENT;
   }
@@ -1998,6 +2116,9 @@ genxStatus genxEndDocument(genxWriter w)
   if (w->sequence != SEQUENCE_POST_DOC)
     return w->status = GENX_SEQUENCE_ERROR;
 
+  /* Write a newline after the closing tag. */
+  /* Disabled for xsde SendCheck (w, "\n");*/
+
   if ((w->status = (*w->sender->flush)(w->userData)) != GENX_SUCCESS)
     return w->status;
 
@@ -2005,9 +2126,46 @@ genxStatus genxEndDocument(genxWriter w)
   return GENX_SUCCESS;
 }
 
+genxStatus genxXmlDeclaration(genxWriter w,
+                              constUtf8 ver,
+                              constUtf8 enc,
+                              constUtf8 stl)
+{
+  if (w->sequence != SEQUENCE_PRE_DOC)
+    return w->status = GENX_SEQUENCE_ERROR;
+
+  if ((w->status = genxCheckText(w, ver)) != GENX_SUCCESS)
+    return w->status;
+
+  if (enc != NULL && (w->status = genxCheckText(w, enc)) != GENX_SUCCESS)
+    return w->status;
+
+  if (stl != NULL && (w->status = genxCheckText(w, stl)) != GENX_SUCCESS)
+    return w->status;
+
+  SendCheck (w, "<?xml version=\"");
+  SendCheck (w, ver);
+
+  if (enc != NULL)
+  {
+    SendCheck (w, "\" encoding=\"");
+    SendCheck (w, enc);
+  }
+
+  if (stl != NULL)
+  {
+    SendCheck (w, "\" standalone=\"");
+    SendCheck (w, stl);
+  }
+
+  SendCheck (w, "\" ?>\n");
+
+  return GENX_SUCCESS;
+}
+
 genxStatus genxComment(genxWriter w, constUtf8 text)
 {
-  int i;
+  size_t i;
 
   if (w->sequence == SEQUENCE_NO_DOC ||
       w->sequence == SEQUENCE_START_ATTR)
@@ -2026,7 +2184,7 @@ genxStatus genxComment(genxWriter w, constUtf8 text)
   if (w->sequence == SEQUENCE_START_TAG ||
       w->sequence == SEQUENCE_ATTRIBUTES)
   {
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     w->sequence = SEQUENCE_CONTENT;
   }
@@ -2051,7 +2209,7 @@ genxStatus genxComment(genxWriter w, constUtf8 text)
 
 genxStatus genxPI(genxWriter w, constUtf8 target, constUtf8 text)
 {
-  int i;
+  size_t i;
 
   if (w->sequence == SEQUENCE_NO_DOC ||
       w->sequence == SEQUENCE_START_ATTR)
@@ -2079,7 +2237,7 @@ genxStatus genxPI(genxWriter w, constUtf8 target, constUtf8 text)
   if (w->sequence == SEQUENCE_START_TAG ||
       w->sequence == SEQUENCE_ATTRIBUTES)
   {
-    if ((w->status = writeStartTag(w)) != GENX_SUCCESS)
+    if ((w->status = writeStartTag(w, False)) != GENX_SUCCESS)
       return w->status;
     w->sequence = SEQUENCE_CONTENT;
   }

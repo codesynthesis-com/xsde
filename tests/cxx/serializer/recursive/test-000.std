@@ -1,1 +1,1 @@
-<g1:root xmlns:g1="test" name="234"><sub name="1"><sub name="2"></sub><indir name="123"><sub name="2"></sub></indir><sub2 name="2"></sub2></sub></g1:root>
+<g1:root name="234" xmlns:g1="test"><sub name="1"><sub name="2"/><indir name="123"><sub name="2"/></indir><sub2 name="2"/></sub></g1:root>

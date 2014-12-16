@@ -1,5 +1,5 @@
 <t:root xmlns:t="test" any-simple-attr="abc123">
-  <any></any>
+  <any/>
   <any-res x="x">
     <a>123</a>
     <b>abc</b>

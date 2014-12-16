@@ -9,6 +9,13 @@ Version 3.3.0
 
  C++/Serializer
 
+  * Elements with empty content are now closed immediately (for example,
+    <foo x='y'/>) rather than with a separate closing tag (for example,
+    <foo x='y'></foo>).
+
+  * To improve serialization performance, attributes are not longer
+    sorted but rather written in the order that they were specified.
+
   * Support for the fractionDigits facet for the decimal data type.
 
   * New functions, format() and precision(), allow changing of the

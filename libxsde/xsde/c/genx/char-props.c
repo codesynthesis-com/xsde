@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2014 Code Synthesis Tools CC.
+ * Copyright (c) 2007-2013 Code Synthesis Tools CC.
  * Copyright (c) 2004 by Tim Bray and Sun Microsystems.
  *
  * For copying permission, see the accompanying COPYING file.
@@ -20,16 +20,16 @@ static void charProp(char * p, int c, int prop)
   p[c] |= prop;
 }
 
-static void rangeProp(char * p, int start, int end, int prop)
+static void rangeProp(char * p, size_t start, size_t end, int prop)
 {
-  int i;
+  size_t i;
   for (i = start; i <= end; i++)
     p[i] |= prop;
 }
 
 void genxSetCharProps(char * p)
 {
-  int i;
+  size_t i;
 
   for (i = 0; i < GENX_CHAR_TABLE_SIZE; i++)
     p[i] = 0;

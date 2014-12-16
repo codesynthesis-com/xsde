@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (c) 2007-2014 Code Synthesis Tools CC.
+ * Copyright (c) 2007-2013 Code Synthesis Tools CC.
  * Copyright (c) 2004 by Tim Bray and Sun Microsystems.
  *
  * For copying permission, see the accompanying COPYING file.
@@ -11,6 +11,8 @@
 
 #ifndef GENX_H
 #define GENX_H
+
+#include <stddef.h> /* size_t */
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,7 +73,7 @@ typedef struct genxNamespace_rec * genxNamespace;
 typedef struct genxElement_rec * genxElement;
 typedef struct genxAttribute_rec * genxAttribute;
 
-typedef void * (*genxAlloc) (void * userData, int bytes);
+typedef void * (*genxAlloc) (void * userData, size_t bytes);
 typedef void (*genxDealloc) (void * userData, void* data);
 
 /*
@@ -114,6 +116,13 @@ void * genxGetUserData(genxWriter w);
  */
 genxStatus genxSetPrettyPrint(genxWriter w, int indentation);
 int genxGetPrettyPrint(genxWriter w);
+
+/*
+ * Set/get canonicalization. If true, then output explicit closing
+ * tags and sort attributes. Default is false.
+ */
+genxStatus genxSetCanonical(genxWriter w, int flag);
+int genxGetCanonical(genxWriter w);
 
 /*
  * User-provided memory allocator, if desired.  For example, if you were
@@ -188,6 +197,14 @@ genxStatus genxStartDocSender(genxWriter w, genxSender * sender);
 genxStatus genxEndDocument(genxWriter w);
 
 /*
+ * Write XML declaration. If encoding or standalone are NULL, then those
+ * attributes are omitted.
+ */
+genxStatus genxXmlDeclaration(genxWriter w,
+                              constUtf8 version,
+                              constUtf8 encoding,
+                              constUtf8 standalone);
+/*
  * Write a comment
  */
 genxStatus genxComment(genxWriter w, constUtf8 text);
@@ -260,10 +277,10 @@ genxStatus genxEndElement(genxWriter w);
 /*
  * Write some text
  * You can't write any text outside the root element, except with
- *  genxComment and genxPI
+ * genxComment and genxPI.
  */
 genxStatus genxAddText(genxWriter w, constUtf8 start);
-genxStatus genxAddCountedText(genxWriter w, constUtf8 start, int byteCount);
+genxStatus genxAddCountedText(genxWriter w, constUtf8 start, size_t byteCount);
 genxStatus genxAddBoundedText(genxWriter w, constUtf8 start, constUtf8 end);
 
 /*
