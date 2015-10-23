@@ -83,8 +83,8 @@ CFLAGS and CXXFLAGS variables in config.nmake contain the same
 runtime option (one of /MD, /MDd, /ML, /MLd, /MT, /MTd) as your
 application. A common symptom of using different runtime options
 when building the XSD/e runtime library (xsde.lib) and your
-application is a large number of link errors related to symbol
-redefinitions.
+application is a large number of link errors related to undefined
+or redefined symbols.
 
 The next step is to start a new command prompt and execute
 the vcvars32.bat (or equivalent) file that is normally found
