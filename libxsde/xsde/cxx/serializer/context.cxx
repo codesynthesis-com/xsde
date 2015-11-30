@@ -610,7 +610,7 @@ namespace xsde
 
 #ifndef XSDE_EXCEPTIONS
           if (uns == 0)
-            return false;
+            return 0;
 #endif
         }
 #endif // XSDE_ENCODING_*
