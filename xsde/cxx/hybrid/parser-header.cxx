@@ -13,14 +13,10 @@ namespace CXX
   {
     namespace
     {
-      //
-      //
       struct PostOverride: Traversal::Complex, Context
       {
-        PostOverride (Context& c)
-            : Context (c)
-        {
-        }
+        PostOverride (Context& c, SemanticGraph::Complex& scope)
+            : Context (c), scope_ (scope) {}
 
         virtual void
         traverse (SemanticGraph::Complex& c)
@@ -34,12 +30,18 @@ namespace CXX
               if (tiein)
                 dispatch (b);
 
-              os << "virtual " << pret_type (b) << endl
+              // Use variadic return type since base return type (pret_type)
+              // is not set for types in included/imported schemas.
+              //
+              os << "virtual " << pret_type (scope_) << endl
                  << post_name (b) << " ();"
                  << endl;
             }
           }
         }
+
+      private:
+        SemanticGraph::Complex& scope_;
       };
 
       //
@@ -47,7 +49,7 @@ namespace CXX
       struct Enumeration: Traversal::Enumeration, Context
       {
         Enumeration (Context& c, Traversal::Complex& complex)
-            : Context (c), complex_ (complex), post_override_ (c)
+            : Context (c), complex_ (complex)
         {
         }
 
@@ -151,7 +153,10 @@ namespace CXX
             String const& ret (pret_type (e));
 
             if (polymorphic (e))
-              post_override_.dispatch (e);
+            {
+              PostOverride po (*this, e);
+              po.dispatch (e);
+            }
 
             os << "virtual " << ret << endl
                << post_name (e) << " ();"
@@ -221,7 +226,6 @@ namespace CXX
 
       private:
         Traversal::Complex& complex_;
-        PostOverride post_override_;
       };
 
       struct List: Traversal::List, Context
@@ -566,8 +570,6 @@ namespace CXX
       {
         Complex (Context& c)
             : Context (c),
-              post_override_ (c),
-
               // State.
               //
               compositor_state_ (c),
@@ -687,7 +689,10 @@ namespace CXX
             // post
             //
             if (polymorphic (c))
-              post_override_.dispatch (c);
+            {
+              PostOverride po (*this, c);
+              po.dispatch (c);
+            }
 
             os << "virtual " << ret << endl
                << post_name (c) << " ();"
@@ -763,8 +768,6 @@ namespace CXX
         }
 
       private:
-        PostOverride post_override_;
-
         // State.
         //
         CompositorState compositor_state_;

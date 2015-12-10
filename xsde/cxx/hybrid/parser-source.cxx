@@ -13,26 +13,14 @@ namespace CXX
   {
     namespace
     {
-      //
-      //
       struct PostOverride: Traversal::Complex, Context
       {
-        PostOverride (Context& c)
-            : Context (c), scope_ (0)
-        {
-        }
+        PostOverride (Context& c, SemanticGraph::Complex& scope)
+            : Context (c), scope_ (scope) {}
 
         virtual void
         traverse (SemanticGraph::Complex& c)
         {
-          bool clear (false);
-
-          if (scope_ == 0)
-          {
-            scope_ = &c;
-            clear = true;
-          }
-
           if (c.inherits_p ())
           {
             SemanticGraph::Type& b (c.inherits ().base ());
@@ -42,22 +30,19 @@ namespace CXX
               if (tiein)
                 dispatch (b);
 
-              String const& scope (epimpl_custom (*scope_));
+              String const& scope (epimpl_custom (scope_));
 
-              os << pret_type (b) << " " << scope << "::" << endl
+              os << pret_type (scope_) << " " << scope << "::" << endl
                  << post_name (b) << " ()"
                  << "{"
                  << "return this->" << post_name (c) << " ();"
                  << "}";
             }
           }
-
-          if (clear)
-            scope_ = 0;
         }
 
       private:
-        SemanticGraph::Complex* scope_;
+        SemanticGraph::Complex& scope_;
       };
 
       //
@@ -89,7 +74,6 @@ namespace CXX
         Enumeration (Context& c, Traversal::Complex& complex)
             : Context (c),
               complex_ (complex),
-              post_override_ (c),
               enumerator_ (c)
         {
           names_ >> enumerator_;
@@ -404,7 +388,10 @@ namespace CXX
           String const& ret (pret_type (e));
 
           if (polymorphic (e))
-            post_override_.dispatch (e);
+          {
+            PostOverride po (*this, e);
+            po.dispatch (e);
+          }
 
           os << ret << " " << name << "::" << endl
              << post_name (e) << " ()"
@@ -493,7 +480,6 @@ namespace CXX
 
       private:
         Traversal::Complex& complex_;
-        PostOverride post_override_;
 
         Traversal::Names names_;
         Enumerator enumerator_;
@@ -1587,7 +1573,6 @@ namespace CXX
         Complex (Context& c)
             : Context (c),
               base_name_ (c, TypeName::base),
-              post_override_ (c),
               compositor_callback_ (c),
               particle_callback_ (c),
               attribute_callback_ (c)
@@ -1984,7 +1969,10 @@ namespace CXX
           // post
           //
           if (polymorphic (c))
-            post_override_.dispatch (c);
+          {
+            PostOverride po (*this, c);
+            po.dispatch (c);
+          }
 
           os << ret << " " << name << "::" << endl
              << post_name (c) << " ()"
@@ -2076,7 +2064,6 @@ namespace CXX
 
       private:
         TypeName base_name_;
-        PostOverride post_override_;
 
         CompositorCallback compositor_callback_;
         ParticleCallback particle_callback_;
