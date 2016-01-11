@@ -325,7 +325,7 @@ namespace CXX
     r->skel_type_suffix (h.sskel_type_suffix ());
     r->impl_type_suffix (h.simpl_type_suffix ());
 
-    char const* k = "pskel";
+    char const* k = "sskel";
 
     r->hxx_regex (find_value (h.hxx_regex (), k));
     r->ixx_regex (find_value (h.ixx_regex (), k));
