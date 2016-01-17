@@ -61,8 +61,8 @@ namespace CXX
 
           Enumeration& s (dynamic_cast<Enumeration&> (e.scope ()));
 
-          os << "if (strcmp (s, " <<
-            strlit (e.name ()) << ") == 0)" << endl
+          os << "if (strcmp (s, " << strlit (e.name ()) << ") == 0)"
+             << "{"
              << "v = " << fq_name (s) << "::" << ename (e) << ";";
         }
       };
@@ -456,9 +456,27 @@ namespace CXX
               (stl ? "c_str" : "data") <<  " ();"
                << endl;
 
-            names<Enumeration> (e, names_, 0, 0, 0, &Enumeration::comma);
+            // MSVC cannot handle an if-else chain longer than 128.
+            //
+            if (e.names_size () > 127)
+            {
+              os << "do"
+                 << "{";
 
-            os << endl;
+              names<Enumeration> (
+                e, names_, 0, 0, 0, &Enumeration::comma_break);
+
+              os << "}"
+                 << "} while (false);"
+                 << endl;
+            }
+            else
+            {
+              names<Enumeration> (
+                e, names_, 0, 0, 0, &Enumeration::comma_else);
+
+              os << "}";
+            }
 
             if (fl)
               os << type << " r (v);";
@@ -473,9 +491,17 @@ namespace CXX
         }
 
         virtual void
-        comma (Type&)
+        comma_else (Type&)
         {
-          os << "else ";
+          os << "}"
+             << "else ";
+        }
+
+        virtual void
+        comma_break (Type&)
+        {
+          os << "break;"
+             << "}";
         }
 
       private:
