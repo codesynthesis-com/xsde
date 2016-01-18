@@ -91,7 +91,7 @@ class options = 0
      anonymous types from the enclosing attributes/elements. <regex> is a
      Perl-like regular expression in the form
      \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}.
-     Any character can be used as a delimiter instead of \cb{/}. Escaping of
+     Any character can be used as a delimiter instead of '\cb{/}'. Escaping of
      the delimiter character in \ci{pattern} or \ci{replacement} is not
      supported.
 
@@ -146,7 +146,7 @@ class options = 0
      locations that are specified in the XML Schema include or import
      elements. <regex> is a Perl-like regular expression in the form
      \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}. Any character can
-     be used as a delimiter instead of \cb{/}. Escaping of the delimiter
+     be used as a delimiter instead of '\cb{/}'. Escaping of the delimiter
      character in \ci{pattern} or \ci{replacement} is not supported. All
      the regular expressions are pushed into a stack with the last specified
      expression considered first. The first match that succeeds is used.
@@ -188,7 +188,7 @@ class options = 0
      names to file names when the \cb{--file-per-type} option is specified.
      <regex> is a Perl-like regular expression in the form
      \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}. Any character can be
-     used as a delimiter instead of \cb{/}. Escaping of the delimiter
+     used as a delimiter instead of '\cb{/}'. Escaping of the delimiter
      character in \ci{pattern} or \ci{replacement} is not supported. All
      the regular expressions are pushed into a stack with the last specified
      expression considered first. The first match that succeeds is used.
@@ -218,7 +218,7 @@ class options = 0
      file names when the \cb{--file-per-type} option is specified. <regex> is
      a Perl-like regular expression in the form
      \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}. Any character can be used
-     as a delimiter instead of \cb{/}. Escaping of the delimiter character in
+     as a delimiter instead of '\cb{/}'. Escaping of the delimiter character in
      \ci{pattern} or \ci{replacement} is not supported. All the regular
      expressions are pushed into a stack with the last specified expression
      considered first. The first match that succeeds is used. Regular

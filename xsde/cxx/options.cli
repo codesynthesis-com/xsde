@@ -128,7 +128,7 @@ namespace CXX
        Schema namespace names to C++ namespace names. <regex> is a Perl-like
        regular expression in the form
        \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}. Any character can be
-       used as a delimiter instead of \cb{/}. Escaping of the delimiter
+       used as a delimiter instead of '\cb{/}'. Escaping of the delimiter
        character in \ci{pattern} or \ci{replacement} is not supported.
 
        All the regular expressions are pushed into a stack with the last
@@ -154,7 +154,7 @@ namespace CXX
        1. The expression is applied and if the result is empty the next
        expression is considered.
 
-       2. All \cb{/} are replaced with \cb{::}.
+       2. All '\cb{/}' are replaced with '\cb{::}'.
 
        3. The result is verified to be a valid C++ scope name (e.g.,
        \cb{foo::bar}). If this test succeeds, the result is used as a
@@ -216,7 +216,7 @@ namespace CXX
       "Add <regex> to the list of regular expressions used to transform
        \cb{#include} directive paths. <regex> is a Perl-like regular
        expression in the form \c{\b{/}\i{pattern}\b{/}\i{replacement}\b{/}}.
-       Any character can be used as a delimiter instead of \cb{/}. Escaping
+       Any character can be used as a delimiter instead of '\cb{/}'. Escaping
        of the delimiter character in \ci{pattern} or \ci{replacement} is not
        supported.
 
