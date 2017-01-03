@@ -1,5 +1,5 @@
 # file      : tests/cxx/parser/validation/built-in/uri/makefile
-# copyright : Copyright (c) 2006-2014 Code Synthesis Tools CC
+# copyright : Copyright (c) 2006-2017 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 include $(dir $(lastword $(MAKEFILE_LIST)))../../../../../../build/bootstrap.make

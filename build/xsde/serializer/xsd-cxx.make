@@ -1,5 +1,5 @@
 # file      : build/xsde/serializer/xsd-cxx.make
-# copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
+# copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #@@ Need to use extensions from cxx config.

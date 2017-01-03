@@ -1,5 +1,5 @@
 // file      : xsde/cxx/parser/characters-validation-source.cxx
-// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <cxx/parser/characters-validation-source.hxx>

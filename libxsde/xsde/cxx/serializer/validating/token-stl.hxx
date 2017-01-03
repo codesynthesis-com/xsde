@@ -1,5 +1,5 @@
 // file      : xsde/cxx/serializer/validating/token-stl.hxx
-// copyright : Copyright (c) 2005-2014 Code Synthesis Tools CC
+// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSDE_CXX_SERIALIZER_VALIDATING_TOKEN_STL_HXX
