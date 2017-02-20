@@ -65,6 +65,17 @@ main ()
     base64_binary_pimpl p;
     p.pre ();
     p._pre_impl (c);
+    p._characters ("");
+    p._post ();
+    assert (!c.error_type () &&
+            compare (p.post_base64_binary (), "", 0));
+  }
+
+  {
+    context c;
+    base64_binary_pimpl p;
+    p.pre ();
+    p._pre_impl (c);
     p._characters (" \t\n ");
     p._characters ("MTIzND  ");
     p._characters ("VhYmNqaw = = ");
@@ -133,16 +144,6 @@ main ()
 
   // base64Binary
   //
-  {
-    context c;
-    base64_binary_pimpl p;
-    p.pre ();
-    p._pre_impl (c);
-    // p._characters ("");
-    p._post ();
-    assert (c.schema_error () == schema_error::invalid_base64_binary_value);
-  }
-
   {
     context c;
     base64_binary_pimpl p;

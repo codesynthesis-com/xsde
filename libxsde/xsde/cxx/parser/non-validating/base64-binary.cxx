@@ -180,10 +180,10 @@ namespace xsde
             str_.truncate (size);
           }
 
-          // Our length should be a multiple of four.
+          // Our length should be a multiple of four but it can also be 0.
           //
           size_type quad_count = size / 4;
-          size_type capacity = quad_count * 3 + 1;
+          size_type capacity = quad_count != 0 ? quad_count * 3 + 1 : 0;
 
 #ifdef XSDE_EXCEPTIONS
           buf_->size (capacity);
@@ -194,70 +194,73 @@ namespace xsde
             return 0;
           }
 #endif
-          char* dst = buf_->data ();
-
-          // Source and destination indexes.
-          //
-          size_type si = 0;
-          size_type di = 0;
-
-          // Process all quads except the last one.
-          //
-          unsigned char b1, b2, b3, b4;
-
-          for (size_type q = 0; q < quad_count - 1; ++q)
+          if (quad_count != 0)
           {
-            b1 = base64_decode (src[si++]);
-            b2 = base64_decode (src[si++]);
-            b3 = base64_decode (src[si++]);
-            b4 = base64_decode (src[si++]);
+            char* dst = buf_->data ();
 
-            dst[di++] = (b1 << 2) | (b2 >> 4);
-            dst[di++] = (b2 << 4) | (b3 >> 2);
-            dst[di++] = (b3 << 6) | b4;
-          }
+            // Source and destination indexes.
+            //
+            size_type si = 0;
+            size_type di = 0;
 
-          // Process the last quad. The first two octets are always there.
-          //
-          b1 = base64_decode (src[si++]);
-          b2 = base64_decode (src[si++]);
+            // Process all quads except the last one.
+            //
+            unsigned char b1, b2, b3, b4;
 
-          char e3 = src[si++];
-          char e4 = src[si++];
-
-          if (e4 == '=')
-          {
-            if (e3 == '=')
+            for (size_type q = 0; q < quad_count - 1; ++q)
             {
-              // Two pads. Last 4 bits in b2 should be zero.
-              //
-              dst[di++] = (b1 << 2) | (b2 >> 4);
-            }
-            else
-            {
-              // One pad. Last 2 bits in b3 should be zero.
-              //
-              b3 = base64_decode (e3);
+              b1 = base64_decode (src[si++]);
+              b2 = base64_decode (src[si++]);
+              b3 = base64_decode (src[si++]);
+              b4 = base64_decode (src[si++]);
 
               dst[di++] = (b1 << 2) | (b2 >> 4);
               dst[di++] = (b2 << 4) | (b3 >> 2);
+              dst[di++] = (b3 << 6) | b4;
             }
-          }
-          else
-          {
-            // No pads.
+
+            // Process the last quad. The first two octets are always there.
             //
-            b3 = base64_decode (e3);
-            b4 = base64_decode (e4);
+            b1 = base64_decode (src[si++]);
+            b2 = base64_decode (src[si++]);
 
-            dst[di++] = (b1 << 2) | (b2 >> 4);
-            dst[di++] = (b2 << 4) | (b3 >> 2);
-            dst[di++] = (b3 << 6) | b4;
+            char e3 = src[si++];
+            char e4 = src[si++];
+
+            if (e4 == '=')
+            {
+              if (e3 == '=')
+              {
+                // Two pads. Last 4 bits in b2 should be zero.
+                //
+                dst[di++] = (b1 << 2) | (b2 >> 4);
+              }
+              else
+              {
+                // One pad. Last 2 bits in b3 should be zero.
+                //
+                b3 = base64_decode (e3);
+
+                dst[di++] = (b1 << 2) | (b2 >> 4);
+                dst[di++] = (b2 << 4) | (b3 >> 2);
+              }
+            }
+            else
+            {
+              // No pads.
+              //
+              b3 = base64_decode (e3);
+              b4 = base64_decode (e4);
+
+              dst[di++] = (b1 << 2) | (b2 >> 4);
+              dst[di++] = (b2 << 4) | (b3 >> 2);
+              dst[di++] = (b3 << 6) | b4;
+            }
+
+            // Set the real size.
+            //
+            buf_->size (di);
           }
-
-          // Set the real size.
-          //
-          buf_->size (di);
 
           buffer* r = buf_;
           buf_ = 0;
