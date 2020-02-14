@@ -1,5 +1,4 @@
 // file      : xsde/cxx/hybrid/serializer-map.hxx
-// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSDE_CXX_HYBRID_SERIALIZER_MAP_HXX

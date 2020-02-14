@@ -1,5 +1,4 @@
 # file      : build/config.make
-# copyright : Copyright (c) 2008-2017 Code Synthesis Tools CC
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #

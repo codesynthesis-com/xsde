@@ -1,5 +1,4 @@
 // file      : xsde/cxx/iso8859-1.hxx
-// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSDE_CXX_ISO8859_1_HXX

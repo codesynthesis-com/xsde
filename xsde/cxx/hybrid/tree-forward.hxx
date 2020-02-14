@@ -1,5 +1,4 @@
 // file      : xsde/cxx/hybrid/tree-forward.hxx
-// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef CXX_HYBRID_TREE_FORWARD_HXX

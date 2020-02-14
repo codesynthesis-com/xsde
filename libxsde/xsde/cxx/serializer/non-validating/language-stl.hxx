@@ -1,5 +1,4 @@
 // file      : xsde/cxx/serializer/non-validating/language-stl.hxx
-// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSDE_CXX_SERIALIZER_NON_VALIDATING_LANGUAGE_STL_HXX

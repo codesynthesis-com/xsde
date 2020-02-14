@@ -1,5 +1,4 @@
 // file      : xsde/cxx/parser/validating/unsigned-int.hxx
-// copyright : Copyright (c) 2005-2017 Code Synthesis Tools CC
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef XSDE_CXX_PARSER_VALIDATING_UNSIGNED_INT_HXX
