@@ -151,7 +151,7 @@ main (int argc, char* argv[])
 
       o << "CodeSynthesis XSD/e XML Schema to C++ compiler " <<
         "for embedded systems " << XSDE_STR_VERSION << endl
-        << "Copyright (c) 2005-2017 Code Synthesis Tools CC" << endl;
+        << "Copyright (c) 2005-2020 Code Synthesis Tools CC." << endl;
 
       if (!help_ops.proprietary_license () && cmd == "version")
       {
