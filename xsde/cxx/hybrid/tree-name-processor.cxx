@@ -17,12 +17,13 @@
 #include <xsd-frontend/traversal.hxx>
 
 using namespace std;
-using cutl::shared_ptr;
 
 namespace CXX
 {
   namespace Hybrid
   {
+    using cutl::shared_ptr;
+
     namespace
     {
       typedef set<String> NameSet;
