@@ -3,7 +3,6 @@
 
 #include <xsde/config.h>
 
-
 #if XSDE_BYTEORDER == 1234
 #  define BYTEORDER 1234
 #elif XSDE_BYTEORDER == 4321
@@ -12,10 +11,10 @@
 #  error XSDE_BYTEORDER is not defined or defined to an invalid value
 #endif
 
-
 #define XML_NS 1
 #define XML_DTD 1
 #define XML_CONTEXT_BYTES 1024
+#define XML_FREESTANDING 1
 
 #define UNUSED(x) (void)x;
 
@@ -29,6 +28,7 @@
 #undef WIN32_LEAN_AND_MEAN
 
 #define HAVE_MEMMOVE 1
+#define COMPILED_FROM_DSP 1
 
 #endif /* XSDE_PLATFORM_WIN32 || XSDE_PLATFORM_WINCE */
 
