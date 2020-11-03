@@ -412,6 +412,11 @@ namespace xsde
         {
         }
 
+        var_const_iterator (const var_const_iterator& j)
+            : i_ (j.i_)
+        {
+        }
+
         var_const_iterator (var_iterator<T> j)
             : i_ (const_cast<const T**> (j.i_))
         {
