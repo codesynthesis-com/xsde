@@ -34,7 +34,7 @@
    case BT_LEAD ## n: \
      if (end - ptr < n) \
        return XML_TOK_PARTIAL_CHAR; \
-     if (!IS_NAME_CHAR(enc, ptr, n)) { \
+     if (IS_INVALID_CHAR(enc, ptr, n) || !IS_NAME_CHAR(enc, ptr, n)) { \
        *nextTokPtr = ptr; \
        return XML_TOK_INVALID; \
      } \
@@ -62,7 +62,7 @@
    case BT_LEAD ## n: \
      if (end - ptr < n) \
        return XML_TOK_PARTIAL_CHAR; \
-     if (!IS_NMSTRT_CHAR(enc, ptr, n)) { \
+     if (IS_INVALID_CHAR(enc, ptr, n) || !IS_NMSTRT_CHAR(enc, ptr, n)) { \
        *nextTokPtr = ptr; \
        return XML_TOK_INVALID; \
      } \
@@ -1103,6 +1103,10 @@ PREFIX(prologTok)(const ENCODING *enc, const char *ptr, const char *end,
   case BT_LEAD ## n: \
     if (end - ptr < n) \
       return XML_TOK_PARTIAL_CHAR; \
+    if (IS_INVALID_CHAR(enc, ptr, n)) { \
+      *nextTokPtr = ptr; \
+      return XML_TOK_INVALID; \
+    } \
     if (IS_NMSTRT_CHAR(enc, ptr, n)) { \
       ptr += n; \
       tok = XML_TOK_NAME; \
