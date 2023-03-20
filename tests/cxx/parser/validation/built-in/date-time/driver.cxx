@@ -1118,6 +1118,26 @@ main ()
     date_pimpl p;
     p.pre ();
     p._pre_impl (c);
+    p._characters ("2023-04-31");
+    p._post ();
+    assert (c.schema_error () == schema_error::invalid_date_value);
+  }
+
+  {
+    context c;
+    date_pimpl p;
+    p.pre ();
+    p._pre_impl (c);
+    p._characters ("2023-02-29");
+    p._post ();
+    assert (c.schema_error () == schema_error::invalid_date_value);
+  }
+
+  {
+    context c;
+    date_pimpl p;
+    p.pre ();
+    p._pre_impl (c);
     p._characters ("2007-10-2X");
     p._post ();
     assert (c.schema_error () == schema_error::invalid_date_value);

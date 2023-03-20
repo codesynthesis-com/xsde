@@ -226,6 +226,25 @@ main ()
     assert (c.schema_error () == schema_error::invalid_date_value);
   }
 
+  {
+    date_simpl s;
+    context c (0);
+    s.pre (date (2023, 4, 31));
+    s._pre_impl (c);
+    s._serialize_content ();
+    assert (c.schema_error () == schema_error::invalid_date_value);
+  }
+
+
+  {
+    date_simpl s;
+    context c (0);
+    s.pre (date (2023, 2, 29));
+    s._pre_impl (c);
+    s._serialize_content ();
+    assert (c.schema_error () == schema_error::invalid_date_value);
+  }
+
   // time
   //
   {
