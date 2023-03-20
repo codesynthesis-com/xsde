@@ -108,7 +108,7 @@ namespace xsde
       inline int context::
       app_error () const
       {
-        return error_code_.app;
+        return error_type_ == error_app ? error_code_.app : 0;
       }
 
       inline void context::
@@ -118,6 +118,12 @@ namespace xsde
         error_code_.app = e;
       }
 
+      inline context::sys_error_t context::
+      sys_error () const
+      {
+        return error_type_ == error_sys ? error_code_.sys : sys_error::none;
+      }
+
       inline void context::
       sys_error (sys_error_t e)
       {
@@ -125,10 +131,10 @@ namespace xsde
         error_code_.sys = e;
       }
 
-      inline context::sys_error_t context::
-      sys_error () const
+      inline context::xml_error_t context::
+      xml_error () const
       {
-        return error_code_.sys;
+        return error_type_ == error_xml ? error_code_.xml : xml_error::none;
       }
 
       inline void context::
@@ -137,19 +143,15 @@ namespace xsde
         error_type_ = error_xml;
         error_code_.xml = e;
       }
-
-      inline context::xml_error_t context::
-      xml_error () const
-      {
-        return error_code_.xml;
-      }
 #endif
 
 #ifdef XSDE_SERIALIZER_VALIDATION
       inline context::schema_error_t context::
       schema_error () const
       {
-        return error_code_.schema;
+        return error_type_ == error_schema
+          ? error_code_.schema
+          : schema_error::none;
       }
 
       inline void context::
