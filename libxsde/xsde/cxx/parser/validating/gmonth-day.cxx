@@ -100,7 +100,28 @@ namespace xsde
 
           day_ = 10 * (d1 - '0') + (d2 - '0');
 
-          if (day_ < 1 || day_ > 31)
+          // Validate day according to the XML Schema 1.1 specification:
+          //
+          // The day value must be no more than 30 if month is one of 4, 6, 9,
+          // or 11, and no more than 29 if month is 2.
+          //
+          unsigned short max_day = 31;
+          switch (month_)
+          {
+          case 4:
+          case 6:
+          case 9:
+          case 11:
+            max_day = 30;
+            break;
+          case 2:
+            max_day = 29;
+            break;
+          default:
+            break;
+          }
+
+          if (day_ < 1 || day_ > max_day)
           {
             _schema_error (schema_error::invalid_gmonth_day_value);
             return;

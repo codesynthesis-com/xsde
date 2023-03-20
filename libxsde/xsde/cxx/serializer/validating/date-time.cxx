@@ -38,7 +38,31 @@ namespace xsde
           unsigned short tm = value_.minutes ();
           double s = value_.seconds ();
 
-          if (y != 0 && m > 0 && m < 13 && d > 0 && d < 32 &&
+          // Validate day according to the XML Schema 1.1 specification:
+          //
+          // The day value must be no more than 30 if month is one of 4, 6, 9,
+          // or 11, no more than 28 if month is 2 and year is not divisible by
+          // 4, or is divisible by 100 but not by 400, and no more than 29 if
+          // month is 2 and year is divisible by 400, or by 4 but not by 100.
+          //
+          unsigned short max_day = 31;
+          switch (m)
+          {
+          case 4:
+          case 6:
+          case 9:
+          case 11:
+            max_day = 30;
+            break;
+          case 2:
+            max_day = ((y % 400 == 0) ||
+                       (y % 4 == 0 && y % 100 != 0) ? 29 : 28);
+            break;
+          default:
+            break;
+          }
+
+          if (y != 0 && m > 0 && m < 13 && d > 0 && d <= max_day &&
               ((h < 24 && tm < 60 && s >= 0.0 && s < 60.0) ||
                (h == 24 && tm == 0 && s == 0.0)) &&
               (!value_.zone_present () || bits::valid_time_zone (value_)))

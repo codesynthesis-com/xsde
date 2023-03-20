@@ -193,11 +193,7 @@ namespace xsde
 
           day_ = 10 * (d1 - '0') + (d2 - '0');
 
-          if (day_ < 1 || day_ > 31)
-          {
-            _schema_error (schema_error::invalid_date_time_value);
-            return;
-          }
+          // Note: day validated below.
 
           // month
           //
@@ -241,6 +237,36 @@ namespace xsde
                ? (-2147483647 - 1)
                : -static_cast<int> (ul))
             : static_cast<int> (ul);
+
+          // Validate day according to the XML Schema 1.1 specification:
+          //
+          // The day value must be no more than 30 if month is one of 4, 6, 9,
+          // or 11, no more than 28 if month is 2 and year is not divisible by
+          // 4, or is divisible by 100 but not by 400, and no more than 29 if
+          // month is 2 and year is divisible by 400, or by 4 but not by 100.
+          //
+          unsigned short max_day = 31;
+          switch (month_)
+          {
+          case 4:
+          case 6:
+          case 9:
+          case 11:
+            max_day = 30;
+            break;
+          case 2:
+            max_day = ((year_ % 400 == 0) ||
+                       (year_ % 4 == 0 && year_ % 100 != 0) ? 29 : 28);
+            break;
+          default:
+            break;
+          }
+
+          if (day_ < 1 || day_ > max_day)
+          {
+            _schema_error (schema_error::invalid_date_time_value);
+            return;
+          }
         }
 
         date_time date_time_pimpl::
