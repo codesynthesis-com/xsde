@@ -3,7 +3,7 @@
  * Description: basic API for libxml regular expressions handling used
  *              for XML Schemas and validation.
  *
- * See COPYING for the status of this software.
+ * See LICENSE for the status of this software.
  */
 
 #ifndef __XML_REGEXP_H__

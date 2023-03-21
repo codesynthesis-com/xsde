@@ -9,7 +9,7 @@
  *    - XML Schemas Datatypes part 2 especially Appendix F
  *    - RELAX-NG/TREX i.e. the counter proposal
  *
- * See COPYING for the status of this software.
+ * See LICENSE for the status of this software.
  */
 #include <xsde/c/pre.h>
 
