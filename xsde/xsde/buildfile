@@ -1,0 +1,127 @@
+# file      : xsde/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+import libs  = libxsd-frontend%lib{xsd-frontend}
+import libs += libcutl%lib{cutl}
+
+ops = options            \
+  cxx/options            \
+  cxx/parser/options     \
+  cxx/serializer/options \
+  cxx/hybrid/options
+
+./: exe{xsde}: {hxx ixx txx cxx}{** -version -{$ops} -pregenerated/**} \
+               {hxx}{version}                                          \
+               $libs
+
+# Target metadata, see also --build2-metadata in xsde.cxx.
+#
+# Note that xsde does not query any environment variables.
+#
+exe{xsde}:
+{
+  export.metadata = 1 xsde
+  xsde.name = [string] xsde
+  xsde.version  = [string] $version
+  xsde.checksum = [string] $version
+}
+
+hxx{version}: in{version} $src_root/manifest
+
+## Consumption build ($develop == false).
+#
+
+# Use pregenerated versions in the consumption build.
+#
+exe{xsde}: pregenerated/{hxx ixx cxx}{**}: include = (!$develop)
+
+if! $develop
+  cxx.poptions =+ "-I($src_base/pregenerated)" # Note: must come first.
+
+# Distribute pregenerated versions only in the consumption build.
+#
+pregenerated/{hxx ixx cxx}{*}: dist = (!$develop)
+
+#
+##
+
+## Development build ($develop == true).
+#
+
+exe{xsde}: {hxx ixx cxx}{$ops}: include = $develop
+
+if $develop
+  import! [metadata] cli = cli%exe{cli}
+
+# In the development build distribute regenerated {hxx ixx cxx}{options},
+# remapping their locations to the paths of the pregenerated versions (which
+# are only distributed in the consumption build; see above). This way we make
+# sure that the distributed files are always up-to-date.
+#
+for f: $ops
+{
+  d = $directory($f) # empty, cxx/, etc.
+
+  <{hxx ixx cxx}{$f}>: cli{$f}
+  {
+    dist = ($develop ? $relative([dir_path] "pregenerated/xsde/$d", $d) : false)
+
+    # Symlink the generated code in src for convenience of development.
+    #
+    backlink = true
+  }
+}
+
+<hxx{~'/(.*)/'} ixx{~'/\1/'} cxx{~'/\1/'}>: cli{~'/\1/'} $cli
+%
+if $develop
+{{
+  t = $path($>[0]).t
+
+  depdb dyndep --byproduct --file $t
+
+  h = $path($>[0])
+  i = $path($>[1])
+  c = $path($>[2])
+
+  d = $directory($h)
+  p = $string($leaf($d, $out_root)) # xsde, xsde/cxx, etc
+
+  # Watch out: if we add --generate-specifier, then we will need to fix code
+  # that relies on modifiers to also modify the "specified" flag.
+  #
+  options = --std c++11 -I $src_root --include-prefix $p                    \
+            --guard-prefix $regex.replace($ucase($p), '[/\\]', '_')         \
+            --generate-modifier --ostream-type ::std::wostream              \
+            --exclude-base --suppress-undocumented --generate-file-scanner  \
+            --include-with-brackets --option-length 28 \
+            --cxx-prologue '#include <xsde/options-parser.hxx>'
+
+  $cli $options --generate-dep --dep-file $t -o $d $path($<[0])
+
+  # If the result differs from the pregenerated version, copy it over.
+  #
+  d = [dir_path] $src_base/pregenerated/$p
+
+  dh = $d/$leaf($h)
+  di = $d/$leaf($i)
+  dc = $d/$leaf($c)
+
+  if diff $dh $h >- && \
+     diff $di $i >- && \
+     diff $dc $c >-
+    exit
+  end
+
+  cp $h $dh
+  cp $i $di
+  cp $c $dc
+}}
+
+#
+##
+
+# Pass the copyright notice extracted from the LICENSE file.
+#
+obj{xsde cxx/parser/generator cxx/serializer/generator cxx/hybrid/generator}: \
+  cxx.poptions += -DXSDE_COPYRIGHT=\"$copyright\"

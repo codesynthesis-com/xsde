@@ -1,0 +1,24 @@
+: 1
+name: xsde
+version: 3.4.0-b.1.z
+language: c++
+summary: XML Schema to C++ data binding compiler for mobile and embedded systems
+license: other: GPL-2.0-only with FLOSS exception
+topics: C++, XML, XML Schema, XML parser, source code generation
+description-file: README.md
+package-description-file: PACKAGE-README.md
+changes-file: NEWS
+url: https://www.codesynthesis.com/products/xsde/
+doc-url: https://www.codesynthesis.com/products/xsde/
+src-url: https://git.codesynthesis.com/cgit/xsde/xsde/
+email: xsde-users@codesynthesis.com ; Mailing list
+build-warning-email: builds@codesynthesis.com
+requires: host
+requires: c++11
+depends: * build2 >= 0.17.0
+depends: * bpkg >= 0.17.0
+depends: libxsd-frontend ^2.1.0
+depends: libcutl ^1.11.0
+depends: * cli ^1.2.0- ? ($config.xsde.develop)
+#tests: * xsde-tests == $
+#examples: * xsde-examples == $

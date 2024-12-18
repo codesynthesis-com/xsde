@@ -1,0 +1,10 @@
+# file      : build/bootstrap.build
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+project = xsde
+
+using version
+using config
+using test
+using dist
+using install

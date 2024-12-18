@@ -1,0 +1,47 @@
+// file      : xsde/version.hxx.in
+// license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+#ifndef XSDE_VERSION // Note: using the version macro itself.
+
+// The numeric version format is AAAAABBBBBCCCCCDDDE where:
+//
+// AAAAA - major version number
+// BBBBB - minor version number
+// CCCCC - bugfix version number
+// DDD   - alpha / beta (DDD + 500) version number
+// E     - final (0) / snapshot (1)
+//
+// When DDDE is not 0, 1 is subtracted from AAAAABBBBBCCCCC. For example:
+//
+// Version      AAAAABBBBBCCCCCDDDE
+//
+// 0.1.0        0000000001000000000
+// 0.1.2        0000000001000020000
+// 1.2.3        0000100002000030000
+// 2.2.0-a.1    0000200001999990010
+// 3.0.0-b.2    0000299999999995020
+// 2.2.0-a.1.z  0000200001999990011
+//
+#define XSDE_VERSION       $xsde.version.project_number$ULL
+#define XSDE_VERSION_STR   "$xsde.version.project$"
+#define XSDE_VERSION_ID    "$xsde.version.project_id$"
+#define XSDE_VERSION_FULL  "$xsde.version$"
+
+#define XSDE_VERSION_MAJOR $xsde.version.major$
+#define XSDE_VERSION_MINOR $xsde.version.minor$
+#define XSDE_VERSION_PATCH $xsde.version.patch$
+
+#define XSDE_PRE_RELEASE   $xsde.version.pre_release$
+
+#define XSDE_SNAPSHOT      $xsde.version.snapshot_sn$ULL
+#define XSDE_SNAPSHOT_ID   "$xsde.version.snapshot_id$"
+
+#include <libcutl/version.hxx>
+
+$libcutl.check(LIBCUTL_VERSION, LIBCUTL_SNAPSHOT)$
+
+#include <libxsd-frontend/version.hxx>
+
+$libxsd_frontend.check(LIBXSD_FRONTEND_VERSION, LIBXSD_FRONTEND_SNAPSHOT)$
+
+#endif // XSDE_VERSION
