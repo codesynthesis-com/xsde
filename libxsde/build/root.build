@@ -1,0 +1,212 @@
+# file      : build/root.build
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+cxx.std = latest
+
+using cxx
+
+hxx{*}: extension = hxx
+cxx{*}: extension = cxx
+ixx{*}: extension = ixx
+txx{*}: extension = txx
+
+using c
+
+h{*}: extension = h
+c{*}: extension = c
+
+if ($cxx.target.system == 'win32-msvc')
+  cc.poptions += -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS
+
+if ($cxx.class == 'msvc')
+  cc.coptions += /wd4251 /wd4275 /wd4800
+
+# Application character encoding. Valid values are 'utf8' for UTF-8 and
+# 'iso8859-1' for ISO-8859-1.
+#
+# Note that this encoding is not the same as the XML document encoding that is
+# being parsed or serialized. Rather, it is the encoding that is used inside
+# the application. When an XML document is parsed, the character data is
+# automatically converted to the application encoding. Similarly, when an XML
+# document is serialized, the data in the application encoding is
+# automatically converted to the resulting document encoding. Also don't
+# forget to use the --char-encoding option when compiling your schemas if
+# using an encoding other than UTF-8.
+#
+config [string] config.libxsde.encoding ?= 'utf8'
+encoding = $config.libxsde.encoding
+
+assert ($encoding == 'utf8' || $encoding == 'iso8859-1') \
+  "invalid config.libxsde.encoding value '$encoding'"
+
+# Set to false to disable the use of STL.
+#
+# Also don't forget to use the --no-stl option when compiling your schemas.
+#
+config [bool] config.libxsde.stl ?= true
+stl = $config.libxsde.stl
+
+# Set to false if you don't want iterators to conform to the STL requirements.
+#
+# This feature requires working <iterator> header and allows you to use the
+# standard algorithms such as find_if, etc.
+#
+config [bool] config.libxsde.stl_iterator ?= true
+stl_iterator = $config.libxsde.stl_iterator
+
+# Set to false to disable the use of std::iostream.
+#
+# Also don't forget to use the --no-iostream option when compiling your
+# schemas.
+#
+config [bool] config.libxsde.iostream ?= true
+iostream = $config.libxsde.iostream
+
+# Set to false to disable the use of C++ exceptions.
+#
+# Also don't forget to use the --no-exceptions option when compiling your
+# schemas.
+#
+config [bool] config.libxsde.exceptions ?= true
+exceptions = $config.libxsde.exceptions
+
+# Set to false to disable the use of the "long long int" type and the
+# strtoull() function.
+#
+# Also don't forget to use the --no-long-long option when compiling your
+# schemas.
+#
+config [bool] config.libxsde.long_long ?= true
+long_long = $config.libxsde.long_long
+
+# Set to false if you don't want support for XML Schema validation in
+# C++/Parser.
+#
+# Also don't forget to use the --suppress-validation option when compiling
+# your schemas.
+#
+config [bool] config.libxsde.parser_validation ?= true
+parser_validation = $config.libxsde.parser_validation
+
+# Set to false if you don't want support for XML Schema validation in
+# C++/Serializer.
+#
+# Also don't forget to use the --suppress-validation option when compiling
+# your schemas.
+#
+config [bool] config.libxsde.serializer_validation ?= true
+serializer_validation = $config.libxsde.serializer_validation
+
+# Set to false if you would like to have support for regular expressions in
+# the XSD/e runtime.
+#
+# If the regexp support is enabled, then the parser and serializer validation
+# code will use it to validate the xs:pattern facet. If the regexp support is
+# disabled, then this facet will be ignored. The regexp support increases the
+# resulting executable size by about 30-50Kb.
+#
+config [bool] config.libxsde.regexp ?= false
+regexp = $config.libxsde.regexp
+
+# Base parser/serializer implementation reuse style. Valid values are:
+#
+# 'mixin'  - virtual inheritance-based reuse (specify --reuse-style-mixin)
+# 'tiein'  - delegation-based reuse (recommended)
+# 'none'   - no reuse support (specify --reuse-style-none)
+#
+config [string] config.libxsde.reuse_style ?= 'tiein'
+reuse_style = $config.libxsde.reuse_style
+
+assert ($reuse_style == 'mixin' || \
+        $reuse_style == 'tiein' || \
+        $reuse_style == 'none')    \
+  "invalid config.libxsde.reuse_style value '$reuse_style'"
+
+# Set to true if you would like the XSD/e runtime and the generated code to
+# perform memory management using custom allocator functions provided by your
+# application instead of the standard operator new/delete.
+#
+# Also don't forget to use the --custom-allocator option when compiling your
+# schemas. See the documentation and examples for more information on custom
+# allocators.
+#
+config [bool] config.libxsde.custom_allocator ?= false
+custom_allocator = $config.libxsde.custom_allocator
+
+# Set to true if you would like to include the default implementation of the
+# custom allocator into the XSD/e runtime library.
+#
+# This option is primarily useful for testing and only makes sense if
+# config.libxsde.custom_allocator is set to true.
+#
+config [bool] config.libxsde.default_allocator ?= false
+default_allocator = $config.libxsde.default_allocator
+
+assert (!$default_allocator || $custom_allocator) \
+  "config.libxsde.default_allocator can only be true if config.libxsde.custom_allocator is true"
+
+# Set to true if you want support for serialization of the C++/Hybrid object
+# model to the CDR (Common Data Representation) binary format.
+#
+# This functionality requires the ACE library (see manifest and xsde/buildfile
+# for details).
+#
+config [bool] config.libxsde.cdr ?= false
+cdr = $config.libxsde.cdr
+
+# Set to true if you want support for serialization of the C++/Hybrid object
+# model to the XDR (eXternal Data Representation) binary format.
+#
+# This functionality requires the XDR API which is available out of the box on
+# most POSIX systems as part of Sun RPC. On Linux this API is provided by
+# libtirpc library (see manifest and xsde/buildfile for details). On other
+# platforms, the XDR API may require linking to another library (which you can
+# add to the config.cxx.libs configuration variable). On non-POSIX platforms
+# you may need to install a third-party library which provides the XDR API.
+#
+config [bool] config.libxsde.xdr ?= false
+xdr = $config.libxsde.xdr
+
+# Set to true if you need to handle XML vocabularies that use XML Schema
+# polymorphism (xsi:type or substitution groups).
+#
+# Also don't forget to use either --generate-polymorphic (generates
+# polymorphism-aware code) or --runtime-polymorphic (generates non-polymorphic
+# code that uses the runtime library configured with polymorphism support).
+# Note that support for XML Schema polymorphism requires runtime static
+# initialization support in the C++ compiler (that is, support for automatic
+# calling of constructors for static objects). Furthermore, if the mixin reuse
+# style is used (config.libxsde.reuse_style) then the generated code requires
+# support for dynamic_cast.
+#
+config [bool] config.libxsde.polymorphic ?= false
+polymorphic = $config.libxsde.polymorphic
+
+# When polymorphism support is enabled (config.libxsde.polymorphic), the
+# following parameters control the substitution and inheritance hashmaps
+# bucket allocation.
+#
+# Because the number of elements in these hashmaps depends on the schemas
+# being compiled and thus is fairly static, these hashmaps do not perform
+# automatic table resizing. To obtain good performance the elements to buckets
+# ratio should be between 0.7 and 0.9. The recommended way to ensure this
+# range is to add diagnostics code to your application as shown in the
+# documentation and examples. It is also a good idea to use prime numbers for
+# bucket counts: 53 97 193 389 769 1543 3079 6151 12289 24593 49157 98317
+# 196613 393241. Inheritance hashmaps are only used when validation is
+# enabled.
+#
+config [uint64] config.libxsde.parser_smap_buckets ?= 53
+parser_smap_buckets = $config.libxsde.parser_smap_buckets
+
+config [uint64] config.libxsde.parser_imap_buckets ?= 97
+parser_imap_buckets = $config.libxsde.parser_imap_buckets
+
+config [uint64] config.libxsde.serializer_smap_buckets ?= 53
+serializer_smap_buckets = $config.libxsde.serializer_smap_buckets
+
+config [uint64] config.libxsde.serializer_smap_bucket_buckets ?= 53
+serializer_smap_bucket_buckets = $config.libxsde.serializer_smap_bucket_buckets
+
+config [uint64] config.libxsde.serializer_imap_buckets ?= 97
+serializer_imap_buckets = $config.libxsde.serializer_imap_buckets

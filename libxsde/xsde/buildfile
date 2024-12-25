@@ -1,0 +1,253 @@
+# file      : xsde/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+ace =
+xdr_lib =
+
+if $cdr
+  import ace = libace%lib{ACE}
+
+if ($xdr && $cxx.target.class == 'linux')
+  import xdr_lib = libtirpc%lib{tirpc}
+
+# Non-STL and STL based types.
+#
+
+# Parser/serializer types implementations which don't use STL.
+#
+ts = any-simple-type   \
+     string            \
+     normalized-string \
+     token             \
+     name              \
+     nmtoken           \
+     nmtokens          \
+     ncname            \
+     id                \
+     idref             \
+     idrefs            \
+     language          \
+     uri               \
+     qname
+
+# Parser/serializer types implementations which use STL.
+#
+sts = $regex.apply($ts, '(.+)', '\1-stl')
+
+# Note that expat/xmltok_*.c are actually headers.
+#
+liba{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
+                                              -allocator           \
+                                              -sys-error           \
+                                              -iso8859-1           \
+                                              -strdupx             \
+                                              -string-sequence-stl \
+                                              -qname               \
+                                              -string-sequence     \
+                                              -schema-error        \
+                                              -hashmap           } \
+            cxx/{    hxx            }{version                    } \
+  cxx/compilers/{    hxx            }{**                         } \
+              c/{h c                }{**      -expat/xmltok_*.c    \
+                                              -regexp/**         } \
+                {h                  }{config                     } \
+              c/{doc                }{expat/COPYING genx/LICENSE } \
+     cxx/hybrid/libua{xsde}                                        \
+     cxx/parser/libua{xsde}                                        \
+ cxx/serializer/libua{xsde}
+
+pv = $parser_validation
+sv = $serializer_validation
+ca = $custom_allocator
+en = $encoding
+ex = $exceptions
+ll = $long_long
+pm = $polymorphic
+
+liba{xsde}:          {h c}{allocator}: include = ($ca && $default_allocator)
+liba{xsde}: c/regexp/{h c}{**       }: include = ($regexp && ($pv || $sv))
+liba{xsde}:  c/expat/{  c}{xmltok_* }: include = adhoc
+
+liba{xsde}: cxx/{hxx ixx cxx}{allocator}:             include = ($ca && $ex)
+liba{xsde}: cxx/{hxx ixx cxx}{sys-error}:             include = (!$ex)
+liba{xsde}: cxx/{hxx ixx cxx}{iso8859-1}:             include = ($en == 'iso8859-1')
+liba{xsde}: cxx/{hxx ixx cxx}{schema-error xml/**}:   include = ($pv || $sv)
+liba{xsde}: cxx/{hxx ixx cxx}{hashmap}:               include = $pm
+liba{xsde}: cxx/{hxx ixx cxx}{string-sequence-stl}:   include = $stl
+liba{xsde}: cxx/{hxx ixx cxx}{qname string-sequence}: include = (!$stl)
+liba{xsde}: cxx/{hxx     cxx}{strdupx}:               include = (!$stl)
+
+cxx/hybrid/
+{
+  libua{xsde}:     {hxx ixx txx cxx}{* -*-map}
+  libua{xsde}:     {hxx ixx     cxx}{   *-map}: include = $pm
+  libua{xsde}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
+  libua{xsde}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
+  libua{xsde}: $ace $xdr_lib
+}
+
+cxx/parser/
+{
+  libua{xsde}: {hxx ixx cxx}{** -exceptions        \
+                                -error             \
+                                -*map              \
+                                -validating/*      \
+                                -non-validating/*}
+
+  libua{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libua{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libua{xsde}: {hxx ixx cxx}{*map}:       include =   $pm
+
+  libua{xsde}: validating/libua{xsde}:     include =   $pv
+  libua{xsde}: non-validating/libua{xsde}: include = (!$pv)
+
+  validating/
+  {
+    libua{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+
+    libua{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+
+    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+
+    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+  }
+
+  non-validating/
+  {
+    libua{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+
+    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+
+    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+  }
+}
+
+cxx/serializer/
+{
+  libua{xsde}: {hxx ixx cxx}{** -exceptions        \
+                                -error             \
+                                -*map              \
+                                -validating/*      \
+                                -non-validating/*}
+
+  libua{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libua{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
+
+  libua{xsde}: {hxx ixx cxx}{*map}: include = $pm
+
+  libua{xsde}: validating/libua{xsde}:     include =   $sv
+  libua{xsde}: non-validating/libua{xsde}: include = (!$sv)
+
+  validating/
+  {
+    libua{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+
+    libua{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+
+    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+
+    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+  }
+
+  non-validating/
+  {
+    libua{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+
+    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+
+    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+  }
+}
+
+# Include the generated version header into the distribution (so that we don't
+# pick up an installed one) and don't remove it when cleaning in src (so that
+# clean results in a state identical to distributed).
+#
+cxx/
+{
+  [rule_hint=version.in] hxx{version}: in{version} $src_root/manifest
+
+  hxx{version}:
+  {
+    dist  = true
+    clean = ($src_root != $out_root)
+  }
+}
+
+# Generated config file.
+#
+using autoconf
+
+h{config}: in{config}
+{
+  XSDE_ENCODING_UTF8                  = ($encoding == 'utf8')
+  XSDE_ENCODING_ISO8859_1             = ($encoding == 'iso8859-1')
+  XSDE_STL                            = $stl
+  XSDE_STL_ITERATOR                   = $stl_iterator
+  XSDE_IOSTREAM                       = $iostream
+  XSDE_EXCEPTIONS                     = $exceptions
+  XSDE_LONGLONG                       = $long_long
+  XSDE_PARSER_VALIDATION              = $parser_validation
+  XSDE_SERIALIZER_VALIDATION          = $serializer_validation
+  XSDE_REGEXP                         = $regexp
+  XSDE_REUSE_STYLE_MIXIN              = ($reuse_style == 'mixin')
+  XSDE_REUSE_STYLE_TIEIN              = ($reuse_style == 'tiein')
+  XSDE_REUSE_STYLE_NONE               = ($reuse_style == 'none')
+  XSDE_CUSTOM_ALLOCATOR               = $custom_allocator
+  XSDE_DEFAULT_ALLOCATOR              = $default_allocator
+  XSDE_POLYMORPHIC                    = $polymorphic
+  XSDE_PARSER_SMAP_BUCKETS            = $parser_smap_buckets
+  XSDE_PARSER_IMAP_BUCKETS            = $parser_imap_buckets
+  XSDE_SERIALIZER_SMAP_BUCKETS        = $serializer_smap_buckets
+  XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS = $serializer_smap_bucket_buckets
+  XSDE_SERIALIZER_IMAP_BUCKETS        = $serializer_imap_buckets
+}
+
+# Build options.
+#
+cc.poptions =+ "-I$out_root" "-I$src_root"
+
+# Export options.
+#
+liba{xsde}:
+{
+  cxx.export.poptions = "-I$out_root" "-I$src_root"
+  cxx.export.libs = $ace $xdr_lib
+}
+
+# Install into the xsde/ subdirectory of, say, /usr/include/ recreating
+# subdirectories.
+#
+{h hxx ixx txx}{*}:
+{
+  install         = include/xsde/
+  install.subdirs = true
+}
+
+# Most of the Expat headers are private.
+#
+c/expat/
+{
+  h{*}: install = false
+
+  h{expat}@./ h{expat_external}@./:
+  {
+    install = include/xsde/c/expat/
+    install.subdirs = false
+  }
+
+  doc{COPYING}@./: install = doc/EXPAT-LICENSE
+}
+
+c/genx/
+{
+  doc{LICENSE}@./: install = doc/GENX-LICENSE
+}

@@ -1,0 +1,60 @@
+// file      : xsde/cxx/version.hxx.in
+// license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+#ifndef LIBXSDE_VERSION // Note: using the version macro itself.
+
+// The numeric version format is AAAAABBBBBCCCCCDDDE where:
+//
+// AAAAA - major version number
+// BBBBB - minor version number
+// CCCCC - bugfix version number
+// DDD   - alpha / beta (DDD + 500) version number
+// E     - final (0) / snapshot (1)
+//
+// When DDDE is not 0, 1 is subtracted from AAAAABBBBBCCCCC. For example:
+//
+// Version      AAAAABBBBBCCCCCDDDE
+//
+// 0.1.0        0000000001000000000
+// 0.1.2        0000000001000020000
+// 1.2.3        0000100002000030000
+// 2.2.0-a.1    0000200001999990010
+// 3.0.0-b.2    0000299999999995020
+// 2.2.0-a.1.z  0000200001999990011
+//
+#define LIBXSDE_VERSION       $libxsde.version.project_number$ULL
+#define LIBXSDE_VERSION_STR   "$libxsde.version.project$"
+#define LIBXSDE_VERSION_ID    "$libxsde.version.project_id$"
+#define LIBXSDE_VERSION_FULL  "$libxsde.version$"
+
+#define LIBXSDE_VERSION_MAJOR $libxsde.version.major$
+#define LIBXSDE_VERSION_MINOR $libxsde.version.minor$
+#define LIBXSDE_VERSION_PATCH $libxsde.version.patch$
+
+#define LIBXSDE_PRE_RELEASE   $libxsde.version.pre_release$
+
+#define LIBXSDE_SNAPSHOT      $libxsde.version.snapshot_sn$ULL
+#define LIBXSDE_SNAPSHOT_ID   "$libxsde.version.snapshot_id$"
+
+// Backward compatibility macros.
+//
+#define XSDE_STR_VERSION LIBXSDE_VERSION_FULL
+
+// Version format is AABBCCDD where
+//
+// AA - major version number
+// BB - minor version number
+// CC - bugfix version number
+// DD - alpha / beta (DD + 50) version number
+//
+// When DD is not 00, 1 is subtracted from AABBCC. For example:
+//
+#define XSDE_INT_VERSION (($libxsde.version.major$ * 1000000L) + \
+                          ($libxsde.version.minor$ *   10000L) + \
+                          ($libxsde.version.patch$ *     100L) + \
+                          ($libxsde.version.pre_release$ \
+                           ? -100 + $libxsde.version.pre_release_number$ + \
+                             ($libxsde.version.beta$ ? 50 : 0) \
+                           : 0))
+
+#endif // LIBXSDE_VERSION

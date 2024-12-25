@@ -1,0 +1,86 @@
+/* file      : xsde/config.h.in
+ * license   : GNU GPL v2; see accompanying LICENSE file
+ */
+
+#ifndef XSDE_CONFIG_H
+#define XSDE_CONFIG_H
+
+/* Platform and its architecture width in bits.
+ */
+#if defined(_WIN32)
+#  define XSDE_PLATFORM_WIN32 1
+#  if defined(_WIN64)
+#    define XSDE_ARCH_WIDTH   64
+#  else
+#    define XSDE_ARCH_WIDTH   32
+#  endif
+#else
+#  define XSDE_PLATFORM_POSIX 1
+#  if defined(__x86_64__) || defined(__arm64__) || defined(__aarch64__)
+#    define XSDE_ARCH_WIDTH   64
+#  elif defined(__i386__)
+#    define XSDE_ARCH_WIDTH   32
+#  else
+#    error unknown architecture
+#  endif
+#endif
+
+/* Platform byte order.
+ */
+#undef  BYTE_ORDER
+#define XSDE_BYTEORDER BYTE_ORDER
+
+/* Application character encoding.
+ */
+#undef XSDE_ENCODING_UTF8
+#undef XSDE_ENCODING_ISO8859_1
+
+/* Use of STL.
+ */
+#undef XSDE_STL
+
+/* Conformance of iterators to STL requirements.
+ */
+#undef XSDE_STL_ITERATOR
+
+/* Use of std::iostream.
+ */
+#undef XSDE_IOSTREAM
+
+/* Use of C++ exceptions.
+ */
+#undef XSDE_EXCEPTIONS
+
+/* Use of the "long long int" type and the strtoull() function.
+ */
+#undef XSDE_LONGLONG
+
+/* The platform has the snprintf() function.
+ */
+#ifdef XSDE_PLATFORM_POSIX
+#  define XSDE_SNPRINTF 1
+#endif
+
+#undef XSDE_PARSER_VALIDATION
+#undef XSDE_SERIALIZER_VALIDATION
+#undef XSDE_REGEXP
+#undef XSDE_REUSE_STYLE_MIXIN
+#undef XSDE_REUSE_STYLE_TIEIN
+#undef XSDE_REUSE_STYLE_NONE
+#undef XSDE_CUSTOM_ALLOCATOR
+#undef XSDE_DEFAULT_ALLOCATOR
+#undef XSDE_POLYMORPHIC
+
+#ifdef XSDE_POLYMORPHIC
+#  define XSDE_PARSER_SMAP_BUCKETS            @XSDE_PARSER_SMAP_BUCKETS@
+#  ifdef XSDE_PARSER_VALIDATION
+#    define XSDE_PARSER_IMAP_BUCKETS          @XSDE_PARSER_IMAP_BUCKETS@
+#  endif
+#  define XSDE_SERIALIZER_SMAP_BUCKETS        @XSDE_SERIALIZER_SMAP_BUCKETS@
+#  define XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS @XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS@
+#  ifdef XSDE_SERIALIZER_VALIDATION
+#    define XSDE_SERIALIZER_IMAP_BUCKETS      @XSDE_SERIALIZER_IMAP_BUCKETS@
+#  endif
+#endif
+
+#endif /* XSDE_CONFIG_H */

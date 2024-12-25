@@ -1,0 +1,11 @@
+# file      : buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+./: {*/ -build/} \
+    doc{README.md PACKAGE-README.md NEWS} \
+    legal{GPLv2 LICENSE FLOSSE} \
+    manifest
+
+# Don't install tests.
+#
+tests/: install = false

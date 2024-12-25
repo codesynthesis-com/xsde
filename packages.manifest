@@ -1,6 +1,6 @@
 : 1
-#location: libxsde/
-#:
+location: libxsde/
+:
 location: xsde/
 #:
 #location: xsde-tests/

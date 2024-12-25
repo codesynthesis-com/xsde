@@ -1,0 +1,6 @@
+# file      : cxx/parser/basic/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx cxx}{*} $libs testscript

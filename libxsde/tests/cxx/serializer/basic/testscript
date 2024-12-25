@@ -1,0 +1,15 @@
+# file      : cxx/serializer/basic/testscript
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+: basic
+:
+{
+  $* >>EOO
+    <hello xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hello.xsd">
+      <greeting>Hello</greeting>
+      <name>sun</name>
+      <name>moon</name>
+      <name>world</name>
+    </hello>
+    EOO
+}
