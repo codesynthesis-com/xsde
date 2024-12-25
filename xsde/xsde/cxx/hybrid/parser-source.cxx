@@ -168,7 +168,7 @@ namespace CXX
                  << "::xsde::cxx::free (" << p << ");"
                  << "}";
 
-              os << "}";
+            os << "}";
 
             // reset
             //

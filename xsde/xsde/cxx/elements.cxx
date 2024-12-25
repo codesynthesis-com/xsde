@@ -767,7 +767,7 @@ namespace CXX
       }
       else
       {
-        unsigned int count;
+        unsigned int count (0);
         unsigned int tmp[4];
 
         if (u < 0x800)

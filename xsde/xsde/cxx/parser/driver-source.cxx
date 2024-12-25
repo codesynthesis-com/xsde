@@ -904,7 +904,7 @@ namespace CXX
            << endl;
 
       if (ctx.options.no_exceptions ())
-        os << "if (e = doc_p._error ())" << endl
+        os << "if ((e = doc_p._error ()))" << endl
            << "break;"
            << endl;
 
@@ -912,7 +912,7 @@ namespace CXX
 
       if (ctx.options.no_exceptions ())
         os << endl
-           << "if (e = " << root_p << "._error ())" << endl
+           << "if ((e = " << root_p << "._error ()))" << endl
            << "break;";
 
 
@@ -958,7 +958,7 @@ namespace CXX
            << endl;
 
         if (ctx.options.no_exceptions ())
-          os << "if (e = doc_p._error ())" << endl
+          os << "if ((e = doc_p._error ()))" << endl
              << "break;"
              << endl;
       }
@@ -980,7 +980,7 @@ namespace CXX
            << endl;
 
         if (ctx.options.no_exceptions ())
-          os << "if (e = " << root_p << "._error ())" << endl
+          os << "if ((e = " << root_p << "._error ()))" << endl
              << "break;"
              << endl;
 

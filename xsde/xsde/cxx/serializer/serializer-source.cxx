@@ -931,7 +931,7 @@ namespace CXX
                  << "switch (t)";
 
 
-              os << "{";
+            os << "{";
 
             for (SemanticGraph::Choice::ContainsIterator
                    i (c.contains_begin ()); i != c.contains_end (); ++i)

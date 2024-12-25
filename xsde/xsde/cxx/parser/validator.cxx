@@ -261,6 +261,8 @@ namespace CXX
                          Traversal::Element,
                          ValidationContext
       {
+        using Traversal::Schema::traverse;
+
         Traverser (ValidationContext& c)
             : ValidationContext (c),
               any_ (c)

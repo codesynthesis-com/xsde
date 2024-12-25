@@ -657,6 +657,11 @@ namespace CXX
 
                         Context
       {
+        using Traversal::NodeDispatcher::dispatch;
+        using Traversal::EdgeDispatcher::dispatch;
+
+        using Traversal::Compositor::traverse;
+
         AlignType (Context& c)
             : Context (c)
         {
@@ -1785,7 +1790,7 @@ namespace CXX
 
           String const& name (ename (c));
 
-          bool fl;
+          bool fl (false);
           String type;
 
           if (max != 1 || min == 0)

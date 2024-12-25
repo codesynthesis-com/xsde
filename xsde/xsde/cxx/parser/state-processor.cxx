@@ -153,8 +153,8 @@ namespace CXX
                 depth_ = depth;
 
               prefixes_.insert (prefixes_.end (),
-                                t.prefixes_.begin ().base (),
-                                t.prefixes_.end ().base ());
+                                t.prefixes_.begin (),
+                                t.prefixes_.end ());
 
               if (min == 1 &&
                   p.context ().get<size_t> ("p:effective-min") == 0)
@@ -228,8 +228,8 @@ namespace CXX
               if (prefix)
               {
                 prefixes_.insert (prefixes_.end (),
-                                  t.prefixes_.begin ().base (),
-                                  t.prefixes_.end ().base ());
+                                  t.prefixes_.begin (),
+                                  t.prefixes_.end ());
 
                 if (p.context ().get<size_t> ("p:effective-min") != 0)
                   min = 1;

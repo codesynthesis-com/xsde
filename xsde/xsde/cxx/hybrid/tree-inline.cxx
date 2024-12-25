@@ -1625,6 +1625,8 @@ namespace CXX
 
       struct ChoiceInChoiceFunc: Traversal::Choice, CompositorInChoiceFunc
       {
+        using CompositorInChoiceFunc::traverse;
+
         ChoiceInChoiceFunc (Context& c)
             : CompositorInChoiceFunc (c)
         {
@@ -1639,6 +1641,8 @@ namespace CXX
 
       struct SequenceInChoiceFunc: Traversal::Sequence, CompositorInChoiceFunc
       {
+        using CompositorInChoiceFunc::traverse;
+
         SequenceInChoiceFunc (Context& c)
             : CompositorInChoiceFunc (c)
         {

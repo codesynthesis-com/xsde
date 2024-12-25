@@ -2020,6 +2020,9 @@ namespace CXX
 
     struct TypeDelete: TypeOpsBase, Context
     {
+      using Traversal::NodeDispatcher::dispatch;
+      using Traversal::EdgeDispatcher::dispatch;
+
       TypeDelete (Context& c)
           : Context (c)
       {
@@ -2077,6 +2080,9 @@ namespace CXX
     //
     struct TypeClone: TypeOpsBase, Context
     {
+      using Traversal::NodeDispatcher::dispatch;
+      using Traversal::EdgeDispatcher::dispatch;
+
       TypeClone (Context& c)
           : Context (c)
       {
