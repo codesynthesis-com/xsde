@@ -10,6 +10,8 @@
 #include <limits.h>                     /* UINT_MAX */
 #include <stdint.h>                     /* SIZE_MAX */
 
+#include <xsde/c/expat/config.h> // COMPILED_FROM_DSP, etc
+
 #ifndef XML_FREESTANDING
 #ifdef COMPILED_FROM_DSP
 #define getpid GetCurrentProcessId
@@ -21,8 +23,6 @@
 #endif
 
 #define XML_BUILDING_EXPAT 1
-
-#include <xsde/c/expat/config.h>
 
 #include <xsde/c/expat/ascii.h>
 #include <xsde/c/expat/expat.h>

@@ -55,8 +55,8 @@ namespace xsde
                 state_ = sign;
               else
                 break;
-              // Fall through.
             }
+            // Fall through.
           case sign:
             {
               if (tmp[0] == '-')
@@ -71,8 +71,8 @@ namespace xsde
 
               if (size == 0)
                 break;
-              // Fall through.
             }
+            // Fall through.
           case leading_zeros:
             {
               if (trim_leading_zeros (tmp))
@@ -90,8 +90,8 @@ namespace xsde
                 state_ = literal;
               else
                 break;
-              // Fall through.
             }
+            // Fall through.
           case literal:
             {
               // If this chunk is too long then it has to be the last so trim

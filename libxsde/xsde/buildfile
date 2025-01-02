@@ -215,6 +215,15 @@ h{config}: in{config}
 #
 cc.poptions =+ "-I$out_root" "-I$src_root"
 
+if ($c.class == 'gcc')
+{
+  # Disable warnings that pop up with -Wall -Wextra (see libexpat package for
+  # details).
+  #
+  c/expat/  c.coptions += -Wno-implicit-fallthrough
+  c/regexp/ c.coptions += -Wno-implicit-fallthrough
+}
+
 # Export options.
 #
 liba{xsde}:

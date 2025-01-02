@@ -35,8 +35,8 @@ namespace xsde
                 state_ = literal;
               else
                 break;
-              // Fall through.
             }
+            // Fall through.
           case literal:
             {
               // If this chunk is too long then it has to be the last so trim

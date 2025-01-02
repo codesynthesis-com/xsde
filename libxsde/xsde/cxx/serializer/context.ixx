@@ -134,7 +134,7 @@ namespace xsde
       inline context::xml_error_t context::
       xml_error () const
       {
-        return error_type_ == error_xml ? error_code_.xml : xml_error::none;
+        return error_type_ == error_xml ? error_code_.xml : GENX_SUCCESS;
       }
 
       inline void context::
