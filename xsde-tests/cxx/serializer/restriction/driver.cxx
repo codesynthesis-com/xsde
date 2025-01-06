@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/restriction/driver.cxx
+// file      : cxx/serializer/restriction/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test inheritance-by-restriction serialization.
@@ -7,6 +7,9 @@
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;
@@ -150,9 +153,6 @@ struct test_3_simpl: test_3_sskel
   {
     return 7;
   }
-
-private:
-  int i_;
 };
 
 struct test_4_simpl: test_4_sskel
@@ -211,9 +211,6 @@ struct test_4_simpl: test_4_sskel
   {
     return 7;
   }
-
-private:
-  int i_;
 };
 
 struct root_simpl: root_sskel

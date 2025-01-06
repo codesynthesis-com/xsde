@@ -1,15 +1,17 @@
-// file      : tests/cxx/parser/validation/built-in/uri/driver.cxx
+// file      : cxx/parser/validation/built-in/uri/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in anyURI type validation.
 //
 #include <string>
-#include <cassert>
 
 // Let the runtime header sort out which version (stl/no-stl) to
 // include.
 //
 #include <xsde/cxx/parser/validating/xml-schema-pimpl.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

@@ -1,0 +1,15 @@
+# file      : cxx/parser/validation/built-in/qname/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($parser_validation) \
+    "config.xsde_tests.parser_validation should be set to true for this test"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx cxx}{*} $libs

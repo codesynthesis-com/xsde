@@ -1,0 +1,15 @@
+# file      : cxx/hybrid/polymorphism/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+# Note that hybrid mapping requires support for base parser/serializer reuse.
+#
+ru = ($reuse_style != 'none')
+
+# Note that none of the hybrid mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: any-type/:    include = ($polymorphic && $iostream && $ru && $da)
+./: enumeration/: include = ($polymorphic && $iostream && $ru && $da)
+./: multischema/: include = ($polymorphic && $iostream && $ru && $da)

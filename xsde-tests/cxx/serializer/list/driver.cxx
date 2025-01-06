@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/list/driver.cxx
+// file      : cxx/serializer/list/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test list type serialization.
@@ -7,6 +7,9 @@
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

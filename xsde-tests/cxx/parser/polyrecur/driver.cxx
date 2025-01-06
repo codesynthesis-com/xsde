@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/polyrecur/driver.cxx
+// file      : cxx/parser/polyrecur/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test recursive polymorphic parsing.
@@ -7,6 +7,9 @@
 
 #include "test-pskel.hxx"
 #include "test-pimpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

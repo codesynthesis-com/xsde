@@ -1,0 +1,41 @@
+# file      : cxx/hybrid/compositor/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($parser_validation) \
+    "config.xsde_tests.parser_validation should be set to true for this test"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_tests.reuse_style should not be set to 'none' for this test"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+fs = includee includer test
+
+exe{driver}: cxx{driver}
+
+for f: $fs
+{
+  exe{driver}: {hxx ixx cxx}{$f $f-pskel $f-sskel} \
+               {hxx     cxx}{   $f-pimpl $f-simpl}
+
+  <{hxx ixx cxx}{$f $f-pskel $f-sskel}                 \
+   {hxx     cxx}{   $f-pimpl $f-simpl}>: xsd{$f} $xsde
+  {{
+    $xsde cxx-hybrid $cxx_hybrid_options \
+          --generate-parser              \
+          --generate-serializer          \
+          --generate-aggregate           \
+          --output-dir $out_base         \
+          $path($<[0])
+  }}
+}
+
+exe{driver}: $libs
+
+cxx.poptions =+ "-I$out_base"

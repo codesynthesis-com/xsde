@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/error-handling/exceptions/driver.cxx
+// file      : cxx/parser/error-handling/exceptions/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test error reporting with exceptions.
@@ -9,6 +9,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

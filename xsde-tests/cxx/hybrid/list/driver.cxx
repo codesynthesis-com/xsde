@@ -1,4 +1,4 @@
-// file      : tests/cxx/hybrid/list/driver.cxx
+// file      : cxx/hybrid/list/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test list mapping.
@@ -9,6 +9,9 @@
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

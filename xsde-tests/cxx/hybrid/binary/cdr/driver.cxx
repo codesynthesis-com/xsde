@@ -1,4 +1,4 @@
-// file      : tests/cxx/hybrid/binary/cdr/driver.cxx
+// file      : cxx/hybrid/binary/cdr/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test CDR insertion and extraction.
@@ -12,6 +12,9 @@
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using std::cerr;
 using std::endl;

@@ -1,0 +1,16 @@
+# file      : cxx/parser/built-in/testscript
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+: long
+:
+if! $long_long
+{
+  $* >>>$src_base/test-000.std
+}
+
+: long-long
+:
+if $long_long
+{
+  $* >>>$src_base/test-001.std
+}

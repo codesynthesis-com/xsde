@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/generated-driver/test-simpl.hxx
+// file      : cxx/serializer/generated-driver/test-simpl.hxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef TEST_SIMPL_HXX

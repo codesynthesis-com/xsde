@@ -1,0 +1,23 @@
+# file      : cxx/parser/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+ru = ($reuse_style != 'none')
+rt = ($reuse_style == 'tiein')
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: built-in/:       include = ($iostream && $exceptions && $ru && $da)
+./: duplicate/:      include = ($ru && $da)
+./: enumeration/:    include = ($iostream && $exceptions && $rt && $da)
+./: generated-impl/: include = ($ru && $da)
+./: list/:           include = ($iostream && $exceptions && $rt && $da)
+./: polymorphism/:   include = ($polymorphic && $iostream && $rt && $da)
+./: polyrecur/:      include = ($polymorphic && $iostream && $rt && $da)
+./: recursive/:      include = ($iostream && $exceptions && $da)
+./: reset/:          include = ($iostream && $ru && $da)
+./: union/:          include = ($iostream && $exceptions && $da)
+
+./: error-handling/ name-clash/ validation/

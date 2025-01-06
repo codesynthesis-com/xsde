@@ -1,13 +1,15 @@
-// file      : tests/cxx/parser/validation/built-in/binary/driver.cxx
+// file      : cxx/parser/validation/built-in/binary/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in base64Binary and hexBinary types validation.
 //
-#include <cassert>
 #include <string.h> // memcpy
 
 #include <xsde/cxx/parser/validating/base64-binary.hxx>
 #include <xsde/cxx/parser/validating/hex-binary.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx;
 using namespace xsde::cxx::parser;

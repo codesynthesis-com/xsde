@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/recursive/driver.cxx
+// file      : cxx/serializer/recursive/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test recursive type serialization.
@@ -7,6 +7,9 @@
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 

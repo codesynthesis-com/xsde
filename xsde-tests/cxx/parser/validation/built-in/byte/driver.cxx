@@ -1,12 +1,14 @@
-// file      : tests/cxx/parser/validation/built-in/byte/driver.cxx
+// file      : cxx/parser/validation/built-in/byte/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in byte and unsigned byte types validation.
 //
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/byte.hxx>
 #include <xsde/cxx/parser/validating/unsigned-byte.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

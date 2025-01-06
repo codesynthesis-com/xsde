@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/validation/sequence/driver.cxx
+// file      : cxx/serializer/validation/sequence/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test sequence validation.
@@ -9,13 +9,15 @@
 
 #include "test-sskel.hxx"
 
+#undef NDEBUG
+#include <cassert>
+
 using namespace std;
 using namespace test;
 
 struct test_1_simpl: virtual test_1_sskel
 {
-  test_1_simpl (int state)
-      : state_ (state)
+  test_1_simpl ()
   {
   }
 
@@ -44,9 +46,6 @@ struct test_1_simpl: virtual test_1_sskel
   {
     return 234;
   }
-
-private:
-  int state_;
 };
 
 struct root_simpl: root_sskel
@@ -62,7 +61,7 @@ main ()
     try
     {
 #endif
-      test_1_simpl test_1_s (i);
+      test_1_simpl test_1_s;
       root_simpl root_s;
 
       root_s.serializers (test_1_s);

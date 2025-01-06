@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/name-clash/inheritance/driver.cxx
+// file      : cxx/parser/name-clash/inheritance/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test for name clashes across inheritance hierarchy.
@@ -8,6 +8,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;
@@ -20,7 +23,7 @@ struct derived_pimpl: derived_pskel
   {
   }
 #endif
-  
+
 #ifdef XSDE_STL
   virtual void
   e (string const& v)

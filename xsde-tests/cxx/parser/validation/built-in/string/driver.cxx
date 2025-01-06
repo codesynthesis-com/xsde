@@ -1,10 +1,9 @@
-// file      : tests/cxx/parser/validation/built-in/string/driver.cxx
+// file      : cxx/parser/validation/built-in/string/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in string & friends types validation.
 //
 #include <string>
-#include <cassert>
 
 #include <xsde/config.h>
 
@@ -12,6 +11,9 @@
 // include.
 //
 #include <xsde/cxx/parser/validating/xml-schema-pimpl.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx;
 using namespace xsde::cxx::parser;
@@ -145,13 +147,13 @@ main ()
   {
     context c;
     string_sequence s;
-#ifdef XSDE_STL    
+#ifdef XSDE_STL
     s.push_back ("123");
     s.push_back ("abc");
 #else
     s.push_back_copy ("123");
     s.push_back_copy ("abc");
-#endif    
+#endif
 
     nmtokens_pimpl p;
     p.pre ();
@@ -214,13 +216,13 @@ main ()
   {
     context c;
     string_sequence s;
-#ifdef XSDE_STL    
+#ifdef XSDE_STL
     s.push_back ("a123");
     s.push_back ("abc");
 #else
     s.push_back_copy ("a123");
     s.push_back_copy ("abc");
-#endif    
+#endif
 
     idrefs_pimpl p;
     p.pre ();

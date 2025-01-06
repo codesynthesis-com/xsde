@@ -1,0 +1,28 @@
+# file      : cxx/serializer/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+ru = ($reuse_style != 'none')
+rt = ($reuse_style == 'tiein')
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: all/:              include = ($iostream && $da)
+./: built-in/:         include = ($iostream && $da)
+./: choice/:           include = ($iostream && $da)
+./: complex/:          include = ($iostream && $rt && $da)
+./: enumeration/:      include = ($iostream && $rt && $da)
+./: generated-driver/: include = ($da)
+./: generated-impl/:   include = ($ru && $da)
+./: list/:             include = ($iostream && $rt && $da)
+./: polymorphism/:     include = ($polymorphic && $iostream && $rt && $da)
+./: recursive/:        include = ($iostream && $da)
+./: reset/:            include = ($iostream && $ru && $da)
+./: restriction/:      include = ($iostream && $da)
+./: sequence/:         include = ($iostream && $da)
+./: union/:            include = ($iostream && $rt && $da)
+./: wildcard/:         include = ($iostream && $da)
+
+./: error-handling/ validation/

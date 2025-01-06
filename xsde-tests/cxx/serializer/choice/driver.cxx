@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/choice/driver.cxx
+// file      : cxx/serializer/choice/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the choice compositor serialization.
@@ -7,6 +7,9 @@
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

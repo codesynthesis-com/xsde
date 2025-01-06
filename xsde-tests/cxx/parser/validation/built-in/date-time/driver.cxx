@@ -1,11 +1,13 @@
-// file      : tests/cxx/parser/validation/built-in/date-time/driver.cxx
+// file      : cxx/parser/validation/built-in/date-time/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in date and time types validation.
 //
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/xml-schema-pimpl.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx;
 using namespace xsde::cxx::parser;

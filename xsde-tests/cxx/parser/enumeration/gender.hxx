@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/enumeration/gender.hxx
+// file      : cxx/parser/enumeration/gender.hxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef GENDER_HXX

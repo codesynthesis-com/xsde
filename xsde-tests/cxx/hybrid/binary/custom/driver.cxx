@@ -1,4 +1,4 @@
-// file      : tests/cxx/hybrid/binary/custom/driver.cxx
+// file      : cxx/hybrid/binary/custom/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test RAW insertion and extraction.
@@ -13,6 +13,9 @@
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using std::cerr;
 using std::endl;

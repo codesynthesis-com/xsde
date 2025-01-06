@@ -1,0 +1,12 @@
+# file      : cxx/string/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx cxx}{*} $libs

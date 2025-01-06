@@ -1,10 +1,9 @@
-// file      : tests/cxx/hybrid/sequences/driver.cxx
+// file      : cxx/hybrid/sequences/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test sequence templates.
 //
 #include <string>
-#include <cassert>
 
 #include <xsde/cxx/config.hxx>
 
@@ -13,6 +12,9 @@
 #endif
 
 #include <xsde/cxx/hybrid/sequence.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using std::string;
 using namespace xsde::cxx;

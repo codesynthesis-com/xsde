@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/built-in/driver.cxx
+// file      : cxx/parser/built-in/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test built-in type parsing.
@@ -10,6 +10,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;
@@ -531,30 +534,6 @@ main (int argc, char* argv[])
   {
     cerr << "usage: " << argv[0] << " test.xml" << endl;
     return 1;
-  }
-
-  // Ignore one of the tests depending on whether long long is available.
-  //
-  {
-    char* s = argv[1];
-    size_t n = strlen (s);
-
-    if (strcmp (s + n - 12,
-#ifdef XSDE_LONGLONG
-                "test-000.xml"
-#else
-                "test-001.xml"
-#endif
-        ) == 0)
-    {
-      s[n - 3] = 's';
-      s[n - 2] = 't';
-      s[n - 1] = 'd';
-
-      ifstream ifs (s);
-      cout << ifs.rdbuf ();
-      return 0;
-    }
   }
 
   try

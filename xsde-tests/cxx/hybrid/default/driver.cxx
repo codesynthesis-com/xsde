@@ -1,4 +1,4 @@
-// file      : tests/cxx/hybrid/default/driver.cxx
+// file      : cxx/hybrid/default/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test default attribute values.
@@ -9,6 +9,9 @@
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

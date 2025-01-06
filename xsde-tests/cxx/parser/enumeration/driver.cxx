@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/enumeration/driver.cxx
+// file      : cxx/parser/enumeration/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test xsd:enumeration parsing.
@@ -8,6 +8,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace xml_schema;

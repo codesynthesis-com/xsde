@@ -1,12 +1,14 @@
-// file      : tests/cxx/parser/validation/built-in/long-long/driver.cxx
+// file      : cxx/parser/validation/built-in/long-long/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in long and unsigned long types validation.
 //
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/long-long.hxx>
 #include <xsde/cxx/parser/validating/unsigned-long-long.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

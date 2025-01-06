@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/polymorphism/driver.cxx
+// file      : cxx/parser/polymorphism/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test substitution groups and xsi:type support.
@@ -6,6 +6,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

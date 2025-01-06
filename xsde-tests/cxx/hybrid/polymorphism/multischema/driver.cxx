@@ -1,4 +1,4 @@
-// file      : tests/cxx/hybrid/polymorphism/multischema/driver.cxx
+// file      : cxx/hybrid/polymorphism/multischema/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test polymorphic parsing and serialization with the type hierarchy
@@ -10,6 +10,9 @@
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

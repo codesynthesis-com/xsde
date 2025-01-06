@@ -1,0 +1,50 @@
+# file      : cxx/hybrid/polymorphism/any-type/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($polymorphic) \
+    "config.xsde_tests.polymorphic should be set to true for this test"
+
+  assert ($iostream) \
+    "config.xsde_tests.iostream should be set to true for this test"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_tests.reuse_style should not be set to 'none' for this test"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx     cxx}{* -test -test-pskel -test-pimpl  \
+                                   -test-sskel -test-simpl} \
+             {hxx ixx cxx}{   test  test-pskel  test-sskel} \
+             {hxx     cxx}{         test-pimpl  test-simpl} \
+             $libs
+
+exe{driver}: xml{test}:    test.input  = true
+exe{driver}: file{output}: test.stdout = true
+
+<{hxx ixx cxx}{test test-pskel test-sskel}                   \
+ {hxx     cxx}{     test-pimpl test-simpl}>: xsd{test} $xsde
+{{
+  $xsde cxx-hybrid $cxx_hybrid_options \
+        --generate-parser              \
+        --generate-serializer          \
+        --generate-aggregate           \
+        --generate-polymorphic         \
+        --generate-typeinfo            \
+        --root-element root            \
+        --polymorphic-type anyType     \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"
+
+# @@ HIDDEN Similar to cxx/hybrid/{default,clone,...}.
+#
+if ($cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual

@@ -1,15 +1,17 @@
-// file      : tests/cxx/hybrid/clone/driver.cxx
+// file      : cxx/hybrid/clone/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test _clone() functionality.
 //
 
-#include <assert.h>
 #include <iostream>
 
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

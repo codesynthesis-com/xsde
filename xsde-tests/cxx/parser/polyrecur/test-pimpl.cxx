@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/polyrecur/test-pimpl.cxx
+// file      : cxx/parser/polyrecur/test-pimpl.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #include <iostream>

@@ -1,9 +1,8 @@
-// file      : tests/cxx/serializer/validation/built-in/qname/driver.cxx
+// file      : cxx/serializer/validation/built-in/qname/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in QName type validation.
 //
-#include <cassert>
 
 #include <xsde/config.h>
 
@@ -11,6 +10,9 @@
 // include.
 //
 #include <xsde/cxx/serializer/validating/xml-schema-simpl.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx;
 using namespace xsde::cxx::serializer;

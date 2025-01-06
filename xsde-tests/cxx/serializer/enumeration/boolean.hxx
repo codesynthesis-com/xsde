@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/enumeration/boolean.hxx
+// file      : cxx/serializer/enumeration/boolean.hxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef BOOLEAN_HXX

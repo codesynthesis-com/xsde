@@ -1,16 +1,17 @@
-// file      : tests/cxx/serializer/reset/driver.cxx
+// file      : cxx/serializer/reset/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test serializer resetting.
 //
-
-#include <assert.h>
 
 #include <string>
 #include <sstream>
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

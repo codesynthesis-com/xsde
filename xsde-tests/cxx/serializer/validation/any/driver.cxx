@@ -1,4 +1,4 @@
-// file      : tests/cxx/serializer/validation/any/driver.cxx
+// file      : cxx/serializer/validation/any/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test any validation.
@@ -8,6 +8,9 @@
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

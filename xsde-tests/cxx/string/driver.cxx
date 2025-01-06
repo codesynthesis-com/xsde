@@ -1,13 +1,14 @@
-// file      : tests/cxx/string/driver.cxx
+// file      : cxx/string/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test xsde::cxx::string string type.
 //
-#include <assert.h>
-
 #include <xsde/cxx/string.hxx>
 
 using xsde::cxx::string;
+
+#undef NDEBUG
+#include <cassert>
 
 int
 main ()

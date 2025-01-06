@@ -1,14 +1,16 @@
-// file      : tests/cxx/hybrid/iterator/driver.cxx
+// file      : cxx/hybrid/iterator/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test conformance to STL iterator requirements.
 //
 
-#include <cassert>
 #include <iostream>
 #include <algorithm>
 
 #include "test.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

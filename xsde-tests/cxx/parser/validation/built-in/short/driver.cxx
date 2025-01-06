@@ -1,12 +1,14 @@
-// file      : tests/cxx/parser/validation/built-in/short/driver.cxx
+// file      : cxx/parser/validation/built-in/short/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in short and unsigned short types validation.
 //
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/short.hxx>
 #include <xsde/cxx/parser/validating/unsigned-short.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

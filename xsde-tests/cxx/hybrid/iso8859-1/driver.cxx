@@ -1,10 +1,8 @@
-// file      : tests/cxx/hybrid/iso8859-1/driver.cxx
+// file      : cxx/hybrid/iso8859-1/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test support for the ISO-8859-1 encoding.
 //
-
-#include <assert.h>
 
 #include <string>
 #include <iostream>
@@ -14,6 +12,9 @@
 #include "test-simpl.hxx"
 
 #include <xsde/cxx/iso8859-1.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

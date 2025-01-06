@@ -1,14 +1,16 @@
-// file      : tests/cxx/serializer/error-handling/exceptions/driver.cxx
+// file      : cxx/serializer/error-handling/exceptions/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test error reporting with exceptions.
 //
 
-#include <cassert>
 #include <sstream>
 #include <iostream>
 
 #include "test-sskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

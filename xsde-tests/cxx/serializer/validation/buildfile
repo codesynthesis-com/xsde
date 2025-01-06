@@ -1,0 +1,15 @@
+# file      : cxx/serializer/validation/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: any/:       include = ($serializer_validation && $iostream && $da)
+./: attribute/: include = ($serializer_validation && $iostream && $da)
+./: choice/:    include = ($serializer_validation && $iostream && $da)
+./: element/:   include = ($serializer_validation && $iostream && $da)
+./: sequence/:  include = ($serializer_validation && $iostream && $da)
+
+./: built-in/

@@ -1,0 +1,9 @@
+# file      : cxx/parser/name-clash/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+da = (!$custom_allocator || $default_allocator)
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+./: inheritance/: include = ($iostream && $exceptions && $parser_validation && $da)

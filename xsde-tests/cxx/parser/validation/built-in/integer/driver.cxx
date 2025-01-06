@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/validation/built-in/int/driver.cxx
+// file      : cxx/parser/validation/built-in/int/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in integer & friends types validation.
@@ -7,13 +7,15 @@
 
 #include <string>
 #include <sstream>
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/integer.hxx>
 #include <xsde/cxx/parser/validating/negative-integer.hxx>
 #include <xsde/cxx/parser/validating/non-positive-integer.hxx>
 #include <xsde/cxx/parser/validating/positive-integer.hxx>
 #include <xsde/cxx/parser/validating/non-negative-integer.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace xsde::cxx::parser;

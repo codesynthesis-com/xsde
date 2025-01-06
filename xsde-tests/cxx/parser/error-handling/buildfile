@@ -1,0 +1,10 @@
+# file      : cxx/parser/error-handling/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: codes/:      include = (!$exceptions && $iostream && $parser_validation && $da)
+./: exceptions/: include = ( $exceptions && $iostream && $parser_validation && $da)

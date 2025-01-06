@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/recursive/driver.cxx
+// file      : cxx/parser/recursive/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test recursive parser invocation.
@@ -8,6 +8,9 @@
 #include <string>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 

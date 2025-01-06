@@ -1,0 +1,24 @@
+# file      : cxx/parser/validation/built-in/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+rt = ($reuse_style == 'tiein')
+
+# Note that none of the parser mapping test drivers provides a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: any-type/:  include = ($iostream && $exceptions && $rt && $da)
+./: binary/:    include = ($parser_validation && $da)
+./: boolean/:   include = ($parser_validation && $da)
+./: byte/:      include = ($parser_validation && $da)
+./: date-time/: include = ($parser_validation && $da)
+./: float/:     include = ($parser_validation && $da)
+./: int/:       include = ($parser_validation && $da)
+./: integer/:   include = ($parser_validation && $da)
+./: long/:      include = (!$long_long && $parser_validation && $da)
+./: long-long/: include = ( $long_long && $parser_validation && $da)
+./: qname/:     include = ($parser_validation && $da)
+./: short/:     include = ($parser_validation && $da)
+./: string/:    include = ($parser_validation && $da)
+./: uri/:       include = ($parser_validation && $da)

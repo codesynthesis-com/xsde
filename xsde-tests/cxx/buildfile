@@ -1,0 +1,9 @@
+# file      : cxx/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+da = (!$custom_allocator || $default_allocator)
+
+./: hashmap/: include = ($polymorphic && $da)
+./: string/:  include = $da
+
+./: hybrid/ parser/ serializer/

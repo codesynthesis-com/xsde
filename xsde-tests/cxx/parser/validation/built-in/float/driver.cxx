@@ -1,14 +1,16 @@
-// file      : tests/cxx/parser/validation/built-in/float/driver.cxx
+// file      : cxx/parser/validation/built-in/float/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in float, double, and decimal types validation.
 //
 #include <math.h>
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/float.hxx>
 #include <xsde/cxx/parser/validating/double.hxx>
 #include <xsde/cxx/parser/validating/decimal.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

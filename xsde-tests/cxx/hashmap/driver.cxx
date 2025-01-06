@@ -1,14 +1,16 @@
-// file      : tests/cxx/hashmap/driver.cxx
+// file      : cxx/hashmap/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test xsde::cxx::hashmap type.
 //
-#include <assert.h>
 #include <string.h>
 
 #include <iostream>
 
 #include <xsde/cxx/hashmap.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using xsde::cxx::hashmap;
 using namespace std;

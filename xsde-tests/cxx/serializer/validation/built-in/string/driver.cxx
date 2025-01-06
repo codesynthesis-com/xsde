@@ -1,10 +1,9 @@
-// file      : tests/cxx/serializer/validation/built-in/string/driver.cxx
+// file      : cxx/serializer/validation/built-in/string/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in string & friends types validation.
 //
 #include <string>
-#include <cassert>
 
 #include <xsde/config.h>
 
@@ -12,6 +11,9 @@
 // include.
 //
 #include <xsde/cxx/serializer/validating/xml-schema-simpl.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx;
 using namespace xsde::cxx::serializer;
@@ -417,7 +419,7 @@ main ()
     seq.push_back ("ab");
 #else
     seq.push_back_copy ("a,b");
-    seq.push_back_copy ("ab");    
+    seq.push_back_copy ("ab");
 #endif
     s.pre (&seq);
     s._pre_impl (c);

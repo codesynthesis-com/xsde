@@ -1,0 +1,27 @@
+# file      : cxx/parser/reset/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($iostream) \
+    "config.xsde_tests.iostream should be set to true for this test"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_tests.reuse_style should not be set to 'none' for this test"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx cxx}{* -test-pskel} {hxx ixx cxx}{test-pskel} $libs testscript
+
+<{hxx ixx cxx}{test-pskel}>: xsd{test} $xsde
+{{
+  $xsde cxx-parser $cxx_parser_options \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"

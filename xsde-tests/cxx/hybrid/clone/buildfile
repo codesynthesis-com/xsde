@@ -1,0 +1,60 @@
+# file      : cxx/hybrid/clone/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($iostream) \
+    "config.xsde_tests.iostream should be set to true for this test"
+
+  assert ($parser_validation) \
+    "config.xsde_tests.parser_validation should be set to true for this test"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_tests.reuse_style should not be set to 'none' for this test"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx     cxx}{* -test -test-pskel -test-pimpl  \
+                                   -test-sskel -test-simpl} \
+             {hxx ixx cxx}{   test  test-pskel  test-sskel} \
+             {hxx     cxx}{         test-pimpl  test-simpl} \
+             $libs
+
+exe{driver}: xml{test}:    test.input  = true
+exe{driver}: file{output}: test.stdout = true
+
+<{hxx ixx cxx}{test test-pskel test-sskel}                   \
+ {hxx     cxx}{     test-pimpl test-simpl}>: xsd{test} $xsde
+{{
+  $xsde cxx-hybrid $cxx_hybrid_options \
+        --generate-parser              \
+        --generate-serializer          \
+        --generate-aggregate           \
+        --generate-clone               \
+        --custom-data complex          \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"
+
+# @@ HIDDEN Compiling the generated files with GCC ends up with the following
+#           warnings:
+#
+#    In file included from test-sskel.cxx:28:
+#    test-sskel.hxx:1146:5: warning: ‘virtual void test::enum_sskel::pre(const std::string&)’ was hidden [-Woverloaded-virtual=]
+#      1146 |     pre (const ::std::string&);
+#           |     ^~~
+#    test-sskel.hxx:1175:5: note:   by ‘test::enumder_sskel::pre’
+#      1175 |     pre (const ::test::enum_&);
+#           |     ^~~
+#
+#    Probably need to fix the XSD/e compiler at some point instead of
+#    suppressing the warning.
+#
+if ($cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual

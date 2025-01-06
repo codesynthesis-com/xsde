@@ -1,14 +1,15 @@
-// file      : tests/cxx/serializer/validation/built-in/int/driver.cxx
+// file      : cxx/serializer/validation/built-in/int/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in integer & friends types validation.
 //
 
-#include <cassert>
-
 #include <xsde/cxx/serializer/validating/negative-integer.hxx>
 #include <xsde/cxx/serializer/validating/non-positive-integer.hxx>
 #include <xsde/cxx/serializer/validating/positive-integer.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::serializer;
 using namespace xsde::cxx::serializer::validating;

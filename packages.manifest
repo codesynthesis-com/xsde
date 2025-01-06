@@ -2,7 +2,7 @@
 location: libxsde/
 :
 location: xsde/
-#:
-#location: xsde-tests/
+:
+location: xsde-tests/
 #:
 #location: xsde-examples/

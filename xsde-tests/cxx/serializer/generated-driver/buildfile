@@ -1,0 +1,29 @@
+# file      : cxx/serializer/generated-driver/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+if ($build.meta_operation != 'dist')
+{
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_tests.default_allocator should be set to true for this test"
+}
+
+import libs = libxsde%liba{xsde}
+
+exe{driver}: {hxx ixx cxx}{test-sskel}   \
+             {hxx     cxx}{test-simpl}   \
+             {        cxx}{test-sdriver} \
+             $libs
+
+exe{driver}: file{output}: test.stdout = true
+
+<{hxx ixx cxx}{test-sskel}                     \
+ {        cxx}{test-sdriver}>: xsd{test} $xsde
+{{
+  $xsde cxx-serializer $cxx_serializer_options \
+        --generate-test-driver                 \
+        --force-overwrite                      \
+        --output-dir $out_base                 \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base" "-I$src_base"

@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/validation/all/driver.cxx
+// file      : cxx/parser/validation/all/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the all compositor validation.
@@ -8,6 +8,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

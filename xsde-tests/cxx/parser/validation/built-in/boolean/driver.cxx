@@ -1,11 +1,13 @@
-// file      : tests/cxx/parser/validation/built-in/boolean/driver.cxx
+// file      : cxx/parser/validation/built-in/boolean/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test the built-in boolean type validation.
 //
-#include <cassert>
 
 #include <xsde/cxx/parser/validating/boolean.hxx>
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;

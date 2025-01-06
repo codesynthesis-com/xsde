@@ -1,15 +1,17 @@
-// file      : tests/cxx/hybrid/enumeration/driver.cxx
+// file      : cxx/hybrid/enumeration/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test XML Schema enumeration to C++ enum mapping.
 //
 
-#include <cassert>
 #include <iostream>
 
 #include "test.hxx"
 #include "test-pimpl.hxx"
 #include "test-simpl.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;

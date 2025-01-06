@@ -1,4 +1,4 @@
-// file      : tests/cxx/parser/polyrecur/test-pimpl.hxx
+// file      : cxx/parser/polyrecur/test-pimpl.hxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 #ifndef TEST_PIMPL_HXX

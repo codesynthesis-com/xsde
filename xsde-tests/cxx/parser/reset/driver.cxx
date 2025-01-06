@@ -1,10 +1,9 @@
-// file      : tests/cxx/parser/reset/driver.cxx
+// file      : cxx/parser/reset/driver.cxx
 // license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
 // Test parser resetting.
 //
 
-#include <assert.h>
 #include <string.h> // strlen
 
 #include <string>
@@ -12,6 +11,9 @@
 #include <iostream>
 
 #include "test-pskel.hxx"
+
+#undef NDEBUG
+#include <cassert>
 
 using namespace std;
 using namespace test;
