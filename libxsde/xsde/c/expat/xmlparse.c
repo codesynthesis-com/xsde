@@ -1963,7 +1963,8 @@ XML_ErrorString(enum XML_Error code)
     XML_L("cannot suspend in external parameter entity"),
     XML_L("reserved prefix (xml) must not be undeclared or bound to another namespace name"),
     XML_L("reserved prefix (xmlns) must not be declared or undeclared"),
-    XML_L("prefix must not be bound to one of the reserved namespace names")
+    XML_L("prefix must not be bound to one of the reserved namespace names"),
+    XML_L("invalid argument")
   };
   if (code > 0 && code < sizeof(message)/sizeof(message[0]))
     return message[code];
