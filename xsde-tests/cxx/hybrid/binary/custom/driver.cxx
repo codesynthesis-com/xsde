@@ -4,7 +4,7 @@
 // Test RAW insertion and extraction.
 //
 
-#include <memory>
+#include <memory>   // std::unique_ptr
 #include <iostream>
 
 #include "orawstream.hxx"
@@ -47,7 +47,7 @@ main (int argc, char* argv[])
 
   root_p.pre ();
   doc_p.parse (argv[1]);
-  std::auto_ptr<type> r (root_p.post ());
+  std::unique_ptr<type> r (root_p.post ());
 
   // Save the object model to a RAW stream.
   //
@@ -58,7 +58,7 @@ main (int argc, char* argv[])
   // Load the object model from a RAW stream.
   //
   irawstream iraw (buf);
-  std::auto_ptr<type> c (new type);
+  std::unique_ptr<type> c (new type);
   iraw >> *c;
 
   // Serialize.

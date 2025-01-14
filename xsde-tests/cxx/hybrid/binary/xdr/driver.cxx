@@ -10,7 +10,7 @@
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 
-#include <memory>
+#include <memory>   // std::unique_ptr
 #include <iostream>
 
 #include "test.hxx"
@@ -24,7 +24,7 @@ using std::cerr;
 using std::endl;
 
 extern "C" int
-overflow (char* p, char* buf, int n)
+overflow (void* p, char* buf, int n)
 {
   xml_schema::buffer* dst (reinterpret_cast<xml_schema::buffer*> (p));
 
@@ -42,7 +42,7 @@ struct underflow_info
 };
 
 extern "C" int
-underflow (char* p, char* buf, int n_)
+underflow (void* p, char* buf, int n_)
 {
   underflow_info* ui (reinterpret_cast<underflow_info*> (p));
   size_t n (static_cast<size_t> (n_));
@@ -57,6 +57,20 @@ underflow (char* p, char* buf, int n_)
 }
 
 using namespace test;
+
+// The xdrrec_create function (used below) has slightly different
+// prototypes on different platforms. To make this test portable
+// we will need to cast the actual function to the following common
+// prototype.
+//
+extern "C"
+typedef  void (*xdrrec_create_p) (
+  XDR*,
+  unsigned int write_size,
+  unsigned int read_size,
+  void* user_data,
+  int (*read) (void* user_data, char* buf, int n),
+  int (*write) (void* user_data, char* buf, int n));
 
 int
 main (int argc, char* argv[])
@@ -83,13 +97,16 @@ main (int argc, char* argv[])
 
   root_p.pre ();
   doc_p.parse (argv[1]);
-  std::auto_ptr<type> r (root_p.post ());
+  std::unique_ptr<type> r (root_p.post ());
+
+  xdrrec_create_p xdrrec_create_ =
+    reinterpret_cast<xdrrec_create_p> (::xdrrec_create);
 
   // Save to an XDR stream.
   //
   XDR xdr;
   xml_schema::buffer buf;
-  xdrrec_create (&xdr, 0, 0, reinterpret_cast<char*> (&buf), 0, &overflow);
+  xdrrec_create_ (&xdr, 0, 0, reinterpret_cast<char*> (&buf), 0, &overflow);
   xdr.x_op = XDR_ENCODE;
   xml_schema::oxdrstream oxdr (xdr);
   oxdr << *r;
@@ -101,11 +118,11 @@ main (int argc, char* argv[])
   underflow_info ui;
   ui.buf = &buf;
   ui.pos = 0;
-  xdrrec_create (&xdr, 0, 0, reinterpret_cast<char*> (&ui), &underflow, 0);
+  xdrrec_create_ (&xdr, 0, 0, reinterpret_cast<char*> (&ui), &underflow, 0);
   xdr.x_op = XDR_DECODE;
   xdrrec_skiprecord (&xdr);
   xml_schema::ixdrstream ixdr (xdr);
-  std::auto_ptr<type> c (new type);
+  std::unique_ptr<type> c (new type);
   ixdr >> *c;
   xdr_destroy (&xdr);
 
@@ -148,6 +165,6 @@ main (int argc, char* argv[])
     return 1;
   }
   */
-  
+
   return 0;
 }

@@ -323,7 +323,7 @@ struct root_simpl: root_sskel
   float_ ()
   {
     static const float v[] = {0.0, 0.0, 0.0, 0.0, 1.0, -1.0,
-                              123.567, -123.567e5, -0.45e-5};
+                              123.567F, -123.567e5F, -0.45e-5F};
 
     switch (float__)
     {

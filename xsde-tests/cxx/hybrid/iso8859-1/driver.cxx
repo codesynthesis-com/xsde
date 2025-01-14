@@ -46,7 +46,7 @@ main (int argc, char* argv[])
     assert (false);
     delete r;
   }
-  catch (const xml_schema::parser_exception& e)
+  catch (const xml_schema::parser_exception& /* e */)
   {
     // cerr << e.line () << ":" << e.column () << ": " << e.text () << endl;
   }
