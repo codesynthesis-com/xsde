@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/custom/irawstream.ixx
+// file      : cxx/hybrid/binary/custom/irawstream.ixx
 // copyright : not copyrighted - public domain
 
 inline irawstream::

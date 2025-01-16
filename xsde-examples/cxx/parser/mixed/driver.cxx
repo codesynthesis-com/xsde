@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/mixed/driver.cxx
+// file      : cxx/parser/mixed/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <string>

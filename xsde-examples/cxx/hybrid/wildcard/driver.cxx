@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/wildcard/driver.cxx
+// file      : cxx/hybrid/wildcard/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <string>   // memcpy

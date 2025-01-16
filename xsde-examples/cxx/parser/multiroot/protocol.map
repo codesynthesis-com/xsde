@@ -1,4 +1,4 @@
-# file      : examples/cxx/parser/multiroot/protocol.map
+# file      : cxx/parser/multiroot/protocol.map
 # copyright : not copyrighted - public domain
 
 namespace http://www.codesynthesis.com/protocol protocol

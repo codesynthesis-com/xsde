@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/library/library-simpl-mixin.cxx
+// file      : cxx/serializer/library/library-simpl-mixin.cxx
 // copyright : not copyrighted - public domain
 
 #include "library-simpl-mixin.hxx"

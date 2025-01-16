@@ -1,0 +1,54 @@
+# file      : cxx/hybrid/polyroot/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($polymorphic) \
+    "config.xsde_examples.polymorphic should be set to true for this example"
+
+  assert ($iostream) \
+    "config.xsde_examples.iostream should be set to true for this example"
+
+  assert ($exceptions) \
+    "config.xsde_examples.exceptions should be set to true for this example"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: exe{driver} doc{README} xml{batman person superman}
+
+exe{driver}: {hxx     cxx}{* -supermen -supermen-pskel -supermen-pimpl  \
+                                       -supermen-sskel -supermen-simpl} \
+             {hxx ixx cxx}{   supermen  supermen-pskel  supermen-sskel} \
+             {hxx     cxx}{             supermen-pimpl  supermen-simpl} \
+             $libs                                                      \
+             testscript
+
+<{hxx ixx cxx}{supermen supermen-pskel supermen-sskel}                       \
+ {hxx     cxx}{         supermen-pimpl supermen-simpl}>: xsd{supermen} $xsde
+{{
+  # For options contained in cxx_hybrid_options variable see build/root.build.
+  #
+  $xsde cxx-hybrid $cxx_hybrid_options \
+        --generate-parser              \
+        --generate-serializer          \
+        --generate-aggregate           \
+        --generate-polymorphic         \
+        --generate-typeinfo            \
+        --root-element person          \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"
+
+# @@ HIDDEN See xsde-tests for details.
+#
+if ($cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual

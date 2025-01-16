@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/minimal/driver.cxx
+// file      : cxx/hybrid/minimal/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <stdio.h>

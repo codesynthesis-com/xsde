@@ -8,7 +8,7 @@ parse and serialize the wildcard data. For more information, see Section
 4.8, "Customizing the Object Model" and Section 6.1, "Customizing Parsers
 and Serializers" in the Embedded C++/Hybrid Mapping Getting Started Guide.
 
-The 'wildcard' example in the examples/cxx/hybrid/custom/ directory shows
+The 'wildcard' example in the cxx/hybrid/custom/ directory shows
 how to do the same but using type customization instead of custom data.
 
 The example consists of the following files:

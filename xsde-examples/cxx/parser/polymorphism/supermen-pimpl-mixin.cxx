@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/polymorphism/supermen-pimpl-mixin.cxx
+// file      : cxx/parser/polymorphism/supermen-pimpl-mixin.cxx
 // copyright : not copyrighted - public domain
 //
 

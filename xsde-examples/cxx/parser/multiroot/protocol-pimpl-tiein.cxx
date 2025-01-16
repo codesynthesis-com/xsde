@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/multiroot/protocol-pimpl-tiein.cxx
+// file      : cxx/parser/multiroot/protocol-pimpl-tiein.cxx
 // copyright : not copyrighted - public domain
 
 #include "protocol-pimpl-tiein.hxx"

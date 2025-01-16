@@ -1,0 +1,42 @@
+# file      : cxx/hybrid/hello/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($iostream) \
+    "config.xsde_examples.iostream should be set to true for this example"
+
+  assert ($exceptions) \
+    "config.xsde_examples.exceptions should be set to true for this example"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: exe{driver} doc{README}
+
+exe{driver}: {hxx     cxx}{* -hello -hello-pskel -hello-pimpl} \
+             {hxx ixx cxx}{   hello  hello-pskel             } \
+             {hxx     cxx}{                       hello-pimpl} \
+             $libs
+
+exe{driver}: xml{hello}: test.input = true
+
+<{hxx ixx cxx}{hello hello-pskel}                    \
+ {hxx     cxx}{      hello-pimpl}>: xsd{hello} $xsde
+{{
+  # For options contained in cxx_hybrid_options variable see build/root.build.
+  #
+  $xsde cxx-hybrid $cxx_hybrid_options \
+        --generate-parser              \
+        --generate-aggregate           \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"

@@ -1,10 +1,14 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/unknown-type-simpl.cxx
+// file      : cxx/hybrid/evolution/passthrough/unknown-type-simpl.cxx
 // copyright : not copyrighted - public domain
 
 // Include transform-simpl.hxx (which includes unknown-type-simpl.hxx)
 // instead of unknown-type-simpl.hxx.
 //
-#include "transform-simpl.hxx"
+#ifndef TRANSFORM_V2
+#  include "transform-simpl.hxx"
+#else
+#  include "transform-v2-simpl.hxx"
+#endif
 
 namespace transform
 {

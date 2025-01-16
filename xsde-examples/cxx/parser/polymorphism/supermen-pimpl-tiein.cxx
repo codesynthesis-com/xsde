@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/polymorphism/supermen-pimpl-tiein.cxx
+// file      : cxx/parser/polymorphism/supermen-pimpl-tiein.cxx
 // copyright : not copyrighted - public domain
 //
 

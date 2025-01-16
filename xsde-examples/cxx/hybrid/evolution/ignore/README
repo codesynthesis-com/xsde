@@ -12,7 +12,7 @@ output XML contains all the unknown elements.
 This example uses XML Schema polymorphism in the form of substitution groups.
 If you are not familiar with how to work with polymorphic object models,
 refer to the C++/Hybrid Mapping Getting Started Guide as well as the 
-'polymorphism' example in the examples/cxx/hybrid/ directory.
+'polymorphism' example in the cxx/hybrid/ directory.
 
 The example consists of the following files:
 

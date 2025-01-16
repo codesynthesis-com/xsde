@@ -1,0 +1,15 @@
+# file      : cxx/hybrid/custom/buildfile
+# license   : not copyrighted - public domain
+
+./: doc{README}
+
+# Note that hybrid mapping requires support for base parser/serializer reuse.
+#
+ru = ($reuse_style != 'none')
+
+# Note that most of the hybrid mapping example programs don't provide a
+# default allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: wildcard/: include = ($stl && $iostream && $exceptions && $ru && $da)

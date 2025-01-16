@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/polyroot/supermen-simpl-tiein.hxx
+// file      : cxx/serializer/polyroot/supermen-simpl-tiein.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef SUPERMEN_SIMPL_HXX

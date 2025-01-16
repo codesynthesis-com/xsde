@@ -1,0 +1,38 @@
+# file      : cxx/parser/generated/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: exe{driver} doc{README}
+
+exe{driver}: {hxx ixx cxx}{library-pskel}   \
+             {hxx     cxx}{library-pimpl}   \
+             {        cxx}{library-pdriver} \
+             $libs
+
+exe{driver}: xml{library}: test.input = true
+
+<{hxx ixx cxx}{library-pskel}                        \
+ {hxx     cxx}{library-pimpl}                        \
+ {        cxx}{library-pdriver}>: xsd{library} $xsde
+{{
+  # For options contained in cxx_parser_options variable see build/root.build.
+  #
+  $xsde cxx-parser $cxx_parser_options \
+        --generate-print-impl          \
+        --generate-test-driver         \
+        --force-overwrite              \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"

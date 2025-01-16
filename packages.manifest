@@ -4,5 +4,5 @@ location: libxsde/
 location: xsde/
 :
 location: xsde-tests/
-#:
-#location: xsde-examples/
+:
+location: xsde-examples/

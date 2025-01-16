@@ -1,4 +1,4 @@
-# file      : examples/cxx/parser/library/library.map
+# file      : cxx/parser/library/library.map
 # copyright : not copyrighted - public domain
 
 namespace http://www.codesynthesis.com/library library

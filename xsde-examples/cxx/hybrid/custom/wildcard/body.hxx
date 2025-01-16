@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/custom/wildcard/body.hxx
+// file      : cxx/hybrid/custom/wildcard/body.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef BODY_HXX

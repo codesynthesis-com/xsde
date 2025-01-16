@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/polyroot/driver.cxx
+// file      : cxx/hybrid/polyroot/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr
@@ -13,7 +13,7 @@ using xml_schema::ro_string;
 
 // Customize the xml_schema::document object to handle a polymorphic
 // root element. For more information see the polyroot and multiroot
-// examples in the examples/cxx/parser/ directory.
+// examples in the cxx/parser/ directory.
 //
 class document_pimpl: public xml_schema::document_pimpl
 {

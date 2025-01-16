@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/streaming/object-pimpl.cxx
+// file      : cxx/hybrid/streaming/object-pimpl.cxx
 // copyright : not copyrighted - public domain
 
 #include <iostream>

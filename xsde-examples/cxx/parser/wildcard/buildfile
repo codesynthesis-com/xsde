@@ -1,0 +1,39 @@
+# file      : cxx/parser/wildcard/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($stl) \
+    "config.xsde_examples.stl should be set to true for this example"
+
+  assert ($iostream) \
+    "config.xsde_examples.iostream should be set to true for this example"
+
+  assert ($exceptions) \
+    "config.xsde_examples.exceptions should be set to true for this example"
+
+  assert ($reuse_style == 'tiein') \
+    "config.xsde_examples.reuse_style should be set to 'tiein' for this examples"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: exe{driver} doc{README}
+
+exe{driver}: {hxx cxx}{* -email-pskel} {hxx ixx cxx}{email-pskel} $libs
+
+exe{driver}: xml{email}: test.input = true
+
+<{hxx ixx cxx}{email-pskel}>: xsd{email} $xsde
+{{
+  # For options contained in cxx_parser_options variable see build/root.build.
+  #
+  $xsde cxx-parser $cxx_parser_options \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base"

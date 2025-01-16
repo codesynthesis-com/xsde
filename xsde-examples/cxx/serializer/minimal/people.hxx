@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/minimal/people.hxx
+// file      : cxx/serializer/minimal/people.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef PEOPLE_HXX

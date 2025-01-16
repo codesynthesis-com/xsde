@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/multiroot/driver.cxx
+// file      : cxx/parser/multiroot/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr

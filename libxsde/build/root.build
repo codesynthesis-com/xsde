@@ -21,6 +21,9 @@ if ($cxx.target.system == 'win32-msvc')
 if ($cxx.class == 'msvc')
   cc.coptions += /wd4251 /wd4275 /wd4800
 
+# NOTE: don't forget to also update xsde-{tests,examples}/build/root.build if
+#       changing or adding the following configuration variables.
+
 # Application character encoding. Valid values are 'utf8' for UTF-8 and
 # 'iso8859-1' for ISO-8859-1.
 #

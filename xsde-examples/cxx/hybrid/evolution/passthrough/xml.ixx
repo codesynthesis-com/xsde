@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/xml.cxx
+// file      : cxx/hybrid/evolution/passthrough/xml.cxx
 // copyright : not copyrighted - public domain
 
 namespace xml

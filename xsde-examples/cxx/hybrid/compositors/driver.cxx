@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/compositors/driver.cxx
+// file      : cxx/hybrid/compositors/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include "compositors.hxx"

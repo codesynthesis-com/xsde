@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/unknown-type-pimpl.cxx
+// file      : cxx/hybrid/evolution/passthrough/unknown-type-pimpl.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory> // std::auto_ptr
@@ -6,7 +6,11 @@
 // Include transform-pimpl.hxx (which includes unknown-type-pimpl.hxx)
 // instead of unknown-type-pimpl.hxx.
 //
-#include "transform-pimpl.hxx"
+#ifndef TRANSFORM_V2
+#  include "transform-pimpl.hxx"
+#else
+#  include "transform-v2-pimpl.hxx"
+#endif
 
 namespace transform
 {

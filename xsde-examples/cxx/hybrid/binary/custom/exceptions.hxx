@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/custom/exceptions.hxx
+// file      : cxx/hybrid/binary/custom/exceptions.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef EXCEPTIONS_HXX

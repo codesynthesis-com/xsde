@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/custom/exceptions.cxx
+// file      : cxx/hybrid/binary/custom/exceptions.cxx
 // copyright : not copyrighted - public domain
 
 #include "exceptions.hxx"

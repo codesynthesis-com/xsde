@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/library/library.hxx
+// file      : cxx/parser/library/library.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_HXX

@@ -21,46 +21,115 @@ depends: libxsd-frontend ^2.1.0
 depends: libcutl ^1.11.0
 depends: * cli ^1.2.0- ? ($config.xsde.develop)
 tests: * xsde-tests == $
-#examples: * xsde-examples == $
+examples: * xsde-examples == $
 
-#iso8859-1-build-config:     { config.xsde_tests.encoding='iso8859-1' }+ xsde-tests
-#no-stl-build-config:        { config.xsde_tests.stl=false            }+ xsde-tests
-#no-stl-iter-build-config:   { config.xsde_tests.stl_iterator=false   }+ xsde-tests
-#no-iostream-build-config:   { config.xsde_tests.iostream=false       }+ xsde-tests
-#no-exceptions-build-config: { config.xsde_tests.exceptions=false     }+ xsde-tests
-#no-long-long-build-config:  { config.xsde_tests.long_long=false      }+ xsde-tests
-#regexp-build-config:        { config.xsde_tests.regexp=true          }+ xsde-tests
-#reuse-mixin-build-config:   { config.xsde_tests.reuse_style='mixin'  }+ xsde-tests
-#reuse-none-build-config:    { config.xsde_tests.reuse_style='none'   }+ xsde-tests
-#cdr-build-config:           { config.xsde_tests.cdr=true             }+ xsde-tests
-#xdr-build-config:           { config.xsde_tests.xdr=true             }+ xsde-tests
-#polymorphic-build-config:   { config.xsde_tests.polymorphic=true     }+ xsde-tests
+iso8859-1-build-config:
+\
+{ config.xsde_tests.encoding='iso8859-1'    }+ xsde-tests
+{ config.xsde_examples.encoding='iso8859-1' }+ xsde-examples
+\
 
-#no-parser_validation-build-config:
-#\
-#{
-#  config.xsde_tests.parser_validation=false
-#}+ xsde-tests
-#\
+no-stl-build-config:
+\
+{ config.xsde_tests.stl=false    }+ xsde-tests
+{ config.xsde_examples.stl=false }+ xsde-examples
+\
 
-#no-serializer_validation-build-config:
-#\
-#{
-#  config.xsde_tests.serializer_validation=false
-#}+ xsde-tests
-#\
+#no-stl-iter-build-config: { config.xsde_tests.stl_iterator=false }+ xsde-tests
 
-#custom-allocator-build-config:
-#\
-#{
-#  config.xsde_tests.custom_allocator=true
-#}+ xsde-tests
-#\
+no-iostream-build-config:
+\
+{ config.xsde_tests.iostream=false    }+ xsde-tests
+{ config.xsde_examples.iostream=false }+ xsde-examples
+\
 
-#default-allocator-build-config:
-#\
-#{
-#  config.xsde_tests.custom_allocator=true
-#  config.xsde_tests.default_allocator=true
-#}+ xsde-tests
-#\
+no-exceptions-build-config:
+\
+{ config.xsde_tests.exceptions=false    }+ xsde-tests
+{ config.xsde_examples.exceptions=false }+ xsde-examples
+\
+
+no-long-long-build-config:
+\
+{ config.xsde_tests.long_long=false    }+ xsde-tests
+{ config.xsde_examples.long_long=false }+ xsde-examples
+\
+
+#regexp-build-config: { config.xsde_tests.regexp=true }+ xsde-tests
+
+reuse-mixin-build-config:
+\
+{ config.xsde_tests.reuse_style='mixin'    }+ xsde-tests
+{ config.xsde_examples.reuse_style='mixin' }+ xsde-examples
+\
+
+#reuse-none-build-config: { config.xsde_tests.reuse_style='none' }+ xsde-tests
+#cdr-build-config:        { config.xsde_tests.cdr=true           }+ xsde-tests
+#xdr-build-config:        { config.xsde_tests.xdr=true           }+ xsde-tests
+
+polymorphic-build-config:
+\
+{ config.xsde_tests.polymorphic=true    }+ xsde-tests
+{ config.xsde_examples.polymorphic=true }+ xsde-examples
+\
+
+no-parser_validation-build-config:
+\
+{ config.xsde_tests.parser_validation=false    }+ xsde-tests
+{ config.xsde_examples.parser_validation=false }+ xsde-examples
+\
+
+no-serializer_validation-build-config:
+\
+{ config.xsde_tests.serializer_validation=false    }+ xsde-tests
+{ config.xsde_examples.serializer_validation=false }+ xsde-examples
+\
+
+default-allocator-build-config:
+\
+{
+  config.xsde_tests.custom_allocator=true
+  config.xsde_tests.default_allocator=true
+}+ xsde-tests
+
+{
+  config.xsde_examples.custom_allocator=true
+  config.xsde_examples.default_allocator=true
+}+ xsde-examples
+\
+
+# Enable xsde-examples/cxx/{hybrid,parser,serializer}/minimal examples.
+#
+minimal-build-config:
+\
+{
+  config.xsde_tests.stl=false
+  config.xsde_tests.iostream=false
+  config.xsde_tests.exceptions=false
+}+ xsde-tests
+
+{
+  config.xsde_examples.stl=false
+  config.xsde_examples.iostream=false
+  config.xsde_examples.exceptions=false
+}+ xsde-examples
+\
+
+# Enable xsde-examples/cxx/hybrid/allocator example.
+#
+custom-allocator-build-config:
+\
+{
+  config.xsde_tests.custom_allocator=true
+  config.xsde_tests.stl=false
+  config.xsde_tests.iostream=false
+  config.xsde_tests.exceptions=false
+}+ xsde-tests
+
+{
+  config.xsde_examples.custom_allocator=true
+  config.xsde_examples.stl=false
+  config.xsde_examples.iostream=false
+  config.xsde_examples.exceptions=false
+}+ xsde-examples
+\

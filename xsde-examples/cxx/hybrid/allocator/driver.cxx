@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/allocator/driver.cxx
+// file      : cxx/hybrid/allocator/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <stdio.h>

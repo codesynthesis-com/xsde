@@ -12,12 +12,12 @@ shows how to ignore such unknown elements.
 This example uses XML Schema polymorphism in the form of substitution groups.
 If you are not familiar with how to work with polymorphic object models,
 refer to the C++/Hybrid Mapping Getting Started Guide as well as the 
-'polymorphism' example in the examples/cxx/hybrid/ directory.
+'polymorphism' example in the cxx/hybrid/ directory.
 
 This example also customizes a generated object model type as well as parser
 and serializer implementations. If you are not familiar with the customization
 mechanisms, refer to the C++/Hybrid Mapping Getting Started Guide as well as
-the examples in the examples/cxx/hybrid/custom/ directory.
+the examples in the cxx/hybrid/custom/ directory.
 
 The example consists of the following files:
 

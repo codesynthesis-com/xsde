@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/multiroot/protocol.hxx
+// file      : cxx/parser/multiroot/protocol.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef PROTOCOL_HXX

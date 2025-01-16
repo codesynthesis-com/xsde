@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/allocator/arena.hxx
+// file      : cxx/hybrid/allocator/arena.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef ARENA_HXX

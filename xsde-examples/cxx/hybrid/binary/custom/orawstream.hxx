@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/custom/orawstream.hxx
+// file      : cxx/hybrid/binary/custom/orawstream.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef ORAWSTREAM_HXX

@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/wildcard/envelope-simpl.cxx
+// file      : cxx/hybrid/wildcard/envelope-simpl.cxx
 // copyright : not copyrighted - public domain
 
 #include "body.hxx"

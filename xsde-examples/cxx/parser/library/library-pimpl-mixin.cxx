@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/library/library-pimpl-mixin.cxx
+// file      : cxx/parser/library/library-pimpl-mixin.cxx
 // copyright : not copyrighted - public domain
 
 #include "library-pimpl-mixin.hxx"

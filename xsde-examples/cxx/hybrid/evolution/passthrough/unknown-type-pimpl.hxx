@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/unknown-type-pimpl.hxx
+// file      : cxx/hybrid/evolution/passthrough/unknown-type-pimpl.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef UNKNOWN_TYPE_PIMPL_HXX

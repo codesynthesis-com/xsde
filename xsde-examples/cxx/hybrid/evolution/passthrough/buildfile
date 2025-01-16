@@ -1,0 +1,68 @@
+# file      : cxx/hybrid/evolution/passthrough/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($polymorphic) \
+    "config.xsde_examples.polymorphic should be set to true for this example"
+
+  assert ($stl) \
+    "config.xsde_examples.stl should be set to true for this example"
+
+  assert ($iostream) \
+    "config.xsde_examples.iostream should be set to true for this example"
+
+  assert ($exceptions) \
+    "config.xsde_examples.exceptions should be set to true for this example"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: doc{README}
+
+fs = driver xml unknown-type unknown-type-pimpl unknown-type-simpl
+
+# exe{driver{,-v2}}
+#
+for v: '' '-v2'
+{
+  ./: exe{driver$v}: obje{$regex.apply($fs, '(.*)', '\1'$v)}               \
+            {hxx ixx cxx}{transform$v transform$v-pskel transform$v-sskel} \
+            {hxx     cxx}{            transform$v-pimpl transform$v-simpl} \
+            $libs
+
+  exe{driver$v}: xml{transform}: test.input = true
+
+  for f: $fs
+    obje{$f$v}: {hxx ixx cxx}{+$f} $libs
+
+  <{hxx ixx cxx}{transform$v transform$v-pskel transform$v-sskel}   \
+   {hxx     cxx}{            transform$v-pimpl transform$v-simpl}>: \
+  xsd{transform$v} $xsde
+  {{
+    # For options contained in cxx_hybrid_options variable see build/root.build.
+    #
+    $xsde cxx-hybrid $cxx_hybrid_options                                                  \
+          --generate-parser                                                               \
+          --generate-serializer                                                           \
+          --generate-aggregate                                                            \
+          --root-element transformations                                                  \
+          --generate-polymorphic                                                          \
+          --custom-type unknown_type=//unknown_type_base/unknown-type.hxx                 \
+          --custom-parser unknown_type=unknown_type_base_pimpl/unknown-type-pimpl.hxx     \
+          --custom-serializer unknown_type=unknown_type_base_simpl/unknown-type-simpl.hxx \
+          --output-dir $out_base                                                          \
+          $path($<[0])
+  }}
+}
+
+cxx.poptions =+ "-I$out_base" "-I$src_base"
+
+for f: $fs
+  obje{$f-v2}: cxx.poptions += -DTRANSFORM_V2

@@ -1,0 +1,16 @@
+# file      : cxx/hybrid/evolution/buildfile
+# license   : not copyrighted - public domain
+
+./: doc{README}
+
+# Note that hybrid mapping requires support for base parser/serializer reuse.
+#
+ru = ($reuse_style != 'none')
+
+# Note that most of the hybrid mapping example programs don't provide a
+# default allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: ignore/:      include = ($polymorphic && $stl && $iostream && $exceptions && $ru && $da)
+./: passthrough/: include = ($polymorphic && $stl && $iostream && $exceptions && $ru && $da)

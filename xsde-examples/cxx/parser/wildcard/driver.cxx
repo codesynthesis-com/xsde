@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/wildcard/driver.cxx
+// file      : cxx/parser/wildcard/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <string>

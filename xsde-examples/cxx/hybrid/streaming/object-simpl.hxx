@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/streaming/object-simpl.hxx
+// file      : cxx/hybrid/streaming/object-simpl.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef OBJECT_SIMPL_HXX

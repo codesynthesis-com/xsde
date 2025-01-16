@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/wildcard/email.hxx
+// file      : cxx/serializer/wildcard/email.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef EMAIL_HXX

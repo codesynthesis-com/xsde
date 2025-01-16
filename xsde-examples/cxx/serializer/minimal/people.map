@@ -1,4 +1,4 @@
-# file      : examples/cxx/serializer/minimal/people.map
+# file      : cxx/serializer/minimal/people.map
 # copyright : not copyrighted - public domain
 
 include "people.hxx";

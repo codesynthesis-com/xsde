@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/minimal/driver.cxx
+// file      : cxx/parser/minimal/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <stdio.h>

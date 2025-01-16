@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/custom/irawostream.txx
+// file      : cxx/hybrid/binary/custom/irawostream.txx
 // copyright : not copyrighted - public domain
 
 #include <string.h> // memcpy

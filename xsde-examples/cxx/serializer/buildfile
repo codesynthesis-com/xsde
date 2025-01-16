@@ -1,0 +1,19 @@
+# file      : cxx/serializer/buildfile
+# license   : not copyrighted - public domain
+
+./: doc{README}
+
+ru = ($reuse_style != 'none')
+rt = ($reuse_style == 'tiein')
+
+# Note that none of the parser mapping example programs provide a default
+# allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: hello/:        include = ($stl && $iostream && $exceptions && $da)
+./: library/:      include = ($stl && $iostream && $exceptions && $ru && $da)
+./: minimal/:      include = (!$stl && !$iostream && !$exceptions && $ru && $da)
+./: polymorphism/: include = ($polymorphic && $stl && $iostream && $exceptions && $ru && $da)
+./: polyroot/:     include = ($polymorphic && $stl && $iostream && $exceptions && $ru && $da)
+./: wildcard/:     include = ($stl && $iostream && $exceptions && $rt && $da)

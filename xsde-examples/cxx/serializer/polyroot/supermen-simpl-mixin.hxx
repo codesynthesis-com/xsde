@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/polyroot/library-simpl-mixin.hxx
+// file      : cxx/serializer/polyroot/library-simpl-mixin.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef SUPERMEN_SIMPL_HXX

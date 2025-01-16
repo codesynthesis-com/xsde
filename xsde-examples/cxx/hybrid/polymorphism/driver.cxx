@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/polymorphism/driver.cxx
+// file      : cxx/hybrid/polymorphism/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr

@@ -1,13 +1,19 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/driver.cxx
+// file      : cxx/hybrid/evolution/passthrough/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr
 #include <string>
 #include <iostream>
 
-#include "transform.hxx"
-#include "transform-pimpl.hxx"
-#include "transform-simpl.hxx"
+#ifndef TRANSFORM_V2
+#  include "transform.hxx"
+#  include "transform-pimpl.hxx"
+#  include "transform-simpl.hxx"
+#else
+#  include "transform-v2.hxx"
+#  include "transform-v2-pimpl.hxx"
+#  include "transform-v2-simpl.hxx"
+#endif
 
 using namespace std;
 using namespace transform;

@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/library/library-simpl-tiein.hxx
+// file      : cxx/serializer/library/library-simpl-tiein.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_SIMPL_HXX

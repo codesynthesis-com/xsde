@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/minimal/driver.cxx
+// file      : cxx/serializer/minimal/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <stdio.h>

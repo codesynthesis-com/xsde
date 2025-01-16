@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/hello/driver.cxx
+// file      : cxx/serializer/hello/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <string>

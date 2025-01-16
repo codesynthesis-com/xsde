@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/library/library-simpl-mixin.hxx
+// file      : cxx/serializer/library/library-simpl-mixin.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_SIMPL_HXX

@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/mixed/anchor.hxx
+// file      : cxx/parser/mixed/anchor.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef ANCHOR_HXX

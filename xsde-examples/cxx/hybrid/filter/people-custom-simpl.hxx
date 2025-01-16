@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/filter/people-custom-simpl.hxx
+// file      : cxx/hybrid/filter/people-custom-simpl.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef PEOPLE_CUSTOM_SIMPL_HXX

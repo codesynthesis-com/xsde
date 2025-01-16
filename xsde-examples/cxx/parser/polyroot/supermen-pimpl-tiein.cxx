@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/polyroot/supermen-pimpl-tiein.cxx
+// file      : cxx/parser/polyroot/supermen-pimpl-tiein.cxx
 // copyright : not copyrighted - public domain
 //
 

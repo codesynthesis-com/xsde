@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/wildcard/envelope-pimpl.cxx
+// file      : cxx/hybrid/wildcard/envelope-pimpl.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory> // std::auto_ptr

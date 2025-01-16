@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/streaming/object-simpl.cxx
+// file      : cxx/hybrid/streaming/object-simpl.cxx
 // copyright : not copyrighted - public domain
 
 // Include position-simpl.hxx (which includes object-simpl.hxx)

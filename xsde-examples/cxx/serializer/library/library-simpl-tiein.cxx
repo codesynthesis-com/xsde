@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/library/library-simpl-tiein.cxx
+// file      : cxx/serializer/library/library-simpl-tiein.cxx
 // copyright : not copyrighted - public domain
 
 #include "library-simpl-tiein.hxx"

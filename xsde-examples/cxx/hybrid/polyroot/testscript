@@ -1,0 +1,6 @@
+# file      : cxx/hybrid/polyroot/testscript
+# license   : not copyrighted - public domain
+
+$* $src_base/batman.xml   >| 2>| : batman
+$* $src_base/person.xml   >| 2>| : person
+$* $src_base/superman.xml >| 2>| : superman

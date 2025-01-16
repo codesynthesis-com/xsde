@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/custom/wildcard/body.cxx
+// file      : cxx/hybrid/custom/wildcard/body.cxx
 // copyright : not copyrighted - public domain
 
 #include "body.hxx"

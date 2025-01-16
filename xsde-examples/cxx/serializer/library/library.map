@@ -1,4 +1,4 @@
-# file      : examples/cxx/serializer/library/library.map
+# file      : cxx/serializer/library/library.map
 # copyright : not copyrighted - public domain
 
 namespace http://www.codesynthesis.com/library

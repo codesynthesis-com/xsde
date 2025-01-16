@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/multiroot/driver.cxx
+// file      : cxx/hybrid/multiroot/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <iostream>

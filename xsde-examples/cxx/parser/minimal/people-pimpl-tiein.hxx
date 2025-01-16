@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/people/people-pimpl-tiein.hxx
+// file      : cxx/parser/people/people-pimpl-tiein.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef PEOPLE_PIMPL_HXX

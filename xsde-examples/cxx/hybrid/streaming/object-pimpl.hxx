@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/streaming/object-pimpl.hxx
+// file      : cxx/hybrid/streaming/object-pimpl.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef OBJECT_PIMPL_HXX

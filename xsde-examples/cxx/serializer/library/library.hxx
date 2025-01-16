@@ -1,4 +1,4 @@
-// file      : examples/cxx/serializer/library/library.hxx
+// file      : cxx/serializer/library/library.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef LIBRARY_HXX

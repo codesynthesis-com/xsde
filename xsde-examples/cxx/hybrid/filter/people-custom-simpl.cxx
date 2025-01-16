@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/filter/people-custom-simpl.cxx
+// file      : cxx/hybrid/filter/people-custom-simpl.cxx
 // copyright : not copyrighted - public domain
 
 // Include people-simpl.hxx (which includes people-custom-simpl.hxx)

@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/evolution/passthrough/xml.hxx
+// file      : cxx/hybrid/evolution/passthrough/xml.hxx
 // copyright : not copyrighted - public domain
 
 //

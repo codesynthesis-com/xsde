@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/custom/wildcard/envelope-pimpl.hxx
+// file      : cxx/hybrid/custom/wildcard/envelope-pimpl.hxx
 // copyright : not copyrighted - public domain
 
 #ifndef ENVELOPE_PIMPL_HXX

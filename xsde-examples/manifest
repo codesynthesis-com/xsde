@@ -1,0 +1,70 @@
+: 1
+name: xsde-examples
+version: 3.4.0-b.1.z
+project: xsde
+type: examples
+language: c++
+summary: Examples of using the XML Schema to C++ data binding compiler for mobile and embedded systems
+license: Unlicence
+description-file: README.md
+url: https://www.codesynthesis.com/products/xsde/
+doc-url: https://www.codesynthesis.com/products/xsde/
+src-url: https://git.codesynthesis.com/cgit/xsde/xsde/
+email: xsde-users@codesynthesis.com ; Mailing list
+requires: libace ? ($cdr) ; CDR implementation library.
+requires: libtirpc ? ($xdr && $cxx.target.class == 'linux') ; XDR implementation library.
+depends: * build2 >= 0.17.0
+depends: * bpkg >= 0.17.0
+
+# Configure libxsde to match xsde-examples configuration.
+#
+depends:
+\
+libxsde == $
+{
+  prefer
+  {
+    config.libxsde.encoding                       = $encoding
+    config.libxsde.stl                            = $stl
+    config.libxsde.stl_iterator                   = $stl_iterator
+    config.libxsde.iostream                       = $iostream
+    config.libxsde.exceptions                     = $exceptions
+    config.libxsde.long_long                      = $long_long
+    config.libxsde.parser_validation              = $parser_validation
+    config.libxsde.serializer_validation          = $serializer_validation
+    config.libxsde.regexp                         = $regexp
+    config.libxsde.reuse_style                    = $reuse_style
+    config.libxsde.custom_allocator               = $custom_allocator
+    config.libxsde.default_allocator              = $default_allocator
+    config.libxsde.cdr                            = $cdr
+    config.libxsde.xdr                            = $xdr
+    config.libxsde.polymorphic                    = $polymorphic
+    config.libxsde.parser_smap_buckets            = $parser_smap_buckets
+    config.libxsde.parser_imap_buckets            = $parser_imap_buckets
+    config.libxsde.serializer_smap_buckets        = $serializer_smap_buckets
+    config.libxsde.serializer_smap_bucket_buckets = $serializer_smap_bucket_buckets
+    config.libxsde.serializer_imap_buckets        = $serializer_imap_buckets
+  }
+
+  accept ($config.libxsde.encoding                       == $encoding                       && \
+          $config.libxsde.stl                            == $stl                            && \
+          $config.libxsde.stl_iterator                   == $stl_iterator                   && \
+          $config.libxsde.iostream                       == $iostream                       && \
+          $config.libxsde.exceptions                     == $exceptions                     && \
+          $config.libxsde.long_long                      == $long_long                      && \
+          $config.libxsde.parser_validation              == $parser_validation              && \
+          $config.libxsde.serializer_validation          == $serializer_validation          && \
+          $config.libxsde.regexp                         == $regexp                         && \
+          $config.libxsde.reuse_style                    == $reuse_style                    && \
+          $config.libxsde.custom_allocator               == $custom_allocator               && \
+          $config.libxsde.default_allocator              == $default_allocator              && \
+          $config.libxsde.cdr                            == $cdr                            && \
+          $config.libxsde.xdr                            == $xdr                            && \
+          $config.libxsde.polymorphic                    == $polymorphic                    && \
+          $config.libxsde.parser_smap_buckets            == $parser_smap_buckets            && \
+          $config.libxsde.parser_imap_buckets            == $parser_imap_buckets            && \
+          $config.libxsde.serializer_smap_buckets        == $serializer_smap_buckets        && \
+          $config.libxsde.serializer_smap_bucket_buckets == $serializer_smap_bucket_buckets && \
+          $config.libxsde.serializer_imap_buckets        == $serializer_imap_buckets)
+}
+\

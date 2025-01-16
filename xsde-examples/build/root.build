@@ -1,0 +1,146 @@
+# file      : build/root.build
+# license   : not copyrighted - public domain
+
+cxx.std = latest
+
+using cxx
+
+hxx{*}: extension = hxx
+ixx{*}: extension = ixx
+txx{*}: extension = txx
+cxx{*}: extension = cxx
+
+skeleton = ($build.mode == 'skeleton')
+
+# For the semantics of the following configuration variables refer to
+# libxsde/build/root.build.
+#
+config [string] config.xsde_examples.encoding ?= 'utf8'
+encoding = $config.xsde_examples.encoding
+
+assert ($encoding == 'utf8' || $encoding == 'iso8859-1') \
+  "invalid config.xsde_examples.encoding value '$encoding'"
+
+config [bool] config.xsde_examples.stl ?= true
+stl = $config.xsde_examples.stl
+
+config [bool] config.xsde_examples.stl_iterator ?= true
+stl_iterator = $config.xsde_examples.stl_iterator
+
+config [bool] config.xsde_examples.iostream ?= true
+iostream = $config.xsde_examples.iostream
+
+config [bool] config.xsde_examples.exceptions ?= true
+exceptions = $config.xsde_examples.exceptions
+
+config [bool] config.xsde_examples.long_long ?= true
+long_long = $config.xsde_examples.long_long
+
+config [bool] config.xsde_examples.parser_validation ?= true
+parser_validation = $config.xsde_examples.parser_validation
+
+config [bool] config.xsde_examples.serializer_validation ?= true
+serializer_validation = $config.xsde_examples.serializer_validation
+
+config [bool] config.xsde_examples.regexp ?= false
+regexp = $config.xsde_examples.regexp
+
+config [string] config.xsde_examples.reuse_style ?= 'tiein'
+reuse_style = $config.xsde_examples.reuse_style
+
+assert ($reuse_style == 'mixin' || \
+        $reuse_style == 'tiein' || \
+        $reuse_style == 'none')    \
+  "invalid config.xsde_examples.reuse_style value '$reuse_style'"
+
+config [bool] config.xsde_examples.custom_allocator ?= false
+custom_allocator = $config.xsde_examples.custom_allocator
+
+config [bool] config.xsde_examples.default_allocator ?= false
+default_allocator = $config.xsde_examples.default_allocator
+
+assert (!$default_allocator || $custom_allocator) \
+  "config.xsde_examples.default_allocator can only be true if config.xsde_examples.custom_allocator is true"
+
+config [bool] config.xsde_examples.cdr ?= false
+cdr = $config.xsde_examples.cdr
+
+config [bool] config.xsde_examples.xdr ?= false
+xdr = $config.xsde_examples.xdr
+
+config [bool] config.xsde_examples.polymorphic ?= false
+polymorphic = $config.xsde_examples.polymorphic
+
+config [uint64] config.xsde_examples.parser_smap_buckets ?= 53
+parser_smap_buckets = $config.xsde_examples.parser_smap_buckets
+
+config [uint64] config.xsde_examples.parser_imap_buckets ?= 97
+parser_imap_buckets = $config.xsde_examples.parser_imap_buckets
+
+config [uint64] config.xsde_examples.serializer_smap_buckets ?= 53
+serializer_smap_buckets = $config.xsde_examples.serializer_smap_buckets
+
+config [uint64] config.xsde_examples.serializer_smap_bucket_buckets ?= 53
+serializer_smap_bucket_buckets = $config.xsde_examples.serializer_smap_bucket_buckets
+
+config [uint64] config.xsde_examples.serializer_imap_buckets ?= 97
+serializer_imap_buckets = $config.xsde_examples.serializer_imap_buckets
+
+if! $skeleton
+{
+  define xsd: file
+  xsd{*}: extension = xsd
+
+  define xml: file
+  xml{*}: extension = xml
+
+  define map: file
+  map{*}: extension = map
+
+  if ($cxx.target.system == 'win32-msvc')
+    cxx.poptions += -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS
+
+  if ($cxx.class == 'msvc')
+    cxx.coptions += /wd4251 /wd4275 /wd4800
+
+  # Import xsde that we are testing.
+  #
+  import! [metadata] xsde = xsde%exe{xsde}
+
+  # Every exe{} in this project is by default a test.
+  #
+  exe{*}: test = true
+
+  # Specify the test target for cross-testing.
+  #
+  test.target = $cxx.target
+
+  ops = --generate-inline                                       \
+        --char-encoding $encoding                               \
+        (!$stl                      ? --no-stl              : ) \
+        (!$iostream                 ? --no-iostream         : ) \
+        (!$exceptions               ? --no-exceptions       : ) \
+        (!$long_long                ? --no-long-long        : ) \
+        ( $reuse_style == 'mixin'   ? --reuse-style-mixin   : ) \
+        ( $custom_allocator         ? --custom-allocator    : ) \
+        ( $polymorphic              ? --runtime-polymorphic : )
+
+
+  cxx_parser_options = $ops                                                 \
+                       --skel-file-suffix -pskel                            \
+                       (!$parser_validation     ? --suppress-validation : ) \
+                       ( $reuse_style == 'none' ? --reuse-style-none    : )
+
+  cxx_hybrid_options = $ops                                                     \
+                       --pskel-file-suffix -pskel                               \
+                       --pimpl-file-suffix -pimpl                               \
+                       --sskel-file-suffix -sskel                               \
+                       --simpl-file-suffix -simpl                               \
+                       (!$parser_validation     ? --suppress-parser-val     : ) \
+                       (!$serializer_validation ? --suppress-serializer-val : )
+
+  cxx_serializer_options = $ops                                                 \
+                           --skel-file-suffix -sskel                            \
+                           (!$serializer_validation ? --suppress-validation : ) \
+                           ( $reuse_style == 'none' ? --reuse-style-none    : )
+}

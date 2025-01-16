@@ -1,4 +1,4 @@
-# file      : examples/cxx/serializer/wildcard/email.map
+# file      : cxx/serializer/wildcard/email.map
 # copyright : not copyrighted - public domain
 
 namespace http://www.codesynthesis.com/email

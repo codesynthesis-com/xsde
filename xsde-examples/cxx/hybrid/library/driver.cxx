@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/library/driver.cxx
+// file      : cxx/hybrid/library/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <memory>   // std::auto_ptr

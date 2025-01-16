@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/binary/cdr/driver.cxx
+// file      : cxx/hybrid/binary/cdr/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <string.h>  // memcpy

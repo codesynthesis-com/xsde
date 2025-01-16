@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/allocator/arena.cxx
+// file      : cxx/hybrid/allocator/arena.cxx
 // copyright : not copyrighted - public domain
 
 #include <stdio.h>

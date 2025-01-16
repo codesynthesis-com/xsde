@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/polymorphism/driver.cxx
+// file      : cxx/parser/polymorphism/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <iostream>

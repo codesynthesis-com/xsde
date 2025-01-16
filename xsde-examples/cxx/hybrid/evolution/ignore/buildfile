@@ -1,0 +1,59 @@
+# file      : cxx/hybrid/evolution/ignore/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert ($polymorphic) \
+    "config.xsde_examples.polymorphic should be set to true for this example"
+
+  assert ($stl) \
+    "config.xsde_examples.stl should be set to true for this example"
+
+  assert ($iostream) \
+    "config.xsde_examples.iostream should be set to true for this example"
+
+  assert ($exceptions) \
+    "config.xsde_examples.exceptions should be set to true for this example"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: doc{README}
+
+# exe{driver{,-v2}}
+#
+for v: '' '-v2'
+{
+  ./: exe{driver$v}: obje{driver$v}                      \
+            {hxx ixx cxx}{transform$v transform$v-pskel} \
+            {hxx     cxx}{            transform$v-pimpl} \
+            $libs
+
+  exe{driver$v}: xml{transform}: test.input = true
+
+  obje{driver$v}: cxx{driver} $libs
+
+  <{hxx ixx cxx}{transform$v transform$v-pskel}                          \
+   {hxx     cxx}{            transform$v-pimpl}>: xsd{transform$v} $xsde
+  {{
+    # For options contained in cxx_hybrid_options variable see build/root.build.
+    #
+    $xsde cxx-hybrid $cxx_hybrid_options \
+          --generate-parser              \
+          --generate-aggregate           \
+          --root-element transformations \
+          --generate-polymorphic         \
+          --output-dir $out_base         \
+          $path($<[0])
+  }}
+}
+
+cxx.poptions =+ "-I$out_base"
+
+obje{driver-v2}: cxx.poptions += -DTRANSFORM_V2

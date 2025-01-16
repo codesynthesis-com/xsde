@@ -1,0 +1,15 @@
+# file      : cxx/hybrid/binary/buildfile
+# license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
+
+# Note that hybrid mapping requires support for base parser/serializer reuse.
+#
+ru = ($reuse_style != 'none')
+
+# Note that most of the hybrid mapping example programs don't provide a
+# default allocator.
+#
+da = (!$custom_allocator || $default_allocator)
+
+./: cdr/:    include = ($cdr && $iostream && $exceptions && $ru && $da)
+./: custom/: include = ($stl && $iostream && $exceptions && $ru && $da)
+./: xdr/:    include = ($xdr && $iostream && $exceptions && $ru && $da)

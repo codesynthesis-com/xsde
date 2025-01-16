@@ -1,4 +1,4 @@
-// file      : examples/cxx/hybrid/hello/driver.cxx
+// file      : cxx/hybrid/hello/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <iostream>

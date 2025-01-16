@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/polyroot/driver.cxx
+// file      : cxx/parser/polyroot/driver.cxx
 // copyright : not copyrighted - public domain
 
 #include <iostream>

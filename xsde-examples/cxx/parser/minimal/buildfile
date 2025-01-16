@@ -1,0 +1,46 @@
+# file      : cxx/parser/minimal/buildfile
+# license   : not copyrighted - public domain
+
+if ($build.meta_operation != 'dist')
+{
+  assert (!$stl) \
+    "config.xsde_examples.stl should be set to false for this example"
+
+  assert (!$iostream) \
+    "config.xsde_examples.iostream should be set to false for this example"
+
+  assert (!$exceptions) \
+    "config.xsde_examples.exceptions should be set to false for this example"
+
+  assert ($reuse_style != 'none') \
+    "config.xsde_examples.reuse_style should not be set to 'none' for this example"
+
+  assert (!$custom_allocator || $default_allocator) \
+    "config.xsde_examples.default_allocator should be set to true for this example"
+}
+
+import libs = libxsde%liba{xsde}
+
+./: exe{driver} doc{README}
+
+exe{driver}: {hxx     cxx}{* -people-pimpl-* -people-pskel} \
+             {hxx ixx cxx}{                   people-pskel}
+
+exe{driver}: hxx{people-pimpl-tiein}: include = ($reuse_style == 'tiein')
+exe{driver}: hxx{people-pimpl-mixin}: include = ($reuse_style == 'mixin')
+
+exe{driver}: $libs
+
+exe{driver}: xml{people}: test.input = true
+
+<{hxx ixx cxx}{people-pskel}>: xsd{people} map{people} $xsde
+{{
+  # For options contained in cxx_parser_options variable see build/root.build.
+  #
+  $xsde cxx-parser $cxx_parser_options \
+        --type-map $path($<[1])	       \
+        --output-dir $out_base         \
+        $path($<[0])
+}}
+
+cxx.poptions =+ "-I$out_base" "-I$src_base"

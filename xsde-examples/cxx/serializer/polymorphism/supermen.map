@@ -1,4 +1,4 @@
-# file      : examples/cxx/serializer/polymorphism/supermen.map
+# file      : cxx/serializer/polymorphism/supermen.map
 # copyright : not copyrighted - public domain
 
 include "supermen.hxx";

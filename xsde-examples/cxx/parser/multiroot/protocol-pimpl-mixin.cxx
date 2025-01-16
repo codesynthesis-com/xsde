@@ -1,4 +1,4 @@
-// file      : examples/cxx/parser/multiroot/protocol-pimpl-mixin.cxx
+// file      : cxx/parser/multiroot/protocol-pimpl-mixin.cxx
 // copyright : not copyrighted - public domain
 
 #include "protocol-pimpl-mixin.hxx"
