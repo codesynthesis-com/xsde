@@ -39,7 +39,7 @@ namespace email
     virtual void
     post_binary ()
     {
-      std::auto_ptr<xml_schema::buffer> buf (post_base64_binary ());
+      std::unique_ptr<xml_schema::buffer> buf (post_base64_binary ());
 
       cerr << "size:   " << buf->size () << endl
            << endl;

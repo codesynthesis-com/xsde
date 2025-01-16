@@ -157,10 +157,10 @@ void arena::
 print_statistics ()
 {
   printf ("\n");
-  printf ("allocations:      %lu\n", alloc_count_);
-  printf ("reallocations:    %lu\n", realloc_count_);
-  printf ("deallocations:    %lu\n", free_count_);
-  printf ("currently in use: %lu bytes\n", cur_allocated_);
-  printf ("maximum in use:   %lu bytes\n", max_allocated_);
+  printf ("allocations:      %lu\n", static_cast<unsigned long> (alloc_count_));
+  printf ("reallocations:    %lu\n", static_cast<unsigned long> (realloc_count_));
+  printf ("deallocations:    %lu\n", static_cast<unsigned long> (free_count_));
+  printf ("currently in use: %lu bytes\n", static_cast<unsigned long> (cur_allocated_));
+  printf ("maximum in use:   %lu bytes\n", static_cast<unsigned long> (max_allocated_));
   printf ("\n");
 }

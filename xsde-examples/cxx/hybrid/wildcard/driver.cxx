@@ -2,7 +2,7 @@
 // copyright : not copyrighted - public domain
 
 #include <string>   // memcpy
-#include <memory>   // std::auto_ptr
+#include <memory>   // std::unique_ptr
 #include <iostream>
 
 #include "email.hxx"
@@ -80,7 +80,7 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
-    auto_ptr<envelope> msg (message_p.post ());
+    unique_ptr<envelope> msg (message_p.post ());
 
     // Print what we've got.
     //
@@ -122,7 +122,7 @@ main (int argc, char* argv[])
 
     // Create a reply message.
     //
-    auto_ptr<envelope> reply (new envelope);
+    unique_ptr<envelope> reply (new envelope);
     reply->custom_data ().destructor (&destroy_body);
 
     reply->to (msg->from ());
@@ -131,7 +131,7 @@ main (int argc, char* argv[])
 
     // Add a text body.
     //
-    auto_ptr<body> b (new body);
+    unique_ptr<body> b (new body);
     b->text ("Hi!\n\n"
              "Indeed nice pictures. Check out mine.\n\n"
              "Jane");
@@ -139,13 +139,13 @@ main (int argc, char* argv[])
 
     // Add a (fake) image.
     //
-    auto_ptr<binary> pic (new binary);
+    unique_ptr<binary> pic (new binary);
     pic->name ("pic.jpg");
     pic->mime ("image/jpeg");
     pic->size (3);
     memcpy (pic->data (), "123", 3);
 
-    b = auto_ptr<body> (new body);
+    b = unique_ptr<body> (new body);
     b->binary (pic.release ());
     reply->custom_data ().push_back (b.release ());
 

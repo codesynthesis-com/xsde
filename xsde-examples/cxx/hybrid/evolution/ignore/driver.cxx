@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/evolution/ignore/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::auto_ptr
+#include <memory>   // std::unique_ptr
 #include <string>
 #include <iostream>
 
@@ -93,7 +93,7 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
-    auto_ptr<transformations_type> tf (transformations_p.post ());
+    unique_ptr<transformations_type> tf (transformations_p.post ());
 
     // Print what we've got.
     //

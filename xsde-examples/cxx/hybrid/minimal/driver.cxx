@@ -67,12 +67,12 @@ main (int argc, char* argv[])
     xml_schema::document_pimpl doc_p (people_p.root_parser (),
                                       people_p.root_name ());
 
-    if (pe = doc_p._error ())
+    if ((pe = doc_p._error ()))
       break;
 
     people_p.pre ();
 
-    if (pe = people_p._error ())
+    if ((pe = people_p._error ()))
       break;
 
     char buf[4096];

@@ -58,12 +58,12 @@ main (int argc, char* argv[])
   {
     xml_schema::document_pimpl doc_p (people_p, "people");
 
-    if (e = doc_p._error ())
+    if ((e = doc_p._error ()))
       break;
 
     people_p.pre ();
 
-    if (e = people_p._error ())
+    if ((e = people_p._error ()))
       break;
 
     char buf[4096];

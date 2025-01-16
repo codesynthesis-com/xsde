@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/polymorphism/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::auto_ptr
+#include <memory>   // std::unique_ptr
 #include <iostream>
 
 #include "supermen.hxx"
@@ -54,7 +54,7 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
-    auto_ptr<supermen> sm (supermen_p.post ());
+    unique_ptr<supermen> sm (supermen_p.post ());
 
     // Print what we've got.
     //
@@ -90,7 +90,7 @@ main (int argc, char* argv[])
 
     // Add another superman entry.
     //
-    auto_ptr<superman> s (new superman);
+    unique_ptr<superman> s (new superman);
 #ifdef XSDE_STL
     s->name ("Clark Kent");
 #else

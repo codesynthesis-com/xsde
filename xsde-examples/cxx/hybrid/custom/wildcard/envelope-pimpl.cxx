@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/custom/wildcard/envelope-pimpl.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory> // std::auto_ptr
+#include <memory> // std::unique_ptr
 
 #include "body.hxx"
 
@@ -67,13 +67,13 @@ namespace email
 
         if (name == "text")
         {
-          std::auto_ptr<body> b (new body);
+          std::unique_ptr<body> b (new body);
           b->text (text_p_->post_string ());
           env->body ().push_back (b.release ());
         }
         else if (name == "binary")
         {
-          std::auto_ptr<body> b (new body);
+          std::unique_ptr<body> b (new body);
           b->binary (binary_p_->post_binary ());
           env->body ().push_back (b.release ());
         }

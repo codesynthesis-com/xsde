@@ -3,7 +3,7 @@
 
 #include <string.h>  // memcpy
 
-#include <memory>    // std::auto_ptr
+#include <memory>    // std::unique_ptr
 #include <iostream>
 
 #include <ace/Log_Msg.h>   // ACE_HEX_DUMP
@@ -49,7 +49,7 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
-    std::auto_ptr<catalog> c (catalog_p.post ());
+    std::unique_ptr<catalog> c (catalog_p.post ());
 
     // Save the object model to a CDR stream.
     //
@@ -82,7 +82,7 @@ main (int argc, char* argv[])
     //
     ACE_InputCDR ace_icdr (buf.data (), buf.size ());
     xml_schema::icdrstream icdr (ace_icdr);
-    std::auto_ptr<catalog> copy (new catalog);
+    std::unique_ptr<catalog> copy (new catalog);
     icdr >> *copy;
 
     // Serialize the copy back to XML.
