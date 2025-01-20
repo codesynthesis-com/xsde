@@ -6,8 +6,14 @@ lib{xsde}: libul{xsde}
 libs{xsde}: def{xsde}: include = ($cxx.target.system == 'win32-msvc')
 def{xsde}: libul{xsde}
 
+# All the runtime dependencies are optional and are interface dependencies.
+#
+expat =
 ace =
 xdr_lib =
+
+if $external_expat
+  import expat = libexpat%lib{expat}
 
 if $cdr
   import ace = libace%lib{ACE}
@@ -39,8 +45,6 @@ ts = any-simple-type   \
 #
 sts = $regex.apply($ts, '(.+)', '\1-stl')
 
-# Note that expat/xmltok_*.c are actually headers.
-#
 libul{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
                                                -allocator           \
                                                -sys-error           \
@@ -53,8 +57,8 @@ libul{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
                                                -hashmap           } \
              cxx/{    hxx            }{version                    } \
    cxx/compilers/{    hxx            }{**                         } \
-               c/{h c                }{**      -expat/xmltok_*.c    \
-                                               -regexp/**         } \
+               c/{h c                }{**      -expat/*             \
+                                               -regexp/*          } \
                  {h                  }{config                     } \
                c/{doc                }{expat/COPYING genx/LICENSE } \
       cxx/hybrid/libul{xsde}                                        \
@@ -68,10 +72,14 @@ en = $encoding
 ex = $exceptions
 ll = $long_long
 pm = $polymorphic
+ee = $external_expat
 
-libul{xsde}:          {h c}{allocator}: include = ($ca && $default_allocator)
-libul{xsde}: c/regexp/{h c}{**       }: include = ($regexp && ($pv || $sv))
-libul{xsde}:  c/expat/{  c}{xmltok_* }: include = adhoc
+# Note that c/expat/xmltok_*.c are actually headers.
+#
+libul{xsde}:          {h c}{allocator    }: include = ($ca && $default_allocator)
+libul{xsde}:  c/expat/{h c}{* -xmltok_*.c}: include = (!$ee)
+libul{xsde}:  c/expat/{  c}{   xmltok_*  }: include = (!$ee ? adhoc : false)
+libul{xsde}: c/regexp/{h c}{*            }: include = ($regexp && ($pv || $sv))
 
 libul{xsde}: cxx/{hxx ixx cxx}{allocator}:             include = ($ca && $ex)
 libul{xsde}: cxx/{hxx ixx cxx}{sys-error}:             include = (!$ex)
@@ -88,7 +96,7 @@ cxx/hybrid/
   libul{xsde}:     {hxx ixx     cxx}{   *-map}: include = $pm
   libul{xsde}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
   libul{xsde}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
-  libul{xsde}: $ace $xdr_lib
+  libul{xsde}: $expat $ace $xdr_lib
 }
 
 cxx/parser/
@@ -117,6 +125,8 @@ cxx/parser/
 
     libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
     libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+
+    libul{xsde}: $expat
   }
 
   non-validating/
@@ -128,6 +138,8 @@ cxx/parser/
 
     libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
     libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+
+    libul{xsde}: $expat
   }
 }
 
@@ -214,6 +226,7 @@ h{config}: in{config}
   XSDE_SERIALIZER_SMAP_BUCKETS        = $serializer_smap_buckets
   XSDE_SERIALIZER_SMAP_BUCKET_BUCKETS = $serializer_smap_bucket_buckets
   XSDE_SERIALIZER_IMAP_BUCKETS        = $serializer_imap_buckets
+  XSDE_EXTERNAL_EXPAT                 = $external_expat
 }
 
 # Build options.
@@ -237,7 +250,7 @@ if ($cxx.target.system == 'mingw32')
 lib{xsde}:
 {
   cxx.export.poptions = "-I$out_root" "-I$src_root"
-  cxx.export.libs = $ace $xdr_lib
+  cxx.export.libs = $expat $ace $xdr_lib
 }
 
 # Install into the xsde/ subdirectory of, say, /usr/include/ recreating
@@ -257,11 +270,11 @@ c/expat/
 
   h{expat}@./ h{expat_external}@./:
   {
-    install = include/xsde/c/expat/
+    install = (!$external_expat ? include/xsde/c/expat/ : false)
     install.subdirs = false
   }
 
-  doc{COPYING}@./: install = doc/EXPAT-LICENSE
+  doc{COPYING}@./: install = (!$external_expat ? doc/EXPAT-LICENSE : false)
 }
 
 c/genx/

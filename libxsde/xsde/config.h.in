@@ -83,4 +83,6 @@
 #  endif
 #endif
 
+#undef XSDE_EXTERNAL_EXPAT
+
 #endif /* XSDE_CONFIG_H */

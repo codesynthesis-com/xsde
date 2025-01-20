@@ -213,3 +213,9 @@ serializer_smap_bucket_buckets = $config.libxsde.serializer_smap_bucket_buckets
 
 config [uint64] config.libxsde.serializer_imap_buckets ?= 97
 serializer_imap_buckets = $config.libxsde.serializer_imap_buckets
+
+# Allow using the external Expat library as a dependency instead of the
+# bundled version.
+#
+config [bool] config.libxsde.external_expat ?= false
+external_expat = $config.libxsde.external_expat

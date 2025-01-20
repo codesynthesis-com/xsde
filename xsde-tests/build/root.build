@@ -86,6 +86,9 @@ serializer_smap_bucket_buckets = $config.xsde_tests.serializer_smap_bucket_bucke
 config [uint64] config.xsde_tests.serializer_imap_buckets ?= 97
 serializer_imap_buckets = $config.xsde_tests.serializer_imap_buckets
 
+config [bool] config.xsde_tests.external_expat ?= false
+external_expat = $config.xsde_tests.external_expat
+
 if! $skeleton
 {
   define xsd: file

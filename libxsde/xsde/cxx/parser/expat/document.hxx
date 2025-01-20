@@ -16,7 +16,11 @@
 #  include <iosfwd>
 #endif
 
-#include <xsde/c/expat/expat.h>
+#ifndef XSDE_EXTERNAL_EXPAT
+#  include <xsde/c/expat/expat.h>
+#else
+#  include <expat.h>
+#endif
 
 // We only support UTF-8 expat for now.
 //

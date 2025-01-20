@@ -3,6 +3,10 @@ summary: XML Schema to C++ data binding compiler for mobile and embedded systems
 
 :
 role: prerequisite
+location: https://git.build2.org/packaging/expat/expat.git##HEAD
+
+:
+role: prerequisite
 location: https://git.codesynthesis.com/libcutl/libcutl.git##HEAD
 
 :

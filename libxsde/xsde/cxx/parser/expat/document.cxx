@@ -376,7 +376,17 @@ namespace xsde
           {
             if (auto_xml_parser_ == 0)
             {
+#if !defined(XSDE_EXTERNAL_EXPAT) || !defined(XSDE_CUSTOM_ALLOCATOR)
               auto_xml_parser_ = XML_ParserCreateNS (0, XML_Char (' '));
+#else
+              XML_Memory_Handling_Suite mhs {
+                xsde_alloc, xsde_realloc, xsde_free};
+
+              XML_Char ss[2];
+              ss[0] = XML_Char (' ');
+
+              auto_xml_parser_ = XML_ParserCreate_MM (0, &mhs, ss);
+#endif
 
               if (auto_xml_parser_ == 0)
               {

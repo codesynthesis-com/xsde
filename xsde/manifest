@@ -90,14 +90,19 @@ no-serializer_validation-build-config:
 { config.xsde_examples.serializer_validation=false }+ xsde-examples
 \
 
-default-allocator-build-config:
+# Test with external Expat and the default custom allocator.
+#
+external-expat-build-config:
 \
 {
+  config.xsde_tests.external_expat=true
   config.xsde_tests.custom_allocator=true
   config.xsde_tests.default_allocator=true
+
 }+ xsde-tests
 
 {
+  config.xsde_examples.external_expat=true
   config.xsde_examples.custom_allocator=true
   config.xsde_examples.default_allocator=true
 }+ xsde-examples

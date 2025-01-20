@@ -8,7 +8,11 @@
 
 #include <stddef.h> // size_t
 
-#include <xsde/c/expat/expat.h>
+#ifndef XSDE_EXTERNAL_EXPAT
+#  include <xsde/c/expat/expat.h>
+#else
+#  include <expat.h>
+#endif
 
 #include <xsde/cxx/ro-string.hxx>
 
