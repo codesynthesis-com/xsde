@@ -23,6 +23,10 @@ depends: * cli ^1.2.0- ? ($config.xsde.develop)
 tests: * xsde-tests == $
 examples: * xsde-examples == $
 
+# Disable builds for Windows, except for GCC and static linkage, since export
+# of data is currently not supported for such configurations.
+#
+iso8859-1-builds: -( +windows -gcc -static )
 iso8859-1-build-config:
 \
 { config.xsde_tests.encoding='iso8859-1'    }+ xsde-tests
@@ -67,6 +71,7 @@ reuse-mixin-build-config:
 #cdr-build-config:        { config.xsde_tests.cdr=true           }+ xsde-tests
 #xdr-build-config:        { config.xsde_tests.xdr=true           }+ xsde-tests
 
+polymorphic-builds: -( +windows -gcc -static )
 polymorphic-build-config:
 \
 { config.xsde_tests.polymorphic=true    }+ xsde-tests
@@ -117,6 +122,11 @@ minimal-build-config:
 
 # Enable xsde-examples/cxx/hybrid/allocator example.
 #
+# Disable builds for Windows and MacOS, except for static linkage, since
+# import of custom allocator functions into libxsde shared library is
+# currently not supported for such configurations for this example.
+#
+custom-allocator-builds: -( +windows +macos -static )
 custom-allocator-build-config:
 \
 {

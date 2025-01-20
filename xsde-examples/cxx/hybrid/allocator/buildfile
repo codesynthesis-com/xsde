@@ -19,7 +19,7 @@ if ($build.meta_operation != 'dist')
     "config.xsde_examples.exceptions should be set to false for this example"
 }
 
-import libs = libxsde%liba{xsde}
+import libs = libxsde%lib{xsde}
 
 ./: exe{driver} doc{README}
 

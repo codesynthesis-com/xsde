@@ -1,3 +1,7 @@
 # Generated config header.
 #
 config.h
+
+# Generated DLL symbol-exporting file.
+#
+xsde.def

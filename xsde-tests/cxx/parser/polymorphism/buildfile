@@ -16,7 +16,7 @@ if ($build.meta_operation != 'dist')
     "config.xsde_tests.default_allocator should be set to true for this test"
 }
 
-import libs = libxsde%liba{xsde}
+import libs = libxsde%lib{xsde}
 
 exe{driver}: {hxx cxx}{* -test-pskel} {hxx ixx cxx}{test-pskel} $libs
 

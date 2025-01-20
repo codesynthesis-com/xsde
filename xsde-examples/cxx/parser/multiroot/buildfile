@@ -19,7 +19,7 @@ if ($build.meta_operation != 'dist')
     "config.xsde_examples.default_allocator should be set to true for this example"
 }
 
-import libs = libxsde%liba{xsde}
+import libs = libxsde%lib{xsde}
 
 ./: exe{driver} doc{README} xml{balance deposit withdraw}
 

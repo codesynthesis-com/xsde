@@ -1,6 +1,11 @@
 # file      : xsde/buildfile
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+lib{xsde}: libul{xsde}
+
+libs{xsde}: def{xsde}: include = ($cxx.target.system == 'win32-msvc')
+def{xsde}: libul{xsde}
+
 ace =
 xdr_lib =
 
@@ -36,25 +41,25 @@ sts = $regex.apply($ts, '(.+)', '\1-stl')
 
 # Note that expat/xmltok_*.c are actually headers.
 #
-liba{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
-                                              -allocator           \
-                                              -sys-error           \
-                                              -iso8859-1           \
-                                              -strdupx             \
-                                              -string-sequence-stl \
-                                              -qname               \
-                                              -string-sequence     \
-                                              -schema-error        \
-                                              -hashmap           } \
-            cxx/{    hxx            }{version                    } \
-  cxx/compilers/{    hxx            }{**                         } \
-              c/{h c                }{**      -expat/xmltok_*.c    \
-                                              -regexp/**         } \
-                {h                  }{config                     } \
-              c/{doc                }{expat/COPYING genx/LICENSE } \
-     cxx/hybrid/libua{xsde}                                        \
-     cxx/parser/libua{xsde}                                        \
- cxx/serializer/libua{xsde}
+libul{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
+                                               -allocator           \
+                                               -sys-error           \
+                                               -iso8859-1           \
+                                               -strdupx             \
+                                               -string-sequence-stl \
+                                               -qname               \
+                                               -string-sequence     \
+                                               -schema-error        \
+                                               -hashmap           } \
+             cxx/{    hxx            }{version                    } \
+   cxx/compilers/{    hxx            }{**                         } \
+               c/{h c                }{**      -expat/xmltok_*.c    \
+                                               -regexp/**         } \
+                 {h                  }{config                     } \
+               c/{doc                }{expat/COPYING genx/LICENSE } \
+      cxx/hybrid/libul{xsde}                                        \
+      cxx/parser/libul{xsde}                                        \
+  cxx/serializer/libul{xsde}
 
 pv = $parser_validation
 sv = $serializer_validation
@@ -64,106 +69,106 @@ ex = $exceptions
 ll = $long_long
 pm = $polymorphic
 
-liba{xsde}:          {h c}{allocator}: include = ($ca && $default_allocator)
-liba{xsde}: c/regexp/{h c}{**       }: include = ($regexp && ($pv || $sv))
-liba{xsde}:  c/expat/{  c}{xmltok_* }: include = adhoc
+libul{xsde}:          {h c}{allocator}: include = ($ca && $default_allocator)
+libul{xsde}: c/regexp/{h c}{**       }: include = ($regexp && ($pv || $sv))
+libul{xsde}:  c/expat/{  c}{xmltok_* }: include = adhoc
 
-liba{xsde}: cxx/{hxx ixx cxx}{allocator}:             include = ($ca && $ex)
-liba{xsde}: cxx/{hxx ixx cxx}{sys-error}:             include = (!$ex)
-liba{xsde}: cxx/{hxx ixx cxx}{iso8859-1}:             include = ($en == 'iso8859-1')
-liba{xsde}: cxx/{hxx ixx cxx}{schema-error xml/**}:   include = ($pv || $sv)
-liba{xsde}: cxx/{hxx ixx cxx}{hashmap}:               include = $pm
-liba{xsde}: cxx/{hxx ixx cxx}{string-sequence-stl}:   include = $stl
-liba{xsde}: cxx/{hxx ixx cxx}{qname string-sequence}: include = (!$stl)
-liba{xsde}: cxx/{hxx     cxx}{strdupx}:               include = (!$stl)
+libul{xsde}: cxx/{hxx ixx cxx}{allocator}:             include = ($ca && $ex)
+libul{xsde}: cxx/{hxx ixx cxx}{sys-error}:             include = (!$ex)
+libul{xsde}: cxx/{hxx ixx cxx}{iso8859-1}:             include = ($en == 'iso8859-1')
+libul{xsde}: cxx/{hxx ixx cxx}{schema-error xml/**}:   include = ($pv || $sv)
+libul{xsde}: cxx/{hxx ixx cxx}{hashmap}:               include = $pm
+libul{xsde}: cxx/{hxx ixx cxx}{string-sequence-stl}:   include = $stl
+libul{xsde}: cxx/{hxx ixx cxx}{qname string-sequence}: include = (!$stl)
+libul{xsde}: cxx/{hxx     cxx}{strdupx}:               include = (!$stl)
 
 cxx/hybrid/
 {
-  libua{xsde}:     {hxx ixx txx cxx}{* -*-map}
-  libua{xsde}:     {hxx ixx     cxx}{   *-map}: include = $pm
-  libua{xsde}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
-  libua{xsde}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
-  libua{xsde}: $ace $xdr_lib
+  libul{xsde}:     {hxx ixx txx cxx}{* -*-map}
+  libul{xsde}:     {hxx ixx     cxx}{   *-map}: include = $pm
+  libul{xsde}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
+  libul{xsde}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
+  libul{xsde}: $ace $xdr_lib
 }
 
 cxx/parser/
 {
-  libua{xsde}: {hxx ixx cxx}{** -exceptions        \
+  libul{xsde}: {hxx ixx cxx}{** -exceptions        \
                                 -error             \
                                 -*map              \
                                 -validating/*      \
                                 -non-validating/*}
 
-  libua{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
-  libua{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
-  libua{xsde}: {hxx ixx cxx}{*map}:       include =   $pm
+  libul{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libul{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libul{xsde}: {hxx ixx cxx}{*map}:       include =   $pm
 
-  libua{xsde}: validating/libua{xsde}:     include =   $pv
-  libua{xsde}: non-validating/libua{xsde}: include = (!$pv)
+  libul{xsde}: validating/libul{xsde}:     include =   $pv
+  libul{xsde}: non-validating/libul{xsde}: include = (!$pv)
 
   validating/
   {
-    libua{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+    libul{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
 
-    libua{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+    libul{xsde}: {hxx ixx cxx}{*-map}: include = $pm
 
-    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
   }
 
   non-validating/
   {
-    libua{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+    libul{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
 
-    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
   }
 }
 
 cxx/serializer/
 {
-  libua{xsde}: {hxx ixx cxx}{** -exceptions        \
+  libul{xsde}: {hxx ixx cxx}{** -exceptions        \
                                 -error             \
                                 -*map              \
                                 -validating/*      \
                                 -non-validating/*}
 
-  libua{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
-  libua{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libul{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libul{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
 
-  libua{xsde}: {hxx ixx cxx}{*map}: include = $pm
+  libul{xsde}: {hxx ixx cxx}{*map}: include = $pm
 
-  libua{xsde}: validating/libua{xsde}:     include =   $sv
-  libua{xsde}: non-validating/libua{xsde}: include = (!$sv)
+  libul{xsde}: validating/libul{xsde}:     include =   $sv
+  libul{xsde}: non-validating/libul{xsde}: include = (!$sv)
 
   validating/
   {
-    libua{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+    libul{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
 
-    libua{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+    libul{xsde}: {hxx ixx cxx}{*-map}: include = $pm
 
-    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
   }
 
   non-validating/
   {
-    libua{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+    libul{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
 
-    libua{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libua{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libua{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libua{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
+    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
   }
 }
 
@@ -224,9 +229,12 @@ if ($c.class == 'gcc')
   c/regexp/ c.coptions += -Wno-implicit-fallthrough
 }
 
+if ($cxx.target.system == 'mingw32')
+  cc.loptions += -Wl,--export-all-symbols
+
 # Export options.
 #
-liba{xsde}:
+lib{xsde}:
 {
   cxx.export.poptions = "-I$out_root" "-I$src_root"
   cxx.export.libs = $ace $xdr_lib
