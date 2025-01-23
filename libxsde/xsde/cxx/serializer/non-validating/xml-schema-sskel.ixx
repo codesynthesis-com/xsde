@@ -299,19 +299,41 @@ namespace xsde
 
         // decimal_sskel
         //
-#ifdef XSDE_REUSE_STYLE_TIEIN
         inline decimal_sskel::
         decimal_sskel ()
-            : decimal_impl_ (0)
         {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          decimal_impl_ = 0;
+#endif
+          facets_.fraction_digits_set_ = 0;
         }
 
+#ifdef XSDE_REUSE_STYLE_TIEIN
         inline decimal_sskel::
         decimal_sskel (decimal_sskel* impl, void*)
             : simple_content (impl, 0), decimal_impl_ (impl)
         {
+          facets_.fraction_digits_set_ = 0;
         }
 #endif
+
+        inline void decimal_sskel::
+        _fraction_digits_facet (unsigned int v)
+        {
+          facets_.fraction_digits_ = v;
+          facets_.fraction_digits_set_ = 1;
+        }
+
+        inline const decimal_sskel::facets& decimal_sskel::
+        _facets () const
+        {
+#ifdef XSDE_REUSE_STYLE_TIEIN
+          if (parent_ != 0)
+            return static_cast<const decimal_sskel&> (*parent_).facets_;
+          else
+#endif
+            return facets_;
+        }
 
         // string_sskel
         //

@@ -11,21 +11,6 @@ ru = ($reuse_style != 'none')
 #
 da = (!$custom_allocator || $default_allocator)
 
-# @@ BUILD2 Disable facets/ for serializer_validation set to false since the
-#        test can't match stdout:
-#
-#        -  <decimal>99.55</decimal>
-#        -  <decimal>50.12</decimal>
-#        +  <decimal>99.549999999999997</decimal>
-#        +  <decimal>50.122999999999998</decimal>
-#
-#        Happens since XSD/e compiler completely disables facets in serializer
-#        skeletons (see Context::has_facets() in
-#        xsde/cxx/serializer/elements.cxx) and so <fractionDigits value="2"/>
-#        is ignored in xsd file.
-#
-#        Should this be fixed in the compiler?
-#
 # @@ BUILD2 Disable facets/ for reuse_style set to 'mixin' since the test crashes
 #        due to infinite recursion. The XSD/e compiler generates code like
 #        that in test-simpl.cxx:
@@ -42,7 +27,7 @@ da = (!$custom_allocator || $default_allocator)
 ./: compositor/:    include = ($parser_validation && $ru && $da)
 ./: default/:       include = ($iostream && $ru && $da)
 ./: enumeration/:   include = ($iostream && $ru && $da)
-./: facets/:        include = ($iostream && $ru && $da && $serializer_validation && $reuse_style != 'mixin')
+./: facets/:        include = ($iostream && $ru && $da && $reuse_style != 'mixin')
 ./: file-per-type/: include = ($ru && $da)
 ./: iso8859-1/:     include = ($encoding == 'iso8859-1' && $iostream && $ru && $da)
 ./: iterator/:      include = ($stl && $stl_iterator && $ru && $da)

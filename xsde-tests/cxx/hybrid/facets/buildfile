@@ -6,9 +6,6 @@ if ($build.meta_operation != 'dist')
   assert ($iostream) \
     "config.xsde_tests.iostream should be set to true for this test"
 
-  assert ($serializer_validation) \
-    "config.xsde_tests.serializer_validation should be set to true for this test"
-
   assert ($reuse_style != 'none') \
     "config.xsde_tests.reuse_style should not be set to 'none' for this test"
 

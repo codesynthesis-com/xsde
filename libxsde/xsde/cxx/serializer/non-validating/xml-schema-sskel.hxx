@@ -521,6 +521,24 @@ namespace xsde
         protected:
           decimal_sskel* decimal_impl_;
 #endif
+          // Facets.
+          //
+        public:
+          void
+          _fraction_digits_facet (unsigned int);
+
+        protected:
+          struct facets
+          {
+            unsigned int fraction_digits_;
+            unsigned int fraction_digits_set_ : 1;
+          };
+
+          const facets&
+          _facets () const;
+
+        private:
+          facets facets_;
         };
 
         // String-based types.

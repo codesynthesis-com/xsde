@@ -198,7 +198,7 @@ namespace CXX
     bool Context::
     has_facets (SemanticGraph::Complex& c)
     {
-      if (validation && restriction_p (c))
+      if (restriction_p (c))
       {
         using SemanticGraph::Restricts;
         Restricts& r (dynamic_cast<Restricts&> (c.inherits ()));
@@ -245,6 +245,12 @@ namespace CXX
                 r.facet_find (L"minExclusive") != end ||
                 r.facet_find (L"maxInclusive") != end ||
                 r.facet_find (L"maxExclusive") != end)
+              return true;
+          }
+
+          if (ub.is_a<SemanticGraph::Fundamental::Decimal> ())
+          {
+            if (r.facet_find (L"fractionDigits") != end)
               return true;
           }
         }

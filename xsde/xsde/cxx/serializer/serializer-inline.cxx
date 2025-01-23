@@ -103,9 +103,6 @@ namespace CXX
           for (Restricts::FacetIterator i (r.facet_begin ());
                i != r.facet_end (); ++i)
           {
-            if (!ctx.validation)
-              continue;
-
             if (i->first == L"fractionDigits")
             {
               os << "this->_fraction_digits_facet (" << i->second << ");";
