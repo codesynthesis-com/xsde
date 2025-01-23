@@ -1,7 +1,7 @@
 // file      : cxx/parser/multiroot/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "protocol.hxx"
@@ -152,7 +152,12 @@ namespace protocol
 
   private:
     request_type result_type_;
+
+#ifdef XSDE_CXX11
     std::unique_ptr<request> result_;
+#else
+    std::auto_ptr<request> result_;
+#endif
 
     balance_pskel& balance_p_;
     withdraw_pskel& withdraw_p_;
@@ -201,7 +206,12 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     std::unique_ptr<request> r (doc_p.result ());
+#else
+    std::auto_ptr<request> r (doc_p.result ());
+#endif
+
     request_type t = doc_p.result_type ();
 
     // Let's print what we've got.

@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/evolution/passthrough/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <string>
 #include <iostream>
 
@@ -126,7 +126,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     unique_ptr<transformations_type> tf (transformations_p.post ());
+#else
+    auto_ptr<transformations_type> tf (transformations_p.post ());
+#endif
 
     // Print what we've got.
     //

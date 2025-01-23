@@ -4,7 +4,7 @@
 // Test RAW insertion and extraction.
 //
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "orawstream.hxx"
@@ -47,7 +47,12 @@ main (int argc, char* argv[])
 
   root_p.pre ();
   doc_p.parse (argv[1]);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> r (root_p.post ());
+#else
+  std::auto_ptr<type> r (root_p.post ());
+#endif
 
   // Save the object model to a RAW stream.
   //
@@ -58,7 +63,13 @@ main (int argc, char* argv[])
   // Load the object model from a RAW stream.
   //
   irawstream iraw (buf);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> c (new type);
+#else
+  std::auto_ptr<type> c (new type);
+#endif
+
   iraw >> *c;
 
   // Serialize.

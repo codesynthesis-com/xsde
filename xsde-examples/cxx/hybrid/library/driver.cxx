@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/library/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "library.hxx"
@@ -43,7 +43,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     unique_ptr<catalog> c (catalog_p.post ());
+#else
+    auto_ptr<catalog> c (catalog_p.post ());
+#endif
 
     // Print what we've got.
     //
@@ -97,7 +101,11 @@ main (int argc, char* argv[])
     // Insert a new book.
     //
     {
+#ifdef XSDE_CXX11
       unique_ptr<book> b (new book);
+#else
+      auto_ptr<book> b (new book);
+#endif
 
       isbn n;
       n.base_value (679776443);

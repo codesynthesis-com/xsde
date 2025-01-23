@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/binary/custom/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>    // std::unique_ptr
+#include <memory>    // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "orawstream.hxx"
@@ -47,7 +47,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     std::unique_ptr<catalog> c (catalog_p.post ());
+#else
+    std::auto_ptr<catalog> c (catalog_p.post ());
+#endif
 
     // Save the object model to a RAW stream.
     //
@@ -61,7 +65,13 @@ main (int argc, char* argv[])
     // Load the object model from a RAW stream.
     //
     irawstream iraw (buf);
+
+#ifdef XSDE_CXX11
     std::unique_ptr<catalog> copy (new catalog);
+#else
+    std::auto_ptr<catalog> copy (new catalog);
+#endif
+
     iraw >> *copy;
 
     // Serialize the copy back to XML.

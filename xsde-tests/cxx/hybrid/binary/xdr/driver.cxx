@@ -10,7 +10,7 @@
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "test.hxx"
@@ -97,7 +97,12 @@ main (int argc, char* argv[])
 
   root_p.pre ();
   doc_p.parse (argv[1]);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> r (root_p.post ());
+#else
+  std::auto_ptr<type> r (root_p.post ());
+#endif
 
   xdrrec_create_p xdrrec_create_ =
     reinterpret_cast<xdrrec_create_p> (::xdrrec_create);
@@ -122,7 +127,13 @@ main (int argc, char* argv[])
   xdr.x_op = XDR_DECODE;
   xdrrec_skiprecord (&xdr);
   xml_schema::ixdrstream ixdr (xdr);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> c (new type);
+#else
+  std::auto_ptr<type> c (new type);
+#endif
+
   ixdr >> *c;
   xdr_destroy (&xdr);
 

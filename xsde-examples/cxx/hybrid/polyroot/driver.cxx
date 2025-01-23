@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/polyroot/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "supermen.hxx"
@@ -125,7 +125,12 @@ public:
 private:
   person_paggr& paggr_;
   person_pskel* parser_used_;
-  std::unique_ptr<person> result_;
+
+#ifdef XSDE_CXX11
+  unique_ptr<person> result_;
+#else
+  auto_ptr<person> result_;
+#endif
 };
 
 void
@@ -167,7 +172,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     unique_ptr<person> p (doc_p.result ());
+#else
+    auto_ptr<person> p (doc_p.result ());
+#endif
 
     // Print what we've got. You can use the standard C++ RTTI or custom
     // type information provided by the object model (--generate-typeinfo

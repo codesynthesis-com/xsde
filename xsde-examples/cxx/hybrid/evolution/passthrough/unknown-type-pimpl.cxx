@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/evolution/passthrough/unknown-type-pimpl.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory> // std::unique_ptr
+#include <memory> // std::{unique,auto}_ptr
 
 // Include transform-pimpl.hxx (which includes unknown-type-pimpl.hxx)
 // instead of unknown-type-pimpl.hxx.
@@ -39,7 +39,11 @@ namespace transform
   {
     // Create a new child element and add it to cur_.
     //
+#ifdef XSDE_CXX11
     std::unique_ptr<xml::element> e (
+#else
+    std::auto_ptr<xml::element> e (
+#endif
       new xml::element (xml::qname (ns, name), cur_));
 
     cur_->children ().push_back (e.get ());

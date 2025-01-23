@@ -1,7 +1,7 @@
 // file      : cxx/hybrid/filter/driver.cxx
 // copyright : not copyrighted - public domain
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "people.hxx"
@@ -43,7 +43,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     unique_ptr<people> ppl (people_p.post ());
+#else
+    auto_ptr<people> ppl (people_p.post ());
+#endif
 
     // Print what we've got.
     //

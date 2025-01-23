@@ -2,7 +2,7 @@
 // copyright : not copyrighted - public domain
 
 #include <string>
-#include <memory>
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "email-pskel.hxx"
@@ -39,7 +39,11 @@ namespace email
     virtual void
     post_binary ()
     {
-      std::unique_ptr<xml_schema::buffer> buf (post_base64_binary ());
+#ifdef XSDE_CXX11
+      unique_ptr<xml_schema::buffer> buf (post_base64_binary ());
+#else
+      auto_ptr<xml_schema::buffer> buf (post_base64_binary ());
+#endif
 
       cerr << "size:   " << buf->size () << endl
            << endl;

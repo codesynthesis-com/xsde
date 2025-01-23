@@ -7,7 +7,7 @@
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 
-#include <memory>    // std::unique_ptr
+#include <memory>    // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "library.hxx"
@@ -78,7 +78,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     std::unique_ptr<catalog> c (catalog_p.post ());
+#else
+    std::auto_ptr<catalog> c (catalog_p.post ());
+#endif
 
     // Save the object model to an XDR stream.
     //
@@ -114,7 +118,12 @@ main (int argc, char* argv[])
     xdrrec_skiprecord (&xdr);
     xml_schema::ixdrstream ixdr (xdr);
 
+#ifdef XSDE_CXX11
     std::unique_ptr<catalog> copy (new catalog);
+#else
+    std::auto_ptr<catalog> copy (new catalog);
+#endif
+
     ixdr >> *copy;
 
     xdr_destroy (&xdr);

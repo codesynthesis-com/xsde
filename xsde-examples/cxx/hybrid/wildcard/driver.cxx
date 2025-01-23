@@ -2,7 +2,7 @@
 // copyright : not copyrighted - public domain
 
 #include <string>   // memcpy
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include "email.hxx"
@@ -80,7 +80,11 @@ main (int argc, char* argv[])
     else
       doc_p.parse (argv[1]);
 
+#ifdef XSDE_CXX11
     unique_ptr<envelope> msg (message_p.post ());
+#else
+    auto_ptr<envelope> msg (message_p.post ());
+#endif
 
     // Print what we've got.
     //
@@ -122,7 +126,12 @@ main (int argc, char* argv[])
 
     // Create a reply message.
     //
+#ifdef XSDE_CXX11
     unique_ptr<envelope> reply (new envelope);
+#else
+    auto_ptr<envelope> reply (new envelope);
+#endif
+
     reply->custom_data ().destructor (&destroy_body);
 
     reply->to (msg->from ());
@@ -131,7 +140,12 @@ main (int argc, char* argv[])
 
     // Add a text body.
     //
+#ifdef XSDE_CXX11
     unique_ptr<body> b (new body);
+#else
+    auto_ptr<body> b (new body);
+#endif
+
     b->text ("Hi!\n\n"
              "Indeed nice pictures. Check out mine.\n\n"
              "Jane");
@@ -139,13 +153,23 @@ main (int argc, char* argv[])
 
     // Add a (fake) image.
     //
+#ifdef XSDE_CXX11
     unique_ptr<binary> pic (new binary);
+#else
+    auto_ptr<binary> pic (new binary);
+#endif
+
     pic->name ("pic.jpg");
     pic->mime ("image/jpeg");
     pic->size (3);
     memcpy (pic->data (), "123", 3);
 
+#ifdef XSDE_CXX11
     b = unique_ptr<body> (new body);
+#else
+    b = auto_ptr<body> (new body);
+#endif
+
     b->binary (pic.release ());
     reply->custom_data ().push_back (b.release ());
 

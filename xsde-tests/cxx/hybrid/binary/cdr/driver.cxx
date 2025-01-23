@@ -4,7 +4,7 @@
 // Test CDR insertion and extraction.
 //
 
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::{unique,auto}_ptr
 #include <iostream>
 
 #include <ace/CDR_Stream.h>
@@ -46,7 +46,12 @@ main (int argc, char* argv[])
 
   root_p.pre ();
   doc_p.parse (argv[1]);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> r (root_p.post ());
+#else
+  std::auto_ptr<type> r (root_p.post ());
+#endif
 
   // Save to a CDR stream.
   //
@@ -58,7 +63,13 @@ main (int argc, char* argv[])
   //
   ACE_InputCDR ace_icdr (ace_ocdr);
   xml_schema::icdrstream icdr (ace_icdr);
+
+#ifdef XSDE_CXX11
   std::unique_ptr<type> c (new type);
+#else
+  std::auto_ptr<type> c (new type);
+#endif
+
   icdr >> *c;
 
   // Serialize.

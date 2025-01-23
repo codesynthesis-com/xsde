@@ -5,6 +5,18 @@
 #ifndef XSDE_CONFIG_H
 #define XSDE_CONFIG_H
 
+/* C++11 support.
+ */
+#ifdef _MSC_VER
+#  if _MSC_VER >= 1600 // VC++10 and later have C++11 always enabled.
+#    define XSDE_CXX11
+#  endif
+#else
+#  if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
+#    define XSDE_CXX11
+#  endif
+#endif
+
 /* Platform and its architecture width in bits.
  */
 #if defined(_WIN32)
