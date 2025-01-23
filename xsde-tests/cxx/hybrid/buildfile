@@ -36,34 +36,22 @@ da = (!$custom_allocator || $default_allocator)
 #          byte_simpl::pre (x);
 #        }
 #
-./: built-in/:    include = ($iostream && $ru && $da)
-./: choice/:      include = ($iostream && $parser_validation && $ru && $da)
-./: clone/:       include = ($iostream && $parser_validation && $ru && $da)
-./: compositor/:  include = ($parser_validation && $ru && $da)
-./: default/:     include = ($iostream && $ru && $da)
-./: enumeration/: include = ($iostream && $ru && $da)
-./: facets/:      include = ($iostream && $ru && $da && $serializer_validation && $reuse_style != 'mixin')
-./: iso8859-1/:   include = ($encoding == 'iso8859-1' && $iostream && $ru && $da)
-./: iterator/:    include = ($stl && $stl_iterator && $ru && $da)
-./: list/:        include = ($iostream && $ru && $da)
-./: pattern/:     include = ($iostream && $ru && $da)
-./: recursive/:   include = ($iostream && $parser_validation && $ru && $da)
-./: reorder/:     include = ($ru && $da)
-./: sequences/:   include = ($ru && $da)
-./: size/:        include = ($parser_validation && $ru && $da)
-./: union/:       include = ($iostream && $ru && $da)
+./: built-in/:      include = ($iostream && $ru && $da)
+./: choice/:        include = ($iostream && $parser_validation && $ru && $da)
+./: clone/:         include = ($iostream && $parser_validation && $ru && $da)
+./: compositor/:    include = ($parser_validation && $ru && $da)
+./: default/:       include = ($iostream && $ru && $da)
+./: enumeration/:   include = ($iostream && $ru && $da)
+./: facets/:        include = ($iostream && $ru && $da && $serializer_validation && $reuse_style != 'mixin')
+./: file-per-type/: include = ($ru && $da)
+./: iso8859-1/:     include = ($encoding == 'iso8859-1' && $iostream && $ru && $da)
+./: iterator/:      include = ($stl && $stl_iterator && $ru && $da)
+./: list/:          include = ($iostream && $ru && $da)
+./: pattern/:       include = ($iostream && $ru && $da)
+./: recursive/:     include = ($iostream && $parser_validation && $ru && $da)
+./: reorder/:       include = ($ru && $da)
+./: sequences/:     include = ($ru && $da)
+./: size/:          include = ($parser_validation && $ru && $da)
+./: union/:         include = ($iostream && $ru && $da)
 
 ./: binary/ polymorphism/
-
-# @@ BUILD2 The file-per-type/ test fails to compile:
-#
-#    In file included from /home/karen/work/xsd/xsde/xsde-tests/cxx/hybrid/file-per-type/a.hxx:176,
-#                     from /home/karen/work/xsd/xsde/xsde-tests/cxx/hybrid/file-per-type/a.cxx:28:
-#    /home/karen/work/xsd/xsde/xsde-tests/cxx/hybrid/file-per-type/b.hxx:189:33: error: invalid use of incomplete type ‘class test::base’
-#      189 |   class derived: public ::test::base
-#          |                                 ^~~~
-#    /home/karen/work/xsd/xsde/xsde-tests/cxx/hybrid/file-per-type/a.hxx:169:9: note: forward declaration of ‘class test::base’
-#      169 |   class base;
-#          |         ^~~~
-#
-#    a.xsd and b.xsd include each other, which is probably wrong. Need to add --file-per-type.

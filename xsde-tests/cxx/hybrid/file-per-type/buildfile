@@ -12,27 +12,61 @@ if ($build.meta_operation != 'dist')
 
 import libs = libxsde%lib{xsde}
 
-fs = test a b
+# @@ TMP: redo via dyndep when we have make dependency generation (or
+#    --file-list?) in the XSD/e compiler. See XSD.
+#
+exe{driver}: {        cxx}{driver                                      } \
+             {hxx ixx cxx}{test             test-pskel       test-sskel} \
+             {hxx     cxx}{                 test-pimpl       test-simpl} \
+             {hxx ixx cxx}{a                   a-pskel          a-sskel} \
+             {hxx     cxx}{                    a-pimpl          a-simpl} \
+             {hxx ixx cxx}{b                   b-pskel          b-sskel} \
+             {hxx     cxx}{                    b-pimpl          b-simpl} \
+             {hxx ixx cxx}{derived       derived-pskel    derived-sskel} \
+             {hxx     cxx}{              derived-pimpl    derived-simpl} \
+             {hxx ixx cxx}{base             base-pskel       base-sskel} \
+             {hxx     cxx}{                 base-pimpl       base-simpl} \
+             {hxx        }{xml-schema xml-schema-pskel xml-schema-sskel} \
+             $libs
 
-exe{driver}: cxx{driver}
+<{hxx ixx cxx}{test       test-pskel    test-sskel} \
+ {hxx     cxx}{           test-pimpl    test-simpl} \
+ {hxx ixx cxx}{a             a-pskel       a-sskel} \
+ {hxx     cxx}{              a-pimpl       a-simpl} \
+ {hxx ixx cxx}{b             b-pskel       b-sskel} \
+ {hxx     cxx}{              b-pimpl       b-simpl} \
+ {hxx ixx cxx}{derived derived-pskel derived-sskel} \
+ {hxx     cxx}{        derived-pimpl derived-simpl} \
+ {hxx ixx cxx}{base       base-pskel    base-sskel} \
+ {hxx     cxx}{           base-pimpl    base-simpl}>: xsd{test a b} $xsde
+{{
+  $xsde cxx-hybrid $cxx_hybrid_options     \
+        --generate-parser                  \
+        --generate-serializer              \
+        --generate-aggregate               \
+        --file-per-type                    \
+        --extern-xml-schema xml-schema.xsd \
+        --output-dir $out_base             \
+        $path($<[0])
+}}
 
-for f: $fs
-{
-  exe{driver}: {hxx ixx cxx}{$f $f-pskel $f-sskel} \
-               {hxx     cxx}{   $f-pimpl $f-simpl}
-
-  <{hxx ixx cxx}{$f $f-pskel $f-sskel}                 \
-   {hxx     cxx}{   $f-pimpl $f-simpl}>: xsd{$f} $xsde
-  {{
-    $xsde cxx-hybrid $cxx_hybrid_options \
-          --generate-parser              \
-          --generate-serializer          \
-          --generate-aggregate           \
-          --output-dir $out_base         \
-          $path($<[0])
-  }}
-}
-
-exe{driver}: $libs
+# Note that the xml-schema.xsd file need not exist nor it is being
+# generated. It is only used to derive the names of the resulting header
+# files.
+#
+<{hxx}{xml-schema xml-schema-pskel xml-schema-sskel}>: $xsde
+{{
+  $xsde cxx-hybrid $cxx_hybrid_options \
+        --generate-xml-schema          \
+        --generate-parser              \
+        --generate-serializer          \
+        --output-dir $out_base         \
+        xml-schema.xsd
+}}
 
 cxx.poptions =+ "-I$out_base"
+
+# @@ HIDDEN Similar to cxx/hybrid/{default,clone,...}.
+#
+if ($cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual
