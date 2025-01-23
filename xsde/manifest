@@ -29,8 +29,8 @@ examples: * xsde-examples == $
 iso8859-1-builds: -( +windows -gcc -static )
 iso8859-1-build-config:
 \
-{ config.xsde_tests.encoding='iso8859-1'    }+ xsde-tests
-{ config.xsde_examples.encoding='iso8859-1' }+ xsde-examples
+{ config.xsde_tests.encoding=iso8859-1    }+ xsde-tests
+{ config.xsde_examples.encoding=iso8859-1 }+ xsde-examples
 \
 
 no-stl-build-config:
@@ -39,6 +39,8 @@ no-stl-build-config:
 { config.xsde_examples.stl=false }+ xsde-examples
 \
 
+# Omit (here and below) some far-fetched configurations.
+#
 #no-stl-iter-build-config: { config.xsde_tests.stl_iterator=false }+ xsde-tests
 
 no-iostream-build-config:
@@ -63,13 +65,13 @@ no-long-long-build-config:
 
 reuse-mixin-build-config:
 \
-{ config.xsde_tests.reuse_style='mixin'    }+ xsde-tests
-{ config.xsde_examples.reuse_style='mixin' }+ xsde-examples
+{ config.xsde_tests.reuse_style=mixin    }+ xsde-tests
+{ config.xsde_examples.reuse_style=mixin }+ xsde-examples
 \
 
-#reuse-none-build-config: { config.xsde_tests.reuse_style='none' }+ xsde-tests
-#cdr-build-config:        { config.xsde_tests.cdr=true           }+ xsde-tests
-#xdr-build-config:        { config.xsde_tests.xdr=true           }+ xsde-tests
+#reuse-none-build-config: { config.xsde_tests.reuse_style=none }+ xsde-tests
+#cdr-build-config:        { config.xsde_tests.cdr=true         }+ xsde-tests
+#xdr-build-config:        { config.xsde_tests.xdr=true         }+ xsde-tests
 
 polymorphic-builds: -( +windows -gcc -static )
 polymorphic-build-config:
@@ -98,7 +100,6 @@ external-expat-build-config:
   config.xsde_tests.external_expat=true
   config.xsde_tests.custom_allocator=true
   config.xsde_tests.default_allocator=true
-
 }+ xsde-tests
 
 {
@@ -127,11 +128,10 @@ minimal-build-config:
 
 # Enable xsde-examples/cxx/hybrid/allocator example.
 #
-# Disable builds for Windows and MacOS, except for static linkage, since
-# import of custom allocator functions into libxsde shared library is
-# currently not supported for such configurations for this example.
+# Only enable for static builds since the allocator functions are
+# provided by the executable and used by the libxsde library.
 #
-custom-allocator-builds: -( +windows +macos -static )
+custom-allocator-builds: static
 custom-allocator-build-config:
 \
 {

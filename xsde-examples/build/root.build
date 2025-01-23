@@ -118,23 +118,22 @@ if! $skeleton
   #
   test.target = $cxx.target
 
-  ops = --generate-inline                                       \
-        --char-encoding $encoding                               \
-        (!$stl                      ? --no-stl              : ) \
-        (!$iostream                 ? --no-iostream         : ) \
-        (!$exceptions               ? --no-exceptions       : ) \
-        (!$long_long                ? --no-long-long        : ) \
-        ( $reuse_style == 'mixin'   ? --reuse-style-mixin   : ) \
-        ( $custom_allocator         ? --custom-allocator    : ) \
-        ( $polymorphic              ? --runtime-polymorphic : )
+  common_ops = --generate-inline                                       \
+               --char-encoding $encoding                               \
+               (!$stl                      ? --no-stl              : ) \
+               (!$iostream                 ? --no-iostream         : ) \
+               (!$exceptions               ? --no-exceptions       : ) \
+               (!$long_long                ? --no-long-long        : ) \
+               ( $reuse_style == 'mixin'   ? --reuse-style-mixin   : ) \
+               ( $custom_allocator         ? --custom-allocator    : ) \
+               ( $polymorphic              ? --runtime-polymorphic : )
 
-
-  cxx_parser_options = $ops                                                 \
+  cxx_parser_options = $common_ops                                          \
                        --skel-file-suffix -pskel                            \
                        (!$parser_validation     ? --suppress-validation : ) \
                        ( $reuse_style == 'none' ? --reuse-style-none    : )
 
-  cxx_hybrid_options = $ops                                                     \
+  cxx_hybrid_options = $common_ops                                              \
                        --pskel-file-suffix -pskel                               \
                        --pimpl-file-suffix -pimpl                               \
                        --sskel-file-suffix -sskel                               \
@@ -142,7 +141,7 @@ if! $skeleton
                        (!$parser_validation     ? --suppress-parser-val     : ) \
                        (!$serializer_validation ? --suppress-serializer-val : )
 
-  cxx_serializer_options = $ops                                                 \
+  cxx_serializer_options = $common_ops                                          \
                            --skel-file-suffix -sskel                            \
                            (!$serializer_validation ? --suppress-validation : ) \
                            ( $reuse_style == 'none' ? --reuse-style-none    : )

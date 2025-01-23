@@ -87,8 +87,7 @@ if $develop
   d = $directory($h)
   p = $string($leaf($d, $out_root)) # xsde, xsde/cxx, etc
 
-  # Watch out: if we add --generate-specifier, then we will need to fix code
-  # that relies on modifiers to also modify the "specified" flag.
+  # Note: no --generate-specifier (current code breaks if we enable this).
   #
   options = --std c++11 -I $src_root --include-prefix $p                    \
             --guard-prefix $regex.replace($ucase($p), '[/\\]', '_')         \

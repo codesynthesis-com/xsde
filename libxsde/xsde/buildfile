@@ -3,47 +3,45 @@
 
 lib{xsde}: libul{xsde}
 
+# Attempt to export symbols automatically for MSVC.
+#
 libs{xsde}: def{xsde}: include = ($cxx.target.system == 'win32-msvc')
 def{xsde}: libul{xsde}
 
-# All the runtime dependencies are optional and are interface dependencies.
+# All the dependencies are optional and are interface dependencies.
 #
-expat =
-ace =
-xdr_lib =
-
+expat_lib =
 if $external_expat
-  import expat = libexpat%lib{expat}
+  import expat_lib = libexpat%lib{expat}
 
+ace_lib =
 if $cdr
-  import ace = libace%lib{ACE}
+  import ace_lib = libace%lib{ACE}
 
+xdr_lib =
 if ($xdr && $cxx.target.class == 'linux')
   import xdr_lib = libtirpc%lib{tirpc}
 
-# Non-STL and STL based types.
+# Parser/serializer builtin type implementations which don't use STL.
 #
+ts_nstl = any-simple-type   \
+          string            \
+          normalized-string \
+          token             \
+          name              \
+          nmtoken           \
+          nmtokens          \
+          ncname            \
+          id                \
+          idref             \
+          idrefs            \
+          language          \
+          uri               \
+          qname
 
-# Parser/serializer types implementations which don't use STL.
+# Parser/serializer builtin type implementations which use STL.
 #
-ts = any-simple-type   \
-     string            \
-     normalized-string \
-     token             \
-     name              \
-     nmtoken           \
-     nmtokens          \
-     ncname            \
-     id                \
-     idref             \
-     idrefs            \
-     language          \
-     uri               \
-     qname
-
-# Parser/serializer types implementations which use STL.
-#
-sts = $regex.apply($ts, '(.+)', '\1-stl')
+ts_ystl = $regex.apply($ts_nstl, '(.+)', '\1-stl')
 
 libul{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
                                                -allocator           \
@@ -60,10 +58,7 @@ libul{xsde}: cxx/{    hxx ixx txx cxx}{*       -version             \
                c/{h c                }{**      -expat/*             \
                                                -regexp/*          } \
                  {h                  }{config                     } \
-               c/{doc                }{expat/COPYING genx/LICENSE } \
-      cxx/hybrid/libul{xsde}                                        \
-      cxx/parser/libul{xsde}                                        \
-  cxx/serializer/libul{xsde}
+               c/{doc                }{expat/COPYING genx/LICENSE }
 
 pv = $parser_validation
 sv = $serializer_validation
@@ -90,97 +85,101 @@ libul{xsde}: cxx/{hxx ixx cxx}{string-sequence-stl}:   include = $stl
 libul{xsde}: cxx/{hxx ixx cxx}{qname string-sequence}: include = (!$stl)
 libul{xsde}: cxx/{hxx     cxx}{strdupx}:               include = (!$stl)
 
+libul{xsde}: cxx/hybrid/libul{xsde-h}     \
+             cxx/parser/libul{xsde-p}     \
+             cxx/serializer/libul{xsde-s}
+
 cxx/hybrid/
 {
-  libul{xsde}:     {hxx ixx txx cxx}{* -*-map}
-  libul{xsde}:     {hxx ixx     cxx}{   *-map}: include = $pm
-  libul{xsde}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
-  libul{xsde}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
-  libul{xsde}: $expat $ace $xdr_lib
+  libul{xsde-h}:     {hxx ixx txx cxx}{* -*-map}
+  libul{xsde-h}:     {hxx ixx     cxx}{   *-map}: include = $pm
+  libul{xsde-h}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
+  libul{xsde-h}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
+  libul{xsde-h}: $expat_lib $ace_lib $xdr_lib
 }
 
 cxx/parser/
 {
-  libul{xsde}: {hxx ixx cxx}{** -exceptions        \
-                                -error             \
-                                -*map              \
-                                -validating/*      \
-                                -non-validating/*}
+  libul{xsde-p}: {hxx ixx cxx}{** -exceptions        \
+                                  -error             \
+                                  -*map              \
+                                  -validating/*      \
+                                  -non-validating/*}
 
-  libul{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
-  libul{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
-  libul{xsde}: {hxx ixx cxx}{*map}:       include =   $pm
+  libul{xsde-p}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libul{xsde-p}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libul{xsde-p}: {hxx ixx cxx}{*map}:       include =   $pm
 
-  libul{xsde}: validating/libul{xsde}:     include =   $pv
-  libul{xsde}: non-validating/libul{xsde}: include = (!$pv)
+  libul{xsde-p}: validating/libul{xsde-pyv}:     include =   $pv
+  libul{xsde-p}: non-validating/libul{xsde-pnv}: include = (!$pv)
 
   validating/
   {
-    libul{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+    libul{xsde-pyv}: {hxx ixx cxx}{* -*-map -*long* -{$ts_nstl $ts_ystl}}
 
-    libul{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+    libul{xsde-pyv}: {hxx ixx cxx}{*-map}: include = $pm
 
-    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde-pyv}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde-pyv}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde-pyv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
+    libul{xsde-pyv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
 
-    libul{xsde}: $expat
+    libul{xsde-pyv}: $expat_lib
   }
 
   non-validating/
   {
-    libul{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+    libul{xsde-pnv}: {hxx ixx cxx}{** -*long* -{$ts_nstl $ts_ystl}}
 
-    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde-pnv}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde-pnv}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde-pnv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
+    libul{xsde-pnv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
 
-    libul{xsde}: $expat
+    libul{xsde-pnv}: $expat_lib
   }
 }
 
 cxx/serializer/
 {
-  libul{xsde}: {hxx ixx cxx}{** -exceptions        \
-                                -error             \
-                                -*map              \
-                                -validating/*      \
-                                -non-validating/*}
+  libul{xsde-s}: {hxx ixx cxx}{** -exceptions        \
+                                  -error             \
+                                  -*map              \
+                                  -validating/*      \
+                                  -non-validating/*}
 
-  libul{xsde}: {hxx ixx cxx}{exceptions}: include =   $ex
-  libul{xsde}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libul{xsde-s}: {hxx ixx cxx}{exceptions}: include =   $ex
+  libul{xsde-s}: {hxx ixx cxx}{error}:      include = (!$ex)
 
-  libul{xsde}: {hxx ixx cxx}{*map}: include = $pm
+  libul{xsde-s}: {hxx ixx cxx}{*map}: include = $pm
 
-  libul{xsde}: validating/libul{xsde}:     include =   $sv
-  libul{xsde}: non-validating/libul{xsde}: include = (!$sv)
+  libul{xsde-s}: validating/libul{xsde-syv}:     include =   $sv
+  libul{xsde-s}: non-validating/libul{xsde-snv}: include = (!$sv)
 
   validating/
   {
-    libul{xsde}: {hxx ixx cxx}{* -*-map -*long* -{$ts $sts}}
+    libul{xsde-syv}: {hxx ixx cxx}{* -*-map -*long* -{$ts_nstl $ts_ystl}}
 
-    libul{xsde}: {hxx ixx cxx}{*-map}: include = $pm
+    libul{xsde-syv}: {hxx ixx cxx}{*-map}: include = $pm
 
-    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde-syv}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde-syv}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde-syv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
+    libul{xsde-syv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
   }
 
   non-validating/
   {
-    libul{xsde}: {hxx ixx cxx}{** -*long* -{$ts $sts}}
+    libul{xsde-snv}: {hxx ixx cxx}{** -*long* -{$ts_nstl $ts_ystl}}
 
-    libul{xsde}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
-    libul{xsde}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
+    libul{xsde-snv}: {hxx cxx}{long-long unsigned-long-long}: include =   $ll
+    libul{xsde-snv}: {hxx cxx}{long unsigned-long}:           include = (!$ll)
 
-    libul{xsde}: {hxx ixx cxx}{+{$sts}}: include =   $stl
-    libul{xsde}: {hxx ixx cxx}{+{$ts}}:  include = (!$stl)
+    libul{xsde-snv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
+    libul{xsde-snv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
   }
 }
 
@@ -205,6 +204,8 @@ using autoconf
 
 h{config}: in{config}
 {
+  autoconf.prefix = XSDE_
+
   XSDE_ENCODING_UTF8                  = ($encoding == 'utf8')
   XSDE_ENCODING_ISO8859_1             = ($encoding == 'iso8859-1')
   XSDE_STL                            = $stl
@@ -250,7 +251,7 @@ if ($cxx.target.system == 'mingw32')
 lib{xsde}:
 {
   cxx.export.poptions = "-I$out_root" "-I$src_root"
-  cxx.export.libs = $expat $ace $xdr_lib
+  cxx.export.libs = $expat_lib $ace_lib $xdr_lib
 }
 
 # Install into the xsde/ subdirectory of, say, /usr/include/ recreating

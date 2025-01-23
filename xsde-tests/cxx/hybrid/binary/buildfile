@@ -1,7 +1,8 @@
 # file      : cxx/hybrid/binary/buildfile
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-# Note that hybrid mapping requires support for base parser/serializer reuse.
+# Note that the hybrid mapping requires support for base parser/serializer
+# reuse.
 #
 ru = ($reuse_style != 'none')
 

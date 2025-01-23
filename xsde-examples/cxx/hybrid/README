@@ -11,7 +11,7 @@ library
   Shows how to handle more complex data structures, modify the
   object model, and serialize the modified object model back to
   XML.
-  
+
 minimal
   Shows how to perform parsing and serialization as well as use the
   object model when the mapping is configured without support for

@@ -3,7 +3,8 @@
 
 ./: doc{README}
 
-# Note that hybrid mapping requires support for base parser/serializer reuse.
+# Note that the hybrid mapping requires support for base parser/serializer
+# reuse.
 #
 ru = ($reuse_style != 'none')
 

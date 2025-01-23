@@ -4,7 +4,8 @@ version: 3.4.0-b.1.z
 project: xsde
 type: lib
 language: c++
-summary: XML Schema to C++ data binding compiler for mobile and embedded systems runtime library
+language: c
+summary: Runtime library for XML Schema to C++ data binding compiler for mobile and embedded systems
 license: other: GPL-2.0-only with FLOSS exception
 topics: C++, XML, XML Schema, XML parser, mobile and embedded systems
 description-file: README.md
@@ -20,6 +21,6 @@ requires: libtirpc ? ($xdr && $cxx.target.class == 'linux') ; XDR implementation
 depends: * build2 >= 0.17.0
 depends: * bpkg >= 0.17.0
 
-depends: libexpat ^2.1.0 ? ($external_expat)
+depends: libexpat ^2.1.0 ? ($config.libxsde.external_expat)
 
 external-expat-build-config: config.libxsde.external_expat=true

@@ -22,7 +22,7 @@ if ($cxx.class == 'msvc')
   cc.coptions += /wd4251 /wd4275 /wd4800
 
 # NOTE: don't forget to also update xsde-{tests,examples}/build/root.build if
-#       changing or adding the following configuration variables.
+#       changing or adding configuration variables.
 
 # Application character encoding. Valid values are 'utf8' for UTF-8 and
 # 'iso8859-1' for ISO-8859-1.
@@ -107,6 +107,9 @@ serializer_validation = $config.libxsde.serializer_validation
 # code will use it to validate the xs:pattern facet. If the regexp support is
 # disabled, then this facet will be ignored. The regexp support increases the
 # resulting executable size by about 30-50Kb.
+#
+# @@ TODO: enable by default (the implementation that we use is infested with
+#    warning, maybe we can find a better implementation or a new version).
 #
 config [bool] config.libxsde.regexp ?= false
 regexp = $config.libxsde.regexp

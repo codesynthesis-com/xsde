@@ -3,6 +3,8 @@
 
 ./: testscript
 
+# @@ TMP: redo when we have a better way (test=$xsde maybe?)
+#
 # Avoid cleaning exe{xsde} through this dependency.
 #
 # Note that otherwise the executable will be cleaned by the bbot worker at the

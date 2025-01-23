@@ -16,12 +16,12 @@
 #  endif
 #else
 #  define XSDE_PLATFORM_POSIX 1
-#  if defined(__x86_64__) || defined(__arm64__) || defined(__aarch64__)
+#  if defined(__x86_64__) || defined(__aarch64__) || defined(__arm64__)
 #    define XSDE_ARCH_WIDTH   64
-#  elif defined(__i386__)
+#  elif defined(__i386__) || defined(__arm__)
 #    define XSDE_ARCH_WIDTH   32
 #  else
-#    error unknown architecture
+#    error unknown architecture width
 #  endif
 #endif
 
