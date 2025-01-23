@@ -382,10 +382,8 @@ namespace xsde
               XML_Memory_Handling_Suite mhs {
                 xsde_alloc, xsde_realloc, xsde_free};
 
-              XML_Char ss[2];
-              ss[0] = XML_Char (' ');
-
-              auto_xml_parser_ = XML_ParserCreate_MM (0, &mhs, ss);
+              XML_Char ns (' ');
+              auto_xml_parser_ = XML_ParserCreate_MM (0, &mhs, &ns);
 #endif
 
               if (auto_xml_parser_ == 0)
