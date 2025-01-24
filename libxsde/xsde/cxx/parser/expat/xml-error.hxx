@@ -4,6 +4,8 @@
 #ifndef XSDE_CXX_PARSER_EXPAT_XML_ERROR_HXX
 #define XSDE_CXX_PARSER_EXPAT_XML_ERROR_HXX
 
+#include <xsde/cxx/config.hxx>
+
 #ifndef XSDE_EXTERNAL_EXPAT
 #  include <xsde/c/expat/expat.h>
 #else
