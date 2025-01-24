@@ -24,3 +24,82 @@ depends: * bpkg >= 0.17.0
 depends: libexpat ^2.1.0 ? ($config.libxsde.external_expat)
 
 external-expat-build-config: config.libxsde.external_expat=true
+
+# Binary distribution packages. Overall notes:
+#
+# - Use the system version of libexpat where available and the bundled version
+#   otherwise. Similarly, we pass optimization options where appropriate.
+#
+# - Enable usage of regular expressions for validation code and XML Schema
+#   polymorphism support.
+#
+# - Build as C++11 for maximum compatibility.
+
+bindist-debian-builds: bindist
+bindist-debian-build-include: linux_debian*-**
+bindist-debian-build-include: linux_ubuntu*-**
+bindist-debian-build-exclude: **
+bindist-debian-build-config:
+\
++bpkg.bindist.debian:
++bbot.bindist.upload:
+b.create:config.cxx.std=c++11
+?sys:libexpat
+
+config.libxsde.external_expat=true
+config.libxsde.regexp=true
+config.libxsde.polymorphic=true
+\
+
+bindist-fedora-builds: bindist
+bindist-fedora-build-include: linux_fedora*-**
+bindist-fedora-build-include: linux_rhel*-**
+bindist-fedora-build-exclude: **
+bindist-fedora-build-config:
+\
++bpkg.bindist.fedora:
++bbot.bindist.upload:
+b.create:config.cxx.std=c++11
+?sys:libexpat
+
+config.libxsde.external_expat=true
+config.libxsde.regexp=true
+config.libxsde.polymorphic=true
+\
+
+bindist-windows-builds: bindist
+bindist-windows-build-include: windows*-msvc**
+bindist-windows-build-exclude: **
+bindist-windows-build-config:
+\
++bpkg.bindist.archive:
++bbot.bindist.upload:
+bpkg.bindist.archive:--archive-build-meta=windows
+
+# Relocatable by default (see target configuration for details).
+#
+#bpkg.bindist.archive:config.install.relocatable=true
+
+b.create:config.cc.coptions="/W2 /O2"
+b.create:config.cxx.std=c++11
+
+config.libxsde.regexp=true
+config.libxsde.polymorphic=true
+\
+
+# Generic linux package (built using oldest Debian we support).
+#
+bindist-linux-builds: bindist
+bindist-linux-build-include: linux_debian_11-gcc_10.2-bindist
+bindist-linux-build-exclude: **
+bindist-linux-build-config:
+\
++bpkg.bindist.archive:
++bbot.bindist.upload:
+bpkg.bindist.archive:--archive-build-meta=linux
+bpkg.bindist.archive:config.install.relocatable=true
+b.create:config.cxx.std=c++11
+
+config.libxsde.regexp=true
+config.libxsde.polymorphic=true
+\
