@@ -24,10 +24,10 @@ namespace xsde
     }
 
 #ifdef XSDE_EXCEPTIONS
-    struct guard
+    struct guard_sb
     {
-      guard (void* p) : p_ (p) {}
-      ~guard ()
+      guard_sb (void* p) : p_ (p) {}
+      ~guard_sb ()
       {
         if (p_)
 #ifndef XSDE_CUSTOM_ALLOCATOR
@@ -59,7 +59,7 @@ namespace xsde
       {
         if (mv)
         {
-          guard g (d);
+          guard_sb g (d);
           mv (d, data_, size_);
           g.release ();
         }

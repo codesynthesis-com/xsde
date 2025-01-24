@@ -131,11 +131,11 @@ namespace xsde
 #endif
 
 #ifdef XSDE_EXCEPTIONS
-    struct guard
+    struct guard_ss
     {
-      guard (std::string* p, size_t& n) : p_ (p), n_ (n) {}
+      guard_ss (std::string* p, size_t& n) : p_ (p), n_ (n) {}
 
-      ~guard ()
+      ~guard_ss ()
       {
         typedef std::string type;
         if (p_)
@@ -161,7 +161,7 @@ namespace xsde
       // whatever objects we already copied into d.
       //
       size_t i = 0;
-      guard g (d, i);
+      guard_ss g (d, i);
 
       for (; i < n; i++)
         new (d + i) std::string (s[i]);
