@@ -44,7 +44,5 @@ exe{driver}: $libs
 
 cxx.poptions =+ "-I$out_base" "-I$src_base"
 
-# @@ HIDDEN See xsde-tests for details.
-#
-if ($cxx.class == 'gcc')
+if ($reuse_style == 'mixin' && $cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual

@@ -66,3 +66,6 @@ cxx.poptions =+ "-I$out_base" "-I$src_base"
 
 for f: $fs
   obje{$f-v2}: cxx.poptions += -DTRANSFORM_V2
+
+if ($reuse_style == 'mixin' && $cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual

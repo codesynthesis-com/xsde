@@ -37,26 +37,5 @@ exe{driver}: file{output}: test.stdout = true
 
 cxx.poptions =+ "-I$out_base"
 
-# @@ HIDDEN Compiling the generated files with GCC ends up with the following
-#        warnings:
-#
-#    In file included from test-simpl.hxx:36,
-#                     from driver.cxx:11:
-#    test-sskel.hxx:704:5: warning: ‘virtual void test::int_base_sskel::pre(int)’ was hidden [-Woverloaded-virtual=]
-#      704 |     pre (int);
-#          |     ^~~
-#    test-sskel.hxx:758:5: note:   by ‘test::int_sskel::pre’
-#      758 |     pre (const ::test::int_base&);
-#          |     ^~~
-#    test-sskel.hxx:731:5: warning: ‘virtual void test::str_base_sskel::pre(const std::string&)’ was hidden [-Woverloaded-virtual=]
-#      731 |     pre (const ::std::string&);
-#          |     ^~~
-#    test-sskel.hxx:785:5: note:   by ‘test::str_sskel::pre’
-#      785 |     pre (const ::test::str_base&);
-#          |     ^~~
-#
-#    Probably need to fix the XSD/e compiler at some point instead of
-#    suppressing the warning.
-#
 if ($cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual

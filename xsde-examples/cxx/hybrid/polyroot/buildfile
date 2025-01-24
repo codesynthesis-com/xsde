@@ -48,7 +48,5 @@ exe{driver}: {hxx     cxx}{* -supermen -supermen-pskel -supermen-pimpl  \
 
 cxx.poptions =+ "-I$out_base"
 
-# @@ HIDDEN See xsde-tests for details.
-#
 if ($cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual

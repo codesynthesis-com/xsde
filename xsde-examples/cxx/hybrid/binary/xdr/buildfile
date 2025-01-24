@@ -48,3 +48,6 @@ exe{driver}: xml{library}: test.input = true
 }}
 
 cxx.poptions =+ "-I$out_base"
+
+if ($reuse_style == 'mixin' && $cxx.class == 'gcc')
+  cxx.coptions += -Wno-overloaded-virtual

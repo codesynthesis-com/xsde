@@ -39,7 +39,5 @@ exe{driver}: file{output}: test.stdout = true
 
 cxx.poptions =+ "-I$out_base"
 
-# @@ HIDDEN Similar to cxx/hybrid/{default,clone,...}.
-#
 if ($cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual

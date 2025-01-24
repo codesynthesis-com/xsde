@@ -42,19 +42,5 @@ exe{driver}: file{output}: test.stdout = true
 
 cxx.poptions =+ "-I$out_base"
 
-# @@ HIDDEN Compiling the generated files with GCC ends up with the following
-#           warnings:
-#
-#    In file included from test-sskel.cxx:28:
-#    test-sskel.hxx:1146:5: warning: ‘virtual void test::enum_sskel::pre(const std::string&)’ was hidden [-Woverloaded-virtual=]
-#      1146 |     pre (const ::std::string&);
-#           |     ^~~
-#    test-sskel.hxx:1175:5: note:   by ‘test::enumder_sskel::pre’
-#      1175 |     pre (const ::test::enum_&);
-#           |     ^~~
-#
-#    Probably need to fix the XSD/e compiler at some point instead of
-#    suppressing the warning.
-#
 if ($cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual
