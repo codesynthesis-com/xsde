@@ -202,19 +202,19 @@ polymorphic = $config.libxsde.polymorphic
 # 196613 393241. Inheritance hashmaps are only used when validation is
 # enabled.
 #
-config [uint64] config.libxsde.parser_smap_buckets ?= 53
+config [uint64] config.libxsde.parser_smap_buckets ?= 389
 parser_smap_buckets = $config.libxsde.parser_smap_buckets
 
-config [uint64] config.libxsde.parser_imap_buckets ?= 97
+config [uint64] config.libxsde.parser_imap_buckets ?= 769
 parser_imap_buckets = $config.libxsde.parser_imap_buckets
 
-config [uint64] config.libxsde.serializer_smap_buckets ?= 53
+config [uint64] config.libxsde.serializer_smap_buckets ?= 389
 serializer_smap_buckets = $config.libxsde.serializer_smap_buckets
 
-config [uint64] config.libxsde.serializer_smap_bucket_buckets ?= 53
+config [uint64] config.libxsde.serializer_smap_bucket_buckets ?= 389
 serializer_smap_bucket_buckets = $config.libxsde.serializer_smap_bucket_buckets
 
-config [uint64] config.libxsde.serializer_imap_buckets ?= 97
+config [uint64] config.libxsde.serializer_imap_buckets ?= 769
 serializer_imap_buckets = $config.libxsde.serializer_imap_buckets
 
 # Allow using the external Expat library as a dependency instead of the
