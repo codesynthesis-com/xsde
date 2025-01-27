@@ -41,6 +41,6 @@ if ($reuse_style == 'mixin' && $cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual
 
 if ($cxx.class == 'gcc')
-  obj{test-simpl}: cxx.coptions += -Wno-return-type
+  obj{test-simpl}: cxx.coptions += -Wno-return-type -Wno-unused-parameter
 elif ($cxx.class == 'msvc')
   obj{test-simpl}: cxx.coptions += /wd4716

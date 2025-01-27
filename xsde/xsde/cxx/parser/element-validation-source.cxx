@@ -1003,7 +1003,8 @@ namespace CXX
              << "state = " << next_state_ << "UL;"
              << "// Fall through." << endl
              << "}"  // else
-             << "}"; // case
+             << "}" // case
+             << "// Fall through." << endl;
         }
 
         virtual void
@@ -1244,7 +1245,8 @@ namespace CXX
              << "state = " << next_state_ << "UL;"
              << "// Fall through." << endl
              << "}"  // else
-             << "}"; // case
+             << "}"  // case
+             << "// Fall through." << endl;
         }
 
       private:
