@@ -95,6 +95,12 @@ cxx/hybrid/
   libul{xsde-h}:     {hxx ixx     cxx}{   *-map}: include = $pm
   libul{xsde-h}: cdr/{hxx ixx txx cxx}{*       }: include = $cdr
   libul{xsde-h}: xdr/{hxx ixx txx cxx}{*       }: include = $xdr
+
+  # Make sure that these headers are generated before the source code
+  # compilation.
+  #
+  libul{xsde-h}: ../hxx{version} ../../h{config}
+
   libul{xsde-h}: $expat_lib $ace_lib $xdr_lib
 }
 
@@ -109,6 +115,8 @@ cxx/parser/
   libul{xsde-p}: {hxx ixx cxx}{exceptions}: include =   $ex
   libul{xsde-p}: {hxx ixx cxx}{error}:      include = (!$ex)
   libul{xsde-p}: {hxx ixx cxx}{*map}:       include =   $pm
+
+  libul{xsde-p}: ../hxx{version} ../../h{config}
 
   libul{xsde-p}: validating/libul{xsde-pyv}:     include =   $pv
   libul{xsde-p}: non-validating/libul{xsde-pnv}: include = (!$pv)
@@ -125,6 +133,8 @@ cxx/parser/
     libul{xsde-pyv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
     libul{xsde-pyv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
 
+    libul{xsde-pyv}: ../../hxx{version} ../../../h{config}
+
     libul{xsde-pyv}: $expat_lib
   }
 
@@ -137,6 +147,8 @@ cxx/parser/
 
     libul{xsde-pnv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
     libul{xsde-pnv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
+
+    libul{xsde-pnv}: ../../hxx{version} ../../../h{config}
 
     libul{xsde-pnv}: $expat_lib
   }
@@ -152,8 +164,9 @@ cxx/serializer/
 
   libul{xsde-s}: {hxx ixx cxx}{exceptions}: include =   $ex
   libul{xsde-s}: {hxx ixx cxx}{error}:      include = (!$ex)
+  libul{xsde-s}: {hxx ixx cxx}{*map}:       include = $pm
 
-  libul{xsde-s}: {hxx ixx cxx}{*map}: include = $pm
+  libul{xsde-s}: ../hxx{version} ../../h{config}
 
   libul{xsde-s}: validating/libul{xsde-syv}:     include =   $sv
   libul{xsde-s}: non-validating/libul{xsde-snv}: include = (!$sv)
@@ -169,6 +182,8 @@ cxx/serializer/
 
     libul{xsde-syv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
     libul{xsde-syv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
+
+    libul{xsde-syv}: ../../hxx{version} ../../../h{config}
   }
 
   non-validating/
@@ -180,6 +195,8 @@ cxx/serializer/
 
     libul{xsde-snv}: {hxx ixx cxx}{+{$ts_ystl}}: include =   $stl
     libul{xsde-snv}: {hxx ixx cxx}{+{$ts_nstl}}: include = (!$stl)
+
+    libul{xsde-snv}: ../../hxx{version} ../../../h{config}
   }
 }
 
