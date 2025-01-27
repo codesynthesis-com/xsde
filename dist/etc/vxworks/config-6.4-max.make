@@ -144,6 +144,19 @@ XSDE_SERIALIZER_VALIDATION := y
 XSDE_REGEXP := n
 
 
+# Set to 'y' if you would like to use an external Expat library rather than
+# a copy bundled with libxsde. Note that if this option is enabled, then you
+# will need to arrange for your application to link the Expat library after
+# libxsde.a. If Expat is installed in a location where your C++ compiler
+# searches for libraries by default, then adding -lexpat after libxsde.a
+# should be sufficient. Note also that if you use a custom memory allocator
+# (XSDE_CUSTOM_ALLOCATOR) and you create the underlying XML parser yourself,
+# then you will need to manually configure external Expat to use such a
+# custom allocator.
+#
+XSDE_EXTERNAL_EXPAT := n
+
+
 # Base parser/serializer implementation reuse style. Valid values are:
 #
 # 'mixin'  - virtual inheritance-based reuse (specify --reuse-style-mixin)
@@ -235,3 +248,7 @@ XSDE_SERIALIZER_IMAP_BUCKETS := 97
 ifeq ($(XSDE_EXCEPTIONS),y)
 CFLAGS += -fexceptions
 endif
+
+!if "$(XSDE_EXTERNAL_EXPAT)" == "y"
+LIBS = $(LIBS) libexpat.lib
+!endif

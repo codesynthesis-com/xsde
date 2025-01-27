@@ -6,9 +6,12 @@ root = ..\..
 
 EXTRA_CPPFLAGS = /I..
 
-#########################################################################
+src =
 
-src = c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
+!if "$(XSDE_EXTERNAL_EXPAT)" == "y"
+src = $(src) c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
+!endif
+
 src = $(src) c\genx\genx.c c\genx\char-props.c
 
 !if "$(XSDE_PARSER_VALIDATION)$(XSDE_SERIALIZER_VALIDATION)" != "nn"
@@ -584,6 +587,9 @@ config.h: $(root)\config\config.nmake
 !endif
 !if "$(XSDE_REGEXP)" == "y"
 	@echo #define XSDE_REGEXP                 >>$@
+!endif
+!if "$(XSDE_EXTERNAL_EXPAT)" == "y"
+	@echo #define XSDE_EXTERNAL_EXPAT         >>$@
 !endif
 !if "$(XSDE_REUSE_STYLE)" == "mixin"
 	@echo #define XSDE_REUSE_STYLE_MIXIN      >>$@

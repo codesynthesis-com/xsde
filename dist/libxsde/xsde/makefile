@@ -6,7 +6,12 @@ include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I..
 
-src := c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
+src :=
+
+ifeq ($(XSDE_EXTERNAL_EXPAT),y)
+src += c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
+endif
+
 src += c/genx/genx.c c/genx/char-props.c
 
 ifneq ($(XSDE_PARSER_VALIDATION)$(XSDE_SERIALIZER_VALIDATION),nn)
@@ -586,6 +591,9 @@ endif
 ifeq ($(XSDE_REGEXP),y)
 	@echo $(h)define XSDE_REGEXP                >>$@
 endif
+ifeq ($(XSDE_EXTERNAL_EXPAT),y)
+	@echo $(h)define XSDE_EXTERNAL_EXPAT        >>$@
+endif
 ifeq ($(XSDE_REUSE_STYLE),mixin)
 	@echo $(h)define XSDE_REUSE_STYLE_MIXIN     >>$@
 else
@@ -648,7 +656,7 @@ install: libxsde.a
 	../../install-sh -m 644 libxsde.a $(install_lib)/libxsde.a
 	../../install-sh -d -m 755 $(install_include)/xsde
 	find . -type d | sed -e 's%^\.%$(install_include)/xsde%' \
-| xargs -n 1 ../../install-sh -d -m 755 
+| xargs -n 1 ../../install-sh -d -m 755
 	find . -name '*.h' -o -name '*.hxx' -o -name '*.ixx' -o -name '*.txx' \
 | sed -e 's%^\./\(.*\)%\1 $(install_include)/xsde/\1%' \
 | xargs -n 2 ../../install-sh -m 644
