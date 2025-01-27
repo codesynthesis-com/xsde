@@ -661,8 +661,6 @@ namespace CXX
         wcerr << "warning P003: generating sample implementation without "
               << "parser reuse support: the resulting code may not compile"
               << endl;
-
-        return false;
       }
 
       // Test for anonymout types.

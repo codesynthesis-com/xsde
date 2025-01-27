@@ -459,8 +459,6 @@ namespace CXX
               << "serializer reuse support: the resulting code may not "
               << "compile"
               << endl;
-
-        return false;
       }
 
       // Test for anonymout types.
