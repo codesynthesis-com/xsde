@@ -71,19 +71,19 @@ xdr = $config.xsde_examples.xdr
 config [bool] config.xsde_examples.polymorphic ?= false
 polymorphic = $config.xsde_examples.polymorphic
 
-config [uint64] config.xsde_examples.parser_smap_buckets ?= 53
+config [uint64] config.xsde_examples.parser_smap_buckets ?= 389
 parser_smap_buckets = $config.xsde_examples.parser_smap_buckets
 
-config [uint64] config.xsde_examples.parser_imap_buckets ?= 97
+config [uint64] config.xsde_examples.parser_imap_buckets ?= 769
 parser_imap_buckets = $config.xsde_examples.parser_imap_buckets
 
-config [uint64] config.xsde_examples.serializer_smap_buckets ?= 53
+config [uint64] config.xsde_examples.serializer_smap_buckets ?= 389
 serializer_smap_buckets = $config.xsde_examples.serializer_smap_buckets
 
-config [uint64] config.xsde_examples.serializer_smap_bucket_buckets ?= 53
+config [uint64] config.xsde_examples.serializer_smap_bucket_buckets ?= 389
 serializer_smap_bucket_buckets = $config.xsde_examples.serializer_smap_bucket_buckets
 
-config [uint64] config.xsde_examples.serializer_imap_buckets ?= 97
+config [uint64] config.xsde_examples.serializer_imap_buckets ?= 769
 serializer_imap_buckets = $config.xsde_examples.serializer_imap_buckets
 
 config [bool] config.xsde_examples.external_expat ?= false
