@@ -11,15 +11,15 @@ ru = ($reuse_style != 'none')
 #
 da = (!$custom_allocator || $default_allocator)
 
-# @@ BUILD2 Disable facets/ for reuse_style set to 'mixin' since the test crashes
-#        due to infinite recursion. The XSD/e compiler generates code like
-#        that in test-simpl.cxx:
+# Disable facets/ for reuse_style set to 'mixin' since the test crashes due to
+# infinite recursion. The XSD/e compiler generates code like that in
+# test-simpl.cxx:
 #
-#        void byte_simpl::
-#        pre (const ::test::byte& x)
-#        {
-#          byte_simpl::pre (x);
-#        }
+# void byte_simpl::
+# pre (const ::test::byte& x)
+# {
+#   byte_simpl::pre (x);
+# }
 #
 ./: built-in/:      include = ($iostream && $ru && $da)
 ./: choice/:        include = ($iostream && $parser_validation && $ru && $da)

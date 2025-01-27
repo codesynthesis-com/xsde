@@ -37,11 +37,9 @@ cxx.poptions =+ "-I$out_base"
 if ($reuse_style == 'mixin' && $cxx.class == 'gcc')
   cxx.coptions += -Wno-overloaded-virtual
 
-# @@ BUILD2 Suppress the "switch statement contains 'default' but no 'case'
-#        labels" MSVC's warning.
-#
-#        Probably need to fix the XSD/e compiler at some point instead of
-#        suppressing the warning.
+# Suppress the "switch statement contains 'default' but no 'case' labels"
+# MSVC's warning. Probably need to fix the XSD/e compiler at some point
+# instead of suppressing the warning.
 #
 if ($cxx.class == 'msvc')
   cxx.coptions += /wd4065

@@ -40,11 +40,9 @@ exe{driver}: file{output}: test.stdout = true
 
 cxx.poptions =+ "-I$out_base"
 
-# @@ BUILD2 Suppress the "switch statement contains 'default' but no 'case'
-#        labels" MSVC's warning.
-#
-#        Probably need to fix the XSD/e compiler at some point instead of
-#        suppressing the warning.
+# Suppress the "switch statement contains 'default' but no 'case' labels"
+# MSVC's warning. Probably need to fix the XSD/e compiler at some point
+# instead of suppressing the warning.
 #
 if ($cxx.class == 'msvc')
   cxx.coptions += /wd4065

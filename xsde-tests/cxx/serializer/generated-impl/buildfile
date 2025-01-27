@@ -4,8 +4,6 @@
 # Note that this test only checks compilation of the generated empty
 # implementation and test driver. It may not work well with some compilers
 # that issue warnings (missing return statements), which we suppress.
-#
-# @@ BUILD2 Should we just fix the compiler instead?
 
 if ($build.meta_operation != 'dist')
 {
