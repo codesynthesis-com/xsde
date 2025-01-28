@@ -1,8 +1,8 @@
-# xsde - XML Schema to C++ data binding compiler for mobile and embedded systems
+# XSD/e
 
 XSD/e is an open-source, dependency-free XML Schema to C++ compiler for
 mobile, embedded, and light-weight applications. It provides XML parsing,
-serialization, XML Schema validation and XML data binding while maintaining a
+serialization, XML Schema validation, and XML data binding while maintaining a
 small footprint and portability.
 
 For further information, including licensing conditions, documentation, and
@@ -12,8 +12,10 @@ page](https://codesynthesis.com/products/xsde/).
 NOTE: the steps described below are more appropriate for the development of
 XSD/e as opposed to consumption. In case you just want to use XSD/e:
 
-* If you want to use a binary package, see the [XSD/e download
-  page](https://codesynthesis.com/products/xsde/download.xhtml).
+* If you want to use a binary package for the XSD/e compiler, see the [XSD/e
+  download page](https://codesynthesis.com/products/xsde/download.xhtml).
+  With this option, you can also use a binary package for the XSD/e runtime
+  library (`libxsde`) or you can build it from source using `make`/`nmake`.
 
 * If you want to build XSD/e from source and use the result from a project
   that uses a build system other than `build2`, then see [Installing XSD/e with

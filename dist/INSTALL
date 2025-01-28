@@ -1,19 +1,22 @@
 This file contains instructions for building the XSD/e runtime
-library (libxsde) and examples. The XSD/e compiler itself was
-pre-built for your host development platform and can be found
-in the bin/ directory. The runtime library and examples can be
-built using either GNU make (normally on UNIX operating systems)
-or Microsoft nmake (on Windows). The following sections describe
-each of the two methods.
+library (libxsde), examples, and, optionally, tests. The XSD/e
+compiler itself was pre-built for your host development platform
+and can be found in the bin/ directory (unless provided in a
+separate distribution binary package such as .deb or .rpm). The
+runtime library, examples, and test can be built using either
+GNU make (normally on UNIX operating systems) or Microsoft nmake
+(on Windows). The following sections describe each of the two
+methods.
 
 
 GNU make
 --------
 
 This section provides general instructions for building the XSD/e
-runtime and examples with GNU make. For additional information on
-building for iPhone/iOS, Android NDK, and Symbian SDK see the
-corresponding notes at the end of this document.
+runtime and examples (and, optionally, tests) with GNU make. For
+additional information on building for iPhone/iOS, Android NDK,
+and Symbian SDK see the corresponding notes at the end of this
+document.
 
 The first step in building the source code with GNU make is to
 configure the runtime library by editing the config/config.make
@@ -28,10 +31,13 @@ To start the compilation process simply execute make (or gmake)
 in the root directory. This will build the libxsde.a runtime
 library as well as the examples. If you do not want to build
 the examples, you can start the compilation process from the
-libxsde/ directory. Note that if you change any configuration
-parameters in the config/config.make file, then you need to
-completely clean the distribution before recompiling. For that
-run 'make clean' from the root directory.
+libxsde/ directory. To build and run tests, run make in the
+tests/ directory.
+
+Note that if you change any configuration parameters in the
+config/config.make file, then you need to completely clean the
+distribution before recompiling. For that run 'make clean' from
+the root directory.
 
 In order to start using XSD/e in your applications, you will
 need add the libxsde/ directory to your include search paths
@@ -60,10 +66,10 @@ Microsoft nmake
 ---------------
 
 This section provides general instructions for building the XSD/e
-runtime and examples with nmake. For additional information on
-eMbedded Visual C++ 4.0, Visual Studio 2005 with Smart Devices,
-and Visual Studio 2008 with Smart Devices support see the
-corresponding notes at the end of this document.
+runtime and examples (and, optionally, tests) with nmake. For
+additional information on eMbedded Visual C++ 4.0, Visual Studio
+2005 with Smart Devices, and Visual Studio 2008 with Smart Devices
+support see the corresponding notes at the end of this document.
 
 The first step in building the source code with nmake is to
 configure the runtime library by editing the config\config.nmake
@@ -97,10 +103,13 @@ nmake /f nmakefile
 from the XSD/e root directory. This will build the xsde.lib
 runtime library as well as the examples. If you do not want to
 build the examples, you can start the compilation process from
-the libxsde\ directory. Note that if you change any configuration
-parameters in the config\config.nmake file, then you need to
-completely clean the distribution before recompiling. For that
-run 'nmake /f nmakefile clean' from the root directory.
+the libxsde\ directory. To build and run tests, run nmake in the
+tests/ directory.
+
+Note that if you change any configuration parameters in the
+config\config.nmake file, then you need to completely clean
+the distribution before recompiling. For that run
+'nmake /f nmakefile clean' from the root directory.
 
 In order to start using XSD/e in your applications, you will
 need add the libxsde\ directory to your include search paths

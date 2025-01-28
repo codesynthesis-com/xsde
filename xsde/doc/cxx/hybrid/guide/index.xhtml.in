@@ -176,15 +176,15 @@
 
   <p>Permission is granted to copy, distribute and/or modify this
      document under the terms of the
-     <a href="http://www.codesynthesis.com/licenses/fdl-1.2.txt">GNU Free
+     <a href="https://www.codesynthesis.com/licenses/fdl-1.2.txt">GNU Free
      Documentation License, version 1.2</a>; with no Invariant Sections,
      no Front-Cover Texts and no Back-Cover Texts.
   </p>
 
   <p>This document is available in the following formats:
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/index.xhtml">XHTML</a>,
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/cxx-hybrid-e-guide.pdf">PDF</a>, and
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/cxx-hybrid-e-guide.ps">PostScript</a>.</p>
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/index.xhtml">XHTML</a>,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/cxx-hybrid-e-guide.pdf">PDF</a>, and
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/hybrid/guide/cxx-hybrid-e-guide.ps">PostScript</a>.</p>
 
   </div>
 
@@ -318,14 +318,14 @@
      information useful:</p>
 
   <ul class="list">
-    <li><a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+    <li><a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
         Compiler Command Line Manual</a></li>
 
-    <li><a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">Embedded
+    <li><a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">Embedded
          C++/Parser Mapping Getting Started Guide</a>. The C++/Hybrid
          mapping uses C++/Parser for XML parsing.</li>
 
-    <li><a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml">Embedded
+    <li><a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml">Embedded
          C++/Serializer Mapping Getting Started Guide</a>. The C++/Hybrid
          mapping uses C++/Serializer for XML serialization.</li>
 
@@ -336,10 +336,10 @@
         distribution contains a collection of examples and a README
         file with an overview of each example.</li>
 
-    <li>The <a href="http://www.codesynthesis.com/mailman/listinfo/xsde-users">xsde-users</a>
+    <li>The <a href="https://www.codesynthesis.com/mailman/listinfo/xsde-users">xsde-users</a>
         mailing list is the place to ask technical questions about XSD/e and the
         Embedded C++/Hybrid mapping. Furthermore, the
-        <a href="http://www.codesynthesis.com/pipermail/xsde-users/">archives</a>
+        <a href="https://www.codesynthesis.com/pipermail/xsde-users/">archives</a>
         may already have answers to some of your questions.</li>
 
   </ul>
@@ -363,9 +363,9 @@
      classes that constitute the object model and are derived from
      types defined in XML Schema. The C++/Hybrid mapping uses the
      APIs provided by the
-     <a href="http://www.codesynthesis.com/products/xsde/c++/parser/">Embedded
+     <a href="https://www.codesynthesis.com/products/xsde/c++/parser/">Embedded
      C++/Parser</a> and
-     <a href="http://www.codesynthesis.com/products/xsde/c++/serializer/">Embedded
+     <a href="https://www.codesynthesis.com/products/xsde/c++/serializer/">Embedded
      C++/Serializer</a>
      mappings to perform validation and parsing of XML to the object
      model and validation and serialization of the object model to
@@ -624,7 +624,7 @@ $ xsde cxx-hybrid --generate-parser --generate-aggregate hello.xsd
      in the schema (you can also generate a parser aggregate for a type
      as well as control for which global elements parser aggregates
      are generated, see the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a> for more information). A parser
      aggregate instantiates and connects all the necessary parser
      implementations needed to parse an XML document with a given root
@@ -1286,7 +1286,7 @@ main (int argc, char* argv[])
      configuration parameter should be set accordingly in the XSD/e runtime
      library as well as specified during schema compilation with the XSD/e
      command line options as described in the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a>.
   </p>
 
@@ -1361,10 +1361,10 @@ namespace xml_schema
      functions in the document parser (<code>xml_schema::document_pimpl</code>)
      and document serializer (<code>xml_schema::document_simpl</code>) become
      unavailable. See
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
      "Document Parser and Error Handling"</a> in the Embedded
      C++/Parser Mapping Getting Started Guide and
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
      "Document Serializer and Error Handling"</a> in the Embedded
      C++/Serializer Mapping Getting Started Guide for details.
      </p>
@@ -1379,11 +1379,11 @@ namespace xml_schema
      and modifying the object model are indicated with error codes
      instead of exceptions. For more information on error handling
      during parsing, see
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
      "Document Parser and Error Handling"</a> in the Embedded C++/Parser
      Mapping Getting Started Guide. For more information on error handling
      during serialization, see
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
      "Document Serializer and Error Handling"</a> in the Embedded
      C++/Serializer Mapping Getting Started Guide. For more information on
      error handling in the object model, see <a href="#4">Chapter 4, "Working
@@ -1434,10 +1434,10 @@ namespace xml_schema
      (generated when the <code>--reuse-style-mixin</code> option
      is specified) and <em>tiein</em> (generated by default) styles.
      The XSD/e runtime should be configured in accordance with the
-     reuse style used in the generated code. See <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#5.6">Section 5.6,
+     reuse style used in the generated code. See <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#5.6">Section 5.6,
      "Parser Reuse"</a> in the Embedded C++/Parser Mapping Getting Started
      Guide and
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#6.6">Section 6.6,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#6.6">Section 6.6,
      "Serializer Reuse"</a> in the Embedded C++/Serializer Mapping Getting
      Started Guide for details.</p>
 
@@ -3992,7 +3992,7 @@ for (person::custom_data_iterator i = cd.begin (); i != cd.end (); ++i)
      If you omit the last component (<code><i>include</i></code>), as in the
      final version, then you can provide the custom type definitions using
      one of the prologue or epilogue XSD/e compiler options. See the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a> for details.</p>
 
   <p>Note also that if the type length you specified with the
@@ -5776,9 +5776,9 @@ namespace xml_schema
      a great amount of flexibility that may be useful in certain situations.
      In such cases, you may need to get an understanding of how the
      C++/Parser and C++/Serializer mappings work. See the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">Embedded
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">Embedded
      C++/Parser Mapping Getting Started Guide</a> and the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml">Embedded
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml">Embedded
      C++/Serializer Mapping Getting Started Guide</a> for more detailed
      information on these mappings.</p>
 
@@ -5887,7 +5887,7 @@ hello* h = hello_p.post ();
   <p>For more information on the <code>document_pimpl</code> class,
      including the other variants of the <code>parse()</code> function
      as well as error handling during parsing, see
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml#7">Chapter 7,
      "Document Parser and Error Handling"</a> in the Embedded C++/Parser
      Mapping Getting Started Guide.</p>
 
@@ -5942,7 +5942,7 @@ hello_s.post ();
   <p>For more information on the <code>document_simpl</code> class,
      including the other variants of the <code>serialize()</code>
      function as well as error handling during serialization, see
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/serializer/guide/index.xhtml#8">Chapter 8,
      "Document Serializer and Error Handling"</a> in the Embedded
      C++/Serializer Mapping Getting Started Guide.</p>
 
@@ -5997,7 +5997,7 @@ hello_s.post ();
      (<code><i>include</i></code>), then
      you can include the custom parser/serializer definitions
      using one of the prologue or epilogue XSD/e compiler options.
-     See the <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     See the <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a> for details.</p>
 
   <p>Once you specify the <code>--custom-parser</code> or
@@ -6272,7 +6272,7 @@ age:    25
      operators for a specific predefined or custom data representation
      stream, you will need to use the <code>--generate-insertion</code>
      and <code>--generate-extraction</code> compiler options. See the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a> for more information.</p>
 
   <p>The XSD/e runtime provides implementations of the base insertion

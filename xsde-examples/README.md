@@ -1,4 +1,4 @@
-# xsde-examples - examples for XSD/e compiler
+# xsde-examples - XSD/e examples
 
 This package contains examples for `xsde`, the XML Schema to C++ data binding
 compiler for mobile and embedded systems.

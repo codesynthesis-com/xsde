@@ -211,15 +211,15 @@
 
   <p>Permission is granted to copy, distribute and/or modify this
      document under the terms of the
-     <a href="http://www.codesynthesis.com/licenses/fdl-1.2.txt">GNU Free
+     <a href="https://www.codesynthesis.com/licenses/fdl-1.2.txt">GNU Free
      Documentation License, version 1.2</a>; with no Invariant Sections,
      no Front-Cover Texts and no Back-Cover Texts.
   </p>
 
   <p>This document is available in the following formats:
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">XHTML</a>,
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/cxx-parser-e-guide.pdf">PDF</a>, and
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/cxx-parser-e-guide.ps">PostScript</a>.</p>
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/index.xhtml">XHTML</a>,
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/cxx-parser-e-guide.pdf">PDF</a>, and
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/cxx/parser/guide/cxx-parser-e-guide.ps">PostScript</a>.</p>
 
   </div>
 
@@ -352,7 +352,7 @@
      information useful:</p>
 
   <ul class="list">
-    <li><a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+    <li><a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
         Compiler Command Line Manual</a></li>
 
     <li>The <code>INSTALL</code> file in the XSD/e distribution provides
@@ -362,10 +362,10 @@
         distribution contains a collection of examples and a README
         file with an overview of each example.</li>
 
-    <li>The <a href="http://www.codesynthesis.com/mailman/listinfo/xsde-users">xsde-users</a>
+    <li>The <a href="https://www.codesynthesis.com/mailman/listinfo/xsde-users">xsde-users</a>
         mailing list is the place to ask technical questions about XSD/e and the
         Embedded C++/Parser mapping. Furthermore, the
-        <a href="http://www.codesynthesis.com/pipermail/xsde-users/">archives</a>
+        <a href="https://www.codesynthesis.com/pipermail/xsde-users/">archives</a>
         may already have answers to some of your questions.</li>
 
   </ul>
@@ -777,7 +777,7 @@ main (int argc, char* argv[])
      option. To request the generation of a test driver you can use the
      <code>--generate-test-driver</code> option. For more information
      on these options refer to the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a>. The <code>'generated'</code> example
      in the XSD/e distribution shows the sample implementation generation
      feature in action.</p>
@@ -1990,7 +1990,7 @@ age:    28
      configuration parameter should be set accordingly in the XSD/e runtime
      library as well as specified during schema compilation with the XSD/e
      command line options as described in the
-     <a href="http://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
+     <a href="https://www.codesynthesis.com/projects/xsde/documentation/xsde.xhtml">XSD/e
      Compiler Command Line Manual</a>.
   </p>
 

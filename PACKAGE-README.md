@@ -1,8 +1,8 @@
-# xsde - XML Schema to C++ data binding compiler for mobile and embedded systems
+# XSD/e
 
 XSD/e is an open-source, dependency-free XML Schema to C++ compiler for
 mobile, embedded, and light-weight applications. It provides XML parsing,
-serialization, XML Schema validation and XML data binding while maintaining a
+serialization, XML Schema validation, and XML data binding while maintaining a
 small footprint and portability.
 
 For further information, refer to the [XSD/e project
@@ -29,7 +29,7 @@ depends: libxsde ^3.4.0
 ```
 
 Or, for example, the following fragment if your project needs to configure
-`libxsde` without support for STL, iostream, and C++ exceptions:
+`libxsde` not to use STL, iostream, or C++ exceptions:
 
 ```
 depends: * xsde ^3.4.0
