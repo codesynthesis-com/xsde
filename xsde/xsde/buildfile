@@ -11,8 +11,7 @@ ops = options            \
   cxx/hybrid/options
 
 ./: exe{xsde}: {hxx ixx txx cxx}{** -version -{$ops} -pregenerated/**} \
-               {hxx}{version}                                          \
-               $libs
+               {hxx}{version}
 
 # Target metadata, see also --build2-metadata in xsde.cxx.
 #
@@ -119,6 +118,8 @@ if $develop
 
 #
 ##
+
+exe{xsde}: $libs
 
 # Pass the copyright notice extracted from the LICENSE file.
 #
