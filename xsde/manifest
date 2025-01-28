@@ -236,7 +236,11 @@ bindist-windows-build-config:
 +bbot.bindist.upload:
 bpkg.bindist.archive:--recursive=auto
 bpkg.bindist.archive:--archive-lang-impl=cc=
-bpkg.bindist.archive:config.install.relocatable=true
+
+# Relocatable by default (see target configuration for details).
+#
+#bpkg.bindist.archive:config.install.relocatable=true
+
 bpkg.create:config.bin.lib=static
 bpkg.create:config.bin.liba.lib="shared static"
 bpkg.create:config.cc.coptions+="/MT"
