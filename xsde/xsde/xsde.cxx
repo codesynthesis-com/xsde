@@ -188,7 +188,7 @@ main (int argc, char* argv[])
       {
         o << "The compiler was invoked in the Proprietary License mode. You "
           << "should have\nreceived a proprietary license from Code Synthesis "
-          << "Tools CC that entitles\nyou to use it in this mode." << endl;
+          << "that entitles\nyou to use it in this mode." << endl;
       }
       else
       {
