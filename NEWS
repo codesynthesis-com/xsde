@@ -1,4 +1,4 @@
-Version 3.3.0
+Version 3.4.0
 
   * New option, --fat-type-file, triggers the generation of code
     corresponding to global elements into type files instead of schema
@@ -7,20 +7,35 @@ Version 3.3.0
     to an executable by packaging compiled generated code into a static
     (archive) library.
 
+  * Extra validation for date, dateTime, and gMonthDay per XML Schema 1.1.
+
+  * Support for using external Expat library instead of bundled source
+    code. See config.libxsde.external_expat (build2) or XSDE_EXTERNAL_EXPAT
+    (secondary build systems) for details.
+
+ C++/Parser
+
+  * Allow empty base64Binary values per the specification.
+
  C++/Serializer
 
   * Elements with empty content are now closed immediately (for example,
-    <foo x='y'/>) rather than with a separate closing tag (for example,
-    <foo x='y'></foo>).
+    <foo x="y"/>) rather than with a separate closing tag (for example,
+    <foo x="y"></foo>).
 
-  * To improve serialization performance, attributes are not longer
+  * To improve the serialization performance, attributes are no longer
     sorted but rather written in the order that they were specified.
 
-  * Support for the fractionDigits facet for the decimal data type.
+  * Support for the fractionDigits facet on the decimal data type.
 
   * New functions, format() and precision(), allow changing of the
     output notation and precision for the float, double, and decimal
     type serializers.
+
+Version 3.3.0
+
+  * This version was never released. It was skipped due to a minor versioning
+    scheme adjustment in the pre-release component when migrating to build2.
 
 Version 3.2.0
 
