@@ -271,6 +271,15 @@ lib{xsde}:
   cxx.export.libs = $expat_lib $ace_lib $xdr_lib
 }
 
+# For pre-releases use the complete version to make sure they cannot be used
+# in place of another pre-release or the final version. See the version module
+# for details on the version.* variable values.
+#
+if $version.pre_release
+  lib{xsde}: bin.lib.version = @"-$version.project_id"
+else
+  lib{xsde}: bin.lib.version = @"-$version.major.$version.minor"
+
 # Install into the xsde/ subdirectory of, say, /usr/include/ recreating
 # subdirectories.
 #
