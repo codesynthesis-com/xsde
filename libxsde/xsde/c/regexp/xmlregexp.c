@@ -3586,7 +3586,7 @@ xmlFAParseCharProp(xmlRegParserCtxtPtr ctxt) {
 	    }
 	}
 	type = XML_REGEXP_BLOCK_NAME;
-	blockName = xmlStrndup(start, ctxt->cur - start);
+	blockName = xmlStrndup(start, (int)(ctxt->cur - start));
     } else {
 	REGEXP_ERROR("Unknown char property");
 	return;
