@@ -532,6 +532,7 @@ ifeq ($(shell_type),windows)
 else
 	@echo "/* Generated - do not edit. */"    >$@
 endif
+ifeq ($(shell_type),posix)
 	@echo $(h)ifndef XSDE_CONFIG_H              >>$@
 	@echo $(h)define XSDE_CONFIG_H              >>$@
 	@echo $(h)ifdef _MSC_VER                    >>$@
@@ -543,6 +544,7 @@ endif
 	@echo $(h)define XSDE_CXX11                 >>$@
 	@echo $(h)endif                             >>$@
 	@echo $(h)endif                             >>$@
+endif
 ifeq ($(XSDE_PLATFORM),wince)
 	@echo $(h)define XSDE_PLATFORM_WINCE        >>$@
 endif
