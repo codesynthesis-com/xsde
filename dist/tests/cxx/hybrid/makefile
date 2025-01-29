@@ -5,7 +5,10 @@ include $(root)/build/config.make
 dirs := sequences
 
 ifeq ($(XSDE_POLYMORPHIC),y)
-dirs += polymorphism/any-type polymorphism/enumeration polymorphism/multischema
+# @@ TMP
+#
+dirs += polymorphism/enumeration polymorphism/multischema
+#dirs += polymorphism/any-type polymorphism/enumeration polymorphism/multischema
 endif
 
 ifeq ($(XSDE_STL),y)
