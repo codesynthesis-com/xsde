@@ -375,9 +375,9 @@
   <h1><a name="1">1 Introduction</a></h1>
 
   <p>Welcome to CodeSynthesis XSD/e and the Embedded C++/Parser mapping.
-     XSD/e is a dependency-free W3C XML Schema to C++ compiler for mobile,
+     XSD/e is a dependency-free W3C XML Schema 1.0 to C++ compiler for mobile,
      embedded, and light-weight applications. Embedded C++/Parser is an
-     XML Schema to C++ mapping that represents an XML vocabulary as a set
+     XML Schema 1.0 to C++ mapping that represents an XML vocabulary as a set
      of parser skeletons which you can implement to perform XML processing
      as required by your application logic.
   </p>
@@ -5282,7 +5282,7 @@ private:
   <h1><a name="A">Appendix A &mdash; Supported XML Schema Constructs</a></h1>
 
   <p>The Embedded C++/Parser mapping supports validation of the following
-     W3C XML Schema constructs in the generated code.</p>
+     W3C XML Schema 1.0 constructs in the generated code.</p>
 
   <!-- border="1" is necessary for html2ps -->
   <table id="features" border="1">
