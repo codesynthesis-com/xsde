@@ -40,7 +40,7 @@ EXTRA_XSDFLAGS = $(EXTRA_XSDFLAGS) --custom-allocator
 
 driver.exe: driver.obj test-sskel.obj $(root)\libxsde\xsde\xsde.lib
 
-driver.obj: driver.cxx test-sskel.hxx 
+driver.obj: driver.cxx test-sskel.hxx
 test-sskel.obj: test-sskel.cxx
 
 test-sskel.hxx test-sskel.ixx test-sskel.cxx: test.xsd
@@ -49,9 +49,11 @@ test-sskel.hxx test-sskel.ixx test-sskel.cxx: test.xsd
 gen: test-sskel.hxx test-sskel.ixx test-sskel.cxx
 
 test: driver.exe
+!if "$(XSDE_LONGLONG)" == "n"
 	.\driver.exe test-000.xml >tmp
 	fc test-000.std tmp
 	del tmp
+!endif
 	.\driver.exe test-001.xml >tmp
 	fc test-001.std tmp
 	del tmp
@@ -60,5 +62,4 @@ cleanobj:
 	-del driver.exe driver.obj test-sskel.obj
 
 clean: cleanobj
-	-del test-sskel.cxx test-sskel.ixx test-sskel.hxx 
-
+	-del test-sskel.cxx test-sskel.ixx test-sskel.hxx

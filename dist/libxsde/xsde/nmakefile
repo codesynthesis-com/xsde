@@ -8,7 +8,7 @@ EXTRA_CPPFLAGS = /I..
 
 src =
 
-!if "$(XSDE_EXTERNAL_EXPAT)" == "y"
+!if "$(XSDE_EXTERNAL_EXPAT)" == "n"
 src = $(src) c\expat\xmlparse.c c\expat\xmlrole.c c\expat\xmltok.c
 !endif
 
@@ -531,15 +531,15 @@ config.h: $(root)\config\config.nmake
 	@echo /* Generated - do not edit. */       >$@
 	@echo #ifndef XSDE_CONFIG_H               >>$@
 	@echo #define XSDE_CONFIG_H               >>$@
-	@echo #ifdef _MSC_VER
-	@echo "#if _MSC_VER >= 1600"
-	@echo #define XSDE_CXX11
-	@echo #endif
-	@echo #else
-	@echo "#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (defined(__cplusplus) && __cplusplus >= 201103L)"
-	@echo #define XSDE_CXX11
-	@echo #endif
-	@echo #endif
+	@echo #ifdef _MSC_VER                     >>$@
+	@echo "#if _MSC_VER >= 1600"              >>$@
+	@echo #define XSDE_CXX11                  >>$@
+	@echo #endif                              >>$@
+	@echo #else                               >>$@
+	@echo "#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (defined(__cplusplus) && __cplusplus >= 201103L)" >>$@
+	@echo #define XSDE_CXX11                  >>$@
+	@echo #endif                              >>$@
+	@echo #endif                              >>$@
 !if "$(XSDE_PLATFORM)" == "wince"
 	@echo #define XSDE_PLATFORM_WINCE         >>$@
 !endif

@@ -4,13 +4,6 @@ include $(root)/build/config.make
 
 dirs := sequences
 
-ifeq ($(XSDE_POLYMORPHIC),y)
-# @@ TMP
-#
-dirs += polymorphism/enumeration polymorphism/multischema
-#dirs += polymorphism/any-type polymorphism/enumeration polymorphism/multischema
-endif
-
 ifeq ($(XSDE_STL),y)
 ifeq ($(XSDE_STL_ITERATOR),y)
 dirs += iterator
@@ -26,6 +19,13 @@ endif
 
 ifeq ($(XSDE_PARSER_VALIDATION),y)
 dirs += choice recursive clone
+
+ifeq ($(XSDE_POLYMORPHIC),y)
+# @@ TMP
+#
+dirs += polymorphism/enumeration polymorphism/multischema
+#dirs += polymorphism/any-type polymorphism/enumeration polymorphism/multischema
+endif
 
 ifeq ($(XSDE_CDR),y)
 dirs += binary/cdr

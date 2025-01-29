@@ -8,7 +8,7 @@ EXTRA_CPPFLAGS := -I..
 
 src :=
 
-ifeq ($(XSDE_EXTERNAL_EXPAT),y)
+ifeq ($(XSDE_EXTERNAL_EXPAT),n)
 src += c/expat/xmlparse.c c/expat/xmlrole.c c/expat/xmltok.c
 endif
 
@@ -534,15 +534,15 @@ else
 endif
 	@echo $(h)ifndef XSDE_CONFIG_H              >>$@
 	@echo $(h)define XSDE_CONFIG_H              >>$@
-	@echo $(h)ifdef _MSC_VER
-	@echo "$(h)if _MSC_VER >= 1600"
-	@echo $(h)define XSDE_CXX11
-	@echo $(h)endif
-	@echo $(h)else
-	@echo "$(h)if defined(__GXX_EXPERIMENTAL_CXX0X__) || (defined(__cplusplus) && __cplusplus >= 201103L)"
-	@echo $(h)define XSDE_CXX11
-	@echo $(h)endif
-	@echo $(h)endif
+	@echo $(h)ifdef _MSC_VER                    >>$@
+	@echo "#if _MSC_VER >= 1600"                >>$@
+	@echo $(h)define XSDE_CXX11                 >>$@
+	@echo $(h)endif                             >>$@
+	@echo $(h)else                              >>$@
+	@echo "#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (defined(__cplusplus) && __cplusplus >= 201103L)" >>$@
+	@echo $(h)define XSDE_CXX11                 >>$@
+	@echo $(h)endif                             >>$@
+	@echo $(h)endif                             >>$@
 ifeq ($(XSDE_PLATFORM),wince)
 	@echo $(h)define XSDE_PLATFORM_WINCE        >>$@
 endif

@@ -4,13 +4,6 @@ root = ..\..\..
 
 dirs = sequences
 
-!if "$(XSDE_POLYMORPHIC)" == "y"
-# @@ TMP
-#
-dirs = $(dirs) polymorphism\enumeration polymorphism\multischema
-#dirs = $(dirs) polymorphism\any-type polymorphism\enumeration polymorphism\multischema
-!endif
-
 !if "$(XSDE_STL)" == "y"
 !if "$(XSDE_STL_ITERATOR)" == "y"
 dirs = $(dirs) iterator
@@ -26,6 +19,13 @@ dirs = $(dirs) iso8859-1
 
 !if "$(XSDE_PARSER_VALIDATION)" == "y"
 dirs = $(dirs) choice recursive clone
+
+!if "$(XSDE_POLYMORPHIC)" == "y"
+# @@ TMP
+#
+dirs = $(dirs) polymorphism\enumeration polymorphism\multischema
+#dirs = $(dirs) polymorphism\any-type polymorphism\enumeration polymorphism\multischema
+!endif
 
 !if "$(XSDE_CDR)" == "y"
 dirs = $(dirs) binary/cdr

@@ -52,7 +52,9 @@ gen: test-sskel.hxx test-sskel.ixx test-sskel.cxx
 
 .PHONY: test
 test: driver
+ifeq ($(XSDE_LONGLONG),n)
 	./driver test-000.xml | diff -u test-000.std -
+endif
 	./driver test-001.xml | diff -u test-001.std -
 
 .PHONY: clean cleanobj
