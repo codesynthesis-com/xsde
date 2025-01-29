@@ -12,7 +12,7 @@ if ($build.meta_operation != 'dist')
 
 import libs = libxsde%lib{xsde}
 
-./: exe{driver} file{*.std}
+./: exe{driver} {xml std}{*}
 
 exe{driver}: {hxx cxx}{* -test-sskel} {hxx ixx cxx}{test-sskel} $libs testscript
 

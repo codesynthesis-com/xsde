@@ -1,62 +1,6 @@
 # file      : cxx/parser/reset/testscript
 # license   : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
-: pass
-:
-{
-  cat <<EOI >=test-000.xml;
-    <t:root xmlns:t="test"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="test test.xsd">
-
-      <a><b>1</b></a>
-
-    </t:root>
-    EOI
-
-  $* test-000.xml >>EOO
-    0: 1
-    1: 1
-    2: 1
-    3: 1
-    4: 1
-    5: 1
-    EOO
-}
-
-: fail-xml
-:
-{
-  cat <<EOI >=test-001.xml;
-    <t:root xmlns:t="test"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="test test.xsd">
-
-      <a></b>1</b></a>
-
-    </t:root>
-    EOI
-
-  $* test-001.xml >>EOO
-    6: 1
-    EOO
-}
-
-: fail-schema
-:
-{
-  cat <<EOI >=test-002.xml;
-    <t:root xmlns:t="test"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="test test.xsd">
-
-      <a><b>1</b></a>
-      <a><b>1</b></a>
-
-    </t:root>
-    EOI
-
-  $* test-002.xml >>EOO
-    7: 1
-    EOO
-}
+$* $src_base/test-000.xml >>>$src_base/test-000.std : 000
+$* $src_base/test-001.xml >>>$src_base/test-001.std : 001
+$* $src_base/test-002.xml >>>$src_base/test-002.std : 002

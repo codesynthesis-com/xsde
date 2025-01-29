@@ -17,8 +17,8 @@ import libs = libxsde%lib{xsde}
 
 exe{driver}: {hxx cxx}{* -test-pskel} {hxx ixx cxx}{test-pskel} $libs
 
-exe{driver}: xml{test}:    test.input  = true
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: xml{test-000}: test.input  = true
+exe{driver}: std{test-000}: test.stdout = true
 
 <{hxx ixx cxx}{test-pskel}>: xsd{test} $xsde
 {{

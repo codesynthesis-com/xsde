@@ -32,8 +32,8 @@ exe{driver}: {hxx ixx txx cxx}{* -test       -test-pskel       -test-sskel      
              {hxx            }{   xml-schema  xml-schema-pskel  xml-schema-sskel} \
              $libs
 
-exe{driver}: xml{test}:    test.input  = true
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: xml{test-000}: test.input  = true
+exe{driver}: std{test-000}: test.stdout = true
 
 # Note that the xml-schema.xsd file need not exist and is only used to derive
 # the names of the included header files.

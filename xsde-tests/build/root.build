@@ -97,6 +97,9 @@ if! $skeleton
   define xml: file
   xml{*}: extension = xml
 
+  define std: file
+  std{*}: extension = std
+
   define map: file
   map{*}: extension = map
 

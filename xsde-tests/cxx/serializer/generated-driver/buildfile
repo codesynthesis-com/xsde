@@ -14,7 +14,7 @@ exe{driver}: {hxx ixx cxx}{test-sskel}   \
              {        cxx}{test-sdriver} \
              $libs
 
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: std{test-000}: test.stdout = true
 
 <{hxx ixx cxx}{test-sskel}                     \
  {        cxx}{test-sdriver}>: xsd{test} $xsde

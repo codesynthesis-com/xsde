@@ -17,8 +17,8 @@ exe{driver}: {hxx ixx cxx}{test-pskel}   \
              {        cxx}{test-pdriver} \
              $libs
 
-exe{driver}: xml{test}:    test.input  = true
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: xml{test-000}: test.input  = true
+exe{driver}: std{test-000}: test.stdout = true
 
 <{hxx ixx cxx}{test-pskel}                     \
  {hxx     cxx}{test-pimpl}                     \

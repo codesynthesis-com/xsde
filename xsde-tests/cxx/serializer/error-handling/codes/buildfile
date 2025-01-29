@@ -17,7 +17,7 @@ import libs = libxsde%lib{xsde}
 
 exe{driver}: {hxx cxx}{* -test-sskel} {hxx ixx cxx}{test-sskel} $libs
 
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: std{test-000}: test.stdout = true
 
 <{hxx ixx cxx}{test-sskel}>: xsd{test} $xsde
 {{

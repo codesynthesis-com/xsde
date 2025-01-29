@@ -21,8 +21,8 @@ exe{driver}: {hxx ixx cxx}{* -test -test-pskel -test-pimpl  \
              {hxx     cxx}{         test-pimpl  test-simpl} \
              $libs
 
-exe{driver}: xml{test}:    test.input  = true
-exe{driver}: file{output}: test.stdout = true
+exe{driver}: xml{test-000}: test.input  = true
+exe{driver}: std{test-000}: test.stdout = true
 
 <{hxx ixx cxx}{test test-pskel test-sskel}                   \
  {hxx     cxx}{     test-pimpl test-simpl}>: xsd{test} $xsde
