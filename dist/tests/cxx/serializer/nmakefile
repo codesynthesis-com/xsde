@@ -14,7 +14,6 @@ recursive       \
 reset           \
 restriction     \
 sequence        \
-test-template   \
 wildcard
 
 !if "$(XSDE_EXCEPTIONS)" == "y"

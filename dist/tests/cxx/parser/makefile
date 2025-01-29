@@ -9,7 +9,6 @@ ifeq ($(XSDE_EXCEPTIONS),y)
 dirs += \
 built-in       \
 recursive      \
-test-template  \
 union
 
 ifeq ($(XSDE_REUSE_STYLE),tiein)

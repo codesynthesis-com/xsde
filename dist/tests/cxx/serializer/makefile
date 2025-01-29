@@ -14,7 +14,6 @@ recursive       \
 reset           \
 restriction     \
 sequence        \
-test-template   \
 wildcard
 
 ifeq ($(XSDE_EXCEPTIONS),y)

@@ -6,7 +6,7 @@ dirs = generated-impl duplicate
 
 !if "$(XSDE_IOSTREAM)" == "y"
 !if "$(XSDE_EXCEPTIONS)" == "y"
-dirs = $(dirs) built-in recursive test-template union
+dirs = $(dirs) built-in recursive union
 
 !if "$(XSDE_REUSE_STYLE)" == "tiein"
 dirs = $(dirs) enumeration list
