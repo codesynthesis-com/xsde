@@ -100,18 +100,15 @@ parser_validation = $config.libxsde.parser_validation
 config [bool] config.libxsde.serializer_validation ?= true
 serializer_validation = $config.libxsde.serializer_validation
 
-# Set to false if you would like to have support for regular expressions in
-# the XSD/e runtime.
+# Set to false if you don't want support for regular expressions in the XSD/e
+# runtime.
 #
 # If the regexp support is enabled, then the parser and serializer validation
 # code will use it to validate the xs:pattern facet. If the regexp support is
 # disabled, then this facet will be ignored. The regexp support increases the
 # resulting executable size by about 30-50Kb.
 #
-# @@ TODO: enable by default (the implementation that we use is infested with
-#    warning, maybe we can find a better implementation or a new version).
-#
-config [bool] config.libxsde.regexp ?= false
+config [bool] config.libxsde.regexp ?= true
 regexp = $config.libxsde.regexp
 
 # Base parser/serializer implementation reuse style. Valid values are:

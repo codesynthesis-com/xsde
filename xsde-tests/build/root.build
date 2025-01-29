@@ -42,7 +42,7 @@ parser_validation = $config.xsde_tests.parser_validation
 config [bool] config.xsde_tests.serializer_validation ?= true
 serializer_validation = $config.xsde_tests.serializer_validation
 
-config [bool] config.xsde_tests.regexp ?= false
+config [bool] config.xsde_tests.regexp ?= true
 regexp = $config.xsde_tests.regexp
 
 config [string] config.xsde_tests.reuse_style ?= 'tiein'

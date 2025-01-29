@@ -47,7 +47,6 @@ b.create:config.cxx.std=c++11
 ?sys:libexpat
 
 config.libxsde.external_expat=true
-config.libxsde.regexp=true
 config.libxsde.polymorphic=true
 \
 
@@ -63,7 +62,6 @@ b.create:config.cxx.std=c++11
 ?sys:libexpat
 
 config.libxsde.external_expat=true
-config.libxsde.regexp=true
 config.libxsde.polymorphic=true
 \
 
@@ -83,7 +81,6 @@ bpkg.bindist.archive:--archive-build-meta=windows
 b.create:config.cc.coptions="/W2 /O2"
 b.create:config.cxx.std=c++11
 
-config.libxsde.regexp=true
 config.libxsde.polymorphic=true
 \
 
@@ -100,6 +97,5 @@ bpkg.bindist.archive:--archive-build-meta=linux
 bpkg.bindist.archive:config.install.relocatable=true
 b.create:config.cxx.std=c++11
 
-config.libxsde.regexp=true
 config.libxsde.polymorphic=true
 \
