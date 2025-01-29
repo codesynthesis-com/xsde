@@ -1,0 +1,10 @@
+- Consider adding makefiles to dist/ subdirectory for the following tests:
+
+  cxx/hybrid/binary/custom
+  cxx/hybrid/compositor
+  cxx/hybrid/file-per-type
+  cxx/hybrid/polymorphism/any-type
+  cxx/hybrid/reorder
+  cxx/hybrid/size
+  cxx/parser/polyrecur
+  cxx/serializer/generated-impl
