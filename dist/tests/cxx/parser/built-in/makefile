@@ -40,7 +40,7 @@ endif
 
 driver: driver.o test-pskel.o $(root)/libxsde/xsde/libxsde.a
 
-driver.o: driver.cxx test-pskel.hxx 
+driver.o: driver.cxx test-pskel.hxx
 test-pskel.o: test-pskel.cxx
 
 .PRECIOUS: %-pskel.hxx %-pskel.ixx %-pskel.cxx
@@ -53,12 +53,13 @@ gen: test-pskel.hxx test-pskel.ixx test-pskel.cxx
 .PHONY: test
 test: driver
 	./driver test-000.xml | diff -u test-000.std -
+ifeq ($(XSDE_LONGLONG),y)
 	./driver test-001.xml | diff -u test-001.std -
+endif
 
 .PHONY: clean cleanobj
 cleanobj:
 	rm -f driver driver.o test-pskel.o
 
 clean: cleanobj
-	rm -f test-pskel.cxx test-pskel.ixx test-pskel.hxx 
-
+	rm -f test-pskel.cxx test-pskel.ixx test-pskel.hxx

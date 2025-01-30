@@ -54,9 +54,11 @@ test: driver.exe
 	fc test-000.std tmp
 	del tmp
 !endif
+!if "$(XSDE_LONGLONG)" == "y"
 	.\driver.exe test-001.xml >tmp
 	fc test-001.std tmp
 	del tmp
+!endif
 
 cleanobj:
 	-del driver.exe driver.obj test-sskel.obj

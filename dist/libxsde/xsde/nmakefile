@@ -532,11 +532,11 @@ config.h: $(root)\config\config.nmake
 	@echo #ifndef XSDE_CONFIG_H               >>$@
 	@echo #define XSDE_CONFIG_H               >>$@
 	@echo #ifdef _MSC_VER                     >>$@
-	@echo "#if _MSC_VER >= 1600"              >>$@
+	@echo #if _MSC_VER ^>= 1600               >>$@
 	@echo #define XSDE_CXX11                  >>$@
 	@echo #endif                              >>$@
 	@echo #else                               >>$@
-	@echo "#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (defined(__cplusplus) && __cplusplus >= 201103L)" >>$@
+	@echo #if defined^(__GXX_EXPERIMENTAL_CXX0X__^) ^|^| ^(defined^(__cplusplus^) ^&^& __cplusplus ^>= 201103L^) >>$@
 	@echo #define XSDE_CXX11                  >>$@
 	@echo #endif                              >>$@
 	@echo #endif                              >>$@
