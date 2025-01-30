@@ -264,6 +264,7 @@ bpkg.bindist.archive:--archive-build-meta=+linux-glibc2.31
 bpkg.bindist.archive:config.install.relocatable=true
 bpkg.create:config.bin.lib=static
 bpkg.create:config.bin.liba.lib="shared static"
+b.create:config.cc.coptions="-Wall -O2"
 config.cc.loptions+="-static-libstdc++ -static-libgcc"
 \
 #bindist-linux-glibc2.31-build-error-email: builds@codesynthesis.com
