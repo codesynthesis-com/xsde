@@ -68,8 +68,11 @@
 #undef XSDE_LONGLONG
 
 /* The platform has the snprintf() function.
+ *
+ * Note that VC 14 introduces the snprintf() function (see xsde/cxx/config.hxx
+ * for details).
  */
-#ifdef XSDE_PLATFORM_POSIX
+#if defined(XSDE_PLATFORM_POSIX) || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #  define XSDE_SNPRINTF 1
 #endif
 

@@ -14,11 +14,15 @@
 //
 #undef XSDE_STRTOF
 
-// The snprintf function on Win32 and WinCE is called _snprintf.
+// The snprintf() function on Win32 and WinCE is called _snprintf.
+//
+// Note that VC 14 introduces the snprintf() function.
 //
 #ifdef XSDE_SNPRINTF
 #  if defined(XSDE_PLATFORM_WIN32) || defined(XSDE_PLATFORM_WINCE)
-#    define snprintf _snprintf
+#    if !defined(_MSC_VER) || _MSC_VER < 1900
+#      define snprintf _snprintf
+#    endif
 #  endif
 #endif
 
