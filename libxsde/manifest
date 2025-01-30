@@ -13,7 +13,7 @@ package-description-file: PACKAGE-README.md
 changes-file: NEWS
 url: https://www.codesynthesis.com/products/xsde/
 doc-url: https://www.codesynthesis.com/products/xsde/
-src-url: https://git.codesynthesis.com/cgit/xsd/xsde/
+src-url: https://git.codesynthesis.com/cgit/xsde/xsde/
 email: xsde-users@codesynthesis.com ; Mailing list
 build-warning-email: builds@codesynthesis.com
 requires: libace ? ($cdr) ; CDR implementation library.
