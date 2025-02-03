@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -44,12 +46,12 @@ endif
 
 driver: driver.o test.o $(root)/libxsde/xsde/libxsde.a
 
-driver.o: driver.cxx test.hxx 
+driver.o: driver.cxx test.hxx
 test.o: test.cxx
 
 .PRECIOUS: %.hxx %.ixx %.cxx
 %.hxx %.ixx %.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 .PHONY: gen
 gen: test.hxx test.ixx test.cxx
@@ -63,5 +65,4 @@ cleanobj:
 	rm -f driver driver.o test.o
 
 clean: cleanobj
-	rm -f test.cxx test.ixx test.hxx 
-
+	rm -f test.cxx test.ixx test.hxx

@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -45,7 +47,7 @@ test-sskel.o: test-sskel.cxx
 
 .PRECIOUS: %-sskel.hxx %-sskel.ixx %-sskel.cxx
 %-sskel.hxx %-sskel.ixx %-sskel.cxx: %.xsd
-	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
+	$(XSDE) cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 .PHONY: gen
 gen: test-sskel.hxx test-sskel.ixx test-sskel.cxx

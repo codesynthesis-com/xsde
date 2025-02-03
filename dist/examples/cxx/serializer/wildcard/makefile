@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -30,7 +32,7 @@ email-sskel.o: email-sskel.cxx email-sskel.hxx email.hxx
 .PRECIOUS: %-sskel.hxx %-sskel.cxx
 
 %-sskel.hxx %-sskel.cxx: %.xsd %.map
-	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
 
@@ -55,4 +57,3 @@ cleanobj:
 
 clean: cleanobj
 	rm -f email-sskel.?xx
-

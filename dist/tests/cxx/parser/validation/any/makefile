@@ -1,5 +1,7 @@
 root := ../../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -40,12 +42,12 @@ endif
 
 driver: driver.o test-pskel.o $(root)/libxsde/xsde/libxsde.a
 
-driver.o: driver.cxx test-pskel.hxx 
+driver.o: driver.cxx test-pskel.hxx
 test-pskel.o: test-pskel.cxx
 
 .PRECIOUS: %-pskel.hxx %-pskel.ixx %-pskel.cxx
 %-pskel.hxx %-pskel.ixx %-pskel.cxx: %.xsd
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 .PHONY: gen
 gen: test-pskel.hxx test-pskel.ixx test-pskel.cxx
@@ -59,5 +61,4 @@ cleanobj:
 	rm -f driver driver.o test-pskel.o
 
 clean: cleanobj
-	rm -f test-pskel.cxx test-pskel.ixx test-pskel.hxx 
-
+	rm -f test-pskel.cxx test-pskel.ixx test-pskel.hxx

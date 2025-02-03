@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -48,7 +50,7 @@ people-custom-simpl.o: people-custom-simpl.cxx people-custom-simpl.hxx people.hx
 
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
 %-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-serializer --generate-aggregate \
 --custom-parser people=people_base_pimpl/people-custom-pimpl.hxx \
 --custom-serializer people=people_base_simpl/people-custom-simpl.hxx $<

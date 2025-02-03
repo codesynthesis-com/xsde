@@ -1,5 +1,7 @@
 root := ../../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -53,7 +55,7 @@ transform.hxx xml.hxx xml.ixx
 
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
 %-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --options-file options $<
 
 
@@ -79,4 +81,4 @@ xml.o transform.o driver.o driver
 
 clean: cleanobj
 	rm -f transform-pimpl.?xx transform-pskel.?xx transform-simpl.?xx \
-transform-sskel.?xx transform.?xx 
+transform-sskel.?xx transform.?xx

@@ -1,5 +1,7 @@
 root := ../../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -41,7 +43,7 @@ transform-pimpl.o: transform-pimpl.cxx
 .PRECIOUS: %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx
 
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-aggregate --root-element transformations \
 --generate-polymorphic $<
 
@@ -65,4 +67,4 @@ cleanobj:
 	rm -f transform-pimpl.o transform-pskel.o transform.o driver.o driver
 
 clean: cleanobj
-	rm -f transform-pimpl.?xx transform-pskel.?xx transform.?xx 
+	rm -f transform-pimpl.?xx transform-pskel.?xx transform.?xx

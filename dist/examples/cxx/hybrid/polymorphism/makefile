@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -45,7 +47,7 @@ supermen-simpl.o: supermen-simpl.cxx
 
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
 %-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-serializer --generate-aggregate \
 --generate-polymorphic --generate-typeinfo --root-element supermen $<
 

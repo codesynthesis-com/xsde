@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -52,7 +54,7 @@ object-simpl.o: object-simpl.cxx object-simpl.hxx position.hxx
 
 %.hxx %.cxx %-pskel.hxx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx \
 %-sskel.hxx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-parser --generate-serializer --generate-aggregate \
 --custom-parser object=/object-pimpl.hxx \
 --custom-serializer object=/object-simpl.hxx $<
@@ -80,4 +82,3 @@ position-simpl.o position-sskel.o position.o driver.o driver
 clean: cleanobj
 	rm -f position-pimpl.?xx position-pskel.?xx position-simpl.?xx \
 position-sskel.?xx position.?xx
-

@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -46,7 +48,7 @@ test-pdriver.o: test-pdriver.cxx
 
 .PRECIOUS: %-pskel.hxx %-pskel.ixx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx %-pdriver.cxx
 %-pskel.hxx %-pskel.ixx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx %-pdriver.cxx: %.xsd
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-print-impl --generate-test-driver --force-overwrite $<
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-print-impl --generate-test-driver --force-overwrite $<
 
 .PHONY: gen
 gen: test-pskel.hxx test-pskel.ixx test-pskel.cxx test-pimpl.hxx test-pimpl.cxx test-pdriver.cxx
@@ -60,5 +62,4 @@ cleanobj:
 	rm -f test-pdriver test-pskel.o test-pimpl.o test-pdriver.o
 
 clean: cleanobj
-	rm -f test-pskel.cxx test-pimpl.cxx test-pdriver.cxx test-pskel.ixx test-pimpl.ixx test-pdriver.ixx test-pskel.hxx test-pimpl.hxx 
-
+	rm -f test-pskel.cxx test-pimpl.cxx test-pdriver.cxx test-pskel.ixx test-pimpl.ixx test-pdriver.ixx test-pskel.hxx test-pimpl.hxx

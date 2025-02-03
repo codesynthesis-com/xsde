@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -37,7 +39,7 @@ hello-sskel.o: hello-sskel.cxx hello-sskel.hxx
 
 .PRECIOUS: %-sskel.hxx %-sskel.cxx
 %-sskel.hxx %-sskel.cxx: %.xsd
-	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
+	$(XSDE) cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 
 # Generate.

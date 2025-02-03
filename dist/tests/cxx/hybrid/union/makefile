@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -44,7 +46,7 @@ endif
 
 driver: driver.o test.o test-pskel.o test-pimpl.o test-sskel.o test-simpl.o $(root)/libxsde/xsde/libxsde.a
 
-driver.o: driver.cxx test.hxx test-pskel.hxx test-pimpl.hxx test-sskel.hxx test-simpl.hxx 
+driver.o: driver.cxx test.hxx test-pskel.hxx test-pimpl.hxx test-sskel.hxx test-simpl.hxx
 test.o: test.cxx
 test-pskel.o: test-pskel.cxx
 test-pimpl.o: test-pimpl.cxx
@@ -53,7 +55,7 @@ test-simpl.o: test-simpl.cxx
 
 .PRECIOUS: %.hxx %.ixx %.cxx %-pskel.hxx %-pskel.ixx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx %-sskel.hxx %-sskel.ixx %-sskel.cxx %-simpl.hxx %-simpl.cxx
 %.hxx %.ixx %.cxx %-pskel.hxx %-pskel.ixx %-pskel.cxx %-pimpl.hxx %-pimpl.cxx %-sskel.hxx %-sskel.ixx %-sskel.cxx %-simpl.hxx %-simpl.cxx: %.xsd
-	$(root)/bin/xsde cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-parser --generate-serializer --generate-aggregate --generate-detach $<
+	$(XSDE) cxx-hybrid $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-parser --generate-serializer --generate-aggregate --generate-detach $<
 
 .PHONY: gen
 gen: test.hxx test.ixx test.cxx test-pskel.hxx test-pskel.ixx test-pskel.cxx test-pimpl.hxx test-pimpl.cxx test-sskel.hxx test-sskel.ixx test-sskel.cxx test-simpl.hxx test-simpl.cxx
@@ -67,5 +69,4 @@ cleanobj:
 	rm -f driver driver.o test.o test-pskel.o test-pimpl.o test-sskel.o test-simpl.o
 
 clean: cleanobj
-	rm -f test.cxx test-pskel.cxx test-pimpl.cxx test-sskel.cxx test-simpl.cxx test.ixx test-pskel.ixx test-pimpl.ixx test-sskel.ixx test-simpl.ixx test.hxx test-pskel.hxx test-pimpl.hxx test-sskel.hxx test-simpl.hxx 
-
+	rm -f test.cxx test-pskel.cxx test-pimpl.cxx test-sskel.cxx test-simpl.cxx test.ixx test-pskel.ixx test-pimpl.ixx test-sskel.ixx test-simpl.ixx test.hxx test-pskel.hxx test-pimpl.hxx test-sskel.hxx test-simpl.hxx

@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -46,7 +48,7 @@ people-sskel.o: people-sskel.cxx people-sskel.hxx people.hxx
 .PRECIOUS: %-sskel.hxx %-sskel.cxx
 
 %-sskel.hxx %-sskel.cxx: %.xsd %.map
-	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
 

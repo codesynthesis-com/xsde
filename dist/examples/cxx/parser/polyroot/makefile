@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -37,7 +39,7 @@ supermen-pskel.o: supermen-pskel.cxx supermen-pskel.hxx
 .PRECIOUS: %-pskel.hxx %-pskel.cxx
 
 %-pskel.hxx %-pskel.cxx: %.xsd
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --generate-polymorphic $<
 
 

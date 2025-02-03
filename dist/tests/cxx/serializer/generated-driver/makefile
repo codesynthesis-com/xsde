@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -40,13 +42,13 @@ endif
 
 test-sdriver: test-simpl.o test-sskel.o test-sdriver.o $(root)/libxsde/xsde/libxsde.a
 
-test-simpl.o: test-simpl.cxx test-sskel.hxx 
+test-simpl.o: test-simpl.cxx test-sskel.hxx
 test-sskel.o: test-sskel.cxx
 test-sdriver.o: test-sdriver.cxx
 
 .PRECIOUS: %-sskel.hxx %-sskel.ixx %-sskel.cxx %-sdriver.cxx
 %-sskel.hxx %-sskel.ixx %-sskel.cxx %-sdriver.cxx: %.xsd
-	$(root)/bin/xsde cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-test-driver --force-overwrite $<
+	$(XSDE) cxx-serializer $(XSDFLAGS) $(EXTRA_XSDFLAGS) --generate-test-driver --force-overwrite $<
 
 .PHONY: gen
 gen: test-sskel.hxx test-sskel.ixx test-sskel.cxx test-sdriver.cxx
@@ -60,5 +62,4 @@ cleanobj:
 	rm -f test-sdriver test-simpl.o test-sskel.o test-sdriver.o
 
 clean: cleanobj
-	rm -f test-sskel.cxx test-sdriver.cxx test-sskel.ixx test-sdriver.ixx test-sskel.hxx 
-
+	rm -f test-sskel.cxx test-sdriver.cxx test-sskel.ixx test-sdriver.ixx test-sskel.hxx

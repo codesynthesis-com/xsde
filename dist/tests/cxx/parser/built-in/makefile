@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 EXTRA_CPPFLAGS := -I$(root)/libxsde
@@ -45,7 +47,7 @@ test-pskel.o: test-pskel.cxx
 
 .PRECIOUS: %-pskel.hxx %-pskel.ixx %-pskel.cxx
 %-pskel.hxx %-pskel.ixx %-pskel.cxx: %.xsd
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) $<
 
 .PHONY: gen
 gen: test-pskel.hxx test-pskel.ixx test-pskel.cxx

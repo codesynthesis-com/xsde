@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -30,7 +32,7 @@ text-pskel.o: text-pskel.cxx text-pskel.hxx anchor.hxx
 .PRECIOUS: %-pskel.hxx %-pskel.cxx
 
 %-pskel.hxx %-pskel.cxx: %.xsd %.map
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
 
@@ -54,4 +56,3 @@ cleanobj:
 
 clean: cleanobj
 	rm -f text-pskel.?xx
-

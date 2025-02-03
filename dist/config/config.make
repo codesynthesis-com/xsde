@@ -29,6 +29,12 @@ RANLIB   := ranlib
 XSDFLAGS := --generate-inline
 
 
+# External XSD/e compiler binary if comes from a seperate package (only
+# used by examples and tests).
+#
+#XSDE := xsde
+
+
 # Platform. Valid values are:
 #
 # 'wince'  - Windows CE

@@ -1,5 +1,7 @@
 root := ../../../..
 
+XSDE ?= $(root)/bin/xsde
+
 include $(root)/build/cxx/rules.make
 
 # Build.
@@ -42,7 +44,7 @@ protocol-pskel.o: protocol-pskel.cxx protocol-pskel.hxx protocol.hxx
 .PRECIOUS: %-pskel.hxx %-pskel.cxx
 
 %-pskel.hxx %-pskel.cxx: %.xsd %.map
-	$(root)/bin/xsde cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
+	$(XSDE) cxx-parser $(XSDFLAGS) $(EXTRA_XSDFLAGS) \
 --type-map $*.map $<
 
 
