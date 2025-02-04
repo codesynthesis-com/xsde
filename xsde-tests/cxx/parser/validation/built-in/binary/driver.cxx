@@ -20,7 +20,9 @@ compare (buffer* x, const char* p, size_t n)
 {
   buffer b;
   b.size (n);
-  memcpy (b.data (), p, n);
+
+  if (n != 0)
+    memcpy (b.data (), p, n);
 
   bool r = *x == b;
   delete x;

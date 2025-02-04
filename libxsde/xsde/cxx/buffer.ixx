@@ -210,7 +210,7 @@ namespace xsde
     operator== (const buffer& x, const buffer& y)
     {
       return x.size () == y.size () &&
-        memcmp (x.data (), y.data (), x.size ()) == 0;
+        (x.size () == 0 || memcmp (x.data (), y.data (), x.size ()) == 0);
     }
 
     inline bool
