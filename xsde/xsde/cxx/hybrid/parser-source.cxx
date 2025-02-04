@@ -1565,7 +1565,11 @@ namespace CXX
         {
           using SemanticGraph::Complex;
 
-          if (a.fixed_p ())
+          SemanticGraph::Type& t (a.type ());
+
+          // We still need to free the value if it is var-length.
+          //
+          if (a.fixed_p () && fixed_length (t))
             return;
 
           String const& name (epname (a));
@@ -1578,9 +1582,31 @@ namespace CXX
           if (arg != L"void")
           {
             os << arg << " x)"
-               << "{"
-               << access_seq (a) << ename (a) << " (x);"
-               << "}";
+               << "{";
+
+            if (a.fixed_p ())
+            {
+              if (arg != L"char*") // @@ Is there a better way?
+              {
+                if (!custom_alloc)
+                  os << "delete x;";
+                else
+                  os << "typedef " << fq_name (t) << " _dtor;"
+                     << "x->~_dtor ();"
+                     << "::xsde::cxx::free (x);";
+              }
+              else
+              {
+                if (!custom_alloc)
+                  os << "delete [] x;";
+                else
+                  os << "::xsde::cxx::free (x);";
+              }
+            }
+            else
+              os << access_seq (a) << ename (a) << " (x);";
+
+            os << "}";
           }
           else
           {

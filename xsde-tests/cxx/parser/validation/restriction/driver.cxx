@@ -57,7 +57,6 @@ struct type_r_pimpl: type_r_pskel
 {
 };
 
-
 int
 main (int argc, char* argv[])
 {

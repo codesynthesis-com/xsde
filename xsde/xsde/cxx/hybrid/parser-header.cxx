@@ -547,10 +547,14 @@ namespace CXX
         virtual void
         traverse (SemanticGraph::Attribute& a)
         {
-          if (a.fixed_p ())
+          SemanticGraph::Type& t (a.type ());
+
+          // We still need to free the value if it is var-length.
+          //
+          if (a.fixed_p () && fixed_length (t))
             return;
 
-          String const& arg (parg_type (a.type ()));
+          String const& arg (parg_type (t));
 
           os << "virtual void" << endl
              << epname (a) << " (";
