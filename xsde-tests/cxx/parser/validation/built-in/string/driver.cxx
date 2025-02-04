@@ -7,6 +7,10 @@
 
 #include <xsde/config.h>
 
+#ifdef XSDE_STL
+#  include <xsde/cxx/string.hxx>
+#endif
+
 // Let the runtime header sort out which version (stl/no-stl) to
 // include.
 //
@@ -26,6 +30,17 @@ compare (const string_sequence* x, const string_sequence& y)
   delete x;
   return r;
 }
+
+struct string_wrapper
+{
+#ifdef XSDE_STL
+  std::string value;
+  string_wrapper (const std::string& s): value (s) {}
+#else
+  xsde::cxx::string value;
+  string_wrapper (char* s) {value.attach (s);}
+#endif
+};
 
 int
 main ()
@@ -50,7 +65,7 @@ main ()
     p._characters (" ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_string () == string (" \n\t aaa bbb "));
+            string_wrapper (p.post_string ()).value == " \n\t aaa bbb ");
   }
 
   // normalized_string
@@ -66,7 +81,8 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_normalized_string () == string ("    aaa     bbb  "));
+            string_wrapper (p.post_normalized_string ()).value ==
+            "    aaa     bbb  ");
   }
 
   // token
@@ -82,7 +98,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_token () == string ("aaa bbb"));
+            string_wrapper (p.post_token ()).value == "aaa bbb");
   }
 
   // name
@@ -97,7 +113,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_name () == string ("a:b-c_d123"));
+            string_wrapper (p.post_name ()).value == "a:b-c_d123");
   }
 
   {
@@ -110,7 +126,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_name () == string ("_12"));
+            string_wrapper (p.post_name ()).value == "_12");
   }
 
   {
@@ -123,7 +139,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_name () == string (":12"));
+            string_wrapper (p.post_name ()).value == ":12");
   }
 
   // nmtoken
@@ -139,7 +155,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_nmtoken () == string ("123a:b-c_d123"));
+            string_wrapper (p.post_nmtoken ()).value == "123a:b-c_d123");
   }
 
   // nmtokens
@@ -178,7 +194,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_ncname () == string ("a.b-c_d123"));
+            string_wrapper (p.post_ncname ()).value == "a.b-c_d123");
   }
 
   // id
@@ -193,7 +209,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_id () == string ("a.b-c_d123"));
+            string_wrapper (p.post_id ()).value == "a.b-c_d123");
   }
 
   // idref
@@ -208,7 +224,7 @@ main ()
     p._characters ("  ");
     p._post ();
     assert (!c.error_type () &&
-            p.post_idref () == string ("a.b-c_d123"));
+            string_wrapper (p.post_idref ()).value == "a.b-c_d123");
   }
 
   // idrefs
@@ -244,7 +260,8 @@ main ()
     p._pre_impl (c);
     p._characters (" x ");
     p._post ();
-    assert (!c.error_type () && p.post_language () == string ("x"));
+    assert (!c.error_type () &&
+            string_wrapper (p.post_language ()).value == "x");
   }
 
   {
@@ -254,7 +271,8 @@ main ()
     p._pre_impl (c);
     p._characters (" en ");
     p._post ();
-    assert (!c.error_type () && p.post_language () == string ("en"));
+    assert (!c.error_type () &&
+            string_wrapper (p.post_language ()).value == "en");
   }
 
   {
@@ -265,7 +283,8 @@ main ()
     p._characters (" en");
     p._characters ("-us ");
     p._post ();
-    assert (!c.error_type () && p.post_language () == string ("en-us"));
+    assert (!c.error_type () &&
+            string_wrapper (p.post_language ()).value == "en-us");
   }
 
   {
@@ -276,8 +295,8 @@ main ()
     p._characters ("one-two-three-four44-seven77-eight888");
     p._post ();
     assert (!c.error_type () &&
-            p.post_language () ==
-            string ("one-two-three-four44-seven77-eight888"));
+            string_wrapper (p.post_language ()).value ==
+            "one-two-three-four44-seven77-eight888");
   }
 
   // Bad

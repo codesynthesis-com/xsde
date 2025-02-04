@@ -4,26 +4,26 @@
   <!-- simple case -->
   <complexType name="base-a">
     <sequence minOccurs="1" maxOccurs="2">
-      <element name="a" type="string" minOccurs="0"/>
-      <element name="b" type="string"/>
-      <element name="c" type="string"/>
+      <element name="a" type="int" minOccurs="0"/>
+      <element name="b" type="int"/>
+      <element name="c" type="int"/>
     </sequence>
-    <attribute name="x" type="string"/>
-    <attribute name="y" type="string"/>
-    <attribute name="z" type="string"/>
+    <attribute name="x" type="int"/>
+    <attribute name="y" type="int"/>
+    <attribute name="z" type="int"/>
   </complexType>
 
   <complexType name="restriction-a">
     <complexContent>
       <restriction base="t:base-a">
         <sequence minOccurs="1" maxOccurs="1">
-          <element name="a" type="string" minOccurs="1"/>
-          <element name="b" type="string"/>
-          <element name="c" type="string"/>
+          <element name="a" type="int" minOccurs="1"/>
+          <element name="b" type="int"/>
+          <element name="c" type="int"/>
         </sequence>
 	<!-- Can be ommited if not changed, e.g., 'x'. -->
-	<attribute name="y" type="string"/> <!-- But can also be repeated without change. -->
-        <attribute name="z" type="string" use="required"/>
+	<attribute name="y" type="int"/> <!-- But can also be repeated without change. -->
+        <attribute name="z" type="int" use="required"/>
       </restriction>
     </complexContent>
   </complexType>
@@ -31,19 +31,19 @@
   <!-- restriction of an extension -->
   <complexType name="base-b">
     <sequence>
-      <element name="a" type="string" minOccurs="0"/>
+      <element name="a" type="int" minOccurs="0"/>
     </sequence>
-    <attribute name="x" type="string"/>
+    <attribute name="x" type="int"/>
   </complexType>
 
   <complexType name="extension-b">
     <complexContent>
       <extension base="t:base-b">
         <choice>
-          <element name="b" type="string" minOccurs="0"/>
-          <element name="c" type="string"/>
+          <element name="b" type="int" minOccurs="0"/>
+          <element name="c" type="int"/>
         </choice>
-        <attribute name="y" type="string"/>
+        <attribute name="y" type="int"/>
       </extension>
     </complexContent>
   </complexType>
@@ -53,14 +53,14 @@
       <restriction base="t:extension-b">
         <sequence>
 	  <sequence>
-            <element name="a" type="string" minOccurs="1"/>
+            <element name="a" type="int" minOccurs="1"/>
           </sequence>
 	  <choice>
-            <element name="b" type="string" minOccurs="0"/>
-            <element name="c" type="string"/>
+            <element name="b" type="int" minOccurs="0"/>
+            <element name="c" type="int"/>
           </choice>
 	</sequence>
-        <attribute name="y" type="string" use="required"/>
+        <attribute name="y" type="int" use="required"/>
       </restriction>
     </complexContent>
   </complexType>

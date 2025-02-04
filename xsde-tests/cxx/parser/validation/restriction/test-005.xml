@@ -4,8 +4,8 @@
 
   <!-- valid extension but not restriction: y attribute -->
   <restriction-b>
-    <a>a</a>
-    <b>b</b>
+    <a>3</a>
+    <b>4</b>
   </restriction-b>
 
 </t:root>

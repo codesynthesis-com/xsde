@@ -1,6 +1,8 @@
 // file      : cxx/parser/basic/driver.cxx
 // copyright : GNU GPL v2 + exceptions; see accompanying LICENSE file
 
+#include <xsde/config.h>
+
 #if defined(XSDE_CUSTOM_ALLOCATOR) && !defined(XSDE_DEFAULT_ALLOCATOR)
 #  include <stdlib.h>
 #endif
@@ -12,6 +14,10 @@
 #  include <string>
 #  include <ostream>
 #  include <fstream>
+#endif
+
+#ifdef XSDE_STL
+#  include <xsde/cxx/string.hxx>
 #endif
 
 #include <xsde/cxx/ro-string.hxx>
@@ -139,6 +145,17 @@ _start_element_impl (const ro_string& ns, const ro_string& n, const char* t)
   return false;
 }
 
+struct string_wrapper
+{
+#ifdef XSDE_STL
+  std::string value;
+  string_wrapper (const std::string& s): value (s) {}
+#else
+  xsde::cxx::string value;
+  string_wrapper (char* s) {value.attach (s);}
+#endif
+};
+
 bool hello_pimpl::
 _end_element_impl (const ro_string& ns, const ro_string& n)
 {
@@ -147,12 +164,14 @@ _end_element_impl (const ro_string& ns, const ro_string& n)
 
   if (n == "greeting" && ns.empty ())
   {
+    string_wrapper s (greeting_parser_.post_string ());
+
 #ifdef XSDE_IOSTREAM
-    cout << n << ' ' << greeting_parser_.post_string () << endl;
+    cout << n << ' ' << s.value << endl;
 #else
     write (cout, n);
     cout << ' ';
-    write (cout, greeting_parser_.post_string ());
+    write (cout, s.value);
     cout << endl;
 #endif
     return true;
@@ -160,12 +179,14 @@ _end_element_impl (const ro_string& ns, const ro_string& n)
 
   if (n == "name" && ns.empty ())
   {
+    string_wrapper s (name_parser_.post_string ());
+
 #ifdef XSDE_IOSTREAM
-    cout << n << ' ' << name_parser_.post_string () << endl;
+    cout << n << ' ' << s.value << endl;
 #else
     write (cout, n);
     cout << ' ';
-    write (cout, name_parser_.post_string ());
+    write (cout, s.value);
     cout << endl;
 #endif
     return true;

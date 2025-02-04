@@ -68,7 +68,7 @@ main (int argc, char* argv[])
 
   try
   {
-    xml_schema::string_pimpl string_p;
+    xml_schema::int_pimpl int_p;
     base_a_pimpl base_a_p;
     restriction_a_pimpl restriction_a_p;
     extension_b_pimpl extension_b_p;
@@ -76,17 +76,17 @@ main (int argc, char* argv[])
     type_b_pimpl type_b_p;
     type_r_pimpl type_r_p;
 
-    base_a_p.parsers (string_p, string_p, string_p,
-                      string_p, string_p, string_p);
+    base_a_p.parsers (int_p, int_p, int_p,
+                      int_p, int_p, int_p);
 
-    restriction_a_p.parsers (string_p, string_p, string_p,
-                             string_p, string_p, string_p);
+    restriction_a_p.parsers (int_p, int_p, int_p,
+                             int_p, int_p, int_p);
 
-    extension_b_p.parsers (string_p, string_p, string_p,
-                           string_p, string_p);
+    extension_b_p.parsers (int_p, int_p, int_p,
+                           int_p, int_p);
 
-    restriction_b_p.parsers (string_p, string_p, string_p,
-                             string_p, string_p);
+    restriction_b_p.parsers (int_p, int_p, int_p,
+                             int_p, int_p);
 
     type_b_p.parsers (base_a_p, extension_b_p);
     type_r_p.parsers (restriction_a_p, restriction_b_p);

@@ -7,6 +7,10 @@
 #include <string>
 #include <iostream>
 
+#ifdef XSDE_STL
+#  include <xsde/cxx/string.hxx>
+#endif
+
 #include "test-pskel.hxx"
 
 #undef NDEBUG
@@ -27,6 +31,17 @@ namespace test
     int_pimpl base_impl_;
   };
 
+  struct string_wrapper
+  {
+#ifdef XSDE_STL
+    std::string value;
+    string_wrapper (const std::string& s): value (s) {}
+#else
+    xsde::cxx::string value;
+    string_wrapper (char* s) {value.attach (s);}
+#endif
+  };
+
   struct gender_pimpl: gender_pskel
   {
     gender_pimpl ()
@@ -37,9 +52,9 @@ namespace test
     virtual ::gender
     post_gender ()
     {
-      std::string str (post_string ());
+      string_wrapper str (post_string ());
 
-      if (str == "male")
+      if (str.value == "male")
         return male;
       else
         return female;

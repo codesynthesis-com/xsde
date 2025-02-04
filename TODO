@@ -8,3 +8,13 @@
   cxx/hybrid/size
   cxx/parser/polyrecur
   cxx/serializer/generated-impl
+
+- Fix undefined behavior when using enum variable which contain invalid value.
+  Such issues are reported by the undefined behavior sanitizer as follows:
+
+  xsde-examples/cxx/hybrid/compositors/compositors.cxx:182:13: runtime error: load of value 2, which is not a valid value for type 'choice_arm_tag'
+
+  In such cases we intentionally assign invalid values to enum variable to
+  indicate an absent value. One way to fix that is to use size_t type instead
+  of enum for the variable and only cast to enum when it is supposed that the
+  variable contains a valid enum value.

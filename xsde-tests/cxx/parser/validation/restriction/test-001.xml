@@ -3,9 +3,9 @@
         xsi:schemaLocation="test test.xsd">
 
   <!-- valid base but not restriction: a element -->
-  <restriction-a z="z">
-    <b>b</b>
-    <c>c</c>
+  <restriction-a z="2">
+    <b>4</b>
+    <c>5</c>
   </restriction-a>
 
 </t:root>

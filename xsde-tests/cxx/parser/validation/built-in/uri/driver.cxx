@@ -5,6 +5,12 @@
 //
 #include <string>
 
+#include <xsde/config.h>
+
+#ifdef XSDE_STL
+#  include <xsde/cxx/string.hxx>
+#endif
+
 // Let the runtime header sort out which version (stl/no-stl) to
 // include.
 //
@@ -15,6 +21,17 @@
 
 using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;
+
+struct string_wrapper
+{
+#ifdef XSDE_STL
+  std::string value;
+    string_wrapper (const std::string& s): value (s) {}
+#else
+  xsde::cxx::string value;
+  string_wrapper (char* s) {value.attach (s);}
+#endif
+};
 
 int
 main ()
@@ -30,7 +47,7 @@ main ()
     p._pre_impl (c);
     p._characters ("  ");
     p._post ();
-    assert (!c.error_type () && p.post_uri () == string (""));
+    assert (!c.error_type () && string_wrapper (p.post_uri ()).value == "");
   }
 
   {
@@ -40,7 +57,8 @@ main ()
     p._pre_impl (c);
     p._characters ("relative");
     p._post ();
-    assert (!c.error_type () && p.post_uri () == string ("relative"));
+    assert (!c.error_type () &&
+            string_wrapper (p.post_uri ()).value == "relative");
   }
 
   {
@@ -50,7 +68,7 @@ main ()
     p._pre_impl (c);
     p._characters ("#id");
     p._post ();
-    assert (!c.error_type () && p.post_uri () == string ("#id"));
+    assert (!c.error_type () && string_wrapper (p.post_uri ()).value == "#id");
   }
 
   {
@@ -61,7 +79,8 @@ main ()
     p._characters ("http://www.example.com/foo#bar");
     p._post ();
     assert (!c.error_type () &&
-            p.post_uri () == string ("http://www.example.com/foo#bar"));
+            string_wrapper (p.post_uri ()).value ==
+            "http://www.example.com/foo#bar");
   }
 
   return 0;
