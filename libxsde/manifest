@@ -72,7 +72,6 @@ bindist-windows-build-config:
 \
 +bpkg.bindist.archive:
 +bbot.bindist.upload:
-bpkg.bindist.archive:--archive-build-meta=windows
 
 # Relocatable by default (see target configuration for details).
 #
@@ -93,7 +92,9 @@ bindist-linux-build-config:
 \
 +bpkg.bindist.archive:
 +bbot.bindist.upload:
-bpkg.bindist.archive:--archive-build-meta=linux
+bpkg.bindist.archive:--archive-no-os
+bpkg.bindist.archive:--archive-lang-impl=cc=
+bpkg.bindist.archive:--archive-build-meta=+linux-gcc10
 bpkg.bindist.archive:config.install.relocatable=true
 b.create:config.cxx.std=c++11
 
