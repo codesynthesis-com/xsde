@@ -80,7 +80,12 @@ struct any_extension_pimpl: any_extension_pskel
   x (char* v)
   {
     cout << "  x = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -112,7 +117,12 @@ struct any_simple_extension_pimpl: any_simple_extension_pskel
   x (char* v)
   {
     cout << "  x = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
@@ -120,7 +130,12 @@ struct any_simple_extension_pimpl: any_simple_extension_pskel
   {
     char* v = post_any_simple_type ();
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -141,7 +156,12 @@ struct type_pimpl: type_pskel
   as (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 };

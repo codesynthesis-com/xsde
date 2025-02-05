@@ -55,7 +55,13 @@ main (int argc, char* argv[])
   r->complex ().custom_data ().push_back (new int (123));
 
   type* c = r->_clone ();
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete r;
+#else
+  r->~type ();
+  xsde::cxx::free (r);
+#endif
 
   assert (c->complex ().custom_data ().size () == 1);
   assert (*static_cast<int*> (c->complex ().custom_data ()[0]) == 123);
@@ -75,7 +81,12 @@ main (int argc, char* argv[])
   doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   root_s.post ();
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete c;
+#else
+  c->~type ();
+  xsde::cxx::free (c);
+#endif
 
   return 0;
 }

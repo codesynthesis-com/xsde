@@ -45,7 +45,12 @@ struct sub_pimpl: sub_type_pskel
   name (char* n)
   {
     cout << "sub::name: " << n << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] n;
+#else
+    xsde::cxx::free (n);
+#endif
   }
 #endif
 
@@ -81,7 +86,12 @@ struct indir_pimpl: indir_type_pskel
   name (char* n)
   {
     cout << "indir::name: " << n << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] n;
+#else
+    xsde::cxx::free (n);
+#endif
   }
 #endif
 
@@ -123,7 +133,12 @@ struct a_pimpl: a_pskel
   name (char* n)
   {
     cout << "a::name: " << n << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] n;
+#else
+    xsde::cxx::free (n);
+#endif
   }
 #endif
 
@@ -153,7 +168,12 @@ struct b_pimpl: b_pskel
   name (char* n)
   {
     cout << "b::name: " << n << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] n;
+#else
+    xsde::cxx::free (n);
+#endif
   }
 #endif
 
@@ -195,7 +215,12 @@ struct test_pimpl: test_type_pskel
   name (char* n)
   {
     cout << "test::name: " << n << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] n;
+#else
+    xsde::cxx::free (n);
+#endif
   }
 #endif
 

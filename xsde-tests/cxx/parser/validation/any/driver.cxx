@@ -41,14 +41,24 @@ struct any_a_pimpl: any_a_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   x (char* v)
   {
     cout << "  x = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 

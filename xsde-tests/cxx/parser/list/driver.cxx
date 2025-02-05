@@ -34,7 +34,12 @@ struct string_list_pimpl: string_list_pskel
   item (char* v)
   {
     cout << "  '" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -70,7 +75,12 @@ struct string_list_lang_pimpl: string_list_lang_pskel
   lang (char* v)
   {
     cout << "  lang: '" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 

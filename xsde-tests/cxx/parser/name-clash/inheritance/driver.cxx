@@ -41,14 +41,24 @@ struct derived_pimpl: derived_pskel
   e (char* v)
   {
     cout << "e: " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   e1 (char* v)
   {
     cout << "e1: " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 };

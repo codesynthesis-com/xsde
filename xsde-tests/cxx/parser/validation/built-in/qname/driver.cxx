@@ -33,7 +33,14 @@ compare (qname* x, const char* p, const char* n)
   y.name_copy (n);
 
   bool r = *x == y;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete x;
+#else
+  x->~qname ();
+  xsde::cxx::free (x);
+#endif
+
   return r;
 }
 #endif

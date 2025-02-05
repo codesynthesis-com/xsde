@@ -49,7 +49,20 @@ main (int argc, char* argv[])
   doc_p.parse (argv[1]);
 
 #ifdef XSDE_CXX11
+#ifndef XSDE_CUSTOM_ALLOCATOR
   std::unique_ptr<type> r (root_p.post ());
+#else
+  struct deleter
+  {
+    void operator() (type* t) const
+    {
+      t->~type ();
+      xsde::cxx::free (t);
+    }
+  };
+
+  std::unique_ptr<type, deleter> r (root_p.post ());
+#endif
 #else
   std::auto_ptr<type> r (root_p.post ());
 #endif

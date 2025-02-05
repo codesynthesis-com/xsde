@@ -24,10 +24,17 @@ using namespace xsde::cxx::parser;
 using namespace xsde::cxx::parser::validating;
 
 bool
-compare (const string_sequence* x, const string_sequence& y)
+compare (string_sequence* x, const string_sequence& y)
 {
   bool r = *x == y;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete x;
+#else
+  x->~string_sequence ();
+  xsde::cxx::free (x);
+#endif
+
   return r;
 }
 

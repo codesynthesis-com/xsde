@@ -59,7 +59,12 @@ main (int argc, char* argv[])
   doc_s.serialize (cout, xml_schema::document_simpl::pretty_print);
   root_s.post ();
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete r;
+#else
+  r->~type ();
+  xsde::cxx::free (r);
+#endif
 
   return 0;
 }

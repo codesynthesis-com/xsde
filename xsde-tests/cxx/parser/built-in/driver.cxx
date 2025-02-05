@@ -232,7 +232,13 @@ struct type_pimpl: type_pskel
       cout << *i << " ";
 
     cout << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete s;
+#else
+    s->~string_sequence ();
+    xsde::cxx::free (s);
+#endif
   }
 
   virtual void
@@ -263,7 +269,13 @@ struct type_pimpl: type_pskel
       cout << *i << " ";
 
     cout << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete s;
+#else
+    s->~string_sequence ();
+    xsde::cxx::free (s);
+#endif
   }
 
   virtual void
@@ -290,42 +302,72 @@ struct type_pimpl: type_pskel
   any_simple_type (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   string (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   normalized_string (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   token (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   name (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   nmtoken (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
@@ -338,28 +380,49 @@ struct type_pimpl: type_pskel
       cout << *i << " ";
 
     cout << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete s;
+#else
+    s->~string_sequence ();
+    xsde::cxx::free (s);
+#endif
   }
 
   virtual void
   ncname (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   id (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   idref (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
@@ -372,28 +435,50 @@ struct type_pimpl: type_pskel
       cout << *i << " ";
 
     cout << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete s;
+#else
+    s->~string_sequence ();
+    xsde::cxx::free (s);
+#endif
   }
 
   virtual void
   language (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   uri (char* v)
   {
     cout << "'" << v << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   qname (xml_schema::qname* v)
   {
     cout << "'" << v->prefix () << ":" << v->name () << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete v;
+#else
+    v->~qname ();
+    xsde::cxx::free (v);
+#endif
   }
 
 #endif // XSDE_STL
@@ -404,7 +489,13 @@ struct type_pimpl: type_pskel
   {
     std::string tmp (v->data (), v->size ());
     cout << "'" << tmp << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete v;
+#else
+    v->~buffer ();
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
@@ -412,7 +503,13 @@ struct type_pimpl: type_pskel
   {
     std::string tmp (v->data (), v->size ());
     cout << "'" << tmp << "'" << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete v;
+#else
+    v->~buffer ();
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void

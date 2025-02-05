@@ -44,6 +44,17 @@ data_destructor_pos (void* p, size_t i)
   }
 }
 
+static inline string*
+new_string (const char* s)
+{
+#ifndef XSDE_CUSTOM_ALLOCATOR
+  return new string (s);
+#else
+  string* r (static_cast<string*> (xsde::cxx::alloc (sizeof (string))));
+  return new (r) string (s);
+#endif
+}
+
 int
 main ()
 {
@@ -208,7 +219,7 @@ main ()
 
   {
     var s;
-    s.push_back (new string ("aaa"));
+    s.push_back (new_string ("aaa"));
     assert (s.size () == 1 && s[0] == "aaa");
     s.pop_back ();
     assert (s.size () == 0);
@@ -216,21 +227,21 @@ main ()
 
   {
     var s;
-    s.push_back (new string ("aaa"));
+    s.push_back (new_string ("aaa"));
     s.erase (s.begin ());
     assert (s.size () == 0);
 
-    s.push_back (new string ("aaa"));
-    s.push_back (new string ("bbb"));
-    s.push_back (new string ("ccc"));
+    s.push_back (new_string ("aaa"));
+    s.push_back (new_string ("bbb"));
+    s.push_back (new_string ("ccc"));
     s.erase (s.begin ());
     assert (s.size () == 2 && s[0] == "bbb" && s[1] == "ccc");
 
-    s.push_back (new string ("ddd"));
+    s.push_back (new_string ("ddd"));
     s.erase (s.begin () + 1);
     assert (s.size () == 2 && s[0] == "bbb" && s[1] == "ddd");
 
-    s.push_back (new string ("eee"));
+    s.push_back (new_string ("eee"));
     s.erase (s.begin () + 2);
     assert (s.size () == 2 && s[0] == "bbb" && s[1] == "ddd");
   }
@@ -238,27 +249,27 @@ main ()
   {
     var s;
     s.reserve (2);
-    s.push_back (new string ("aaa"));
-    s.push_back (new string ("bbb"));
-    s.push_back (new string ("ccc"));
+    s.push_back (new_string ("aaa"));
+    s.push_back (new_string ("bbb"));
+    s.push_back (new_string ("ccc"));
     assert (s.size () == 3 && s[0] == "aaa" &&
             s[1] == "bbb" && s[2] == "ccc");
   }
 
   {
     var s;
-    s.insert (s.begin (), new string ("aaa"));
+    s.insert (s.begin (), new_string ("aaa"));
     assert (s.size () == 1 && s[0] == "aaa");
-    s.push_back (new string ("bbb"));
-    s.push_back (new string ("ccc"));
+    s.push_back (new_string ("bbb"));
+    s.push_back (new_string ("ccc"));
 
-    s.insert (s.begin (), new string ("ddd"));
+    s.insert (s.begin (), new_string ("ddd"));
     assert (s[0] == "ddd");
 
-    s.insert (s.begin () + 1, new string ("eee"));
+    s.insert (s.begin () + 1, new_string ("eee"));
     assert (s[1] == "eee");
 
-    s.insert (s.end (), new string ("fff"));
+    s.insert (s.end (), new_string ("fff"));
     assert (s[5] == "fff");
 
     assert (s[0] == "ddd" && s[1] == "eee" && s[2] == "aaa" &&
@@ -268,19 +279,28 @@ main ()
   {
     var s;
     s.reserve (2);
-    s.push_back (new string ("aaa"));
-    s.push_back (new string ("bbb"));
-    s.insert (s.begin () + 1, new string ("ccc"));
+    s.push_back (new_string ("aaa"));
+    s.push_back (new_string ("bbb"));
+    s.insert (s.begin () + 1, new_string ("ccc"));
     assert (s[0] == "aaa" && s[1] == "ccc" && s[2] == "bbb");
   }
 
   {
     var s;
-    s.push_back (new string ("aaa"));
-    s.push_back (new string ("bbb"));
-    s.push_back (new string ("ccc"));
-    delete s.detach (s.begin () + 1);
-    s.attach (s.begin () + 1, new string ("bbb"));
+    s.push_back (new_string ("aaa"));
+    s.push_back (new_string ("bbb"));
+    s.push_back (new_string ("ccc"));
+
+    string* str (s.detach (s.begin () + 1));
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+    delete str;
+#else
+    str->~string ();
+    xsde::cxx::free (str);
+#endif
+
+    s.attach (s.begin () + 1, new_string ("bbb"));
     assert (s[0] == "aaa" && s[1] == "bbb" && s[2] == "ccc");
   }
 
@@ -374,7 +394,15 @@ main ()
     s.push_back_copy ("aaa");
     s.push_back_copy ("bbb");
     s.push_back_copy ("ccc");
-    delete[] s.detach (s.begin () + 1);
+
+    char* p (s.detach (s.begin () + 1));
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
+    delete[] p;
+#else
+    xsde::cxx::free (p);
+#endif
+
     s.attach (s.begin () + 1, strdupx ("bbb"));
     assert (s[0] == string ("aaa") &&
             s[1] == string ("bbb") &&

@@ -53,28 +53,48 @@ struct choice_pimpl: choice_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   b (char* v)
   {
     cout << "  b = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   c (char* v)
   {
     cout << "  c = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   d (char* v)
   {
     cout << "  d = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 

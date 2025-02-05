@@ -58,7 +58,11 @@ struct person_pimpl: person_pskel
   virtual void
   id (char* s)
   {
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] s;
+#else
+    xsde::cxx::free (s);
+#endif
 
     if (i_ == 5)
       throw app (5);

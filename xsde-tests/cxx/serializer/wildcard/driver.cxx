@@ -67,8 +67,13 @@ struct root_simpl: virtual root_sskel
   virtual void
   any_attribute (const char*& ns, const char*& name, bool& free)
   {
+#ifndef XSDE_CUSTOM_ALLOCATOR
     char* ns_ = new char[4];
     char* name_ = new char[2];
+#else
+    char* ns_ = static_cast<char*> (xsde::cxx::alloc (4 * sizeof (char)));
+    char* name_ = static_cast<char*> (xsde::cxx::alloc (2 * sizeof (char)));
+#endif
 
     strcpy (ns_, "foo");
     strcpy (name_, "x");

@@ -45,6 +45,18 @@ struct any_simple_type_simpl: xml_schema::any_simple_type_simpl
 };
 */
 
+template <typename T>
+static inline T*
+new_obj ()
+{
+#ifndef XSDE_CUSTOM_ALLOCATOR
+  return new T ();
+#else
+  T* r (static_cast<T*> (xsde::cxx::alloc (sizeof (T))));
+  return new (r) T;
+#endif
+}
+
 struct root_simpl: root_sskel
 {
   virtual void
@@ -484,13 +496,13 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        string_sequence* r = new string_sequence;
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back ("one");
         return r;
       }
     case 1:
       {
-        string_sequence* r = new string_sequence;
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back ("one");
         r->push_back ("two");
         r->push_back ("three");
@@ -553,13 +565,13 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        string_sequence* r = new string_sequence;
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back ("one");
         return r;
       }
     case 1:
       {
-        string_sequence* r = new string_sequence;
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back ("two");
         r->push_back ("three");
         return r;
@@ -704,13 +716,13 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        string_sequence* r = new string_sequence ();
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back_copy ("one");
         return r;
       }
     case 1:
       {
-        string_sequence* r = new string_sequence ();
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back_copy ("one");
         r->push_back_copy ("two");
         r->push_back_copy ("three");
@@ -773,13 +785,13 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        string_sequence* r = new string_sequence ();
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back_copy ("one");
         return r;
       }
     case 1:
       {
-        string_sequence* r = new string_sequence ();
+        string_sequence* r = new_obj<string_sequence> ();
         r->push_back_copy ("two");
         r->push_back_copy ("three");
         return r;
@@ -828,14 +840,14 @@ struct root_simpl: root_sskel
     {
     case 0:
       {
-        qname* r = new qname ();
+        qname* r = new_obj<qname> ();
         r->prefix_copy ("g1");
         r->name_copy ("qname");
         return r;
       }
     case 1:
       {
-        qname* r = new qname ();
+        qname* r = new_obj<qname> ();
         r->name_copy ("qname");
         return r;
       }
@@ -856,7 +868,7 @@ struct root_simpl: root_sskel
   virtual const xml_schema::buffer*
   base64_binary ()
   {
-    xml_schema::buffer* r = new xml_schema::buffer ();
+    xml_schema::buffer* r = new_obj<xml_schema::buffer> ();
 
     switch (base64_binary_++)
     {
@@ -926,7 +938,7 @@ struct root_simpl: root_sskel
   virtual const xml_schema::buffer*
   hex_binary ()
   {
-    xml_schema::buffer* r = new xml_schema::buffer ();
+    xml_schema::buffer* r = new_obj<xml_schema::buffer> ();
 
     switch (hex_binary_++)
     {

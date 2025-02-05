@@ -47,7 +47,12 @@ main (int argc, char* argv[])
       cout << h->greeting () << ", " << *i << "!" << endl;
     }
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete h;
+#else
+  h->~hello ();
+  xsde::cxx::free (h);
+#endif
   }
   catch (const xml_schema::parser_exception& e)
   {

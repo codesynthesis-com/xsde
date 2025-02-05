@@ -25,7 +25,14 @@ compare (buffer* x, const char* p, size_t n)
     memcpy (b.data (), p, n);
 
   bool r = *x == b;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete x;
+#else
+  x->~buffer ();
+  xsde::cxx::free (x);
+#endif
+
   return r;
 }
 

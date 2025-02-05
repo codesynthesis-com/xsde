@@ -93,7 +93,12 @@ main (int argc, char* argv[])
   doc_s.serialize (cout);
   root_s.post ();
 
+#ifndef XSDE_CUSTOM_ALLOCATOR
   delete r;
+#else
+  r->~type ();
+  xsde::cxx::free (r);
+#endif
 
   return 0;
 }

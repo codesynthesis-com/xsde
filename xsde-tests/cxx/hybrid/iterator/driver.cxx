@@ -29,6 +29,17 @@ struct var_pred
   const char* v_;
 };
 
+static inline var*
+new_var ()
+{
+#ifndef XSDE_CUSTOM_ALLOCATOR
+  return new var;
+#else
+  var* r (static_cast<var*> (xsde::cxx::alloc (sizeof (var))));
+  return new (r) var;
+#endif
+}
+
 int
 main ()
 {
@@ -48,13 +59,13 @@ main ()
   type::v_sequence vs;
 
   var* v;
-  v = new var;
+  v = new_var ();
   v->a ("a");
   vs.push_back (v);
-  v = new var;
+  v = new_var ();
   v->a ("b");
   vs.push_back (v);
-  v = new var;
+  v = new_var ();
   v->a ("c");
   vs.push_back (v);
 

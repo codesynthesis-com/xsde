@@ -42,14 +42,24 @@ struct pass_a_pimpl: pass_a_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   b (char* v)
   {
     cout << "  b = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -102,14 +112,24 @@ struct pass_b_pimpl: pass_b_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   b (char* v)
   {
     cout << "  b = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -162,14 +182,24 @@ struct pass_c_pimpl: pass_c_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 
   virtual void
   b (char* v)
   {
     cout << "  b = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
@@ -208,7 +238,12 @@ struct fail_pimpl: fail_pskel
   a (char* v)
   {
     cout << "  a = " << v << endl;
+
+#ifndef XSDE_CUSTOM_ALLOCATOR
     delete[] v;
+#else
+    xsde::cxx::free (v);
+#endif
   }
 #endif
 
