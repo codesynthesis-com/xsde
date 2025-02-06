@@ -18,3 +18,5 @@
   indicate an absent value. One way to fix that is to use size_t type instead
   of enum for the variable and only cast to enum when it is supposed that the
   variable contains a valid enum value.
+
+- Add build command lines to example README files.
