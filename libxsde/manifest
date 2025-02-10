@@ -1,6 +1,6 @@
 : 1
 name: libxsde
-version: 3.4.0-b.1.z
+version: 3.4.0
 project: xsde
 type: lib
 language: c++
