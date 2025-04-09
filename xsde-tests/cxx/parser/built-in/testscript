@@ -3,7 +3,7 @@
 
 $* $src_base/test-000.xml >>>$src_base/test-000.std : 000
 
+: 001
+:
 if $long_long
-{
-  $* $src_base/test-001.xml >>>$src_base/test-001.std : 001
-}
+  $* $src_base/test-001.xml >>>$src_base/test-001.std

@@ -123,7 +123,6 @@ if $develop
   #
   if! diff $src_base/pregenerated/xsde.1 $o >-
     cp $o $src_base/pregenerated/xsde.1
-  end
 }}
 
 xhtml{xsde}: $ops                              \
@@ -163,7 +162,6 @@ if $develop
 
   if! diff $src_base/pregenerated/xsde.xhtml $o >-
     cp $o $src_base/pregenerated/xsde.xhtml
-  end
 }}
 
 #
