@@ -1,6 +1,6 @@
 : 1
 name: xsde
-version: 3.4.0
+version: 3.4.1-a.0.z
 language: c++
 summary: XML Schema to C++ data binding compiler for mobile and embedded systems
 license: other: GPL-2.0-only with FLOSS exception

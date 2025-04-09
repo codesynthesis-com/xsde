@@ -1,6 +1,6 @@
 : 1
 name: xsde-tests
-version: 3.4.0
+version: 3.4.1-a.0.z
 project: xsde
 type: tests
 language: c++
