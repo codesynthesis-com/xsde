@@ -18,8 +18,8 @@ email: xsde-users@codesynthesis.com ; Mailing list
 build-warning-email: builds@codesynthesis.com
 requires: libace ? ($cdr) ; CDR implementation library.
 requires: libtirpc ? ($xdr && $cxx.target.class == 'linux') ; XDR implementation library.
-depends: * build2 >= 0.17.0
-depends: * bpkg >= 0.17.0
+depends: * build2 >= 0.18.0-
+depends: * bpkg >= 0.18.0-
 
 depends: libexpat ^2.1.0 ? ($config.libxsde.external_expat)
 

@@ -13,8 +13,8 @@ src-url: https://git.codesynthesis.com/cgit/xsde/xsde/
 email: xsde-users@codesynthesis.com ; Mailing list
 requires: libace ? ($cdr) ; CDR implementation library.
 requires: libtirpc ? ($xdr && $cxx.target.class == 'linux') ; XDR implementation library.
-depends: * build2 >= 0.17.0
-depends: * bpkg >= 0.17.0
+depends: * build2 >= 0.18.0-
+depends: * bpkg >= 0.18.0-
 
 # Configure libxsde to match xsde-examples configuration.
 #
